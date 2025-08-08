@@ -40,11 +40,24 @@ jobs:
       - run: |
           cargo check --workspace
 
+  deny:
+    runs-on: ubuntu-latest
+    needs: check
+    steps:
+      - uses: actions/checkout@v4
+      - uses: EmbarkStudios/cargo-deny-action@v2
+        with:
+          command: check bans licenses sources
+          command-arguments: -c .config/deny.toml
+          arguments: --workspace --all-features
+          rust-version: stable
+
   ci:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     needs:
       - check
+      - deny
     steps:
       - name: check for cancelled jobs
         if: ${{ contains(needs.*.result, 'cancelled') }}
