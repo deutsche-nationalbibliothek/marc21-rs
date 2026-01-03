@@ -1,0 +1,11 @@
+[package]
+name = "marc21-cli"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "marc21"
+path = "src/main.rs"
+
+[dependencies]
+marc21-record = { workspace = true }

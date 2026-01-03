@@ -3,5 +3,12 @@
 version = 4
 
 [[package]]
-name = "marc21-rs"
+name = "marc21-cli"
+version = "0.1.0"
+dependencies = [
+ "marc21-record",
+]
+
+[[package]]
+name = "marc21-record"
 version = "0.1.0"
