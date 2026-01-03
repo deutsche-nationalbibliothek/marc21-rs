@@ -6,6 +6,7 @@ members = [ "marc21-*" ]
 [workspace.package]
 edition = "2024"
 authors = ["Nico Wagner <n.wagner@dnb.de>"]
+rust-version = "1.92"
 license = "EUPL-1.2"
 
 [workspace.dependencies]
