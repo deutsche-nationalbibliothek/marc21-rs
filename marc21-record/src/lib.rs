@@ -7,13 +7,11 @@ mod tag;
 pub use directory::{Directory, Entry};
 pub use error::ParseRecordError;
 pub use leader::Leader;
-pub use tag::TagRef;
+pub use tag::Tag;
 
 /// Core types available for glob import.
 pub mod prelude {
-    pub use super::{
-        Directory, Entry, Leader, ParseRecordError, TagRef,
-    };
+    pub use super::{Directory, Entry, Leader, ParseRecordError, Tag};
 }
 
 pub(crate) mod parse {

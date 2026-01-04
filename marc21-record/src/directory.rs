@@ -1,13 +1,13 @@
 use winnow::combinator::{repeat, seq, terminated};
 
-use crate::TagRef;
+use crate::Tag;
 use crate::parse::*;
 use crate::tag::parse_tag_ref;
 
 /// An index entry containing metadata about a variable field.
 #[derive(Debug, PartialEq)]
 pub struct Entry<'a> {
-    tag: TagRef<'a>,
+    tag: Tag<'a>,
     length: u16,
     start: u32,
 }
@@ -46,7 +46,7 @@ impl<'a> Entry<'a> {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn tag(&self) -> &TagRef<'a> {
+    pub fn tag(&self) -> &Tag<'a> {
         &self.tag
     }
 
@@ -154,7 +154,7 @@ mod tests {
         assert_eq!(
             parse_entry.parse(b"001001000000").unwrap(),
             Entry {
-                tag: TagRef::from_bytes(b"001").unwrap(),
+                tag: Tag::from_bytes(b"001").unwrap(),
                 length: 10,
                 start: 0,
             }
@@ -199,12 +199,12 @@ mod tests {
                 .unwrap(),
             Directory(vec![
                 Entry {
-                    tag: TagRef::from_bytes(b"001").unwrap(),
+                    tag: Tag::from_bytes(b"001").unwrap(),
                     length: 10,
                     start: 0,
                 },
                 Entry {
-                    tag: TagRef::from_bytes(b"003").unwrap(),
+                    tag: Tag::from_bytes(b"003").unwrap(),
                     length: 7,
                     start: 10,
                 }
@@ -218,12 +218,12 @@ mod tests {
             Directory::from_bytes(b"001001000000003000700010\x1e")?,
             Directory(vec![
                 Entry {
-                    tag: TagRef::from_bytes(b"001").unwrap(),
+                    tag: Tag::from_bytes(b"001").unwrap(),
                     length: 10,
                     start: 0,
                 },
                 Entry {
-                    tag: TagRef::from_bytes(b"003").unwrap(),
+                    tag: Tag::from_bytes(b"003").unwrap(),
                     length: 7,
                     start: 10,
                 }
@@ -242,7 +242,7 @@ mod tests {
         assert_eq!(
             iter.next(),
             Some(&Entry {
-                tag: TagRef::from_bytes(b"001").unwrap(),
+                tag: Tag::from_bytes(b"001").unwrap(),
                 length: 10,
                 start: 0,
             })
@@ -251,7 +251,7 @@ mod tests {
         assert_eq!(
             iter.next(),
             Some(&Entry {
-                tag: TagRef::from_bytes(b"003").unwrap(),
+                tag: Tag::from_bytes(b"003").unwrap(),
                 length: 7,
                 start: 10,
             })
