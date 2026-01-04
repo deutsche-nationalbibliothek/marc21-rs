@@ -9,10 +9,17 @@ is in tabular form, it can be processed with popular frameworks such as
 [Polars] ([Python]) or [Tidyverse] ([R]).
 
 
+## Contributing
+
+All contributors are required to "sign-off" their commits (using
+`git commit -s`) to indicate that they have agreed to the [Developer
+Certificate of Origin][DCO].
+
 ## License
 
 This project is licensed under the [European Union Public License 1.2].
 
+[DCO]: https://developercertificate.org
 [European Union Public License 1.2]: ./LICENSE
 [MARC21]: https://www.loc.gov/marc
 [Polars]: https://pola.rs
