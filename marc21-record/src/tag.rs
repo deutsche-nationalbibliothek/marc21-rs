@@ -76,6 +76,12 @@ impl<B: AsRef<[u8]>> PartialEq<B> for TagRef<'_> {
     }
 }
 
+impl PartialEq<str> for TagRef<'_> {
+    fn eq(&self, other: &str) -> bool {
+        self.0 == other
+    }
+}
+
 impl Display for TagRef<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.0)
