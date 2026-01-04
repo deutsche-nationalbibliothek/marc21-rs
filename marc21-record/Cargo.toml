@@ -5,3 +5,5 @@ rust-version.workspace = true
 edition.workspace = true
 
 [dependencies]
+winnow = { workspace = true }
+bstr = { workspace = true }

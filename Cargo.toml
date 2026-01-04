@@ -1,6 +1,5 @@
 [workspace]
 resolver = "3"
-default-members = ["marc21-cli"]
 members = [ "marc21-*" ]
 
 [workspace.package]
@@ -10,5 +9,7 @@ rust-version = "1.92"
 license = "EUPL-1.2"
 
 [workspace.dependencies]
-marc21-record = { path = "./marc21-record" }
+bstr = { version = "1.12", default-features = false, features = ["std"] }
 marc21-cli = { path = "./marc21-cli" }
+marc21-record = { path = "./marc21-record" }
+winnow = { version = "0.7" }

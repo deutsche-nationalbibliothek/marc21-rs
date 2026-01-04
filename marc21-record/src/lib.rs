@@ -1,14 +1,16 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
+mod common;
+mod error;
+mod leader;
+
+pub use error::ParseRecordError;
+pub use leader::Leader;
+
+/// Core types available for glob import.
+pub mod prelude {
+    pub use super::{Leader, ParseRecordError};
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
+pub(crate) mod parse {
+    pub(crate) use super::ParseRecordError;
+    pub(crate) use super::common::*;
 }
