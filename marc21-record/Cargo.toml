@@ -4,6 +4,12 @@ version = "0.1.0"
 rust-version.workspace = true
 edition.workspace = true
 
+[features]
+default = ["performant"]
+performant = ["winnow/simd"]
+
 [dependencies]
 winnow = { workspace = true }
 bstr = { workspace = true }
+
+
