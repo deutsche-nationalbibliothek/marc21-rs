@@ -6,7 +6,7 @@ use winnow::token::take;
 use crate::parse::*;
 
 /// A three character string to identify variable fields.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Tag<'a>(&'a BStr);
 
 impl<'a> Tag<'a> {

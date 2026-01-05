@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use winnow::combinator::{repeat, seq, terminated};
 
 use crate::Tag;
@@ -58,12 +60,12 @@ impl<'a> Entry<'a> {
     /// use marc21_record::prelude::*;
     ///
     /// let entry = Entry::from_bytes(b"001012300005")?;
-    /// assert_eq!(entry.length(), 123u16);
+    /// assert_eq!(entry.length(), 123);
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn length(&self) -> u16 {
-        self.length
+    pub fn length(&self) -> usize {
+        self.length as usize
     }
 
     /// Returns the starting character position of the variable field.
@@ -74,12 +76,36 @@ impl<'a> Entry<'a> {
     /// use marc21_record::prelude::*;
     ///
     /// let entry = Entry::from_bytes(b"001012300005")?;
-    /// assert_eq!(entry.start(), 5u32);
+    /// assert_eq!(entry.start(), 5);
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn start(&self) -> u32 {
-        self.start
+    pub fn start(&self) -> usize {
+        self.start as usize
+    }
+
+    /// Returns the end character position of the variable field.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21_record::prelude::*;
+    ///
+    /// let entry = Entry::from_bytes(b"001012300005")?;
+    /// assert_eq!(entry.end(), 128);
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn end(&self) -> usize {
+        self.start as usize + self.length as usize
+    }
+
+    pub fn is_control_field(&self) -> bool {
+        self.tag.is_control_field()
+    }
+
+    pub fn is_data_field(&self) -> bool {
+        self.tag.is_data_field()
     }
 }
 
@@ -137,9 +163,27 @@ impl<'a> Directory<'a> {
     pub fn entries(&self) -> impl Iterator<Item = &Entry<'a>> {
         self.0.iter()
     }
+
+    /// Returns the number of directory entries.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21_record::prelude::*;
+    ///
+    /// let dir = Directory::from_bytes(b"001001000000003000700010\x1e")?;
+    /// assert_eq!(dir.length(), 2);
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn length(&self) -> usize {
+        self.0.len()
+    }
 }
 
-fn parse_directory<'a>(i: &mut &'a [u8]) -> ModalResult<Directory<'a>> {
+pub(crate) fn parse_directory<'a>(
+    i: &mut &'a [u8],
+) -> ModalResult<Directory<'a>> {
     terminated(repeat(1.., parse_entry), RECORD_SEPARATOR)
         .map(Directory)
         .parse_next(i)
@@ -180,14 +224,14 @@ mod tests {
     #[test]
     fn test_entry_length() -> TestResult {
         let entry = Entry::from_bytes(b"001001200123")?;
-        assert_eq!(entry.length(), 12u16);
+        assert_eq!(entry.length(), 12);
         Ok(())
     }
 
     #[test]
     fn test_entry_start() -> TestResult {
         let entry = Entry::from_bytes(b"001001200123")?;
-        assert_eq!(entry.start(), 123u32);
+        assert_eq!(entry.start(), 123);
         Ok(())
     }
 

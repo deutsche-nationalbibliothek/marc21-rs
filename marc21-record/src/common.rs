@@ -7,6 +7,7 @@ use winnow::token::one_of;
 pub(crate) type TestResult = Result<(), Box<dyn std::error::Error>>;
 
 pub(crate) const RECORD_SEPARATOR: u8 = b'\x1e';
+pub(crate) const UNIT_SEPARATOR: u8 = b'\x1f';
 
 pub(crate) fn parse_digits_u32(i: &mut &[u8]) -> ModalResult<u32> {
     repeat(5usize, one_of(AsChar::is_dec_digit))
