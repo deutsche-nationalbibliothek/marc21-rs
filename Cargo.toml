@@ -10,6 +10,8 @@ license = "EUPL-1.2"
 
 [workspace.dependencies]
 bstr = { version = "1.12", default-features = false, features = ["std"] }
+clap = { version = "4.5", features = ["derive"] }
 marc21-cli = { path = "./marc21-cli" }
 marc21-record = { path = "./marc21-record" }
+memmap2 = { version = "0.9" }
 winnow = { version = "0.7" }
