@@ -11,15 +11,16 @@ use crate::parse::*;
 use crate::subfield::parse_subfield;
 use crate::{ControlField, Directory, Field, Leader, Subfield};
 
+/// A record, that may contain invalid UTF-8 data.
 #[derive(Debug, PartialEq)]
-pub struct Record<'a> {
+pub struct ByteRecord<'a> {
     leader: Leader,
     directory: Directory<'a>,
     fields: Vec<Field<'a>>,
     raw_data: Option<&'a [u8]>,
 }
 
-impl<'a> Record<'a> {
+impl<'a> ByteRecord<'a> {
     /// Create a new reocord from a byte slice.
     ///
     /// # Example
@@ -28,7 +29,7 @@ impl<'a> Record<'a> {
     /// use marc21_record::prelude::*;
     ///
     /// let data = include_bytes!("../tests/data/ada.mrc");
-    /// let result = Record::from_bytes(data);
+    /// let result = ByteRecord::from_bytes(data);
     /// assert!(result.is_ok());
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -51,12 +52,12 @@ impl<'a> Record<'a> {
     ///
     /// use marc21_record::prelude::*;
     ///
-    /// let ldr = Leader::from_bytes(b"00000nz  a2200000oc 4500")?;
-    ///
+    /// let data = include_bytes!("../tests/data/ada.mrc");
     /// let mut wrt = Cursor::new(Vec::<u8>::new());
-    /// ldr.write_to(&mut wrt)?;
+    /// let record = ByteRecord::from_bytes(&data)?;
     ///
-    /// assert_eq!(wrt.into_inner(), b"00000nz  a2200000oc 4500");
+    /// record.write_to(&mut wrt)?;
+    /// assert_eq!(wrt.into_inner(), data);
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
@@ -68,7 +69,7 @@ impl<'a> Record<'a> {
     }
 }
 
-fn parse_record<'a>(i: &mut &'a [u8]) -> ModalResult<Record<'a>> {
+fn parse_record<'a>(i: &mut &'a [u8]) -> ModalResult<ByteRecord<'a>> {
     let raw_data: Option<&[u8]> = Some(i);
     let leader = parse_leader.parse_next(i)?;
     let directory = parse_directory.parse_next(i)?;
@@ -101,7 +102,7 @@ fn parse_record<'a>(i: &mut &'a [u8]) -> ModalResult<Record<'a>> {
         fields.push(field);
     }
 
-    Ok(Record {
+    Ok(ByteRecord {
         leader,
         directory,
         fields,
@@ -165,6 +166,6 @@ mod tests {
     #[test]
     fn test_parse_record() {
         let bytes = include_bytes!("../tests/data/ada.mrc");
-        assert!(Record::from_bytes(bytes).is_ok());
+        assert!(ByteRecord::from_bytes(bytes).is_ok());
     }
 }

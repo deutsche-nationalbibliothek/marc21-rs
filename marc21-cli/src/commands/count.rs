@@ -3,7 +3,7 @@ use std::io::BufReader;
 use std::path::PathBuf;
 
 use bstr::io::BufReadExt;
-use marc21_record::Record;
+use marc21_record::ByteRecord;
 
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Count {
@@ -18,7 +18,7 @@ impl Count {
         let mut cnt = 0;
 
         rdr.for_byte_record(b'\x1d', |bytes| {
-            if Record::from_bytes(&bytes).is_ok() {
+            if ByteRecord::from_bytes(&bytes).is_ok() {
                 cnt += 1;
             }
 
