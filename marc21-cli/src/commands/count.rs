@@ -5,7 +5,9 @@ use std::path::PathBuf;
 use bstr::io::BufReadExt;
 use marc21_record::ByteRecord;
 
+/// Prints the number of records in the input data.
 #[derive(Debug, clap::Parser)]
+#[clap(visible_alias = "cnt")]
 pub(crate) struct Count {
     path: PathBuf,
 }
