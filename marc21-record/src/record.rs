@@ -1,4 +1,6 @@
 use std::io::{self, Write};
+use std::ops::Deref;
+use std::str::Utf8Error;
 
 use bstr::ByteSlice;
 use winnow::combinator::{empty, repeat, seq, terminated};
@@ -43,6 +45,33 @@ impl<'a> ByteRecord<'a> {
             .map_err(ParseRecordError::from_parse)
     }
 
+    /// Returns an iterator over the record's fields.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21_record::prelude::*;
+    ///
+    /// let data = include_bytes!("../tests/data/ada.mrc");
+    /// let record = ByteRecord::from_bytes(data)?;
+    /// assert_eq!(record.fields().count(), 47);
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn fields(&self) -> impl Iterator<Item = &Field<'a>> {
+        self.fields.iter()
+    }
+
+    /// Returns an [`std::str::Utf8Error`](Utf8Error) if the record
+    /// contains invalid UTF-8 data, otherwise the unit.
+    pub fn validate(&self) -> Result<(), Utf8Error> {
+        for field in self.fields() {
+            field.validate()?;
+        }
+
+        Ok(())
+    }
+
     /// Write the leader into the given writer
     ///
     /// # Example
@@ -66,6 +95,45 @@ impl<'a> ByteRecord<'a> {
             Some(buf) => out.write_all(buf),
             None => todo!(),
         }
+    }
+}
+
+/// A record, that guarantees valid UTF-8 data.
+#[derive(Debug)]
+pub struct StringRecord<'a>(ByteRecord<'a>);
+
+impl<'a> TryFrom<ByteRecord<'a>> for StringRecord<'a> {
+    type Error = Utf8Error;
+
+    /// Create a string record from a byte record.
+    ///
+    /// # Errors
+    ///
+    /// If the underlying [ByteRecord] contains invalid UTF-8 sequences,
+    /// an [Utf8Error] is returned.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21_record::prelude::*;
+    ///
+    /// let data = include_bytes!("../tests/data/ada.mrc");
+    /// let record = ByteRecord::from_bytes(&data)?;
+    /// assert!(StringRecord::try_from(record).is_ok());
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    fn try_from(record: ByteRecord<'a>) -> Result<Self, Self::Error> {
+        record.validate()?;
+        Ok(Self(record))
+    }
+}
+
+impl<'a> Deref for StringRecord<'a> {
+    type Target = ByteRecord<'a>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
 
@@ -167,5 +235,25 @@ mod tests {
     fn test_parse_record() {
         let bytes = include_bytes!("../tests/data/ada.mrc");
         assert!(ByteRecord::from_bytes(bytes).is_ok());
+    }
+
+    #[test]
+    fn test_string_record_try_from() -> TestResult {
+        let bytes = include_bytes!("../tests/data/ada.mrc");
+        let record = ByteRecord::from_bytes(bytes)?;
+        let result = StringRecord::try_from(record);
+        assert!(result.is_ok());
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_string_record_deref() -> TestResult {
+        let bytes = include_bytes!("../tests/data/ada.mrc");
+        let record = ByteRecord::from_bytes(bytes)?;
+        let record = StringRecord::try_from(record)?;
+        assert_eq!(record.fields().count(), 47);
+
+        Ok(())
     }
 }

@@ -1,4 +1,5 @@
 use std::fmt::{self, Display};
+use std::str::Utf8Error;
 
 use bstr::BStr;
 use winnow::combinator::preceded;
@@ -11,6 +12,19 @@ use crate::parse::*;
 pub struct Subfield<'a> {
     pub(crate) code: char,
     pub(crate) value: &'a BStr,
+}
+
+impl<'a> Subfield<'a> {
+    /// Returns an [`std::str::Utf8Error`](Utf8Error) if the subfield
+    /// contains invalid UTF-8 data, otherwise the unit.
+    pub fn validate(&self) -> Result<(), Utf8Error> {
+        if self.value.is_ascii() {
+            return Ok(());
+        }
+
+        let _ = std::str::from_utf8(self.value)?;
+        Ok(())
+    }
 }
 
 impl Display for Subfield<'_> {

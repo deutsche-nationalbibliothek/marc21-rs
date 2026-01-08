@@ -1,4 +1,5 @@
 use std::fmt::{self, Display};
+use std::str::Utf8Error;
 
 use bstr::BStr;
 
@@ -8,6 +9,17 @@ use crate::{Subfield, Tag};
 pub enum Field<'a> {
     Control(ControlField<'a>),
     Data(DataField<'a>),
+}
+
+impl<'a> Field<'a> {
+    /// Returns an [`std::str::Utf8Error`](Utf8Error) if the field
+    /// contains invalid UTF-8 data, otherwise the unit.
+    pub fn validate(&self) -> Result<(), Utf8Error> {
+        match self {
+            Self::Control(cf) => cf.validate(),
+            Self::Data(df) => df.validate(),
+        }
+    }
 }
 
 impl Display for Field<'_> {
@@ -33,6 +45,17 @@ impl<'a> ControlField<'a> {
     pub fn value(&self) -> &'a BStr {
         self.value
     }
+
+    /// Returns an [`std::str::Utf8Error`](Utf8Error) if the field
+    /// contains invalid UTF-8 data, otherwise the unit.
+    pub fn validate(&self) -> Result<(), Utf8Error> {
+        if self.value.is_ascii() {
+            return Ok(());
+        };
+
+        let _ = std::str::from_utf8(self.value)?;
+        Ok(())
+    }
 }
 
 impl Display for ControlField<'_> {
@@ -52,6 +75,20 @@ pub struct DataField<'a> {
 impl<'a> DataField<'a> {
     pub fn tag(&self) -> &Tag<'a> {
         &self.tag
+    }
+
+    pub fn subfields(&self) -> impl Iterator<Item = &Subfield<'a>> {
+        self.subfields.iter()
+    }
+
+    /// Returns an [`std::str::Utf8Error`](Utf8Error) if the field
+    /// contains invalid UTF-8 data, otherwise the unit.
+    pub fn validate(&self) -> Result<(), Utf8Error> {
+        for subfield in self.subfields() {
+            subfield.validate()?;
+        }
+
+        Ok(())
     }
 }
 

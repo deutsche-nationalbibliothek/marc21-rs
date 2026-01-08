@@ -11,14 +11,15 @@ pub use directory::{Directory, Entry};
 pub use error::ParseRecordError;
 pub use field::{ControlField, DataField, Field};
 pub use leader::Leader;
-pub use record::ByteRecord;
+pub use record::{ByteRecord, StringRecord};
 pub use subfield::Subfield;
 pub use tag::Tag;
 
 /// Core types available for glob import.
 pub mod prelude {
     pub use super::{
-        ByteRecord, Directory, Entry, Leader, ParseRecordError, Tag,
+        ByteRecord, Directory, Entry, Leader, ParseRecordError,
+        StringRecord, Tag,
     };
 }
 
