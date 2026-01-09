@@ -11,5 +11,3 @@ performant = ["winnow/simd"]
 [dependencies]
 winnow = { workspace = true }
 bstr = { workspace = true }
-
-

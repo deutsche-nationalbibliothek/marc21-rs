@@ -2,6 +2,7 @@ mod common;
 mod directory;
 mod error;
 mod field;
+pub mod io;
 mod leader;
 mod record;
 mod subfield;
@@ -17,6 +18,7 @@ pub use tag::Tag;
 
 /// Core types available for glob import.
 pub mod prelude {
+    pub use super::io::{ByteRecordsIter, MarcReadOptions, MarcReader};
     pub use super::{
         ByteRecord, Directory, Entry, Leader, ParseRecordError,
         StringRecord, Tag,

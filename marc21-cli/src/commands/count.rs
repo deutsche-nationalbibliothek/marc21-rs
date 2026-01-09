@@ -1,33 +1,35 @@
-use std::fs::File;
-use std::io::BufReader;
 use std::path::PathBuf;
 
-use bstr::io::BufReadExt;
-use marc21_record::ByteRecord;
+use marc21_record::prelude::*;
 
 /// Prints the number of records in the input data.
 #[derive(Debug, clap::Parser)]
 #[clap(visible_alias = "cnt")]
 pub(crate) struct Count {
-    path: PathBuf,
+    #[arg(default_value = "-", hide_default_value = true)]
+    path: Vec<PathBuf>,
 }
 
 impl Count {
     pub(crate) fn execute(
-        &self,
+        self,
     ) -> Result<(), Box<dyn std::error::Error>> {
-        let mut rdr = BufReader::new(File::open(&self.path)?);
-        let mut cnt = 0;
+        let mut count = 0;
 
-        rdr.for_byte_record(b'\x1d', |bytes| {
-            if ByteRecord::from_bytes(&bytes).is_ok() {
-                cnt += 1;
+        for path in self.path.iter() {
+            let mut reader = MarcReadOptions::default()
+                .try_into_reader_from_path(path)?;
+
+            while let Some(result) = reader.next_byte_record() {
+                if result.is_ok() {
+                    count += 1;
+                } else {
+                    eprintln!("result = {result:?}");
+                }
             }
+        }
 
-            Ok(true)
-        })?;
-
-        println!("{cnt}");
+        println!("{count}");
         Ok(())
     }
 }

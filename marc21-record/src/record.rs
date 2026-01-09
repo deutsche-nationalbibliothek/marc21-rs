@@ -144,6 +144,7 @@ fn parse_record<'a>(i: &mut &'a [u8]) -> ModalResult<ByteRecord<'a>> {
     let mut fields = Vec::with_capacity(directory.length());
     let mut payload = take(leader.length() - leader.base_address() - 1)
         .parse_next(i)?;
+    let _ = b'\x1d'.parse_next(i)?;
 
     for entry in directory.entries() {
         let field = if entry.is_control_field() {
