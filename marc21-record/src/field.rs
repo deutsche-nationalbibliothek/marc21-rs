@@ -1,7 +1,7 @@
 use std::fmt::{self, Display};
 use std::str::Utf8Error;
 
-use bstr::BStr;
+use bstr::ByteSlice;
 
 use crate::{Subfield, Tag};
 
@@ -34,7 +34,7 @@ impl Display for Field<'_> {
 #[derive(Debug, PartialEq)]
 pub struct ControlField<'a> {
     pub(crate) tag: Tag<'a>,
-    pub(crate) value: &'a BStr,
+    pub(crate) value: &'a [u8],
 }
 
 impl<'a> ControlField<'a> {
@@ -42,7 +42,7 @@ impl<'a> ControlField<'a> {
         &self.tag
     }
 
-    pub fn value(&self) -> &'a BStr {
+    pub fn value(&self) -> &'a [u8] {
         self.value
     }
 
@@ -60,7 +60,7 @@ impl<'a> ControlField<'a> {
 
 impl Display for ControlField<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{} {}", self.tag, self.value)
+        write!(f, "{} {}", self.tag, self.value.as_bstr())
     }
 }
 
@@ -118,8 +118,6 @@ impl Display for DataField<'_> {
 
 #[cfg(test)]
 mod tests {
-    use bstr::ByteSlice;
-
     use super::*;
     use crate::parse::TestResult;
 
@@ -127,7 +125,7 @@ mod tests {
     fn test_control_field_to_string() -> TestResult {
         let cf = ControlField {
             tag: Tag::from_bytes(b"001")?,
-            value: b"abc".as_bstr(),
+            value: b"abc",
         };
 
         assert_eq!(cf.to_string(), "001 abc");
@@ -143,11 +141,11 @@ mod tests {
             subfields: vec![
                 Subfield {
                     code: 'a',
-                    value: b"119232022".as_bstr(),
+                    value: b"119232022",
                 },
                 Subfield {
                     code: '2',
-                    value: b"gnd".as_bstr(),
+                    value: b"gnd",
                 },
             ],
         };

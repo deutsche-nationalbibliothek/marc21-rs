@@ -1,7 +1,7 @@
 use std::fmt::{self, Display};
 use std::str::Utf8Error;
 
-use bstr::BStr;
+use bstr::ByteSlice;
 use winnow::combinator::preceded;
 use winnow::stream::AsChar;
 use winnow::token::{one_of, take_till};
@@ -11,7 +11,7 @@ use crate::parse::*;
 #[derive(Debug, PartialEq)]
 pub struct Subfield<'a> {
     pub(crate) code: char,
-    pub(crate) value: &'a BStr,
+    pub(crate) value: &'a [u8],
 }
 
 impl<'a> Subfield<'a> {
@@ -29,7 +29,7 @@ impl<'a> Subfield<'a> {
 
 impl Display for Subfield<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "${} {}", self.code, self.value)
+        write!(f, "${} {}", self.code, self.value.as_bstr())
     }
 }
 
@@ -47,7 +47,7 @@ pub(crate) fn parse_subfield<'a>(
     )
     .map(|(code, value): (u8, &[u8])| Subfield {
         code: code as char,
-        value: value.into(),
+        value,
     })
     .parse_next(i)
 }
@@ -62,7 +62,7 @@ mod tests {
             parse_subfield.parse_peek(b"\x1fa123\x1f").unwrap().1,
             Subfield {
                 code: 'a',
-                value: "123".into(),
+                value: b"123",
             }
         );
 
@@ -70,7 +70,7 @@ mod tests {
             parse_subfield.parse_peek(b"\x1f1abc\x1f").unwrap().1,
             Subfield {
                 code: '1',
-                value: "abc".into(),
+                value: b"abc",
             }
         );
 
@@ -78,7 +78,7 @@ mod tests {
             parse_subfield.parse_peek(b"\x1fa123\x1e").unwrap().1,
             Subfield {
                 code: 'a',
-                value: "123".into(),
+                value: b"123",
             }
         );
     }
