@@ -1,0 +1,48 @@
+LDR 03612nz  a2200589nc 4500
+001 119232022
+003 DE-101
+005 20250720173911.0
+008 950316n||azznnaabn           | aaa    |c
+024 7# $a 119232022 $0 http://d-nb.info/gnd/119232022 $2 gnd
+035 ## $a (DE-101)119232022
+035 ## $a (DE-588)119232022
+035 ## $z (DE-588)172642531
+035 ## $z (DE-588a)172642531 $9 v:zg
+035 ## $z (DE-588a)119232022 $9 v:zg
+035 ## $z (DE-588c)4370325-2 $9 v:zg
+040 ## $a DE-386 $c DE-386 $9 r:DE-576 $b ger $d 1841
+042 ## $a gnd1
+043 ## $c XA-GB
+065 ## $a 28p $2 sswd
+065 ## $a 9.5p $2 sswd
+075 ## $b p $2 gndgen
+075 ## $b piz $2 gndspec
+079 ## $a g $q f $q s $q z $u w $u k $u v
+100 1# $a Lovelace, Ada $d 1815-1852
+375 ## $a 2 $2 iso5218
+400 1# $a Lovelace, Augusta Ada of $d 1815-1852
+400 1# $a Lovelace, Ada Augusta of $d 1815-1852
+400 1# $a Byron, Ada $d 1815-1852
+400 1# $a Byron King, Augusta Ada $d 1815-1852
+400 1# $a King, Augusta Ada $d 1815-1852
+400 1# $a King, Ada $d 1815-1852
+400 1# $a King-Noel, Augusta Ada $c Countess of Lovelace $d 1815-1852
+400 1# $a Byron, Ada Augusta $d 1815-1852 $4 nafr $4 https://d-nb.info/standards/elementset/gnd#EarlierNameOfThePerson $w r $i Frueherer Name $e Frueherer Name
+400 1# $a Byron, Augusta Ada $d 1815-1852 $4 nafr $4 https://d-nb.info/standards/elementset/gnd#EarlierNameOfThePerson $w r $i Frueherer Name $e Frueherer Name
+400 1# $a Byron Lovelace, Ada $d 1815-1852
+400 1# $a Lovelace, Ada King $c Countess of $d 1815-1852
+400 1# $a Lovelace, Augusta Ada King $d 1815-1852
+400 1# $a Lovelace, Augusta Ada $d 1815-1852
+500 1# $0 (DE-101)118518208 $0 (DE-588)118518208 $0 https://d-nb.info/gnd/118518208 $a Byron, George Gordon Byron $c Baron $d 1788-1824 $4 bezf $4 https://d-nb.info/standards/elementset/gnd#familialRelationship $w r $i Beziehung familiaer $e Beziehung familiaer $9 v:Vater
+500 1# $0 (DE-101)118638130 $0 (DE-588)118638130 $0 https://d-nb.info/gnd/118638130 $a Byron, Anne Isabella Milbanke Byron $d 1792-1860 $4 bezf $4 https://d-nb.info/standards/elementset/gnd#familialRelationship $w r $i Beziehung familiaer $e Beziehung familiaer $9 v:Mutter
+500 1# $0 (DE-101)119389991 $0 (DE-588)119389991 $0 https://d-nb.info/gnd/119389991 $a Blunt, Anne Isabella $d 1837-1917 $4 bezf $4 https://d-nb.info/standards/elementset/gnd#familialRelationship $w r $i Beziehung familiaer $e Beziehung familiaer $9 v:Tochter
+548 ## $a 1815-1852 $4 datl $4 https://d-nb.info/standards/elementset/gnd#dateOfBirthAndDeath $w r $i Lebensdaten
+548 ## $a 10.12.1815-27.12.1852 $4 datx $4 https://d-nb.info/standards/elementset/gnd#dateOfBirthAndDeath $w r $i Exakte Lebensdaten
+550 ## $0 (DE-101)042527880 $0 (DE-588)4252788-0 $0 https://d-nb.info/gnd/4252788-0 $a Mathematikerin $4 berc $4 https://d-nb.info/standards/elementset/gnd#professionOrOccupation $w r $i Charakteristischer Beruf
+550 ## $0 (DE-101)042190592 $0 (DE-588)4219059-9 $0 https://d-nb.info/gnd/4219059-9 $a Informatikerin $4 beru $4 https://d-nb.info/standards/elementset/gnd#professionOrOccupation $w r $i Beruf
+551 ## $0 (DE-101)040743357 $0 (DE-588)4074335-4 $0 https://d-nb.info/gnd/4074335-4 $a London $4 ortg $4 https://d-nb.info/standards/elementset/gnd#placeOfBirth $w r $i Geburtsort
+551 ## $0 (DE-101)040743357 $0 (DE-588)4074335-4 $0 https://d-nb.info/gnd/4074335-4 $a London $4 orts $4 https://d-nb.info/standards/elementset/gnd#placeOfDeath $w r $i Sterbeort
+667 ## $a Der Ehemann Baron William King (1805-1893) wurde 1838 zum 1. Earl of Lovelace erhoben.
+670 ## $a LCAuth
+913 ## $S pnd $i a $a Lovelace, Ada King /of $0 (DE-588a)119232022
+913 ## $S pnd $i a $a Lovelace, Ada K. /of $0 (DE-588a)172642531

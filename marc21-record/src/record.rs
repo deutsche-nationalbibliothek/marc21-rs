@@ -1,3 +1,4 @@
+use std::fmt::{self, Display};
 use std::io::{self, Write};
 use std::ops::Deref;
 use std::str::Utf8Error;
@@ -95,6 +96,16 @@ impl<'a> ByteRecord<'a> {
             Some(buf) => out.write_all(buf),
             None => todo!(),
         }
+    }
+}
+
+impl Display for ByteRecord<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        writeln!(f, "{}", self.leader)?;
+        for field in self.fields() {
+            writeln!(f, "{}", field)?;
+        }
+        Ok(())
     }
 }
 

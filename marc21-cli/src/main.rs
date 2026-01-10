@@ -6,12 +6,14 @@ use crate::cli::{Args, Command};
 
 mod cli;
 mod commands;
+mod utils;
 
 fn main() -> ExitCode {
     let args = Args::parse();
 
     let result = match *args.cmd {
         Command::Count(cmd) => cmd.execute(),
+        Command::Print(cmd) => cmd.execute(),
     };
 
     match result {

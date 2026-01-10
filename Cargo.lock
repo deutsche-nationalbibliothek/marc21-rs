@@ -350,6 +350,7 @@ dependencies = [
  "assert_fs",
  "bstr",
  "clap",
+ "flate2",
  "marc21-record",
  "predicates",
 ]
