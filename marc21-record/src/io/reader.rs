@@ -3,6 +3,8 @@ use std::fs::File;
 use std::io::{self, BufRead, BufReader, Read, stdin};
 use std::path::Path;
 
+use flate2::read::GzDecoder;
+
 use crate::{ByteRecord, ParseRecordError};
 
 /// An error that can occur when reading records.
@@ -46,10 +48,12 @@ impl MarcReadOptions {
     ) -> io::Result<MarcReader<Box<dyn Read>>> {
         let path = path.as_ref();
 
-        let reader: Box<dyn Read> = if path.to_str() != Some("-") {
-            Box::new(File::open(path)?)
-        } else {
-            Box::new(stdin().lock())
+        let reader: Box<dyn Read> = match path.to_str() {
+            Some("-") | None => Box::new(stdin().lock()),
+            Some(path_str) if path_str.ends_with(".gz") => {
+                Box::new(GzDecoder::new(File::open(path)?))
+            }
+            Some(_) => Box::new(File::open(path)?),
         };
 
         Ok(MarcReader::new(reader, self))

@@ -9,5 +9,7 @@ default = ["performant"]
 performant = ["winnow/simd"]
 
 [dependencies]
-winnow = { workspace = true }
 bstr = { workspace = true }
+flate2 = { workspace = true }
+winnow = { workspace = true }
+

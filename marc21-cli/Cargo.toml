@@ -16,3 +16,14 @@ performant = ["marc21-record/performant"]
 bstr = { workspace = true }
 clap = { workspace = true }
 marc21-record = { workspace = true }
+
+[dev-dependencies]
+anyhow = { workspace = true }
+assert_cmd = { workspace = true }
+assert_fs = { workspace = true }
+predicates = { workspace = true }
+
+[[test]]
+path = "tests/e2e/lib.rs"
+name = "e2e"
+
