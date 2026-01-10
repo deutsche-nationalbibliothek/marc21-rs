@@ -5,10 +5,12 @@ use std::path::PathBuf;
 use flate2::Compression;
 use flate2::write::GzEncoder;
 
+#[derive(Default)]
 pub(crate) struct WriterBuilder();
 
 impl WriterBuilder {
     pub fn try_from_path_or_stdout(
+        self,
         path: Option<PathBuf>,
     ) -> io::Result<Writer> {
         let Some(path) = path else {

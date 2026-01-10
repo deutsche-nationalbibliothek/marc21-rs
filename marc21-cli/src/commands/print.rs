@@ -20,8 +20,8 @@ impl Print {
     pub(crate) fn execute(
         self,
     ) -> Result<(), Box<dyn std::error::Error>> {
-        let mut wtr =
-            WriterBuilder::try_from_path_or_stdout(self.output)?;
+        let mut wtr = WriterBuilder::default()
+            .try_from_path_or_stdout(self.output)?;
 
         for path in self.path.iter() {
             let mut reader = MarcReadOptions::default()
