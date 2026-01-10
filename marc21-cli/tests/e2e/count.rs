@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 #[test]
 fn count_default() -> TestResult {
-    let mut cmd = marc21_cmd();
+    let mut cmd = marc_cmd();
     let assert =
         cmd.args(["count"]).arg(data_dir().join("ada.mrc")).assert();
 
@@ -17,7 +17,7 @@ fn count_default() -> TestResult {
 
 #[test]
 fn count_gzip() -> TestResult {
-    let mut cmd = marc21_cmd();
+    let mut cmd = marc_cmd();
     let assert = cmd
         .args(["count"])
         .arg(data_dir().join("ada.mrc.gz"))
@@ -34,7 +34,7 @@ fn count_gzip() -> TestResult {
 
 #[test]
 fn count_multiple_files() -> TestResult {
-    let mut cmd = marc21_cmd();
+    let mut cmd = marc_cmd();
     let assert = cmd
         .args(["count"])
         .arg(data_dir().join("ada.mrc.gz"))

@@ -20,6 +20,6 @@ pub(crate) fn data_dir() -> &'static PathBuf {
 }
 
 #[inline(always)]
-pub(crate) fn marc21_cmd() -> Command {
-    Command::new(assert_cmd::cargo::cargo_bin!("marc21"))
+pub(crate) fn marc_cmd() -> Command {
+    Command::new(assert_cmd::cargo::cargo_bin!("marc"))
 }
