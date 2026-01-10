@@ -5,7 +5,7 @@ use marc21_record::prelude::*;
 
 use crate::utils::WriterBuilder;
 
-/// Prints the number of records in the input data.
+/// Print records in human readable format
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Print {
     /// Write output to FILENAME instead of stdout.
