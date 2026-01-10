@@ -1,9 +1,7 @@
 use std::io::Write;
 use std::path::PathBuf;
 
-use marc21_record::prelude::*;
-
-use crate::utils::WriterBuilder;
+use crate::prelude::*;
 
 /// Print records in human readable format
 #[derive(Debug, clap::Parser)]
@@ -14,13 +12,17 @@ pub(crate) struct Print {
 
     #[arg(default_value = "-", hide_default_value = true)]
     path: Vec<PathBuf>,
+
+    #[command(flatten, next_help_heading = "Common options")]
+    pub(crate) common: CommonOpts,
 }
 
 impl Print {
     pub(crate) fn execute(
         self,
     ) -> Result<(), Box<dyn std::error::Error>> {
-        let mut wtr = WriterBuilder::default()
+        let mut progress = Progress::new(self.common.quiet);
+        let mut output = WriterBuilder::default()
             .try_from_path_or_stdout(self.output)?;
 
         for path in self.path.iter() {
@@ -29,12 +31,15 @@ impl Print {
 
             while let Some(result) = reader.next_byte_record() {
                 if let Ok(record) = result {
-                    write!(wtr, "{record}")?;
+                    write!(output, "{record}")?;
+                    progress.update(false);
+                } else {
+                    progress.update(true);
                 }
             }
         }
 
-        wtr.finish()?;
+        output.finish()?;
         Ok(())
     }
 }

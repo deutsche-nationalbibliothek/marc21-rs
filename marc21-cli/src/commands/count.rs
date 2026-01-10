@@ -1,28 +1,31 @@
 use std::io::Write;
 use std::path::PathBuf;
 
-use marc21_record::prelude::*;
-
-use crate::utils::WriterBuilder;
+use crate::prelude::*;
 
 /// Prints the number of records in the input data.
 #[derive(Debug, clap::Parser)]
 #[clap(visible_alias = "cnt")]
 pub(crate) struct Count {
+    #[arg(default_value = "-", hide_default_value = true)]
+    path: Vec<PathBuf>,
+
     /// Write output to FILENAME instead of stdout.
     #[arg(short, long, value_name = "FILENAME")]
     output: Option<PathBuf>,
 
-    #[arg(default_value = "-", hide_default_value = true)]
-    path: Vec<PathBuf>,
+    #[command(flatten, next_help_heading = "Common options")]
+    pub(crate) common: CommonOpts,
 }
 
 impl Count {
     pub(crate) fn execute(
         self,
     ) -> Result<(), Box<dyn std::error::Error>> {
-        let mut wtr = WriterBuilder::default()
+        let mut progress = Progress::new(self.common.quiet);
+        let mut output = WriterBuilder::default()
             .try_from_path_or_stdout(self.output)?;
+
         let mut count = 0;
 
         for path in self.path.iter() {
@@ -30,14 +33,21 @@ impl Count {
                 .try_into_reader_from_path(path)?;
 
             while let Some(result) = reader.next_byte_record() {
-                if result.is_ok() {
-                    count += 1;
+                match result {
+                    Err(_) => progress.update(true),
+                    Ok(_) => {
+                        progress.update(false);
+                        count += 1;
+                    }
                 }
             }
         }
 
-        writeln!(wtr, "{count}")?;
-        wtr.finish()?;
+        progress.finish();
+
+        writeln!(output, "{count}")?;
+        output.finish()?;
+
         Ok(())
     }
 }

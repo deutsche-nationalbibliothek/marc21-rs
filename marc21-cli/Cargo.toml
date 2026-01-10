@@ -16,6 +16,7 @@ performant = ["marc21-record/performant"]
 bstr = { workspace = true }
 clap = { workspace = true }
 flate2 = { workspace = true }
+indicatif = { workspace = true }
 marc21-record = { workspace = true }
 
 [dev-dependencies]

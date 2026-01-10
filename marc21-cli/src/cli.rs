@@ -16,3 +16,10 @@ pub(crate) enum Command {
     Count(Count),
     Print(Print),
 }
+
+#[derive(Debug, clap::Args)]
+pub(crate) struct CommonOpts {
+    /// Operate quietly; do not show progress
+    #[arg(short, long, global = true)]
+    pub(crate) quiet: bool,
+}

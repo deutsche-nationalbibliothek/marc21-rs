@@ -6,6 +6,8 @@ use crate::cli::{Args, Command};
 
 mod cli;
 mod commands;
+pub(crate) mod prelude;
+mod progress;
 mod utils;
 
 fn main() -> ExitCode {
