@@ -1,0 +1,22 @@
+[workspace]
+members = ["."]
+
+[package]
+name = "marc21-cli-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2024"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+marc21-record = { path = "../../marc21-record" }
+
+[[bin]]
+name = "byte_record"
+path = "fuzz_targets/byte_record.rs"
+test = false
+doc = false
+bench = false

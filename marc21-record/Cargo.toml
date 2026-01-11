@@ -8,6 +8,10 @@ edition.workspace = true
 default = ["performant"]
 performant = ["winnow/simd"]
 
+[[test]]
+path = "tests/fuzz/lib.rs"
+name = "fuzz-regressions"
+
 [dependencies]
 bstr = { workspace = true }
 flate2 = { workspace = true }
