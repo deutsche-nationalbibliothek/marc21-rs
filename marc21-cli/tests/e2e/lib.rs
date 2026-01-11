@@ -1,3 +1,4 @@
+mod concat;
 mod count;
 mod invalid;
 pub(crate) mod prelude;

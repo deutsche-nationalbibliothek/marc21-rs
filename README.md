@@ -13,8 +13,9 @@ is in tabular form, it can be processed with popular frameworks such as
 
 The `marc` tool provides the following commands:
 
+- `concat` — Concatenate records from multiple inputs (alias `cat`)
 - `count` — Print the number of records in the input data (alias `cnt`)
-- `invalid` — Outputs invalid records that cannot be decoded.
+- `invalid` — Outputs invalid records that cannot be decoded
 - `print` — Print records in human readable format
 
 
