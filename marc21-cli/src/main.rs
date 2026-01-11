@@ -15,6 +15,7 @@ fn main() -> ExitCode {
 
     let result = match *args.cmd {
         Command::Count(cmd) => cmd.execute(),
+        Command::Invalid(cmd) => cmd.execute(),
         Command::Print(cmd) => cmd.execute(),
     };
 

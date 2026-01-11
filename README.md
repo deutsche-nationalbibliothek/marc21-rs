@@ -8,12 +8,15 @@ extraction of data into a rectangular schema. Since the extracted data
 is in tabular form, it can be processed with popular frameworks such as
 [Polars] ([Python]) or [Tidyverse] ([R]).
 
-## Overview
+
+## Commands
 
 The `marc` tool provides the following commands:
 
 - `count` — Print the number of records in the input data (alias `cnt`)
+- `invalid` — Outputs invalid records that cannot be decoded.
 - `print` — Print records in human readable format
+
 
 ## Contributing
 

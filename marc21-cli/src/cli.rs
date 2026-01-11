@@ -14,6 +14,7 @@ pub(crate) struct Args {
 #[derive(Debug, Subcommand)]
 pub(crate) enum Command {
     Count(Count),
+    Invalid(Invalid),
     Print(Print),
 }
 

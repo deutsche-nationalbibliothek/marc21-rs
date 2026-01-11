@@ -37,7 +37,9 @@ impl<'a> ByteRecord<'a> {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn from_bytes<B>(bytes: &'a B) -> Result<Self, ParseRecordError>
+    pub fn from_bytes<B>(
+        bytes: &'a B,
+    ) -> Result<Self, ParseRecordError<'a>>
     where
         B: AsRef<[u8]>,
     {

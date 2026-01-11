@@ -9,12 +9,12 @@ use crate::{ByteRecord, ParseRecordError};
 
 /// An error that can occur when reading records.
 #[derive(Debug)]
-pub enum ReadMarcError {
-    Parse(ParseRecordError),
+pub enum ReadMarcError<'a> {
+    Parse(ParseRecordError<'a>),
     IO(std::io::Error),
 }
 
-impl Display for ReadMarcError {
+impl Display for ReadMarcError<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Parse(e) => write!(f, "parse: {e}"),
@@ -23,7 +23,7 @@ impl Display for ReadMarcError {
     }
 }
 
-impl std::error::Error for ReadMarcError {}
+impl std::error::Error for ReadMarcError<'_> {}
 
 /// Configures and builds a MARC reader.
 #[derive(Debug, Default)]
@@ -87,7 +87,7 @@ pub trait ByteRecordsIter {
 
 impl<R: Read> ByteRecordsIter for MarcReader<R> {
     type ByteRecordItem<'a>
-        = Result<ByteRecord<'a>, ReadMarcError>
+        = Result<ByteRecord<'a>, ReadMarcError<'a>>
     where
         Self: 'a;
 

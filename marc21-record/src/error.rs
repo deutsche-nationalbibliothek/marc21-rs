@@ -6,21 +6,27 @@ use winnow::error::{ContextError, ParseError};
 
 /// An error that can occur when parsing MARC 21 records.
 #[derive(Debug)]
-pub struct ParseRecordError {
+pub struct ParseRecordError<'a> {
     message: String,
     span: Range<usize>,
+    data: &'a [u8],
 }
 
-impl ParseRecordError {
-    pub fn from_parse(err: ParseError<&[u8], ContextError>) -> Self {
+impl<'a> ParseRecordError<'a> {
+    pub fn from_parse(err: ParseError<&'a [u8], ContextError>) -> Self {
         Self {
             message: err.inner().to_string(),
             span: err.char_span(),
+            data: err.input(),
         }
+    }
+
+    pub fn data(&self) -> &'a [u8] {
+        self.data
     }
 }
 
-impl Display for ParseRecordError {
+impl Display for ParseRecordError<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let message = &self.message;
         let start = self.span.start;
@@ -30,4 +36,4 @@ impl Display for ParseRecordError {
     }
 }
 
-impl Error for ParseRecordError {}
+impl Error for ParseRecordError<'_> {}
