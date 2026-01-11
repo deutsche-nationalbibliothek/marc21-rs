@@ -86,7 +86,7 @@ impl<'a> ByteRecord<'a> {
     ///
     /// let data = include_bytes!("../tests/data/ada.mrc");
     /// let mut wrt = Cursor::new(Vec::<u8>::new());
-    /// let record = ByteRecord::from_bytes(&data)?;
+    /// let record = ByteRecord::from_bytes(data)?;
     ///
     /// record.write_to(&mut wrt)?;
     /// assert_eq!(wrt.into_inner(), data);
@@ -131,7 +131,7 @@ impl<'a> TryFrom<ByteRecord<'a>> for StringRecord<'a> {
     /// use marc21_record::prelude::*;
     ///
     /// let data = include_bytes!("../tests/data/ada.mrc");
-    /// let record = ByteRecord::from_bytes(&data)?;
+    /// let record = ByteRecord::from_bytes(data)?;
     /// assert!(StringRecord::try_from(record).is_ok());
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
