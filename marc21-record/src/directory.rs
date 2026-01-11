@@ -114,7 +114,7 @@ impl<'a> Entry<'a> {
 fn parse_entry<'a>(i: &mut &'a [u8]) -> ModalResult<Entry<'a>> {
     seq! { Entry {
         tag: parse_tag_ref,
-        length: parse_digits_u16,
+        length: parse_digits_u16.verify(|value| *value > 0),
         start: parse_digits_u32,
     }}
     .parse_next(i)
