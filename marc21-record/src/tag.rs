@@ -1,13 +1,13 @@
 use std::fmt::{self, Display};
 
-use bstr::{BStr, ByteSlice};
+use bstr::ByteSlice;
 use winnow::token::take;
 
 use crate::parse::*;
 
 /// A three character string to identify variable fields.
 #[derive(Debug, Clone, PartialEq)]
-pub struct Tag<'a>(&'a BStr);
+pub struct Tag<'a>(&'a [u8]);
 
 impl<'a> Tag<'a> {
     /// Create a new tag from a byte slice.
@@ -80,13 +80,13 @@ impl<B: AsRef<[u8]>> PartialEq<B> for Tag<'_> {
 
 impl PartialEq<str> for Tag<'_> {
     fn eq(&self, other: &str) -> bool {
-        self.0 == other
+        self.0 == other.as_bytes()
     }
 }
 
 impl Display for Tag<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.0)
+        write!(f, "{}", self.0.as_bstr())
     }
 }
 
@@ -109,15 +109,8 @@ mod tests {
 
     #[test]
     fn test_parse_tag_ref() -> TestResult {
-        assert_eq!(
-            parse_tag_ref.parse(b"001").unwrap(),
-            Tag(b"001".into())
-        );
-        assert_eq!(
-            parse_tag_ref.parse(b"123").unwrap(),
-            Tag(b"123".into())
-        );
-
+        assert_eq!(parse_tag_ref.parse(b"001").unwrap(), Tag(b"001"));
+        assert_eq!(parse_tag_ref.parse(b"123").unwrap(), Tag(b"123"));
         assert!(parse_tag_ref.parse(b"1234").is_err());
         assert!(parse_tag_ref.parse(b"abc").is_err());
 
@@ -126,12 +119,8 @@ mod tests {
 
     #[test]
     fn test_tag_from_bytes() -> TestResult {
-        let tag = Tag::from_bytes(b"001")?;
-        assert_eq!(tag, Tag(b"001".into()));
-
-        let tag = Tag::from_bytes(b"123")?;
-        assert_eq!(tag, Tag(b"123".into()));
-
+        assert_eq!(Tag::from_bytes(b"001")?, Tag(b"001"));
+        assert_eq!(Tag::from_bytes(b"123")?, Tag(b"123"));
         assert!(Tag::from_bytes(b"1234").is_err());
         assert!(Tag::from_bytes(b"abc").is_err());
 
