@@ -8,7 +8,7 @@ use flate2::read::GzDecoder;
 use crate::prelude::*;
 
 #[test]
-fn print_stdout() -> TestResult {
+fn print_write_output_stdout() -> TestResult {
     let mut cmd = marc_cmd();
     let assert =
         cmd.arg("print").arg(data_dir().join("ada.mrc")).assert();
@@ -28,7 +28,7 @@ fn print_stdout() -> TestResult {
 }
 
 #[test]
-fn print_plaintext() -> TestResult {
+fn print_write_output_text() -> TestResult {
     let mut cmd = marc_cmd();
     let temp_dir = TempDir::new().unwrap();
     let output = temp_dir.child("out.txt");
@@ -61,7 +61,7 @@ fn print_plaintext() -> TestResult {
 }
 
 #[test]
-fn print_gzip() -> TestResult {
+fn print_write_output_gzip() -> TestResult {
     let temp_dir = TempDir::new()?;
     let output = temp_dir.child("out.txt.gz");
 

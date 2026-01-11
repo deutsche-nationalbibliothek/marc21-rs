@@ -1,8 +1,6 @@
 use std::fs::File;
 use std::io::{Read, read_to_string};
 
-use assert_fs::TempDir;
-use assert_fs::prelude::PathChild;
 use flate2::read::GzDecoder;
 
 use crate::prelude::*;
@@ -58,7 +56,7 @@ fn count_read_multiple_files() -> TestResult {
 }
 
 #[test]
-fn count_write_output_plaintext() -> TestResult {
+fn count_write_output_text() -> TestResult {
     let temp_dir = TempDir::new()?;
     let output = temp_dir.child("count.txt");
 

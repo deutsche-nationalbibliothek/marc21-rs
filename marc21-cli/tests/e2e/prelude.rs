@@ -3,6 +3,8 @@ use std::path::PathBuf;
 use std::sync::LazyLock;
 
 use assert_cmd::Command;
+pub(crate) use assert_fs::TempDir;
+pub(crate) use assert_fs::prelude::*;
 
 pub(crate) type TestResult = anyhow::Result<()>;
 
