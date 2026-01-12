@@ -400,8 +400,18 @@ dependencies = [
  "clap",
  "flate2",
  "indicatif",
+ "marc21-matcher",
  "marc21-record",
  "predicates",
+]
+
+[[package]]
+name = "marc21-matcher"
+version = "0.1.0"
+dependencies = [
+ "bstr",
+ "marc21-record",
+ "winnow",
 ]
 
 [[package]]

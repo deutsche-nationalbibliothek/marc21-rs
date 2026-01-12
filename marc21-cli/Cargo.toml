@@ -10,13 +10,17 @@ path = "src/main.rs"
 
 [features]
 default = ["performant"]
-performant = ["marc21-record/performant"]
+performant = [
+  "marc21-matcher/performant",
+  "marc21-record/performant",
+]
 
 [dependencies]
 bstr = { workspace = true }
 clap = { workspace = true }
 flate2 = { workspace = true }
 indicatif = { workspace = true }
+marc21-matcher = { workspace = true }
 marc21-record = { workspace = true }
 
 [dev-dependencies]

@@ -17,7 +17,7 @@ clap = { version = "4.5", features = ["derive"] }
 flate2 = { version = "1.1" }
 indicatif = { version = "0.18" }
 marc21-cli = { path = "./marc21-cli" }
+marc21-matcher = { path = "./marc21-matcher" }
 marc21-record = { path = "./marc21-record" }
-memmap2 = { version = "0.9" }
 predicates = { version = "3.1" }
 winnow = { version = "0.7" }

@@ -4,7 +4,7 @@ use winnow::combinator::{repeat, seq, terminated};
 
 use crate::Tag;
 use crate::parse::*;
-use crate::tag::parse_tag_ref;
+use crate::tag::parse_tag;
 
 /// An index entry containing metadata about a variable field.
 #[derive(Debug, PartialEq)]
@@ -113,7 +113,7 @@ impl<'a> Entry<'a> {
 
 fn parse_entry<'a>(i: &mut &'a [u8]) -> ModalResult<Entry<'a>> {
     seq! { Entry {
-        tag: parse_tag_ref,
+        tag: parse_tag,
         length: parse_digits_u16.verify(|value| *value > 0),
         start: parse_digits_u32,
     }}

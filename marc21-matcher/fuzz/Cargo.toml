@@ -2,7 +2,7 @@
 members = ["."]
 
 [package]
-name = "marc21-record-fuzz"
+name = "marc21-matcher-fuzz"
 version = "0.0.0"
 publish = false
 edition = "2024"
@@ -12,11 +12,11 @@ cargo-fuzz = true
 
 [dependencies]
 libfuzzer-sys = "0.4"
-marc21-record = { path = "../../marc21-record" }
+marc21-matcher = { path = "../../marc21-matcher" }
 
 [[bin]]
-name = "byte_record"
-path = "fuzz_targets/byte_record.rs"
+name = "tag_matcher"
+path = "fuzz_targets/tag_matcher.rs"
 test = false
 doc = false
 bench = false

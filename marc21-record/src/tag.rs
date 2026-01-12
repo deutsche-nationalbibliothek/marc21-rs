@@ -1,4 +1,5 @@
 use std::fmt::{self, Display};
+use std::ops::Index;
 
 use bstr::ByteSlice;
 use winnow::token::take;
@@ -28,7 +29,7 @@ impl<'a> Tag<'a> {
     where
         B: AsRef<[u8]>,
     {
-        parse_tag_ref
+        parse_tag
             .parse(bytes.as_ref())
             .map_err(ParseRecordError::from_parse)
     }
@@ -84,22 +85,28 @@ impl PartialEq<str> for Tag<'_> {
     }
 }
 
+impl Index<usize> for Tag<'_> {
+    type Output = u8;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        &self.0[index]
+    }
+}
+
 impl Display for Tag<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.0.as_bstr())
     }
 }
 
-pub(crate) fn parse_tag_ref<'a>(
-    i: &mut &'a [u8],
-) -> ModalResult<Tag<'a>> {
+pub(crate) fn parse_tag<'a>(i: &mut &'a [u8]) -> ModalResult<Tag<'a>> {
     take(3usize)
         .verify(|value: &[u8]| {
             value[0].is_ascii_digit()
                 && value[1].is_ascii_digit()
                 && value[2].is_ascii_digit()
         })
-        .map(|value: &[u8]| Tag(value.as_bstr()))
+        .map(|value: &[u8]| Tag(value))
         .parse_next(i)
 }
 
@@ -109,10 +116,10 @@ mod tests {
 
     #[test]
     fn test_parse_tag_ref() -> TestResult {
-        assert_eq!(parse_tag_ref.parse(b"001").unwrap(), Tag(b"001"));
-        assert_eq!(parse_tag_ref.parse(b"123").unwrap(), Tag(b"123"));
-        assert!(parse_tag_ref.parse(b"1234").is_err());
-        assert!(parse_tag_ref.parse(b"abc").is_err());
+        assert_eq!(parse_tag.parse(b"001").unwrap(), Tag(b"001"));
+        assert_eq!(parse_tag.parse(b"123").unwrap(), Tag(b"123"));
+        assert!(parse_tag.parse(b"1234").is_err());
+        assert!(parse_tag.parse(b"abc").is_err());
 
         Ok(())
     }
