@@ -8,7 +8,6 @@ extraction of data into a rectangular schema. Since the extracted data
 is in tabular form, it can be processed with popular frameworks such as
 [Polars] ([Python]) or [Tidyverse] ([R]).
 
-
 ## Commands
 
 The `marc21` tool provides the following commands:
@@ -18,6 +17,32 @@ The `marc21` tool provides the following commands:
 - `invalid` — Outputs invalid records that cannot be decoded
 - `print` — Print records in human readable format
 
+## Tour
+
+The `marc21` program provides various commands for processing MARC-21
+data (see `marc21 --help` for a complete list of available commands).
+For example, the `concat` command can be used to combine multiple files
+into a single output. In the following example the authority data files
+from the Integrated Authority Files ([GND]) are concatenated into the
+single file `GND.mrc.gz`.
+
+```shell
+$ marc21 concat -o GND.mrc.gz \
+    authorities-gnd-geografikum_dnbmarc.mrc.gz \
+    authorities-gnd-koerperschaft_dnbmarc.mrc.gz \
+    authorities-gnd-kongress_dnbmarc.mrc.gz \
+    authorities-gnd-person_dnbmarc.mrc.gz \
+    authorities-gnd-sachbegriff_dnbmarc.mrc.gz \
+    authorities-gnd-werk_dnbmarc.mrc.gz
+```
+
+The number of records contained in the input can be determined using the
+`count` command:
+
+```shell
+$ marc21 count GND.mrc.gz
+10122437
+```
 
 ## Contributing
 
@@ -31,6 +56,7 @@ This project is licensed under the [European Union Public License 1.2].
 
 [DCO]: https://developercertificate.org
 [European Union Public License 1.2]: ./LICENSE
+[GND]: https://gnd.network
 [MARC 21]: https://www.loc.gov/marc
 [Polars]: https://pola.rs
 [Python]: https://www.python.org
