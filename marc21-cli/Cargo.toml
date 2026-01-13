@@ -5,7 +5,7 @@ rust-version.workspace = true
 edition.workspace = true
 
 [[bin]]
-name = "marc"
+name = "marc21"
 path = "src/main.rs"
 
 [features]

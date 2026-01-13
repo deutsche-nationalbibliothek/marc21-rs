@@ -11,7 +11,7 @@ is in tabular form, it can be processed with popular frameworks such as
 
 ## Commands
 
-The `marc` tool provides the following commands:
+The `marc21` tool provides the following commands:
 
 - `concat` — Concatenate records from multiple inputs (alias `cat`)
 - `count` — Print the number of records in the input data (alias `cnt`)

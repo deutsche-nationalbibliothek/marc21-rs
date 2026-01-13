@@ -8,6 +8,11 @@ pub(crate) use assert_fs::prelude::*;
 
 pub(crate) type TestResult = anyhow::Result<()>;
 
+#[inline(always)]
+pub(crate) fn marc_cmd() -> Command {
+    Command::new(assert_cmd::cargo::cargo_bin!("marc21"))
+}
+
 pub(crate) fn data_dir() -> &'static PathBuf {
     static DATA_DIR: LazyLock<PathBuf> = LazyLock::new(|| {
         current_dir()
@@ -19,9 +24,4 @@ pub(crate) fn data_dir() -> &'static PathBuf {
     });
 
     &DATA_DIR
-}
-
-#[inline(always)]
-pub(crate) fn marc_cmd() -> Command {
-    Command::new(assert_cmd::cargo::cargo_bin!("marc"))
 }
