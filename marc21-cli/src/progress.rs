@@ -7,11 +7,11 @@ pub(crate) struct Progress {
 }
 
 impl Progress {
-    pub(crate) fn new(disable: bool) -> Self {
-        let bar = if disable {
-            ProgressBar::hidden()
-        } else {
+    pub(crate) fn new(enable: bool) -> Self {
+        let bar = if enable {
             ProgressBar::new_spinner()
+        } else {
+            ProgressBar::hidden()
         };
 
         bar.set_style(
@@ -50,6 +50,6 @@ impl Progress {
 
     #[inline(always)]
     pub(crate) fn finish(&self) {
-        self.bar.finish();
+        self.bar.finish_and_clear();
     }
 }

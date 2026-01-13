@@ -22,7 +22,7 @@ impl Count {
     pub(crate) fn execute(
         self,
     ) -> Result<(), Box<dyn std::error::Error>> {
-        let mut progress = Progress::new(self.common.quiet);
+        let mut progress = Progress::new(self.common.progress);
         let mut output = WriterBuilder::default()
             .try_from_path_or_stdout(self.output)?;
 

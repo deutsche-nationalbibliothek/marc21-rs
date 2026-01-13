@@ -21,7 +21,7 @@ pub(crate) enum Command {
 
 #[derive(Debug, clap::Args)]
 pub(crate) struct CommonOpts {
-    /// Operate quietly; do not show progress
+    /// If set, show a progress bar
     #[arg(short, long, global = true)]
-    pub(crate) quiet: bool,
+    pub(crate) progress: bool,
 }
