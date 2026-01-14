@@ -94,19 +94,23 @@ impl<'a> DataField<'a> {
 
 impl Display for DataField<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let ind1 = if self.indicator1 != ' ' {
-            self.indicator1
-        } else {
-            '#'
-        };
+        write!(f, "{}", self.tag)?;
 
-        let ind2 = if self.indicator2 != ' ' {
-            self.indicator2
-        } else {
-            '#'
-        };
+        if self.indicator1 != ' ' || self.indicator2 != ' ' {
+            let ind1 = if self.indicator1 != ' ' {
+                self.indicator1
+            } else {
+                '#'
+            };
 
-        write!(f, "{} {ind1}{ind2}", self.tag)?;
+            let ind2 = if self.indicator2 != ' ' {
+                self.indicator2
+            } else {
+                '#'
+            };
+
+            write!(f, "/{ind1}{ind2}")?;
+        }
 
         for subfield in self.subfields.iter() {
             write!(f, " {subfield}")?;
@@ -150,7 +154,7 @@ mod tests {
             ],
         };
 
-        assert_eq!(df.to_string(), "024 7# $a 119232022 $2 gnd");
+        assert_eq!(df.to_string(), "024/7# $a 119232022 $2 gnd");
         Ok(())
     }
 }
