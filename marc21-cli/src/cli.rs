@@ -18,6 +18,7 @@ pub(crate) enum Command {
     Count(Count),
     Invalid(Invalid),
     Print(Print),
+    Sample(Sample),
 }
 
 #[derive(Debug, clap::Args)]

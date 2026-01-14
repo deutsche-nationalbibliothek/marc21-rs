@@ -17,6 +17,7 @@ The `marc21` tool provides the following commands:
 - `count` — Print the number of records in the input data (alias `cnt`)
 - `invalid` — Outputs invalid records that cannot be decoded
 - `print` — Print records in human readable format
+- `sample` — Selects a random permutation of records
 
 ## Tour
 
@@ -67,6 +68,13 @@ LDR 03612nz  a2200589nc 4500
 400 1# $a Byron, Ada $d 1815-1852
 400 1# $a Byron King, Augusta Ada $d 1815-1852
 [...]
+```
+
+The `sample` command can be used to take random samples of a specified
+size:
+
+```shell
+$ marc21 sample 10 GND.mrc.gz -o SAMPLES.mrc.gz
 ```
 
 ### Enable tab completion

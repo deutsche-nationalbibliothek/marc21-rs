@@ -19,6 +19,7 @@ fn main() -> ExitCode {
         Command::Count(cmd) => cmd.execute(),
         Command::Invalid(cmd) => cmd.execute(),
         Command::Print(cmd) => cmd.execute(),
+        Command::Sample(cmd) => cmd.execute(),
     };
 
     match result {

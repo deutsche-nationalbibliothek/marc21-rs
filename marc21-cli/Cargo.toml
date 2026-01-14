@@ -23,6 +23,7 @@ flate2 = { workspace = true }
 indicatif = { workspace = true }
 marc21-matcher = { workspace = true }
 marc21-record = { workspace = true }
+rand = { workspace = true }
 
 [dev-dependencies]
 anyhow = { workspace = true }
