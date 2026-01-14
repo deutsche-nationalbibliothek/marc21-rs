@@ -7,7 +7,7 @@ use crate::prelude::*;
 
 #[test]
 fn invalid_write_output_stdout() -> TestResult {
-    let mut cmd = marc_cmd();
+    let mut cmd = marc21_cmd();
     let assert = cmd
         .arg("invalid")
         .arg(data_dir().join("ada.mrc"))
@@ -23,7 +23,7 @@ fn invalid_write_output_stdout() -> TestResult {
         )?))
         .stderr(predicates::str::is_empty());
 
-    let mut cmd = marc_cmd();
+    let mut cmd = marc21_cmd();
     let assert =
         cmd.arg("invalid").arg(data_dir().join("ada.mrc")).assert();
 
@@ -41,7 +41,7 @@ fn invalid_write_output_text() -> TestResult {
     let temp_dir = TempDir::new()?;
     let output = temp_dir.child("invalid.mrc");
 
-    let mut cmd = marc_cmd();
+    let mut cmd = marc21_cmd();
     let assert = cmd
         .arg("invalid")
         .arg(data_dir().join("invalid.mrc"))
@@ -69,7 +69,7 @@ fn invalid_write_output_gzip() -> TestResult {
     let temp_dir = TempDir::new()?;
     let output = temp_dir.child("invalid.mrc.gz");
 
-    let mut cmd = marc_cmd();
+    let mut cmd = marc21_cmd();
     let assert = cmd
         .arg("invalid")
         .arg(data_dir().join("invalid.mrc"))

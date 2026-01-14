@@ -13,6 +13,7 @@ pub(crate) struct Args {
 
 #[derive(Debug, Subcommand)]
 pub(crate) enum Command {
+    Completions(Completions),
     Concat(Concat),
     Count(Count),
     Invalid(Invalid),

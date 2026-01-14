@@ -9,7 +9,7 @@ use crate::prelude::*;
 
 #[test]
 fn print_write_output_stdout() -> TestResult {
-    let mut cmd = marc_cmd();
+    let mut cmd = marc21_cmd();
     let assert =
         cmd.arg("print").arg(data_dir().join("ada.mrc")).assert();
 
@@ -29,7 +29,7 @@ fn print_write_output_stdout() -> TestResult {
 
 #[test]
 fn print_write_output_text() -> TestResult {
-    let mut cmd = marc_cmd();
+    let mut cmd = marc21_cmd();
     let temp_dir = TempDir::new().unwrap();
     let output = temp_dir.child("out.txt");
 
@@ -65,7 +65,7 @@ fn print_write_output_gzip() -> TestResult {
     let temp_dir = TempDir::new()?;
     let output = temp_dir.child("out.txt.gz");
 
-    let mut cmd = marc_cmd();
+    let mut cmd = marc21_cmd();
     let assert = cmd
         .arg("print")
         .arg(data_dir().join("ada.mrc"))

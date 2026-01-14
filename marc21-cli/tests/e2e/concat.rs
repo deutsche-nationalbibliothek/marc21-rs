@@ -7,7 +7,7 @@ use crate::prelude::*;
 
 #[test]
 fn concat_stdin_stdout() -> TestResult {
-    let mut cmd = marc_cmd();
+    let mut cmd = marc21_cmd();
     let assert = cmd
         .arg("concat")
         .write_stdin(fs::read(data_dir().join("ada.mrc"))?)
@@ -21,7 +21,7 @@ fn concat_stdin_stdout() -> TestResult {
         )?))
         .stderr(predicates::str::is_empty());
 
-    let mut cmd = marc_cmd();
+    let mut cmd = marc21_cmd();
     let assert = cmd
         .args(["concat", "-"])
         .write_stdin(fs::read(data_dir().join("ada.mrc"))?)
@@ -40,7 +40,7 @@ fn concat_stdin_stdout() -> TestResult {
 
 #[test]
 fn concat_write_output_stdout() -> TestResult {
-    let mut cmd = marc_cmd();
+    let mut cmd = marc21_cmd();
     let assert = cmd
         .arg("concat")
         .arg(data_dir().join("invalid.mrc"))
@@ -63,7 +63,7 @@ fn concat_write_output_txt() -> TestResult {
     let temp_dir = TempDir::new()?;
     let output = temp_dir.child("out.mrc");
 
-    let mut cmd = marc_cmd();
+    let mut cmd = marc21_cmd();
     let assert = cmd
         .arg("concat")
         .arg(data_dir().join("ada.mrc.gz"))
@@ -96,7 +96,7 @@ fn concat_write_output_gzip() -> TestResult {
     let temp_dir = TempDir::new()?;
     let output = temp_dir.child("out.mrc.gz");
 
-    let mut cmd = marc_cmd();
+    let mut cmd = marc21_cmd();
     let assert = cmd
         .arg("concat")
         .arg(data_dir().join("invalid.mrc"))

@@ -1,3 +1,4 @@
+mod completions;
 mod concat;
 mod count;
 mod invalid;

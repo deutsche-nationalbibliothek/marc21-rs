@@ -12,6 +12,7 @@ is in tabular form, it can be processed with popular frameworks such as
 
 The `marc21` tool provides the following commands:
 
+- `completions` — Generate shell completions (e.g. [Bash] or [ZSH])
 - `concat` — Concatenate records from multiple inputs (alias `cat`)
 - `count` — Print the number of records in the input data (alias `cnt`)
 - `invalid` — Outputs invalid records that cannot be decoded
@@ -36,12 +37,26 @@ $ marc21 concat -o GND.mrc.gz \
     authorities-gnd-werk_dnbmarc.mrc.gz
 ```
 
+
 The number of records contained in the input can be determined using the
 `count` command:
 
 ```shell
 $ marc21 count GND.mrc.gz
 10122437
+```
+
+### Enable tab completion
+
+`marc21` supports generating completion scripts for [Bash], [Elvish],
+[Fish], [PowerShell] and [ZSH]. For example, the following code snippet
+can be included in the `.zshrc` in order to enable tab completion in
+[ZSH]:
+
+```shell
+if type "marc21" > /dev/null ; then
+    source <(marc21 completions zsh)
+fi
 ```
 
 ## Contributing
@@ -54,11 +69,16 @@ Certificate of Origin][DCO].
 
 This project is licensed under the [European Union Public License 1.2].
 
+[Bash]: https://www.gnu.org/software/bash/
 [DCO]: https://developercertificate.org
+[Elvish]: https://elv.sh
 [European Union Public License 1.2]: ./LICENSE
+[Fish]: https://fishshell.com
 [GND]: https://gnd.network
 [MARC 21]: https://www.loc.gov/marc
 [Polars]: https://pola.rs
+[PowerShell]: https://en.wikipedia.org/wiki/PowerShell
 [Python]: https://www.python.org
 [R]: https://www.r-project.org
 [Tidyverse]: https://tidyverse.org
+[ZSH]: https://www.zsh.org
