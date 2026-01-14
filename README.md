@@ -45,6 +45,29 @@ The number of records contained in the input can be determined using the
 $ marc21 count GND.mrc.gz
 10122437
 ```
+The `print` command output records in a human-readable format. The
+leader and fields are written on a separate line. Consecutive records
+are divided by a blank line. THe output of the command can be used in
+combination with standard UNIX tools such as `grep`, `cut` or `sed`. In
+the following example, a single data record is printed on the console:
+
+```shell
+$ marc12 print tests/data/ada.mrc
+LDR 03612nz  a2200589nc 4500
+001 119232022
+003 DE-101
+005 20250720173911.0
+008 950316n||azznnaabn           | aaa    |c
+024 7# $a 119232022 $0 http://d-nb.info/gnd/119232022 $2 gnd
+[...]
+100 1# $a Lovelace, Ada $d 1815-1852
+375 ## $a 2 $2 iso5218
+400 1# $a Lovelace, Augusta Ada of $d 1815-1852
+400 1# $a Lovelace, Ada Augusta of $d 1815-1852
+400 1# $a Byron, Ada $d 1815-1852
+400 1# $a Byron King, Augusta Ada $d 1815-1852
+[...]
+```
 
 ### Enable tab completion
 
