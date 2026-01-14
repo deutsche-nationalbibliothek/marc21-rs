@@ -17,6 +17,7 @@ performant = [
 
 [dependencies]
 bstr = { workspace = true }
+clap_complete = { workspace = true }
 clap = { workspace = true }
 flate2 = { workspace = true }
 indicatif = { workspace = true }

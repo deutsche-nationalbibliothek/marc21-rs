@@ -7,7 +7,7 @@ use crate::prelude::*;
 
 #[test]
 fn count_default() -> TestResult {
-    let mut cmd = marc_cmd();
+    let mut cmd = marc21_cmd();
     let assert =
         cmd.args(["count"]).arg(data_dir().join("ada.mrc")).assert();
 
@@ -22,7 +22,7 @@ fn count_default() -> TestResult {
 
 #[test]
 fn count_read_gzip() -> TestResult {
-    let mut cmd = marc_cmd();
+    let mut cmd = marc21_cmd();
     let assert = cmd
         .args(["count"])
         .arg(data_dir().join("ada.mrc.gz"))
@@ -39,7 +39,7 @@ fn count_read_gzip() -> TestResult {
 
 #[test]
 fn count_read_multiple_files() -> TestResult {
-    let mut cmd = marc_cmd();
+    let mut cmd = marc21_cmd();
     let assert = cmd
         .args(["count"])
         .arg(data_dir().join("ada.mrc.gz"))
@@ -60,7 +60,7 @@ fn count_write_output_text() -> TestResult {
     let temp_dir = TempDir::new()?;
     let output = temp_dir.child("count.txt");
 
-    let mut cmd = marc_cmd();
+    let mut cmd = marc21_cmd();
     let assert = cmd
         .args(["count"])
         .arg(data_dir().join("ada.mrc"))
@@ -88,7 +88,7 @@ fn count_write_output_gzip() -> TestResult {
     let temp_dir = TempDir::new()?;
     let output = temp_dir.child("count.txt.gz");
 
-    let mut cmd = marc_cmd();
+    let mut cmd = marc21_cmd();
     let assert = cmd
         .args(["count"])
         .arg(data_dir().join("ada.mrc"))

@@ -9,7 +9,7 @@ pub(crate) use assert_fs::prelude::*;
 pub(crate) type TestResult = anyhow::Result<()>;
 
 #[inline(always)]
-pub(crate) fn marc_cmd() -> Command {
+pub(crate) fn marc21_cmd() -> Command {
     Command::new(assert_cmd::cargo::cargo_bin!("marc21"))
 }
 
