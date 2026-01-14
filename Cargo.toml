@@ -21,4 +21,5 @@ marc21-cli = { path = "./marc21-cli" }
 marc21-matcher = { path = "./marc21-matcher" }
 marc21-record = { path = "./marc21-record" }
 predicates = { version = "3.1" }
+rand = { version = "0.9" }
 winnow = { version = "0.7" }
