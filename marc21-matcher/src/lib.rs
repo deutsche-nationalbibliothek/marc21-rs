@@ -1,6 +1,7 @@
 mod common;
 mod error;
 mod tag_matcher;
+mod value;
 
 pub use error::ParseMatcherError;
 pub use tag_matcher::TagMatcher;

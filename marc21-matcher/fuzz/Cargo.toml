@@ -20,3 +20,10 @@ path = "fuzz_targets/tag_matcher.rs"
 test = false
 doc = false
 bench = false
+
+[[bin]]
+name = "value"
+path = "fuzz_targets/value.rs"
+test = false
+doc = false
+bench = false
