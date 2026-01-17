@@ -14,6 +14,14 @@ pub(crate) enum Value {
     String(Vec<u8>),
 }
 
+impl<B: AsRef<[u8]>> PartialEq<B> for Value {
+    fn eq(&self, other: &B) -> bool {
+        match self {
+            Self::String(value) => value == other.as_ref(),
+        }
+    }
+}
+
 #[derive(Debug, Copy, Clone)]
 enum Quotes {
     Single,
