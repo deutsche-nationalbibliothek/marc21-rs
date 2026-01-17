@@ -1,4 +1,5 @@
 use std::fmt::{self, Display};
+use std::iter;
 use std::str::Utf8Error;
 
 use bstr::ByteSlice;
@@ -15,6 +16,24 @@ pub struct Subfield<'a> {
 }
 
 impl<'a> Subfield<'a> {
+    pub fn from_bytes<B: AsRef<[u8]>>(
+        bytes: &'a B,
+    ) -> Result<Self, ParseRecordError<'a>> {
+        parse_subfield
+            .parse(bytes.as_ref())
+            .map_err(ParseRecordError::from_parse)
+    }
+
+    #[inline(always)]
+    pub fn code(&self) -> &char {
+        &self.code
+    }
+
+    #[inline(always)]
+    pub fn value(&self) -> &'a [u8] {
+        self.value
+    }
+
     /// Returns an [`std::str::Utf8Error`](Utf8Error) if the subfield
     /// contains invalid UTF-8 data, otherwise the unit.
     pub fn validate(&self) -> Result<(), Utf8Error> {
@@ -30,6 +49,15 @@ impl<'a> Subfield<'a> {
 impl Display for Subfield<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "${} {}", self.code, self.value.as_bstr())
+    }
+}
+
+impl<'a> IntoIterator for &'a Subfield<'a> {
+    type Item = &'a Subfield<'a>;
+    type IntoIter = iter::Once<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        iter::once(self)
     }
 }
 
@@ -88,5 +116,14 @@ mod tests {
         let subfield =
             parse_subfield.parse_peek(b"\x1fa123\x1f").unwrap().1;
         assert_eq!(subfield.to_string(), "$a 123");
+    }
+
+    #[test]
+    fn test_subfield_into_iter() {
+        let subfield =
+            parse_subfield.parse_peek(b"\x1fa123\x1f").unwrap().1;
+        let mut iter = subfield.into_iter();
+        assert_eq!(iter.next(), Some(&subfield));
+        assert_eq!(iter.next(), None);
     }
 }
