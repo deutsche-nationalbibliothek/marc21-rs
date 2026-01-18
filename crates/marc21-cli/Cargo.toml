@@ -1,0 +1,35 @@
+[package]
+name = "marc21-cli"
+version = "0.1.0"
+authors = ["Nico Wagner <n.wagner@dnb.de>"]
+license = "EUPL-1.2"
+rust-version = "1.92"
+edition = "2024"
+
+[[bin]]
+name = "marc21"
+path = "src/main.rs"
+
+[features]
+default = ["performant"]
+performant = ["marc21/performant"]
+
+[dependencies]
+bstr = { version = "1.12", features = ["std"], default-features = false }
+clap_complete = { version = "4.5" }
+clap = { version = "4.5", features = ["derive"] }
+flate2 = { version = "1.1" }
+indicatif = { version = "0.18" }
+marc21 = { path = "../../" }
+rand = { version = "0.9" }
+
+[dev-dependencies]
+anyhow = { version = "1.0" }
+assert_cmd = { version = "2.1" }
+assert_fs = { version = "1.1" }
+predicates = { version = "3.1" }
+
+[[test]]
+path = "tests/e2e/lib.rs"
+name = "e2e"
+
