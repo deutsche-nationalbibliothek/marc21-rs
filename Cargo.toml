@@ -1,25 +1,26 @@
-[workspace]
-resolver = "3"
-members = [ "marc21-*" ]
-
-[workspace.package]
-edition = "2024"
+[package]
+name = "marc21"
+version = "0.1.0"
 authors = ["Nico Wagner <n.wagner@dnb.de>"]
-rust-version = "1.92"
 license = "EUPL-1.2"
+rust-version = "1.92"
+edition = "2024"
 
-[workspace.dependencies]
-anyhow = { version = "1.0" }
-assert_cmd = { version = "2.1" }
-assert_fs = { version = "1.1" }
+[workspace]
+members = [
+  "crates/marc21-cli"
+]
+
+[features]
+default = ["performant"]
+performant = ["winnow/simd"]
+
+[dependencies]
 bstr = { version = "1.12", features = ["std"], default-features = false }
-clap_complete = { version = "4.5" }
-clap = { version = "4.5", features = ["derive"] }
 flate2 = { version = "1.1" }
-indicatif = { version = "0.18" }
-marc21-cli = { path = "./marc21-cli" }
-marc21-matcher = { path = "./marc21-matcher" }
-marc21-record = { path = "./marc21-record" }
-predicates = { version = "3.1" }
-rand = { version = "0.9" }
 winnow = { version = "0.7" }
+
+[[test]]
+path = "tests/fuzz/lib.rs"
+name = "fuzz-regressions"
+
