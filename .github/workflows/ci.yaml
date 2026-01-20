@@ -45,7 +45,19 @@ jobs:
           cargo nextest run --workspace --all-features --no-fail-fast
           cargo test --doc --workspace --all-features --no-fail-fast
         
-
-
-
-
+  fuzz:
+    if: ${{ github.event_name == 'push' || !github.event.pull_request.draft }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 900
+    strategy:
+      matrix:
+        item:
+          - { name: byte-record, target: byte-record, max-total-time: 180 }
+          - { name: tag-matcher, target: tag-matcher, max-total-time: 180 }
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: Swatinem/rust-cache@v2
+      - uses: dtolnay/install@cargo-fuzz
+      - run: |
+          cargo fuzz run --jobs 2 ${{ matrix.item.target }} -- -max_total_time=${{ matrix.item.max-total-time }}
