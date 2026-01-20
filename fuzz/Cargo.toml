@@ -15,14 +15,14 @@ libfuzzer-sys = "0.4"
 marc21 = { path = "../" }
 
 [[bin]]
-name = "byte_record"
+name = "byte-record"
 path = "fuzz_targets/byte_record.rs"
 test = false
 doc = false
 bench = false
 
 [[bin]]
-name = "tag_matcher"
+name = "tag-matcher"
 path = "fuzz_targets/tag_matcher.rs"
 test = false
 doc = false
