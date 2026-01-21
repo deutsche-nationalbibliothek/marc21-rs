@@ -115,15 +115,38 @@ jobs:
           command-arguments: -c .deny.toml
           rust-version: stable
 
+  outdated:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: dtolnay/install@cargo-outdated
+      - run: cargo update
+      - run: |
+          cargo outdated --workspace --root-deps-only --exit-code 1
+
   ci:
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     needs:
       - clippy
       - deny
       - features
       - fuzz
+      - outdated
       - rustfmt
       - test
     steps:
-      - run: |
+      - name: Check for cancelled jobs
+        if: ${{ contains(needs.*.result, 'cancelled') }}
+        run: |
+          exit 1
+      - name: Check for failed jobs
+        if: ${{ contains(needs.*.result, 'failure') }}
+        run: |
+          exit 1
+      - name: Finish job
+        run: |
           exit 0
