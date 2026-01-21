@@ -101,7 +101,7 @@ This project is licensed under the [European Union Public License 1.2].
 [European Union Public License 1.2]: ./LICENSE
 [Fish]: https://fishshell.com
 [GND]: https://gnd.network
-[MARC 21]: https://www.loc.gov/marc
+[MARC-21]: https://www.loc.gov/marc
 [Polars]: https://pola.rs
 [PowerShell]: https://en.wikipedia.org/wiki/PowerShell
 [Python]: https://www.python.org
