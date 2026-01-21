@@ -52,8 +52,8 @@ jobs:
     strategy:
       matrix:
         item:
-          - { name: byte-record, target: byte-record, max-total-time: 180 }
-          - { name: tag-matcher, target: tag-matcher, max-total-time: 180 }
+          - { target: byte-record, max-total-time: 180 }
+          - { target: tag-matcher, max-total-time: 180 }
     steps:
       - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@nightly
