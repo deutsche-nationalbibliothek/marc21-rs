@@ -8,7 +8,7 @@ use crate::matcher::value::{Value, parse_value};
 use crate::parse::*;
 
 pub enum SubfieldMatcher {
-    Comparision(ComparisionMatcher),
+    Comparison(ComparisonMatcher),
 }
 
 impl SubfieldMatcher {
@@ -56,7 +56,7 @@ impl SubfieldMatcher {
         options: &MatcherOptions,
     ) -> bool {
         match self {
-            Self::Comparision(m) => m.is_match(subfields, options),
+            Self::Comparison(m) => m.is_match(subfields, options),
         }
     }
 }
@@ -65,12 +65,12 @@ fn parse_subfield_matcher(
     i: &mut &[u8],
 ) -> ModalResult<SubfieldMatcher> {
     parse_comparison_matcher
-        .map(SubfieldMatcher::Comparision)
+        .map(SubfieldMatcher::Comparison)
         .parse_next(i)
 }
 
 #[derive(Debug, PartialEq)]
-pub struct ComparisionMatcher {
+pub struct ComparisonMatcher {
     quantifier: Quantifier,
     codes: Vec<char>,
     op: ComparisonOp,
@@ -79,8 +79,8 @@ pub struct ComparisionMatcher {
 
 fn parse_comparison_matcher(
     i: &mut &[u8],
-) -> ModalResult<ComparisionMatcher> {
-    seq! { ComparisionMatcher {
+) -> ModalResult<ComparisonMatcher> {
+    seq! { ComparisonMatcher {
         quantifier: opt(terminated(parse_quantifier, ' ')).map(Option::unwrap_or_default),
         codes: ws(parse_codes),
         op: parse_comparison_op,
@@ -90,7 +90,7 @@ fn parse_comparison_matcher(
     .parse_next(i)
 }
 
-impl ComparisionMatcher {
+impl ComparisonMatcher {
     pub fn is_match<'a, S: IntoIterator<Item = &'a Subfield<'a>>>(
         &self,
         subfields: S,
@@ -126,7 +126,7 @@ mod tests {
     fn test_parse_comparison_matcher() {
         assert_eq!(
             parse_comparison_matcher.parse(b"0 == 'abc'").unwrap(),
-            ComparisionMatcher {
+            ComparisonMatcher {
                 quantifier: Quantifier::Any,
                 codes: vec!['0'],
                 op: ComparisonOp::Eq,
@@ -136,7 +136,7 @@ mod tests {
 
         assert_eq!(
             parse_comparison_matcher.parse(b"  0 == 'abc'").unwrap(),
-            ComparisionMatcher {
+            ComparisonMatcher {
                 quantifier: Quantifier::Any,
                 codes: vec!['0'],
                 op: ComparisonOp::Eq,
@@ -146,7 +146,7 @@ mod tests {
 
         assert_eq!(
             parse_comparison_matcher.parse(b"ALL 0 == 'abc'").unwrap(),
-            ComparisionMatcher {
+            ComparisonMatcher {
                 quantifier: Quantifier::All,
                 codes: vec!['0'],
                 op: ComparisonOp::Eq,
@@ -156,7 +156,7 @@ mod tests {
 
         assert_eq!(
             parse_comparison_matcher.parse(b"ANY 0 == 'abc'").unwrap(),
-            ComparisionMatcher {
+            ComparisonMatcher {
                 quantifier: Quantifier::Any,
                 codes: vec!['0'],
                 op: ComparisonOp::Eq,
@@ -168,7 +168,7 @@ mod tests {
             parse_comparison_matcher
                 .parse(b"[01230] == 'abc'")
                 .unwrap(),
-            ComparisionMatcher {
+            ComparisonMatcher {
                 quantifier: Quantifier::Any,
                 codes: vec!['0', '1', '2', '3'],
                 op: ComparisonOp::Eq,
@@ -178,7 +178,7 @@ mod tests {
 
         assert_eq!(
             parse_comparison_matcher.parse(b"0 != 'abc'").unwrap(),
-            ComparisionMatcher {
+            ComparisonMatcher {
                 quantifier: Quantifier::Any,
                 codes: vec!['0'],
                 op: ComparisonOp::Ne,
@@ -188,7 +188,7 @@ mod tests {
 
         assert_eq!(
             parse_comparison_matcher.parse(b"0 != \"'abc'\"").unwrap(),
-            ComparisionMatcher {
+            ComparisonMatcher {
                 quantifier: Quantifier::Any,
                 codes: vec!['0'],
                 op: ComparisonOp::Ne,

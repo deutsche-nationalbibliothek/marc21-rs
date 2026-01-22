@@ -1,0 +1,5 @@
+[default.extend-words]
+nam = "nam"
+
+[files]
+extend-exclude = ["**/*.mrc", "**/*.mrc.gz"]

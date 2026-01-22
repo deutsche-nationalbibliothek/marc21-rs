@@ -10,8 +10,8 @@ use crate::prelude::*;
 /// Selects a random permutation of records
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Sample {
-    /// Initalize the RNG with a seed value to get deterministic random
-    /// record.
+    /// Initialize the RNG with a seed value to get deterministic
+    /// random record.
     #[arg(short, long, value_name = "NUMBER")]
     seed: Option<u64>,
 
@@ -44,7 +44,7 @@ impl Sample {
             None => StdRng::from_rng(&mut rng()),
         };
 
-        let mut resorvoir: Vec<Vec<u8>> =
+        let mut reservoir: Vec<Vec<u8>> =
             Vec::with_capacity(sample_size);
 
         let mut count = 0;
@@ -60,14 +60,14 @@ impl Sample {
                     if count < sample_size {
                         let mut data = Vec::<u8>::new();
                         record.write_to(&mut data)?;
-                        resorvoir.push(data);
+                        reservoir.push(data);
                     } else {
                         let j = rng.random_range(0..count);
                         if j < sample_size {
                             let mut data = Vec::<u8>::new();
                             record.write_to(&mut data)?;
 
-                            resorvoir[j] = data;
+                            reservoir[j] = data;
                         }
                     }
 
@@ -78,7 +78,7 @@ impl Sample {
             }
         }
 
-        for data in resorvoir.iter() {
+        for data in reservoir.iter() {
             output.write_all(data)?;
         }
 

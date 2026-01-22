@@ -10,7 +10,7 @@ on:
 
 permissions:
   contents: read
-    
+
 env:
   CARGO_TERM_COLOR: always
 
@@ -21,12 +21,12 @@ jobs:
       fail-fast: false
       matrix:
         target:
-          - { os: ubuntu-latest, toolchain: stable, triple: x86_64-unknown-linux-gnu }
-          - { os: ubuntu-latest, toolchain: beta, triple: x86_64-unknown-linux-gnu }
-          - { os: ubuntu-latest, toolchain: nightly, triple: x86_64-unknown-linux-gnu }
-          - { os: ubuntu-latest, toolchain: "1.92", triple: x86_64-unknown-linux-gnu }
-          - { os: windows-latest, toolchain: stable, triple: i686-pc-windows-msvc }
-          - { os: macos-latest, toolchain: stable, triple: x86_64-apple-darwin }
+          - {os: ubuntu-latest, toolchain: stable, triple: x86_64-unknown-linux-gnu}
+          - {os: ubuntu-latest, toolchain: beta, triple: x86_64-unknown-linux-gnu}
+          - {os: ubuntu-latest, toolchain: nightly, triple: x86_64-unknown-linux-gnu}
+          - {os: ubuntu-latest, toolchain: "1.92", triple: x86_64-unknown-linux-gnu}
+          - {os: windows-latest, toolchain: stable, triple: i686-pc-windows-msvc}
+          - {os: macos-latest, toolchain: stable, triple: x86_64-apple-darwin}
     steps:
       - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@master
@@ -44,7 +44,7 @@ jobs:
         run: |
           cargo nextest run --workspace --all-features --no-fail-fast
           cargo test --doc --workspace --all-features --no-fail-fast
-        
+
   fuzz:
     if: ${{ github.event_name == 'push' || !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
@@ -52,8 +52,8 @@ jobs:
     strategy:
       matrix:
         item:
-          - { target: byte-record, max-total-time: 180 }
-          - { target: tag-matcher, max-total-time: 180 }
+          - {target: byte-record, max-total-time: 180}
+          - {target: tag-matcher, max-total-time: 180}
     steps:
       - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@nightly
@@ -145,6 +145,14 @@ jobs:
       - uses: actions/checkout@v6
       - run: scripts/check-dco.sh
 
+  typos:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v6
+      - uses: crate-ci/typos@v1.42.1
+        with:
+          config: .typos.toml
 
   ci:
     if: ${{ always() }}
@@ -158,6 +166,7 @@ jobs:
       - outdated
       - rustfmt
       - test
+      - typos
       - udeps
     steps:
       - name: Check for cancelled jobs
