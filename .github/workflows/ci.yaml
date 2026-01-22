@@ -137,11 +137,21 @@ jobs:
       - run: cargo install --locked cargo-udeps
       - run: cargo udeps --workspace
 
+  dco:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v6
+      - run: scripts/check-dco.sh
+
+
   ci:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     needs:
       - clippy
+      - dco
       - deny
       - features
       - fuzz
