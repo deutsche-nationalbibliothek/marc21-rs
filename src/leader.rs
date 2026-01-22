@@ -118,7 +118,7 @@ impl Leader {
         )
     }
 
-    /// Returns true if and ony if the underlying record is a community
+    /// Returns true if and only if the underlying record is a community
     /// information record.
     ///
     /// # Example
@@ -217,7 +217,7 @@ impl Leader {
 
     /// Returns the base address, that specifies the first character
     /// position of the first variable field in the record. The position
-    /// is euqal to the sum of the lengths of the leader and the
+    /// is equal to the sum of the lengths of the leader and the
     /// directory, including the field terminator.
     ///
     /// # Example
