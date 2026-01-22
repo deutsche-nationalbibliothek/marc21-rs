@@ -1,7 +1,7 @@
 # marc21
 
 This project provides a toolkit for efficiently processing bibliographic
-records encoded in [MARC 21], which is a popular file format used
+records encoded in [MARC-21], which is a popular file format used
 to exchange bibliographic data between libraries. In particular, the
 command line tool `marc` allows efficient filtering of records and
 extraction of data into a rectangular schema. Since the extracted data
