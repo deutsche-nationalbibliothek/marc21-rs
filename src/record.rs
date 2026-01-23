@@ -194,11 +194,10 @@ fn parse_record<'a>(i: &mut &'a [u8]) -> ModalResult<ByteRecord<'a>> {
     })
 }
 
-fn parse_indicator(i: &mut &[u8]) -> ModalResult<char> {
+fn parse_indicator(i: &mut &[u8]) -> ModalResult<u8> {
     one_of(|b: u8| {
         b == b' ' || b.is_ascii_lowercase() || b.is_ascii_digit()
     })
-    .map(char::from)
     .parse_next(i)
 }
 
@@ -217,14 +216,14 @@ mod tests {
     #[test]
     fn test_parse_indicator() {
         for i in b'a'..=b'z' {
-            assert_eq!(parse_indicator.parse(&[i]).unwrap(), i as char);
+            assert_eq!(parse_indicator.parse(&[i]).unwrap(), i);
         }
 
         for i in b'0'..=b'9' {
-            assert_eq!(parse_indicator.parse(&[i]).unwrap(), i as char);
+            assert_eq!(parse_indicator.parse(&[i]).unwrap(), i);
         }
 
-        assert_eq!(parse_indicator.parse(b" ").unwrap(), ' ');
+        assert_eq!(parse_indicator.parse(b" ").unwrap(), b' ');
 
         assert!(parse_indicator.parse(b"#").is_err());
         assert!(parse_indicator.parse(b"A").is_err());

@@ -67,18 +67,30 @@ impl Display for ControlField<'_> {
 #[derive(Debug, PartialEq)]
 pub struct DataField<'a> {
     pub(crate) tag: Tag<'a>,
-    pub(crate) indicator1: char,
-    pub(crate) indicator2: char,
+    pub(crate) indicator1: u8,
+    pub(crate) indicator2: u8,
     pub(crate) subfields: Vec<Subfield<'a>>,
 }
 
 impl<'a> DataField<'a> {
+    #[inline(always)]
     pub fn tag(&self) -> &Tag<'a> {
         &self.tag
     }
 
+    #[inline(always)]
     pub fn subfields(&self) -> impl Iterator<Item = &Subfield<'a>> {
         self.subfields.iter()
+    }
+
+    #[inline(always)]
+    pub fn indicator1(&self) -> &u8 {
+        &self.indicator1
+    }
+
+    #[inline(always)]
+    pub fn indicator2(&self) -> &u8 {
+        &self.indicator2
     }
 
     /// Returns an [`std::str::Utf8Error`](Utf8Error) if the field
@@ -96,20 +108,20 @@ impl Display for DataField<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.tag)?;
 
-        if self.indicator1 != ' ' || self.indicator2 != ' ' {
-            let ind1 = if self.indicator1 != ' ' {
+        if self.indicator1 != b' ' || self.indicator2 != b' ' {
+            let ind1 = if self.indicator1 != b' ' {
                 self.indicator1
             } else {
-                '#'
+                b'#'
             };
 
-            let ind2 = if self.indicator2 != ' ' {
+            let ind2 = if self.indicator2 != b' ' {
                 self.indicator2
             } else {
-                '#'
+                b'#'
             };
 
-            write!(f, "/{ind1}{ind2}")?;
+            write!(f, "/{}{}", ind1 as char, ind2 as char)?;
         }
 
         for subfield in self.subfields.iter() {
@@ -140,8 +152,8 @@ mod tests {
     fn test_data_field_to_string() -> TestResult {
         let df = DataField {
             tag: Tag::from_bytes(b"024")?,
-            indicator1: '7',
-            indicator2: ' ',
+            indicator1: b'7',
+            indicator2: b' ',
             subfields: vec![
                 Subfield {
                     code: 'a',
