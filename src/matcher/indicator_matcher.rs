@@ -195,7 +195,7 @@ mod tests {
         parse_success!("/*", IndicatorMatcher::Wildcard);
         parse_success!("/##", IndicatorMatcher::Values(b' ', b' '));
         parse_success!("/ab", IndicatorMatcher::Values(b'a', b'b'));
-        parse_success!("/ba", IndicatorMatcher::Values(b'b', b'a'));
+        parse_success!("/be", IndicatorMatcher::Values(b'b', b'e'));
         parse_success!("/#1", IndicatorMatcher::Values(b' ', b'1'));
         parse_success!("/1#", IndicatorMatcher::Values(b'1', b' '));
         parse_success!("/12", IndicatorMatcher::Values(b'1', b'2'));
