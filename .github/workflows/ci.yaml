@@ -21,12 +21,12 @@ jobs:
       fail-fast: false
       matrix:
         target:
-          - {os: ubuntu-latest, toolchain: stable, triple: x86_64-unknown-linux-gnu}
-          - {os: ubuntu-latest, toolchain: beta, triple: x86_64-unknown-linux-gnu}
-          - {os: ubuntu-latest, toolchain: nightly, triple: x86_64-unknown-linux-gnu}
-          - {os: ubuntu-latest, toolchain: "1.92", triple: x86_64-unknown-linux-gnu}
-          - {os: windows-latest, toolchain: stable, triple: i686-pc-windows-msvc}
-          - {os: macos-latest, toolchain: stable, triple: x86_64-apple-darwin}
+          - { os: ubuntu-latest, toolchain: stable, triple: x86_64-unknown-linux-gnu }
+          - { os: ubuntu-latest, toolchain: beta, triple: x86_64-unknown-linux-gnu }
+          - { os: ubuntu-latest, toolchain: nightly, triple: x86_64-unknown-linux-gnu }
+          - { os: ubuntu-latest, toolchain: "1.93", triple: x86_64-unknown-linux-gnu }
+          - { os: windows-latest, toolchain: stable, triple: i686-pc-windows-msvc }
+          - { os: macos-latest, toolchain: stable, triple: x86_64-apple-darwin }
     steps:
       - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@master
