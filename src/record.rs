@@ -48,6 +48,10 @@ impl<'a> ByteRecord<'a> {
             .map_err(ParseRecordError::from_parse)
     }
 
+    pub fn leader(&self) -> &Leader {
+        &self.leader
+    }
+
     /// Returns an iterator over the record's fields.
     ///
     /// # Example

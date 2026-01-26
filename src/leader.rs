@@ -11,15 +11,15 @@ use crate::parse::*;
 #[derive(Debug, Clone, PartialEq)]
 pub struct Leader {
     length: u32,
-    status: char,
-    r#type: char,
-    idef1: char,
-    idef2: char,
-    encoding: char,
+    status: u8,
+    r#type: u8,
+    idef1: u8,
+    idef2: u8,
+    encoding: u8,
     base_address: u32,
-    idef3: char,
-    idef4: char,
-    idef5: char,
+    idef3: u8,
+    idef4: u8,
+    idef5: u8,
 }
 
 impl Leader {
@@ -75,11 +75,11 @@ impl Leader {
     /// use marc21::Leader;
     ///
     /// let leader = Leader::from_bytes(b"00000nz  a2200000oc 4500")?;
-    /// assert_eq!(leader.status(), 'n');
+    /// assert_eq!(leader.status(), b'n');
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn status(&self) -> char {
+    pub fn status(&self) -> u8 {
         self.status
     }
 
@@ -91,11 +91,11 @@ impl Leader {
     /// use marc21::Leader;
     ///
     /// let leader = Leader::from_bytes(b"00000nz  a2200000oc 4500")?;
-    /// assert_eq!(leader.r#type(), 'z');
+    /// assert_eq!(leader.r#type(), b'z');
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn r#type(&self) -> char {
+    pub fn r#type(&self) -> u8 {
         self.r#type
     }
 
@@ -113,8 +113,14 @@ impl Leader {
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
     pub fn is_bibliographic(&self) -> bool {
-        matches!(self.r#type,
-            'a' | 'c'..='g' | 'i'..='k' | 'm' | 'o' | 'p' | 'r' | 't'
+        matches!(self.r#type, b'a'
+            | b'c'..=b'g'
+            | b'i'..=b'k'
+            | b'm'
+            | b'o'
+            | b'p'
+            | b'r'
+            | b't'
         )
     }
 
@@ -132,7 +138,7 @@ impl Leader {
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
     pub fn is_community_information(&self) -> bool {
-        self.r#type == 'q'
+        self.r#type == b'q'
     }
 
     /// Returns the bibliographic level if the underlying record is a
@@ -148,7 +154,7 @@ impl Leader {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn bibliographic_level(&self) -> Option<char> {
+    pub fn bibliographic_level(&self) -> Option<u8> {
         if self.is_bibliographic() && self.idef1.is_ascii_graphic() {
             Some(self.idef1)
         } else {
@@ -169,8 +175,8 @@ impl Leader {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn kind_of_data(&self) -> Option<char> {
-        if self.is_community_information() && self.idef1 != ' ' {
+    pub fn kind_of_data(&self) -> Option<u8> {
+        if self.is_community_information() && self.idef1 != b' ' {
             Some(self.idef1)
         } else {
             None
@@ -190,8 +196,8 @@ impl Leader {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn type_of_control(&self) -> Option<char> {
-        if self.is_bibliographic() && self.idef2 != ' ' {
+    pub fn type_of_control(&self) -> Option<u8> {
+        if self.is_bibliographic() && self.idef2 != b' ' {
             Some(self.idef2)
         } else {
             None
@@ -207,11 +213,11 @@ impl Leader {
     /// use marc21::Leader;
     ///
     /// let leader = Leader::from_bytes(b"00000nz  a2200000oc 4500")?;
-    /// assert_eq!(leader.encoding(), 'a');
+    /// assert_eq!(leader.encoding(), b'a');
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn encoding(&self) -> char {
+    pub fn encoding(&self) -> u8 {
         self.encoding
     }
 
@@ -257,15 +263,15 @@ impl Leader {
             out,
             "{:0>5}{}{}{}{}{}22{:0>5}{}{}{}4500",
             self.length,
-            self.status,
-            self.r#type,
-            self.idef1,
-            self.idef2,
-            self.encoding,
+            self.status as char,
+            self.r#type as char,
+            self.idef1 as char,
+            self.idef2 as char,
+            self.encoding as char,
             self.base_address,
-            self.idef3,
-            self.idef4,
-            self.idef5,
+            self.idef3 as char,
+            self.idef4 as char,
+            self.idef5 as char,
         )
     }
 }
@@ -313,15 +319,15 @@ mod tests {
             parse_leader.parse(b"03612nz  a2200589nc 4500").unwrap(),
             Leader {
                 length: 3612,
-                status: 'n',
-                r#type: 'z',
-                idef1: ' ',
-                idef2: ' ',
-                encoding: 'a',
+                status: b'n',
+                r#type: b'z',
+                idef1: b' ',
+                idef2: b' ',
+                encoding: b'a',
                 base_address: 589,
-                idef3: 'n',
-                idef4: 'c',
-                idef5: ' ',
+                idef3: b'n',
+                idef4: b'c',
+                idef5: b' ',
             }
         )
     }
@@ -332,15 +338,15 @@ mod tests {
             Leader::from_bytes(b"03612nz  a2200589nc 4500")?,
             Leader {
                 length: 3612,
-                status: 'n',
-                r#type: 'z',
-                idef1: ' ',
-                idef2: ' ',
-                encoding: 'a',
+                status: b'n',
+                r#type: b'z',
+                idef1: b' ',
+                idef2: b' ',
+                encoding: b'a',
                 base_address: 589,
-                idef3: 'n',
-                idef4: 'c',
-                idef5: ' ',
+                idef3: b'n',
+                idef4: b'c',
+                idef5: b' ',
             }
         );
 
@@ -357,14 +363,14 @@ mod tests {
     #[test]
     fn test_leader_status() -> TestResult {
         let ldr = Leader::from_bytes(b"03612nz  a2200589nc 4500")?;
-        assert_eq!(ldr.status(), 'n');
+        assert_eq!(ldr.status(), b'n');
         Ok(())
     }
 
     #[test]
     fn test_leader_type() -> TestResult {
         let ldr = Leader::from_bytes(b"03612nz  a2200589nc 4500")?;
-        assert_eq!(ldr.r#type(), 'z');
+        assert_eq!(ldr.r#type(), b'z');
         Ok(())
     }
 
@@ -402,7 +408,7 @@ mod tests {
     #[test]
     fn test_bibliographic_level() -> TestResult {
         let ldr = Leader::from_bytes(b"00000nam a2200000 c 4500")?;
-        assert_eq!(ldr.bibliographic_level(), Some('m'));
+        assert_eq!(ldr.bibliographic_level(), Some(b'm'));
 
         let ldr = Leader::from_bytes(b"00000nqo a2200000 c 4500")?;
         assert!(ldr.bibliographic_level().is_none());
@@ -413,7 +419,7 @@ mod tests {
     #[test]
     fn test_kind_of_data() -> TestResult {
         let ldr = Leader::from_bytes(b"00000nqo a2200000 c 4500")?;
-        assert_eq!(ldr.kind_of_data(), Some('o'));
+        assert_eq!(ldr.kind_of_data(), Some(b'o'));
 
         let ldr = Leader::from_bytes(b"00000nq  a2200000 c 4500")?;
         assert!(ldr.kind_of_data().is_none());
@@ -424,7 +430,7 @@ mod tests {
     #[test]
     fn test_type_of_control() -> TestResult {
         let ldr = Leader::from_bytes(b"00000namaa2200000 c 4500")?;
-        assert_eq!(ldr.type_of_control(), Some('a'));
+        assert_eq!(ldr.type_of_control(), Some(b'a'));
 
         let ldr = Leader::from_bytes(b"00000nam a2200000 c 4500")?;
         assert!(ldr.type_of_control().is_none());
@@ -435,7 +441,7 @@ mod tests {
     #[test]
     fn test_encoding() -> TestResult {
         let ldr = Leader::from_bytes(b"03612nz  a2200589nc 4500")?;
-        assert_eq!(ldr.encoding(), 'a');
+        assert_eq!(ldr.encoding(), b'a');
         Ok(())
     }
 

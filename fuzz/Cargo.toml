@@ -22,8 +22,8 @@ doc = false
 bench = false
 
 [[bin]]
-name = "tag-matcher"
-path = "fuzz_targets/tag_matcher.rs"
+name = "record-matcher"
+path = "fuzz_targets/record_matcher.rs"
 test = false
 doc = false
 bench = false

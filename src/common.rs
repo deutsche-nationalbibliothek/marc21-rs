@@ -21,16 +21,14 @@ pub(crate) fn parse_digits_u16(i: &mut &[u8]) -> ModalResult<u16> {
         .parse_next(i)
 }
 
-pub(crate) fn parse_ascii_graphic(i: &mut &[u8]) -> ModalResult<char> {
-    one_of(|b: u8| b.is_ascii_graphic())
-        .map(char::from)
-        .parse_next(i)
+pub(crate) fn parse_ascii_graphic(i: &mut &[u8]) -> ModalResult<u8> {
+    one_of(|b: u8| b.is_ascii_graphic()).parse_next(i)
 }
 
 pub(crate) fn parse_space_or_ascii_graphic(
     i: &mut &[u8],
-) -> ModalResult<char> {
-    alt((b' '.value(' '), parse_ascii_graphic)).parse_next(i)
+) -> ModalResult<u8> {
+    alt((b' '.value(b' '), parse_ascii_graphic)).parse_next(i)
 }
 
 #[cfg(test)]
@@ -48,12 +46,12 @@ mod tests {
 
     #[test]
     fn test_parse_ascii_graphic() {
-        assert_eq!(parse_ascii_graphic.parse(b"A").unwrap(), 'A');
-        assert_eq!(parse_ascii_graphic.parse(b"G").unwrap(), 'G');
-        assert_eq!(parse_ascii_graphic.parse(b"a").unwrap(), 'a');
-        assert_eq!(parse_ascii_graphic.parse(b"g").unwrap(), 'g');
-        assert_eq!(parse_ascii_graphic.parse(b"0").unwrap(), '0');
-        assert_eq!(parse_ascii_graphic.parse(b"%").unwrap(), '%');
+        assert_eq!(parse_ascii_graphic.parse(b"A").unwrap(), b'A');
+        assert_eq!(parse_ascii_graphic.parse(b"G").unwrap(), b'G');
+        assert_eq!(parse_ascii_graphic.parse(b"a").unwrap(), b'a');
+        assert_eq!(parse_ascii_graphic.parse(b"g").unwrap(), b'g');
+        assert_eq!(parse_ascii_graphic.parse(b"0").unwrap(), b'0');
+        assert_eq!(parse_ascii_graphic.parse(b"%").unwrap(), b'%');
         assert!(parse_ascii_graphic.parse(b"\n").is_err());
         assert!(parse_ascii_graphic.parse(b" ").is_err());
     }
@@ -62,31 +60,31 @@ mod tests {
     fn test_parse_space_ascii_graphic() {
         assert_eq!(
             parse_space_or_ascii_graphic.parse(b" ").unwrap(),
-            ' '
+            b' '
         );
         assert_eq!(
             parse_space_or_ascii_graphic.parse(b"A").unwrap(),
-            'A'
+            b'A'
         );
         assert_eq!(
             parse_space_or_ascii_graphic.parse(b"G").unwrap(),
-            'G'
+            b'G'
         );
         assert_eq!(
             parse_space_or_ascii_graphic.parse(b"a").unwrap(),
-            'a'
+            b'a'
         );
         assert_eq!(
             parse_space_or_ascii_graphic.parse(b"g").unwrap(),
-            'g'
+            b'g'
         );
         assert_eq!(
             parse_space_or_ascii_graphic.parse(b"0").unwrap(),
-            '0'
+            b'0'
         );
         assert_eq!(
             parse_space_or_ascii_graphic.parse(b"%").unwrap(),
-            '%'
+            b'%'
         );
         assert!(parse_space_or_ascii_graphic.parse(b"\n").is_err());
     }

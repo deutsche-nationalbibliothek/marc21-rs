@@ -1,2 +1,3 @@
-#[derive(Debug, Default)]
-pub struct MatcherOptions {}
+/// Options and flags which can be used to configure a matcher.
+#[derive(Debug, PartialEq, Default)]
+pub struct MatchOptions {}
