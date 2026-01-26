@@ -20,7 +20,6 @@ pub use tag::Tag;
 /// Core types available for glob import.
 pub mod prelude {
     pub use super::io::{ByteRecordsIter, MarcReadOptions, MarcReader};
-    pub use super::matcher::{MatcherOptions, ParseMatcherError};
     pub use super::{
         ByteRecord, Directory, Entry, Leader, ParseRecordError,
         StringRecord, Subfield, Tag,
@@ -32,5 +31,4 @@ pub(crate) mod parse {
 
     pub(crate) use super::ParseRecordError;
     pub(crate) use super::common::*;
-    pub(crate) use super::matcher::ParseMatcherError;
 }
