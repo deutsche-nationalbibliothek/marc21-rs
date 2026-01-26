@@ -13,11 +13,16 @@ members = ["crates/marc21-cli"]
 [features]
 default = ["performant"]
 performant = ["winnow/simd"]
+serde = ["dep:serde"]
 
 [dependencies]
 bstr = { version = "1.12", features = ["std"], default-features = false }
 flate2 = { version = "1.1" }
+serde = { version = "1.0", optional = true }
 winnow = { version = "0.7" }
+
+[dev-dependencies]
+serde_test = { version = "1.0" }
 
 [[test]]
 path = "tests/fuzz/lib.rs"
