@@ -52,6 +52,20 @@ impl RecordMatcher {
 
     /// Returns true if and only if the given record matches against the
     /// underlying matcher.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21::matcher::RecordMatcher;
+    /// use marc21::prelude::*;
+    ///
+    /// # let data = include_bytes!("../../tests/data/ada.mrc");
+    /// let record = ByteRecord::from_bytes(data)?;
+    /// let matcher = RecordMatcher::new("ldr.length == 3612")?;
+    /// assert!(matcher.is_match(&record, &Default::default()));
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
     pub fn is_match(
         &self,
         record: &ByteRecord,
@@ -65,4 +79,26 @@ impl RecordMatcher {
 
 fn parse_kind(i: &mut &[u8]) -> ModalResult<Kind> {
     ws(alt((parse_leader_matcher.map(Kind::Leader),))).parse_next(i)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::matcher::comparison_matcher::ComparisonMatcher;
+    use crate::matcher::leader_matcher::LeaderField;
+    use crate::matcher::operator::ComparisonOperator;
+
+    #[test]
+    fn test_parse_kind() {
+        assert_eq!(
+            parse_kind.parse(b"ldr.length > 123").unwrap(),
+            Kind::Leader(LeaderMatcher {
+                field: LeaderField::Length,
+                matcher: ComparisonMatcher {
+                    op: ComparisonOperator::Gt,
+                    value: 123u32.into(),
+                }
+            })
+        )
+    }
 }

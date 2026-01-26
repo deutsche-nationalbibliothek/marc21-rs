@@ -73,4 +73,19 @@ mod tests {
 
         assert!(parse_value_u32.parse(b"4294967296").is_err());
     }
+
+    #[test]
+    fn test_parse_value_char() {
+        macro_rules! parse_success {
+            ($i:expr, $e:expr) => {
+                assert_eq!(
+                    parse_value_char.parse($i.as_bytes()).unwrap(),
+                    $e
+                );
+            };
+        }
+
+        parse_success!("'a'", Value::Char(b'a'));
+        parse_success!("\"a\"", Value::Char(b'a'));
+    }
 }

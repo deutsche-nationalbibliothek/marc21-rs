@@ -30,17 +30,13 @@ impl Leader {
     /// ```rust
     /// use marc21::Leader;
     ///
-    /// let result = Leader::from_bytes(b"00000nz  a2200000oc 4500");
-    /// assert!(result.is_ok());
+    /// let leader = Leader::new(b"00000nz  a2200000oc 4500")?;
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn from_bytes<'a, B>(
+    pub fn new<'a, B: AsRef<[u8]> + ?Sized>(
         bytes: &'a B,
-    ) -> Result<Self, ParseRecordError<'a>>
-    where
-        B: AsRef<[u8]>,
-    {
+    ) -> Result<Self, ParseRecordError<'a>> {
         parse_leader
             .parse(bytes.as_ref())
             .map_err(ParseRecordError::from_parse)
@@ -57,7 +53,7 @@ impl Leader {
     /// ```rust
     /// use marc21::Leader;
     ///
-    /// let leader = Leader::from_bytes(b"00000nz  a2200000oc 4500")?;
+    /// let leader = Leader::new(b"00000nz  a2200000oc 4500")?;
     /// assert_eq!(leader.length(), 0);
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -74,7 +70,7 @@ impl Leader {
     /// ```rust
     /// use marc21::Leader;
     ///
-    /// let leader = Leader::from_bytes(b"00000nz  a2200000oc 4500")?;
+    /// let leader = Leader::new(b"00000nz  a2200000oc 4500")?;
     /// assert_eq!(leader.status(), b'n');
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -90,7 +86,7 @@ impl Leader {
     /// ```rust
     /// use marc21::Leader;
     ///
-    /// let leader = Leader::from_bytes(b"00000nz  a2200000oc 4500")?;
+    /// let leader = Leader::new(b"00000nz  a2200000oc 4500")?;
     /// assert_eq!(leader.r#type(), b'z');
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -107,7 +103,7 @@ impl Leader {
     /// ```rust
     /// use marc21::Leader;
     ///
-    /// let leader = Leader::from_bytes(b"00000nz  a2200000oc 4500")?;
+    /// let leader = Leader::new(b"00000nz  a2200000oc 4500")?;
     /// assert!(!leader.is_bibliographic());
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -132,7 +128,7 @@ impl Leader {
     /// ```rust
     /// use marc21::Leader;
     ///
-    /// let leader = Leader::from_bytes(b"00000nz  a2200000oc 4500")?;
+    /// let leader = Leader::new(b"00000nz  a2200000oc 4500")?;
     /// assert!(!leader.is_community_information());
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -149,7 +145,7 @@ impl Leader {
     /// ```rust
     /// use marc21::Leader;
     ///
-    /// let leader = Leader::from_bytes(b"00000nz  a2200000oc 4500")?;
+    /// let leader = Leader::new(b"00000nz  a2200000oc 4500")?;
     /// assert!(leader.bibliographic_level().is_none());
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -170,7 +166,7 @@ impl Leader {
     /// ```rust
     /// use marc21::Leader;
     ///
-    /// let leader = Leader::from_bytes(b"00000nz  a2200000oc 4500")?;
+    /// let leader = Leader::new(b"00000nz  a2200000oc 4500")?;
     /// assert!(leader.kind_of_data().is_none());
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -191,7 +187,7 @@ impl Leader {
     /// ```rust
     /// use marc21::Leader;
     ///
-    /// let leader = Leader::from_bytes(b"00000nz  a2200000oc 4500")?;
+    /// let leader = Leader::new(b"00000nz  a2200000oc 4500")?;
     /// assert!(leader.type_of_control().is_none());
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -212,7 +208,7 @@ impl Leader {
     /// ```rust
     /// use marc21::Leader;
     ///
-    /// let leader = Leader::from_bytes(b"00000nz  a2200000oc 4500")?;
+    /// let leader = Leader::new(b"00000nz  a2200000oc 4500")?;
     /// assert_eq!(leader.encoding(), b'a');
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -231,12 +227,12 @@ impl Leader {
     /// ```rust
     /// use marc21::Leader;
     ///
-    /// let leader = Leader::from_bytes(b"00000nz  a2200000oc 4500")?;
-    /// assert_eq!(leader.base_address(), 0);
+    /// let leader = Leader::new(b"00000nz  a2200000oc 4500")?;
+    /// assert_eq!(leader.base_addr(), 0);
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn base_address(&self) -> u32 {
+    pub fn base_addr(&self) -> u32 {
         self.base_address
     }
 
@@ -249,7 +245,7 @@ impl Leader {
     ///
     /// use marc21::prelude::*;
     ///
-    /// let ldr = Leader::from_bytes(b"00000nz  a2200000oc 4500")?;
+    /// let ldr = Leader::new(b"00000nz  a2200000oc 4500")?;
     ///
     /// let mut wrt = Cursor::new(Vec::<u8>::new());
     /// ldr.write_to(&mut wrt)?;
@@ -333,9 +329,9 @@ mod tests {
     }
 
     #[test]
-    fn test_leader_from_bytes() -> TestResult {
+    fn test_leader_new() -> TestResult {
         assert_eq!(
-            Leader::from_bytes(b"03612nz  a2200589nc 4500")?,
+            Leader::new(b"03612nz  a2200589nc 4500")?,
             Leader {
                 length: 3612,
                 status: b'n',
@@ -355,40 +351,40 @@ mod tests {
 
     #[test]
     fn test_leader_length() -> TestResult {
-        let ldr = Leader::from_bytes(b"03612nz  a2200589nc 4500")?;
+        let ldr = Leader::new(b"03612nz  a2200589nc 4500")?;
         assert_eq!(ldr.length(), 3612);
         Ok(())
     }
 
     #[test]
     fn test_leader_status() -> TestResult {
-        let ldr = Leader::from_bytes(b"03612nz  a2200589nc 4500")?;
+        let ldr = Leader::new(b"03612nz  a2200589nc 4500")?;
         assert_eq!(ldr.status(), b'n');
         Ok(())
     }
 
     #[test]
     fn test_leader_type() -> TestResult {
-        let ldr = Leader::from_bytes(b"03612nz  a2200589nc 4500")?;
+        let ldr = Leader::new(b"03612nz  a2200589nc 4500")?;
         assert_eq!(ldr.r#type(), b'z');
         Ok(())
     }
 
     #[test]
     fn test_is_bibliographic() -> TestResult {
-        let ldr = Leader::from_bytes(b"00000nam a2200000 c 4500")?;
+        let ldr = Leader::new(b"00000nam a2200000 c 4500")?;
         assert!(ldr.is_bibliographic());
 
-        let ldr = Leader::from_bytes(b"00000nbm a2200000 c 4500")?;
+        let ldr = Leader::new(b"00000nbm a2200000 c 4500")?;
         assert!(!ldr.is_bibliographic());
 
-        let ldr = Leader::from_bytes(b"00000ncm a2200000 c 4500")?;
+        let ldr = Leader::new(b"00000ncm a2200000 c 4500")?;
         assert!(ldr.is_bibliographic());
 
-        let ldr = Leader::from_bytes(b"00000ndm a2200000 c 4500")?;
+        let ldr = Leader::new(b"00000ndm a2200000 c 4500")?;
         assert!(ldr.is_bibliographic());
 
-        let ldr = Leader::from_bytes(b"00000nhm a2200000 c 4500")?;
+        let ldr = Leader::new(b"00000nhm a2200000 c 4500")?;
         assert!(!ldr.is_bibliographic());
 
         Ok(())
@@ -396,10 +392,10 @@ mod tests {
 
     #[test]
     fn test_is_community_information() -> TestResult {
-        let ldr = Leader::from_bytes(b"00000nqo a2200000 c 4500")?;
+        let ldr = Leader::new(b"00000nqo a2200000 c 4500")?;
         assert!(ldr.is_community_information());
 
-        let ldr = Leader::from_bytes(b"00000namaa2200000 c 4500")?;
+        let ldr = Leader::new(b"00000namaa2200000 c 4500")?;
         assert!(!ldr.is_community_information());
 
         Ok(())
@@ -407,10 +403,10 @@ mod tests {
 
     #[test]
     fn test_bibliographic_level() -> TestResult {
-        let ldr = Leader::from_bytes(b"00000nam a2200000 c 4500")?;
+        let ldr = Leader::new(b"00000nam a2200000 c 4500")?;
         assert_eq!(ldr.bibliographic_level(), Some(b'm'));
 
-        let ldr = Leader::from_bytes(b"00000nqo a2200000 c 4500")?;
+        let ldr = Leader::new(b"00000nqo a2200000 c 4500")?;
         assert!(ldr.bibliographic_level().is_none());
 
         Ok(())
@@ -418,10 +414,10 @@ mod tests {
 
     #[test]
     fn test_kind_of_data() -> TestResult {
-        let ldr = Leader::from_bytes(b"00000nqo a2200000 c 4500")?;
+        let ldr = Leader::new(b"00000nqo a2200000 c 4500")?;
         assert_eq!(ldr.kind_of_data(), Some(b'o'));
 
-        let ldr = Leader::from_bytes(b"00000nq  a2200000 c 4500")?;
+        let ldr = Leader::new(b"00000nq  a2200000 c 4500")?;
         assert!(ldr.kind_of_data().is_none());
 
         Ok(())
@@ -429,10 +425,10 @@ mod tests {
 
     #[test]
     fn test_type_of_control() -> TestResult {
-        let ldr = Leader::from_bytes(b"00000namaa2200000 c 4500")?;
+        let ldr = Leader::new(b"00000namaa2200000 c 4500")?;
         assert_eq!(ldr.type_of_control(), Some(b'a'));
 
-        let ldr = Leader::from_bytes(b"00000nam a2200000 c 4500")?;
+        let ldr = Leader::new(b"00000nam a2200000 c 4500")?;
         assert!(ldr.type_of_control().is_none());
 
         Ok(())
@@ -440,21 +436,21 @@ mod tests {
 
     #[test]
     fn test_encoding() -> TestResult {
-        let ldr = Leader::from_bytes(b"03612nz  a2200589nc 4500")?;
+        let ldr = Leader::new(b"03612nz  a2200589nc 4500")?;
         assert_eq!(ldr.encoding(), b'a');
         Ok(())
     }
 
     #[test]
     fn test_base_address() -> TestResult {
-        let ldr = Leader::from_bytes(b"03612nz  a2200589nc 4500")?;
-        assert_eq!(ldr.base_address(), 589u32);
+        let ldr = Leader::new(b"03612nz  a2200589nc 4500")?;
+        assert_eq!(ldr.base_addr(), 589u32);
         Ok(())
     }
 
     #[test]
     fn test_write_to() -> TestResult {
-        let ldr = Leader::from_bytes(b"03612nz  a2200000 c 4500")?;
+        let ldr = Leader::new(b"03612nz  a2200000 c 4500")?;
         let mut wrt = Cursor::new(Vec::<u8>::new());
         ldr.write_to(&mut wrt)?;
 
@@ -464,10 +460,10 @@ mod tests {
 
     #[test]
     fn test_to_string() -> TestResult {
-        let ldr = Leader::from_bytes(b"01234nz  a2200000 c 4500")?;
+        let ldr = Leader::new("01234nz  a2200000 c 4500")?;
         assert_eq!(ldr.to_string(), "LDR 01234nz  a2200000 c 4500");
 
-        let ldr = Leader::from_bytes(b"01234nz   2200000 c 4500")?;
+        let ldr = Leader::new(b"01234nz   2200000 c 4500")?;
         assert_eq!(ldr.to_string(), "LDR 01234nz   2200000 c 4500");
 
         Ok(())

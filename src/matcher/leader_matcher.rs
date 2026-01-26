@@ -13,13 +13,13 @@ use crate::matcher::{MatchOptions, ParseMatcherError};
 /// A matcher that can be applied on a [Leader].
 #[derive(Debug, PartialEq)]
 pub struct LeaderMatcher {
-    field: LeaderField,
-    matcher: ComparisonMatcher,
+    pub(crate) field: LeaderField,
+    pub(crate) matcher: ComparisonMatcher,
 }
 
 #[derive(Debug, PartialEq, Clone)]
-enum LeaderField {
-    BaseAddress,
+pub(crate) enum LeaderField {
+    BaseAddr,
     Encoding,
     Length,
     Status,
@@ -59,7 +59,7 @@ impl LeaderMatcher {
     /// use marc21::matcher::LeaderMatcher;
     /// use marc21::prelude::*;
     ///
-    /// let ldr = Leader::from_bytes(b"03612nz  a2200589nc 4500")?;
+    /// let ldr = Leader::new(b"03612nz  a2200589nc 4500")?;
     ///
     /// let matcher = LeaderMatcher::new("ldr.length == 3612")?;
     /// assert!(matcher.is_match(&ldr, &Default::default()));
@@ -67,8 +67,8 @@ impl LeaderMatcher {
     /// let matcher = LeaderMatcher::new("ldr.length > 3000")?;
     /// assert!(matcher.is_match(&ldr, &Default::default()));
     ///
-    /// // let matcher = LeaderMatcher::new("ldr.length <= 3612")?;
-    /// // assert!(matcher.is_match(&ldr, &Default::default()));
+    /// let matcher = LeaderMatcher::new("ldr.length <= 3612")?;
+    /// assert!(matcher.is_match(&ldr, &Default::default()));
     ///
     /// let matcher = LeaderMatcher::new("ldr.status == 'n'")?;
     /// assert!(matcher.is_match(&ldr, &Default::default()));
@@ -92,13 +92,11 @@ impl LeaderMatcher {
         use LeaderField::*;
 
         match self.field {
+            BaseAddr => self.matcher.is_match(ldr.base_addr(), options),
             Encoding => self.matcher.is_match(ldr.encoding(), options),
             Length => self.matcher.is_match(ldr.length(), options),
             Status => self.matcher.is_match(ldr.status(), options),
             Type => self.matcher.is_match(ldr.r#type(), options),
-            BaseAddress => {
-                self.matcher.is_match(ldr.base_address(), options)
-            }
         }
     }
 }
@@ -110,7 +108,7 @@ pub(crate) fn parse_leader_matcher(
     let field = parse_leader_field.parse_next(i)?;
 
     let matcher = ws(match field {
-        LeaderField::Length | LeaderField::BaseAddress => {
+        LeaderField::Length | LeaderField::BaseAddr => {
             parse_comparison_matcher_u32
         }
         LeaderField::Status => parse_comparison_matcher_char,
@@ -124,7 +122,7 @@ pub(crate) fn parse_leader_matcher(
 
 fn parse_leader_field(i: &mut &[u8]) -> ModalResult<LeaderField> {
     alt((
-        "base_address".value(LeaderField::BaseAddress),
+        "base_address".value(LeaderField::BaseAddr),
         "encoding".value(LeaderField::Encoding),
         "length".value(LeaderField::Length),
         "status".value(LeaderField::Status),
@@ -136,6 +134,52 @@ fn parse_leader_field(i: &mut &[u8]) -> ModalResult<LeaderField> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::matcher::operator::ComparisonOperator;
+
+    #[test]
+    fn test_parse_leader_matcher() {
+        macro_rules! parse_success {
+            ($i:expr, $e:expr) => {
+                assert_eq!(
+                    parse_leader_matcher.parse($i.as_bytes()).unwrap(),
+                    $e
+                );
+            };
+        }
+
+        parse_success!(
+            "ldr.length == 123",
+            LeaderMatcher {
+                field: LeaderField::Length,
+                matcher: ComparisonMatcher {
+                    op: ComparisonOperator::Eq,
+                    value: 123u32.into(),
+                }
+            }
+        );
+
+        parse_success!(
+            "ldr.base_address > 500",
+            LeaderMatcher {
+                field: LeaderField::BaseAddr,
+                matcher: ComparisonMatcher {
+                    op: ComparisonOperator::Gt,
+                    value: 500u32.into(),
+                }
+            }
+        );
+
+        parse_success!(
+            "ldr.encoding == 'a'",
+            LeaderMatcher {
+                field: LeaderField::Encoding,
+                matcher: ComparisonMatcher {
+                    op: ComparisonOperator::Eq,
+                    value: b'a'.into(),
+                }
+            }
+        );
+    }
 
     #[test]
     fn test_parse_leader_field() {
@@ -148,7 +192,7 @@ mod tests {
             };
         }
 
-        parse_success!("base_address", LeaderField::BaseAddress);
+        parse_success!("base_address", LeaderField::BaseAddr);
         parse_success!("encoding", LeaderField::Encoding);
         parse_success!("length", LeaderField::Length);
         parse_success!("status", LeaderField::Status);

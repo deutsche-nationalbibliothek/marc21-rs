@@ -7,9 +7,8 @@ rust-version = "1.93"
 edition = "2024"
 
 [workspace]
-members = [
-  "crates/marc21-cli"
-]
+default-members = ["crates/marc21-cli"]
+members = ["crates/marc21-cli"]
 
 [features]
 default = ["performant"]

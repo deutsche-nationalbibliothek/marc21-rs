@@ -157,12 +157,12 @@ impl<'a> Deref for StringRecord<'a> {
 fn parse_record<'a>(i: &mut &'a [u8]) -> ModalResult<ByteRecord<'a>> {
     let raw_data: Option<&[u8]> = Some(i);
     let leader = parse_leader
-        .verify(|leader| leader.length() > leader.base_address() + 1)
+        .verify(|leader| leader.length() > leader.base_addr() + 1)
         .parse_next(i)?;
     let directory = parse_directory.parse_next(i)?;
     let mut fields = Vec::with_capacity(directory.length());
-    let mut payload = take(leader.length() - leader.base_address() - 1)
-        .parse_next(i)?;
+    let mut payload =
+        take(leader.length() - leader.base_addr() - 1).parse_next(i)?;
     let _ = b'\x1d'.parse_next(i)?;
 
     for entry in directory.entries() {
