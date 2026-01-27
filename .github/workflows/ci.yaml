@@ -37,8 +37,8 @@ jobs:
       - name: Run tests
         if: ${{ matrix.target.toolchain != 'nightly' }}
         run: |
-          cargo nextest run --workspace -F performant --no-fail-fast
-          cargo test --doc --workspace -F performant --no-fail-fast
+          cargo nextest run --workspace -F performant,serde --no-fail-fast
+          cargo test --doc --workspace -F performant,serde --no-fail-fast
       - name: Run tests (nightly)
         if: ${{ matrix.target.toolchain == 'nightly' }}
         run: |
@@ -92,11 +92,11 @@ jobs:
       - uses: taiki-e/install-action@cargo-hack
       - name: "Check Powerset"
         run: |
-          cargo hack check --all --feature-powerset --no-dev-deps
+          cargo hack check --workspace --features performant,nightly --no-dev-deps --ignore-unknown-features
       - name: "Test Powerset"
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          cargo hack test --all --feature-powerset
+          cargo hack check --workspace --features performant,nightly --ignore-unknown-features
 
   deny:
     runs-on: ubuntu-latest

@@ -1,3 +1,5 @@
+use std::fmt::{self, Display};
+
 use bstr::ByteSlice;
 use winnow::combinator::alt;
 use winnow::prelude::*;
@@ -81,12 +83,53 @@ fn parse_kind(i: &mut &[u8]) -> ModalResult<Kind> {
     ws(alt((parse_leader_matcher.map(Kind::Leader),))).parse_next(i)
 }
 
+impl Display for RecordMatcher {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self.input {
+            Some(ref input) => write!(f, "{}", input),
+            _ => unimplemented!(),
+        }
+    }
+}
+
+#[cfg(feature = "serde")]
+impl serde::Serialize for RecordMatcher {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(&self.to_string())
+    }
+}
+
+#[cfg(feature = "serde")]
+impl<'de> serde::Deserialize<'de> for RecordMatcher {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::new(s).map_err(serde::de::Error::custom)
+    }
+}
+
 #[cfg(test)]
 mod tests {
+    use serde_test::{Token, assert_tokens};
+
     use super::*;
     use crate::matcher::comparison_matcher::ComparisonMatcher;
     use crate::matcher::leader_matcher::LeaderField;
     use crate::matcher::operator::ComparisonOperator;
+
+    type TestResult = Result<(), Box<dyn std::error::Error>>;
+
+    #[test]
+    fn test_record_matcher_serde() -> TestResult {
+        let matcher = RecordMatcher::new("ldr.length == 123")?;
+        assert_tokens(&matcher, &[Token::Str("ldr.length == 123")]);
+        Ok(())
+    }
 
     #[test]
     fn test_parse_kind() {
