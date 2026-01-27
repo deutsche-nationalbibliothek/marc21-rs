@@ -11,7 +11,7 @@ use crate::matcher::utils::ws;
 use crate::matcher::{MatchOptions, ParseMatcherError};
 
 /// A matcher that can be applied on a [Leader].
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct LeaderMatcher {
     pub(crate) field: LeaderField,
     pub(crate) matcher: ComparisonMatcher,

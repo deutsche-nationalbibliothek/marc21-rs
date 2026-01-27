@@ -8,7 +8,7 @@ use crate::matcher::operator::{
 };
 use crate::matcher::value::{Value, parse_value_char, parse_value_u32};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub(crate) struct ComparisonMatcher {
     pub(crate) op: ComparisonOperator,
     pub(crate) value: Value,

@@ -16,6 +16,7 @@ pub(crate) enum Command {
     Completions(Completions),
     Concat(Concat),
     Count(Count),
+    Filter(Filter),
     Invalid(Invalid),
     Print(Print),
     Sample(Sample),

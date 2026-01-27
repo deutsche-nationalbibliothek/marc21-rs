@@ -1,4 +1,5 @@
 use std::fmt::{self, Display};
+use std::str::FromStr;
 
 use bstr::ByteSlice;
 use winnow::combinator::alt;
@@ -10,13 +11,13 @@ use crate::matcher::utils::ws;
 use crate::matcher::{LeaderMatcher, MatchOptions, ParseMatcherError};
 
 /// A matcher that can be applied on a single [ByteRecord].
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct RecordMatcher {
     pub(crate) kind: Kind,
     pub(crate) input: Option<String>,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub(crate) enum Kind {
     Leader(LeaderMatcher),
 }
@@ -89,6 +90,14 @@ impl Display for RecordMatcher {
             Some(ref input) => write!(f, "{}", input),
             _ => unimplemented!(),
         }
+    }
+}
+
+impl FromStr for RecordMatcher {
+    type Err = ParseMatcherError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::new(s)
     }
 }
 
