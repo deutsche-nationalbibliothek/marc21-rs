@@ -1,12 +1,12 @@
+use std::cell::RefCell;
 use std::fmt::{self, Display};
 use std::str::FromStr;
 
 use bstr::ByteSlice;
-use winnow::combinator::alt;
+use winnow::combinator::{alt, delimited, terminated};
 use winnow::prelude::*;
 
 use crate::ByteRecord;
-use crate::matcher::leader_matcher::parse_leader_matcher;
 use crate::matcher::utils::ws;
 use crate::matcher::{LeaderMatcher, MatchOptions, ParseMatcherError};
 
@@ -15,11 +15,6 @@ use crate::matcher::{LeaderMatcher, MatchOptions, ParseMatcherError};
 pub struct RecordMatcher {
     pub(crate) kind: Kind,
     pub(crate) input: Option<String>,
-}
-
-#[derive(Debug, PartialEq, Clone)]
-pub(crate) enum Kind {
-    Leader(LeaderMatcher),
 }
 
 impl RecordMatcher {
@@ -36,7 +31,8 @@ impl RecordMatcher {
     /// use marc21::matcher::RecordMatcher;
     ///
     /// let matcher = RecordMatcher::new("ldr.length == 1234")?;
-    /// let matcher = RecordMatcher::new("ldr.length != 99999")?;
+    /// let matcher = RecordMatcher::new("ldr.length < 99999")?;
+    /// let matcher = RecordMatcher::new("(ldr.encoding != 'a')")?;
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
@@ -69,19 +65,14 @@ impl RecordMatcher {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
+    #[inline(always)]
     pub fn is_match(
         &self,
         record: &ByteRecord,
         options: &MatchOptions,
     ) -> bool {
-        match self.kind {
-            Kind::Leader(ref m) => m.is_match(record.leader(), options),
-        }
+        self.kind.is_match(record, options)
     }
-}
-
-fn parse_kind(i: &mut &[u8]) -> ModalResult<Kind> {
-    ws(alt((parse_leader_matcher.map(Kind::Leader),))).parse_next(i)
 }
 
 impl Display for RecordMatcher {
@@ -122,6 +113,66 @@ impl<'de> serde::Deserialize<'de> for RecordMatcher {
     }
 }
 
+#[derive(Debug, PartialEq, Clone)]
+pub(crate) enum Kind {
+    Leader(LeaderMatcher),
+    Group(Box<Kind>),
+}
+
+impl Kind {
+    pub fn is_match(
+        &self,
+        record: &ByteRecord,
+        options: &MatchOptions,
+    ) -> bool {
+        match self {
+            Self::Leader(m) => m.is_match(record.leader(), options),
+            Self::Group(m) => m.is_match(record, options),
+        }
+    }
+}
+
+fn parse_kind(i: &mut &[u8]) -> ModalResult<Kind> {
+    ws(alt((parse_leader_matcher, parse_group_matcher))).parse_next(i)
+}
+
+#[inline(always)]
+fn parse_leader_matcher(i: &mut &[u8]) -> ModalResult<Kind> {
+    crate::matcher::leader_matcher::parse_leader_matcher
+        .map(Kind::Leader)
+        .parse_next(i)
+}
+
+thread_local! {
+    pub static KIND_GROUP_LEVEL: RefCell<u32> = const { RefCell::new(0) };
+}
+
+fn group_level_incr(i: &mut &[u8]) -> ModalResult<()> {
+    KIND_GROUP_LEVEL.with(|level| {
+        *level.borrow_mut() += 1;
+
+        if *level.borrow() > 12 {
+            Err(winnow::error::ParserError::from_input(i))
+        } else {
+            Ok(())
+        }
+    })
+}
+
+fn group_level_decr() {
+    KIND_GROUP_LEVEL.with(|level| *level.borrow_mut() -= 1);
+}
+
+fn parse_group_matcher(i: &mut &[u8]) -> ModalResult<Kind> {
+    delimited(
+        terminated(ws('('), group_level_incr),
+        alt((parse_leader_matcher, parse_group_matcher)),
+        ")".map(|_| group_level_decr()),
+    )
+    .map(|matcher| Kind::Group(Box::new(matcher)))
+    .parse_next(i)
+}
+
 #[cfg(test)]
 mod tests {
     use serde_test::{Token, assert_tokens};
@@ -152,5 +203,47 @@ mod tests {
                 }
             })
         )
+    }
+
+    #[test]
+    fn test_parse_group_matcher() {
+        macro_rules! parse_success {
+            ($i:expr, $r:expr) => {
+                assert_eq!(
+                    parse_group_matcher.parse($i.as_bytes()).unwrap(),
+                    $r
+                );
+            };
+        }
+
+        parse_success!(
+            "(ldr.length > 200)",
+            Kind::Group(Box::new(Kind::Leader(LeaderMatcher {
+                field: LeaderField::Length,
+                matcher: ComparisonMatcher {
+                    op: ComparisonOperator::Gt,
+                    value: 200u32.into(),
+                }
+            })))
+        );
+
+        parse_success!(
+            "((ldr.length > 200))",
+            Kind::Group(Box::new(Kind::Group(Box::new(Kind::Leader(
+                LeaderMatcher {
+                    field: LeaderField::Length,
+                    matcher: ComparisonMatcher {
+                        op: ComparisonOperator::Gt,
+                        value: 200u32.into(),
+                    }
+                }
+            )))))
+        );
+
+        assert!(
+            parse_group_matcher
+                .parse(b"(((((((((((((ldr.length > 10)))))))))))))")
+                .is_err()
+        );
     }
 }
