@@ -29,7 +29,7 @@ into a single output. In the following example the authority data files
 from the Integrated Authority Files ([GND]) are concatenated into the
 single file `GND.mrc.gz`.
 
-```shell
+```console
 $ marc21 concat -o GND.mrc.gz \
     authorities-gnd-geografikum_dnbmarc.mrc.gz \
     authorities-gnd-koerperschaft_dnbmarc.mrc.gz \
@@ -42,7 +42,7 @@ $ marc21 concat -o GND.mrc.gz \
 The number of records contained in the input can be determined using the
 `count` command:
 
-```shell
+```console
 $ marc21 count GND.mrc.gz
 10122437
 ```
@@ -51,7 +51,7 @@ The `filter` command extracts those records that fulfill a specified
 condition. For example, all records with a size greater than or equal to
 5000 can be extracted as follows:
 
-```shell
+```console
 $ marc21 filter 'ldr.length >= 5000' DUMP.mrc.gz -o ge5000.mrc.gz
 ```
 
@@ -61,7 +61,7 @@ are divided by a blank line. The output of the command can be used in
 combination with standard UNIX tools such as `grep`, `cut` or `sed`. In
 the following example, a single data record is printed on the console:
 
-```shell
+```console
 $ marc12 print tests/data/ada.mrc
 LDR 03612nz  a2200589nc 4500
 001 119232022
@@ -77,7 +77,7 @@ LDR 03612nz  a2200589nc 4500
 The `sample` command can be used to take random samples of a specified
 size:
 
-```shell
+```console
 $ marc21 sample 10 GND.mrc.gz -o SAMPLES.mrc.gz
 ```
 
@@ -88,7 +88,7 @@ $ marc21 sample 10 GND.mrc.gz -o SAMPLES.mrc.gz
 can be included in the `.zshrc` in order to enable tab completion in
 [ZSH]:
 
-```shell
+```zsh
 if type "marc21" > /dev/null ; then
     source <(marc21 completions zsh)
 fi
