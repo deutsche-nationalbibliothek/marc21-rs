@@ -15,6 +15,7 @@ The `marc21` tool provides the following commands:
 - `completions` — Generate shell completions (e.g. [Bash] or [ZSH])
 - `concat` — Concatenate records from multiple inputs (alias `cat`)
 - `count` — Print the number of records in the input data (alias `cnt`)
+- `filter` — Filters those records that fulfill a specified condition
 - `invalid` — Outputs invalid records that cannot be decoded
 - `print` — Print records in human readable format
 - `sample` — Selects a random permutation of records
@@ -38,7 +39,6 @@ $ marc21 concat -o GND.mrc.gz \
     authorities-gnd-werk_dnbmarc.mrc.gz
 ```
 
-
 The number of records contained in the input can be determined using the
 `count` command:
 
@@ -46,6 +46,15 @@ The number of records contained in the input can be determined using the
 $ marc21 count GND.mrc.gz
 10122437
 ```
+
+The `filter` command extracts those records that fulfill a specified
+condition. For example, all records with a size greater than or equal to
+5000 can be extracted as follows:
+
+```shell
+$ marc21 filter 'ldr.length >= 5000' DUMP.mrc.gz -o ge5000.mrc.gz
+```
+
 The `print` command output records in a human-readable format. The
 leader and fields are written on a separate line. Consecutive records
 are divided by a blank line. The output of the command can be used in

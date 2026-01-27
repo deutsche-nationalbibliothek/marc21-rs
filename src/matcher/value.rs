@@ -3,7 +3,7 @@ use winnow::prelude::*;
 use winnow::stream::AsChar;
 use winnow::token::{one_of, take};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub(crate) enum Value {
     Char(u8),
     U32(u32),
