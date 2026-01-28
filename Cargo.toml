@@ -12,8 +12,9 @@ members = ["crates/marc21-cli"]
 
 [features]
 default = ["performant"]
-performant = ["winnow/simd"]
+performant = ["winnow/simd", "perf-inline"]
 serde = ["dep:serde"]
+perf-inline = []
 
 [dependencies]
 bstr = { version = "1.12", features = ["std"], default-features = false }

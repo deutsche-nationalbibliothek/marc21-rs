@@ -284,6 +284,7 @@ impl Display for Leader {
     }
 }
 
+#[cfg_attr(feature = "perf-inline", inline(always))]
 pub(crate) fn parse_leader(i: &mut &[u8]) -> ModalResult<Leader> {
     seq! {Leader {
         length: parse_digits_u32,
