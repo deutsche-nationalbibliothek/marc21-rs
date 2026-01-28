@@ -198,6 +198,7 @@ fn parse_record<'a>(i: &mut &'a [u8]) -> ModalResult<ByteRecord<'a>> {
     })
 }
 
+#[cfg_attr(feature = "perf-inline", inline(always))]
 fn parse_indicator(i: &mut &[u8]) -> ModalResult<u8> {
     one_of(|b: u8| {
         b == b' ' || b.is_ascii_lowercase() || b.is_ascii_digit()
@@ -205,6 +206,7 @@ fn parse_indicator(i: &mut &[u8]) -> ModalResult<u8> {
     .parse_next(i)
 }
 
+#[cfg_attr(feature = "perf-inline", inline(always))]
 fn parse_subfields<'a>(
     i: &mut &'a [u8],
 ) -> ModalResult<Vec<Subfield<'a>>> {

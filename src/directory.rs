@@ -102,10 +102,12 @@ impl<'a> Entry<'a> {
         self.start as usize + self.length as usize
     }
 
+    #[cfg_attr(feature = "perf-inline", inline(always))]
     pub fn is_control_field(&self) -> bool {
         self.tag.is_control_field()
     }
 
+    #[cfg_attr(feature = "perf-inline", inline(always))]
     pub fn is_data_field(&self) -> bool {
         self.tag.is_data_field()
     }
@@ -185,6 +187,7 @@ impl<'a> Directory<'a> {
     }
 }
 
+#[cfg_attr(feature = "perf-inline", inline(always))]
 pub(crate) fn parse_directory<'a>(
     i: &mut &'a [u8],
 ) -> ModalResult<Directory<'a>> {
