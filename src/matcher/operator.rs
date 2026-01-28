@@ -25,6 +25,12 @@ pub(crate) fn parse_comparison_operator(
     .parse_next(i)
 }
 
+#[derive(Debug, PartialEq, Clone)]
+pub(crate) enum BooleanOperator {
+    And,
+    Or,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
