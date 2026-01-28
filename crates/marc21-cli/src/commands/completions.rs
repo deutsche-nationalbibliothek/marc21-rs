@@ -37,7 +37,6 @@ impl Completions {
         }
 
         wtr.flush()?;
-
         Ok(())
     }
 }

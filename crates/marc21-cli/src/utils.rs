@@ -6,9 +6,16 @@ use flate2::Compression;
 use flate2::write::GzEncoder;
 
 #[derive(Default)]
-pub(crate) struct WriterBuilder();
+pub(crate) struct WriterBuilder {
+    compression: Compression,
+}
 
 impl WriterBuilder {
+    pub fn with_compression(mut self, level: u32) -> Self {
+        self.compression = Compression::new(level);
+        self
+    }
+
     pub fn try_from_path_or_stdout(
         self,
         path: Option<PathBuf>,
@@ -26,7 +33,7 @@ impl WriterBuilder {
         } else {
             Ok(Writer::Gzip(GzEncoder::new(
                 Box::new(File::create(path)?),
-                Compression::best(),
+                self.compression,
             )))
         }
     }

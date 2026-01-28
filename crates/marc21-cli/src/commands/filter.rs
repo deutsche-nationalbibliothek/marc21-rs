@@ -26,6 +26,7 @@ impl Filter {
     ) -> Result<(), Box<dyn std::error::Error>> {
         let mut progress = Progress::new(self.common.progress);
         let mut output = WriterBuilder::default()
+            .with_compression(self.common.compression)
             .try_from_path_or_stdout(self.output)?;
 
         let options = Default::default();

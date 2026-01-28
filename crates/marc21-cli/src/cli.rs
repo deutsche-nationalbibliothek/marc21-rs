@@ -1,4 +1,4 @@
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, value_parser};
 
 use crate::commands::*;
 
@@ -27,4 +27,15 @@ pub(crate) struct CommonOpts {
     /// If set, show a progress bar
     #[arg(short, long, global = true)]
     pub(crate) progress: bool,
+
+    /// Specify compression level
+    #[arg(
+        short,
+        long,
+        value_parser = value_parser!(u32).range(0..=9),
+        default_value_t = 3,
+        value_name = "n",
+        requires = "output"
+    )]
+    pub(crate) compression: u32,
 }

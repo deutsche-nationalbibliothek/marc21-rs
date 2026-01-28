@@ -18,7 +18,7 @@ perf-inline = []
 
 [dependencies]
 bstr = { version = "1.12", features = ["std"], default-features = false }
-flate2 = { version = "1.1" }
+flate2 = { version = "1.1", features = ["zlib-rs"], default-features = false }
 serde = { version = "1.0", optional = true }
 winnow = { version = "0.7" }
 
