@@ -27,4 +27,3 @@ serde_test = { version = "1.0" }
 [[test]]
 path = "tests/fuzz/lib.rs"
 name = "fuzz-regressions"
-
