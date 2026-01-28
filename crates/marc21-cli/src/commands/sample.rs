@@ -37,6 +37,7 @@ impl Sample {
         let sample_size = self.sample_size as usize;
         let mut progress = Progress::new(self.common.progress);
         let mut output = WriterBuilder::default()
+            .with_compression(self.common.compression)
             .try_from_path_or_stdout(self.output)?;
 
         let mut rng: StdRng = match self.seed {
