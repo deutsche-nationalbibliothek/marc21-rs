@@ -2,6 +2,7 @@
 //! its element.
 
 pub use error::ParseMatcherError;
+pub use indicator_matcher::IndicatorMatcher;
 pub use leader_matcher::LeaderMatcher;
 pub use options::MatchOptions;
 pub use record_matcher::RecordMatcher;
@@ -9,6 +10,7 @@ pub use tag_matcher::TagMatcher;
 
 mod comparison_matcher;
 mod error;
+mod indicator_matcher;
 mod leader_matcher;
 mod operator;
 mod options;
