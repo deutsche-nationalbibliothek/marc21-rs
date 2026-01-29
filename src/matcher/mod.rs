@@ -5,6 +5,7 @@ pub use error::ParseMatcherError;
 pub use leader_matcher::LeaderMatcher;
 pub use options::MatchOptions;
 pub use record_matcher::RecordMatcher;
+pub use tag_matcher::TagMatcher;
 
 mod comparison_matcher;
 mod error;
@@ -12,5 +13,6 @@ mod leader_matcher;
 mod operator;
 mod options;
 mod record_matcher;
+mod tag_matcher;
 mod utils;
 mod value;
