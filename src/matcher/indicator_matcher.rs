@@ -28,6 +28,11 @@ impl IndicatorMatcher {
     /// use marc21::matcher::IndicatorMatcher;
     ///
     /// let matcher = IndicatorMatcher::new("/#1")?;
+    /// let matcher = IndicatorMatcher::new("/12")?;
+    /// let matcher = IndicatorMatcher::new("/1[23]")?;
+    /// let matcher = IndicatorMatcher::new("/1[2-5]")?;
+    /// let matcher = IndicatorMatcher::new("/2.")?;
+    /// let matcher = IndicatorMatcher::new("/*")?;
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
@@ -41,16 +46,6 @@ impl IndicatorMatcher {
 
     /// Returns true if the indicator matcher matches against the given
     /// field.
-    ///
-    /// # Example
-    ///
-    /// ```rust
-    /// use marc21::matcher::IndicatorMatcher;
-    ///
-    /// let matcher = IndicatorMatcher::new("/#1")?;
-    ///
-    /// # Ok::<(), Box<dyn std::error::Error>>(())
-    /// ```
     pub fn is_match(&self, field: &Field) -> bool {
         match field {
             Field::Control(_) => true,
