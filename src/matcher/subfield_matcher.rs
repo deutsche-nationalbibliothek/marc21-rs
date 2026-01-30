@@ -52,7 +52,7 @@ impl SubfieldMatcher {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn is_match<'a, S: Iterator<Item = &'a Subfield<'a>>>(
+    pub fn is_match<'a, S: IntoIterator<Item = &'a Subfield<'a>>>(
         &self,
         subfields: S,
         options: &MatchOptions,
