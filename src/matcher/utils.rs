@@ -23,7 +23,7 @@ where
 }
 
 pub(crate) fn parse_usize(i: &mut &[u8]) -> ModalResult<usize> {
-    repeat(1.., one_of(AsChar::is_dec_digit))
+    repeat(1..10, one_of(AsChar::is_dec_digit))
         .fold(|| 0u64, |acc, i| acc * 10 + ((i - b'0') as u64))
         .try_map(usize::try_from)
         .parse_next(i)
