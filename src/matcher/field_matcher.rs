@@ -6,15 +6,19 @@ use crate::matcher::indicator_matcher::parse_indicator_matcher;
 use crate::matcher::operator::{
     ComparisonOperator, parse_comparison_operator,
 };
+use crate::matcher::quantifier::{Quantifier, parse_quantifier};
+use crate::matcher::subfield_matcher::parse_subfield_matcher_short_form;
 use crate::matcher::tag_matcher::parse_tag_matcher;
 use crate::matcher::utils::{parse_usize, ws};
 use crate::matcher::{
-    IndicatorMatcher, MatchOptions, ParseMatcherError, TagMatcher,
+    IndicatorMatcher, MatchOptions, ParseMatcherError, SubfieldMatcher,
+    TagMatcher,
 };
 
 /// A matcher that can be applied on a list of [Field]s.
 #[derive(Debug, PartialEq, Clone)]
 pub enum FieldMatcher {
+    Subfield(SubfieldMatcher_),
     Exists(ExistsMatcher),
     Count(CountMatcher),
 }
@@ -76,8 +80,44 @@ impl FieldMatcher {
         options: &MatchOptions,
     ) -> bool {
         match self {
+            Self::Subfield(m) => m.is_match(fields, options),
             Self::Exists(m) => m.is_match(fields, options),
             Self::Count(m) => m.is_match(fields, options),
+        }
+    }
+}
+
+#[derive(Debug, PartialEq, Clone)]
+pub struct SubfieldMatcher_ {
+    quantifier: Quantifier,
+    tag_matcher: TagMatcher,
+    indicator_matcher: IndicatorMatcher,
+    subfield_matcher: SubfieldMatcher,
+}
+
+impl SubfieldMatcher_ {
+    pub fn is_match<'a, F: Iterator<Item = &'a Field<'a>>>(
+        &self,
+        fields: F,
+        options: &MatchOptions,
+    ) -> bool {
+        let mut fields = fields.into_iter().filter(|field| {
+            self.tag_matcher.is_match(field.tag())
+                && self.indicator_matcher.is_match(field)
+        });
+
+        let check = |field: &Field| -> bool {
+            match field {
+                Field::Control(_) => false,
+                Field::Data(df) => self
+                    .subfield_matcher
+                    .is_match(df.subfields(), options),
+            }
+        };
+
+        match self.quantifier {
+            Quantifier::All => fields.all(check),
+            Quantifier::Any => fields.any(check),
         }
     }
 }
@@ -141,9 +181,34 @@ pub(crate) fn parse_field_matcher(
     i: &mut &[u8],
 ) -> ModalResult<FieldMatcher> {
     alt((
+        parse_subfield_matcher.map(FieldMatcher::Subfield),
         parse_exists_matcher.map(FieldMatcher::Exists),
         parse_count_matcher.map(FieldMatcher::Count),
     ))
+    .parse_next(i)
+}
+
+fn parse_subfield_matcher(
+    i: &mut &[u8],
+) -> ModalResult<SubfieldMatcher_> {
+    alt((parse_subfield_matcher_short,)).parse_next(i)
+}
+
+fn parse_subfield_matcher_short(
+    i: &mut &[u8],
+) -> ModalResult<SubfieldMatcher_> {
+    ws((
+        opt(parse_quantifier).map(Option::unwrap_or_default),
+        parse_tag_matcher,
+        opt(parse_indicator_matcher).map(Option::unwrap_or_default),
+        preceded('.', parse_subfield_matcher_short_form),
+    ))
+    .map(|(q, t, i, s)| SubfieldMatcher_ {
+        quantifier: q,
+        tag_matcher: t,
+        indicator_matcher: i,
+        subfield_matcher: s,
+    })
     .parse_next(i)
 }
 
