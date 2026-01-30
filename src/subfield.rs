@@ -48,7 +48,7 @@ impl<'a> Subfield<'a> {
 
 impl Display for Subfield<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "${} {}", self.code, self.value.as_bstr())
+        write!(f, "${} {}", self.code as char, self.value.as_bstr())
     }
 }
 
