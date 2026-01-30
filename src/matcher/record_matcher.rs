@@ -12,7 +12,9 @@ use winnow::prelude::*;
 use crate::ByteRecord;
 use crate::matcher::operator::BooleanOperator;
 use crate::matcher::utils::ws;
-use crate::matcher::{LeaderMatcher, MatchOptions, ParseMatcherError};
+use crate::matcher::{
+    FieldMatcher, LeaderMatcher, MatchOptions, ParseMatcherError,
+};
 
 /// A matcher that can be applied on a single [ByteRecord].
 #[derive(Debug, PartialEq, Clone)]
@@ -144,6 +146,7 @@ impl<'de> serde::Deserialize<'de> for RecordMatcher {
 #[derive(Debug, PartialEq, Clone)]
 pub(crate) enum MatcherKind {
     Leader(LeaderMatcher),
+    Field(FieldMatcher),
     Group(Box<MatcherKind>),
     Composite {
         lhs: Box<MatcherKind>,
@@ -165,6 +168,7 @@ impl MatcherKind {
 
         match self {
             Self::Leader(m) => m.is_match(record.leader(), options),
+            Self::Field(m) => m.is_match(record.fields(), options),
             Self::Group(m) => m.is_match(record, options),
             Self::Composite { lhs, op, rhs } => {
                 let result = lhs.is_match(record, options);
@@ -215,6 +219,7 @@ fn parse_kind(i: &mut &[u8]) -> ModalResult<MatcherKind> {
     ws(alt((
         parse_composite_matcher,
         parse_leader_matcher,
+        parse_field_matcher,
         parse_group_matcher,
     )))
     .parse_next(i)
@@ -224,6 +229,13 @@ fn parse_kind(i: &mut &[u8]) -> ModalResult<MatcherKind> {
 fn parse_leader_matcher(i: &mut &[u8]) -> ModalResult<MatcherKind> {
     crate::matcher::leader_matcher::parse_leader_matcher
         .map(MatcherKind::Leader)
+        .parse_next(i)
+}
+
+#[inline(always)]
+fn parse_field_matcher(i: &mut &[u8]) -> ModalResult<MatcherKind> {
+    crate::matcher::field_matcher::parse_field_matcher
+        .map(MatcherKind::Field)
         .parse_next(i)
 }
 
@@ -266,8 +278,12 @@ fn parse_composite_and_matcher(
     i: &mut &[u8],
 ) -> ModalResult<MatcherKind> {
     fn parse_atom(i: &mut &[u8]) -> ModalResult<MatcherKind> {
-        ws(alt((parse_group_matcher, parse_leader_matcher)))
-            .parse_next(i)
+        ws(alt((
+            parse_group_matcher,
+            parse_field_matcher,
+            parse_leader_matcher,
+        )))
+        .parse_next(i)
     }
 
     (parse_atom, repeat(1.., preceded(ws("&&"), parse_atom)))
@@ -284,6 +300,7 @@ fn parse_composite_or_matcher(
         ws(alt((
             parse_composite_and_matcher,
             parse_group_matcher,
+            parse_field_matcher,
             parse_leader_matcher,
         )))
         .parse_next(i)

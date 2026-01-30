@@ -20,6 +20,13 @@ impl<'a> Field<'a> {
             Self::Data(df) => df.validate(),
         }
     }
+
+    pub fn tag(&self) -> &Tag<'a> {
+        match self {
+            Self::Control(cf) => cf.tag(),
+            Self::Data(df) => df.tag(),
+        }
+    }
 }
 
 impl Display for Field<'_> {

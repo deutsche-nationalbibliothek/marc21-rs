@@ -8,7 +8,7 @@ use crate::matcher::ParseMatcherError;
 use crate::matcher::utils::ws;
 
 /// A matcher that can be applied on a [Tag].
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum TagMatcher {
     Tag(Vec<u8>),
     Pattern {
@@ -87,7 +87,9 @@ impl PartialEq<u8> for PatternConstituent {
 }
 
 #[cfg_attr(feature = "perf-inline", inline(always))]
-fn parse_tag_matcher(i: &mut &[u8]) -> ModalResult<TagMatcher> {
+pub(crate) fn parse_tag_matcher(
+    i: &mut &[u8],
+) -> ModalResult<TagMatcher> {
     alt((parse_tag, parse_pattern)).parse_next(i)
 }
 

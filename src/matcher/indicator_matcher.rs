@@ -82,7 +82,7 @@ impl PartialEq<u8> for Constituent {
     }
 }
 
-fn parse_indicator_matcher(
+pub(crate) fn parse_indicator_matcher(
     i: &mut &[u8],
 ) -> ModalResult<IndicatorMatcher> {
     preceded(b'/', alt((parse_wildcard, parse_values, parse_pattern)))

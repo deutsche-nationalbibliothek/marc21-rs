@@ -48,11 +48,12 @@ $ marc21 count GND.mrc.gz
 ```
 
 The `filter` command extracts those records that fulfill a specified
-condition. For example, all records with a size greater than or equal to
-5000 can be extracted as follows:
+condition. For example, all records with status `z` and at least one
+field `100` with indicators `1` and `#` (space) can be filtered as
+follows:
 
 ```console
-$ marc21 filter 'ldr.length >= 5000' DUMP.mrc.gz -o ge5000.mrc.gz
+$ marc21 filter 'ldr.status == 'z' && 100/1#?' DUMP.mrc.gz -o out.mrc
 ```
 
 The `print` command output records in a human-readable format. The
