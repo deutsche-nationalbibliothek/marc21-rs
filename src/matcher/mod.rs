@@ -7,6 +7,7 @@ pub use indicator_matcher::IndicatorMatcher;
 pub use leader_matcher::LeaderMatcher;
 pub use options::MatchOptions;
 pub use record_matcher::RecordMatcher;
+pub use subfield_matcher::SubfieldMatcher;
 pub use tag_matcher::TagMatcher;
 
 mod comparison_matcher;
@@ -18,6 +19,7 @@ mod operator;
 mod options;
 mod quantifier;
 mod record_matcher;
+mod subfield_matcher;
 mod tag_matcher;
 mod utils;
 mod value;

@@ -2,14 +2,12 @@ use winnow::combinator::alt;
 use winnow::prelude::*;
 
 #[derive(Debug, PartialEq, Clone, Default)]
-#[allow(dead_code)]
 pub(crate) enum Quantifier {
     All,
     #[default]
     Any,
 }
 
-#[allow(dead_code)]
 pub(crate) fn parse_quantifier(
     i: &mut &[u8],
 ) -> ModalResult<Quantifier> {

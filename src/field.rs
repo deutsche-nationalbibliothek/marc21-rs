@@ -163,11 +163,11 @@ mod tests {
             indicator2: b' ',
             subfields: vec![
                 Subfield {
-                    code: 'a',
+                    code: b'a',
                     value: b"119232022",
                 },
                 Subfield {
-                    code: '2',
+                    code: b'2',
                     value: b"gnd",
                 },
             ],

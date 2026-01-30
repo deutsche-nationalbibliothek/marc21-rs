@@ -6,7 +6,9 @@ use crate::matcher::MatchOptions;
 use crate::matcher::operator::{
     ComparisonOperator, parse_comparison_operator,
 };
-use crate::matcher::value::{Value, parse_value_char, parse_value_u32};
+use crate::matcher::value::{
+    Value, parse_value_char, parse_value_string, parse_value_u32,
+};
 
 #[derive(Debug, PartialEq, Clone)]
 pub(crate) struct ComparisonMatcher {
@@ -50,6 +52,16 @@ pub(crate) fn parse_comparison_matcher_char(
     seq! { ComparisonMatcher {
         op: delimited(multispace0, parse_comparison_operator, multispace1),
         value: parse_value_char,
+    }}
+    .parse_next(i)
+}
+
+pub(crate) fn parse_comparison_matcher_string(
+    i: &mut &[u8],
+) -> ModalResult<ComparisonMatcher> {
+    seq! { ComparisonMatcher {
+        op: delimited(multispace0, parse_comparison_operator, multispace1),
+        value: parse_value_string,
     }}
     .parse_next(i)
 }
