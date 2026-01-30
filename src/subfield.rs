@@ -11,7 +11,7 @@ use crate::parse::*;
 
 #[derive(Debug, PartialEq)]
 pub struct Subfield<'a> {
-    pub(crate) code: char,
+    pub(crate) code: u8,
     pub(crate) value: &'a [u8],
 }
 
@@ -25,7 +25,7 @@ impl<'a> Subfield<'a> {
     }
 
     #[inline(always)]
-    pub fn code(&self) -> &char {
+    pub fn code(&self) -> &u8 {
         &self.code
     }
 
@@ -73,10 +73,7 @@ pub(crate) fn parse_subfield<'a>(
             }),
         ),
     )
-    .map(|(code, value): (u8, &[u8])| Subfield {
-        code: code as char,
-        value,
-    })
+    .map(|(code, value): (u8, &[u8])| Subfield { code, value })
     .parse_next(i)
 }
 
@@ -89,7 +86,7 @@ mod tests {
         assert_eq!(
             parse_subfield.parse_peek(b"\x1fa123\x1f").unwrap().1,
             Subfield {
-                code: 'a',
+                code: b'a',
                 value: b"123",
             }
         );
@@ -97,7 +94,7 @@ mod tests {
         assert_eq!(
             parse_subfield.parse_peek(b"\x1f1abc\x1f").unwrap().1,
             Subfield {
-                code: '1',
+                code: b'1',
                 value: b"abc",
             }
         );
@@ -105,7 +102,7 @@ mod tests {
         assert_eq!(
             parse_subfield.parse_peek(b"\x1fa123\x1e").unwrap().1,
             Subfield {
-                code: 'a',
+                code: b'a',
                 value: b"123",
             }
         );

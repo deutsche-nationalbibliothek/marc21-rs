@@ -241,11 +241,11 @@ mod tests {
             parse_subfields.parse(b"\x1fa123\x1fb456\x1e").unwrap(),
             vec![
                 Subfield {
-                    code: 'a',
+                    code: b'a',
                     value: b"123".as_bstr(),
                 },
                 Subfield {
-                    code: 'b',
+                    code: b'b',
                     value: b"456".as_bstr(),
                 },
             ]
