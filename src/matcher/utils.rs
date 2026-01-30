@@ -32,17 +32,14 @@ pub(crate) fn parse_usize(i: &mut &[u8]) -> ModalResult<usize> {
 pub(crate) fn parse_codes(i: &mut &[u8]) -> ModalResult<Vec<u8>> {
     alt((
         one_of(AsChar::is_alphanum).map(|code| vec![code]),
-        delimited(
-            ws('['),
-            take_while(1.., AsChar::is_alphanum),
-            ws(']'),
-        )
-        .map(|codes: &[u8]| {
-            let mut codes = codes.to_vec();
-            codes.sort_unstable();
-            codes.dedup();
-            codes
-        }),
+        delimited('[', take_while(1.., AsChar::is_alphanum), ']').map(
+            |codes: &[u8]| {
+                let mut codes = codes.to_vec();
+                codes.sort_unstable();
+                codes.dedup();
+                codes
+            },
+        ),
     ))
     .parse_next(i)
 }

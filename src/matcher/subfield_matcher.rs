@@ -1,4 +1,5 @@
-use winnow::combinator::{alt, opt, seq};
+use winnow::ascii::multispace1;
+use winnow::combinator::{alt, opt, seq, terminated};
 use winnow::prelude::*;
 
 use crate::Subfield;
@@ -6,7 +7,7 @@ use crate::matcher::comparison_matcher::{
     ComparisonMatcher as CompMatcher, parse_comparison_matcher_string,
 };
 use crate::matcher::quantifier::{Quantifier, parse_quantifier};
-use crate::matcher::utils::{parse_codes, ws};
+use crate::matcher::utils::parse_codes;
 use crate::matcher::{MatchOptions, ParseMatcherError};
 
 pub enum SubfieldMatcher {
@@ -102,8 +103,8 @@ fn parse_comparison_matcher(
     i: &mut &[u8],
 ) -> ModalResult<ComparisonMatcher> {
     seq! { ComparisonMatcher {
-        quantifier: opt(parse_quantifier).map(Option::unwrap_or_default),
-        codes: ws(parse_codes),
+        quantifier: opt(terminated(parse_quantifier, multispace1)).map(Option::unwrap_or_default),
+        codes: terminated(parse_codes, multispace1),
         matcher: parse_comparison_matcher_string,
     }}
     .parse_next(i)
@@ -131,18 +132,6 @@ mod tests {
                 matcher: CompMatcher {
                     op: ComparisonOperator::Eq,
                     value: Value::String("abc".as_bytes().to_vec()),
-                }
-            }
-        );
-
-        assert_eq!(
-            parse_comparison_matcher.parse(b"  0 == 'abc'").unwrap(),
-            ComparisonMatcher {
-                quantifier: Quantifier::Any,
-                codes: vec![b'0'],
-                matcher: CompMatcher {
-                    op: ComparisonOperator::Eq,
-                    value: "abc".as_bytes().into()
                 }
             }
         );
@@ -207,6 +196,10 @@ mod tests {
                     value: "'abc'".as_bytes().into()
                 }
             }
+        );
+
+        assert!(
+            parse_comparison_matcher.parse(b"  0 == 'abc'").is_err()
         );
     }
 }
