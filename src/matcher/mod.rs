@@ -16,6 +16,7 @@ mod indicator_matcher;
 mod leader_matcher;
 mod operator;
 mod options;
+mod quantifier;
 mod record_matcher;
 mod tag_matcher;
 mod utils;
