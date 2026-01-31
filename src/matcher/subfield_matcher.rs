@@ -10,6 +10,7 @@ use crate::matcher::quantifier::{Quantifier, parse_quantifier};
 use crate::matcher::utils::parse_codes;
 use crate::matcher::{MatchOptions, ParseMatcherError};
 
+#[derive(Debug, PartialEq, Clone)]
 pub enum SubfieldMatcher {
     Comparison(ComparisonMatcher),
 }
@@ -64,7 +65,7 @@ impl SubfieldMatcher {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct ComparisonMatcher {
     quantifier: Quantifier,
     codes: Vec<u8>,
@@ -92,7 +93,7 @@ impl ComparisonMatcher {
     }
 }
 
-fn parse_subfield_matcher(
+pub(crate) fn parse_subfield_matcher(
     i: &mut &[u8],
 ) -> ModalResult<SubfieldMatcher> {
     alt((parse_comparison_matcher.map(SubfieldMatcher::Comparison),))
@@ -108,6 +109,23 @@ fn parse_comparison_matcher(
         matcher: parse_comparison_matcher_string,
     }}
     .parse_next(i)
+}
+
+pub(crate) fn parse_subfield_matcher_short_form(
+    i: &mut &[u8],
+) -> ModalResult<SubfieldMatcher> {
+    (
+        terminated(parse_codes, multispace1),
+        parse_comparison_matcher_string,
+    )
+        .map(|(codes, matcher)| {
+            SubfieldMatcher::Comparison(ComparisonMatcher {
+                quantifier: Quantifier::Any,
+                codes,
+                matcher,
+            })
+        })
+        .parse_next(i)
 }
 
 #[cfg(test)]
