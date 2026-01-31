@@ -270,6 +270,18 @@ mod tests {
         }
 
         parse_success!(
+            "400.[ab] == 'abc'",
+            FieldMatcher::Subfield(SubfieldMatcher_ {
+                quantifier: Quantifier::Any,
+                tag_matcher: TagMatcher::new("400")?,
+                indicator_matcher: IndicatorMatcher::None,
+                subfield_matcher: SubfieldMatcher::new(
+                    "[ab] == 'abc'"
+                )?,
+            })
+        );
+
+        parse_success!(
             "001?",
             FieldMatcher::Exists(ExistsMatcher {
                 tag_matcher: TagMatcher::new("001")?,
