@@ -50,6 +50,13 @@ impl Progress {
 
     #[inline(always)]
     pub(crate) fn finish(&self) {
-        self.bar.finish_and_clear();
+        self.bar.set_style(
+            ProgressStyle::with_template(
+                "{msg}, elapsed: {elapsed_precise}",
+            )
+            .unwrap(),
+        );
+
+        self.bar.finish();
     }
 }
