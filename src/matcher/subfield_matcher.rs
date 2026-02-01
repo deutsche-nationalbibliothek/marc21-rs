@@ -10,8 +10,14 @@ use crate::matcher::quantifier::{Quantifier, parse_quantifier};
 use crate::matcher::utils::parse_codes;
 use crate::matcher::{MatchOptions, ParseMatcherError};
 
+/// A matcher that can be applied on a list of [Subfield]s.
 #[derive(Debug, PartialEq, Clone)]
-pub enum SubfieldMatcher {
+pub struct SubfieldMatcher {
+    pub(crate) kind: MatcherKind,
+}
+
+#[derive(Debug, PartialEq, Clone)]
+pub(crate) enum MatcherKind {
     Comparison(ComparisonMatcher),
 }
 
@@ -39,6 +45,32 @@ impl SubfieldMatcher {
             .map_err(ParseMatcherError::from_parse)
     }
 
+    /// Whether the given subfields matches against the matcher or not.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21::Subfield;
+    /// use marc21::matcher::SubfieldMatcher;
+    ///
+    /// let subfield = Subfield::from_bytes(b"\x1f0abc")?;
+    /// let matcher = SubfieldMatcher::new("0 == 'abc'")?;
+    ///
+    /// assert!(matcher.is_match(&subfield, &Default::default()));
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    #[inline(always)]
+    pub fn is_match<'a, S: IntoIterator<Item = &'a Subfield<'a>>>(
+        &self,
+        subfields: S,
+        options: &MatchOptions,
+    ) -> bool {
+        self.kind.is_match(subfields, options)
+    }
+}
+
+impl MatcherKind {
     /// Whether the given subfields matches against the matcher or not.
     ///
     /// # Example
@@ -93,10 +125,18 @@ impl ComparisonMatcher {
     }
 }
 
+#[cfg_attr(feature = "perf-inline", inline(always))]
 pub(crate) fn parse_subfield_matcher(
     i: &mut &[u8],
 ) -> ModalResult<SubfieldMatcher> {
-    alt((parse_comparison_matcher.map(SubfieldMatcher::Comparison),))
+    parse_matcher_kind
+        .map(|kind| SubfieldMatcher { kind })
+        .parse_next(i)
+}
+
+#[cfg_attr(feature = "perf-inline", inline(always))]
+fn parse_matcher_kind(i: &mut &[u8]) -> ModalResult<MatcherKind> {
+    alt((parse_comparison_matcher.map(MatcherKind::Comparison),))
         .parse_next(i)
 }
 
@@ -118,12 +158,12 @@ pub(crate) fn parse_subfield_matcher_short_form(
         terminated(parse_codes, multispace1),
         parse_comparison_matcher_string,
     )
-        .map(|(codes, matcher)| {
-            SubfieldMatcher::Comparison(ComparisonMatcher {
+        .map(|(codes, matcher)| SubfieldMatcher {
+            kind: MatcherKind::Comparison(ComparisonMatcher {
                 quantifier: Quantifier::Any,
                 codes,
                 matcher,
-            })
+            }),
         })
         .parse_next(i)
 }
