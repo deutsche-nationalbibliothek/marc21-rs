@@ -1,7 +1,11 @@
-use winnow::combinator::{alt, opt, preceded, terminated};
+use winnow::ascii::multispace1;
+use winnow::combinator::{alt, opt, preceded, seq, terminated};
 use winnow::prelude::*;
 
 use crate::Field;
+use crate::matcher::comparison_matcher::{
+    ComparisonMatcher, parse_comparison_matcher_string,
+};
 use crate::matcher::indicator_matcher::parse_indicator_matcher;
 use crate::matcher::operator::{
     ComparisonOperator, parse_comparison_operator,
@@ -19,6 +23,7 @@ use crate::matcher::{
 #[derive(Debug, PartialEq, Clone)]
 pub enum FieldMatcher {
     Subfield(SubfieldMatcher_),
+    Control(ControlFieldMatcher),
     Exists(ExistsMatcher),
     Count(CountMatcher),
 }
@@ -81,6 +86,7 @@ impl FieldMatcher {
     ) -> bool {
         match self {
             Self::Subfield(m) => m.is_match(fields, options),
+            Self::Control(m) => m.is_match(fields, options),
             Self::Exists(m) => m.is_match(fields, options),
             Self::Count(m) => m.is_match(fields, options),
         }
@@ -177,11 +183,45 @@ impl CountMatcher {
     }
 }
 
+#[derive(Debug, PartialEq, Clone)]
+pub struct ControlFieldMatcher {
+    quantifier: Quantifier,
+    tag_matcher: TagMatcher,
+    matcher: ComparisonMatcher,
+}
+
+impl ControlFieldMatcher {
+    pub fn is_match<'a, F: Iterator<Item = &'a Field<'a>>>(
+        &self,
+        fields: F,
+        options: &MatchOptions,
+    ) -> bool {
+        let mut fields = fields
+            .into_iter()
+            .filter(|field| self.tag_matcher.is_match(field.tag()));
+
+        let check = |field: &Field| -> bool {
+            match field {
+                Field::Data(_) => false,
+                Field::Control(cf) => {
+                    self.matcher.is_match(cf.value(), options)
+                }
+            }
+        };
+
+        match self.quantifier {
+            Quantifier::All => fields.all(check),
+            Quantifier::Any => fields.any(check),
+        }
+    }
+}
+
 pub(crate) fn parse_field_matcher(
     i: &mut &[u8],
 ) -> ModalResult<FieldMatcher> {
     alt((
         parse_subfield_matcher.map(FieldMatcher::Subfield),
+        parse_control_field_matcher.map(FieldMatcher::Control),
         parse_exists_matcher.map(FieldMatcher::Exists),
         parse_count_matcher.map(FieldMatcher::Count),
     ))
@@ -249,6 +289,17 @@ fn parse_count_matcher(i: &mut &[u8]) -> ModalResult<CountMatcher> {
             }
         },
     ))
+    .parse_next(i)
+}
+
+fn parse_control_field_matcher(
+    i: &mut &[u8],
+) -> ModalResult<ControlFieldMatcher> {
+    seq! { ControlFieldMatcher {
+        quantifier: opt(terminated(parse_quantifier, multispace1)).map(Option::unwrap_or_default),
+        tag_matcher: terminated(parse_tag_matcher, multispace1),
+        matcher: parse_comparison_matcher_string,
+    }}
     .parse_next(i)
 }
 
