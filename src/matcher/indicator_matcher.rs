@@ -48,7 +48,9 @@ impl IndicatorMatcher {
     /// field.
     pub fn is_match(&self, field: &Field) -> bool {
         match field {
-            Field::Control(_) => true,
+            Field::Control(_) => {
+                matches!(self, Self::None | Self::Wildcard)
+            }
             Field::Data(df) => match self {
                 Self::Values(ind1, ind2) => {
                     ind1 == df.indicator1() && ind2 == df.indicator2()
@@ -86,6 +88,15 @@ pub(crate) fn parse_indicator_matcher(
     i: &mut &[u8],
 ) -> ModalResult<IndicatorMatcher> {
     preceded(b'/', alt((parse_wildcard, parse_values, parse_pattern)))
+        .parse_next(i)
+}
+
+#[cfg_attr(feature = "perf-inline", inline(always))]
+pub(crate) fn parse_indicator_matcher_opt(
+    i: &mut &[u8],
+) -> ModalResult<IndicatorMatcher> {
+    opt(parse_indicator_matcher)
+        .map(Option::unwrap_or_default)
         .parse_next(i)
 }
 

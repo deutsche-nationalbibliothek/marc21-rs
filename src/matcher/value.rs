@@ -15,18 +15,63 @@ pub(crate) enum Value {
     U32(u32),
 }
 
-impl PartialOrd for Value {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        use Value::*;
-
-        match (self, other) {
-            (Char(lhs), Char(rhs)) => lhs.partial_cmp(rhs),
-            (U32(lhs), U32(rhs)) => lhs.partial_cmp(rhs),
-            (String(lhs), String(rhs)) => {
-                lhs.as_bstr().partial_cmp(rhs)
-            }
-            _ => unreachable!(),
+impl PartialEq<Value> for &[u8] {
+    #[cfg_attr(feature = "perf-inline", inline(always))]
+    fn eq(&self, other: &Value) -> bool {
+        match other {
+            Value::String(value) => self == value,
+            _ => false,
         }
+    }
+}
+
+impl PartialOrd<Value> for &[u8] {
+    fn partial_cmp(&self, other: &Value) -> Option<std::cmp::Ordering> {
+        let Value::String(other) = other else {
+            return None;
+        };
+
+        self.as_bstr().partial_cmp(other.as_bstr())
+    }
+}
+
+impl PartialEq<Value> for u8 {
+    #[cfg_attr(feature = "perf-inline", inline(always))]
+    fn eq(&self, other: &Value) -> bool {
+        match other {
+            Value::Char(value) => self == value,
+            _ => false,
+        }
+    }
+}
+
+impl PartialOrd<Value> for u8 {
+    fn partial_cmp(&self, other: &Value) -> Option<std::cmp::Ordering> {
+        let Value::Char(other) = other else {
+            return None;
+        };
+
+        self.partial_cmp(other)
+    }
+}
+
+impl PartialEq<Value> for u32 {
+    #[cfg_attr(feature = "perf-inline", inline(always))]
+    fn eq(&self, other: &Value) -> bool {
+        match other {
+            Value::U32(value) => self == value,
+            _ => false,
+        }
+    }
+}
+
+impl PartialOrd<Value> for u32 {
+    fn partial_cmp(&self, other: &Value) -> Option<std::cmp::Ordering> {
+        let Value::U32(other) = other else {
+            return None;
+        };
+
+        self.partial_cmp(other)
     }
 }
 

@@ -11,6 +11,7 @@ pub use subfield_matcher::SubfieldMatcher;
 pub use tag_matcher::TagMatcher;
 
 mod comparison_matcher;
+mod control_field_matcher;
 mod error;
 mod field_matcher;
 mod indicator_matcher;

@@ -2,6 +2,7 @@ use std::error::Error;
 use std::fmt::{self, Display};
 use std::ops::Range;
 
+use bstr::{BString, ByteSlice};
 use winnow::error::{ContextError, ParseError};
 
 /// An error that can occur when parsing matchers.
@@ -9,7 +10,7 @@ use winnow::error::{ContextError, ParseError};
 pub struct ParseMatcherError {
     message: String,
     span: Range<usize>,
-    data: Vec<u8>,
+    data: BString,
 }
 
 impl ParseMatcherError {
@@ -17,7 +18,7 @@ impl ParseMatcherError {
         Self {
             message: err.inner().to_string(),
             span: err.char_span(),
-            data: err.input().to_vec(),
+            data: err.input().as_bstr().into(),
         }
     }
 
