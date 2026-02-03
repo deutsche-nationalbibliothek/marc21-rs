@@ -139,6 +139,15 @@ pub(crate) fn parse_value_string(i: &mut &[u8]) -> ModalResult<Value> {
     .parse_next(i)
 }
 
+pub(crate) fn parse_byte_string(i: &mut &[u8]) -> ModalResult<Vec<u8>> {
+    dispatch! { one_of(b"'\"");
+        b'\'' => terminated(parse_quoted_string(Quotes::Single), '\''),
+        b'"' => terminated(parse_quoted_string(Quotes::Double), '"'),
+        _ => fail::<_, Vec<u8>, _>,
+    }
+    .parse_next(i)
+}
+
 fn parse_quoted_string<'a, E: ParserError<&'a [u8]>>(
     quotes: Quotes,
 ) -> impl Parser<&'a [u8], Vec<u8>, E> {

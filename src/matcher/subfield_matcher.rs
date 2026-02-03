@@ -1,13 +1,15 @@
+use bstr::Finder;
 use winnow::ascii::multispace1;
-use winnow::combinator::{alt, opt, seq, terminated};
+use winnow::combinator::{alt, empty, seq, terminated};
 use winnow::prelude::*;
 
 use crate::Subfield;
 use crate::matcher::comparison_matcher::{
     ComparisonMatcher as CompMatcher, parse_comparison_matcher_string,
 };
-use crate::matcher::quantifier::{Quantifier, parse_quantifier};
+use crate::matcher::quantifier::{Quantifier, parse_quantifier_opt};
 use crate::matcher::utils::parse_codes;
+use crate::matcher::value::parse_byte_string;
 use crate::matcher::{MatchOptions, ParseMatcherError};
 
 /// A matcher that can be applied on a list of [Subfield]s.
@@ -19,6 +21,7 @@ pub struct SubfieldMatcher {
 #[derive(Debug, PartialEq, Clone)]
 pub(crate) enum MatcherKind {
     Comparison(ComparisonMatcher),
+    Contains(ContainsMatcher),
 }
 
 impl SubfieldMatcher {
@@ -70,6 +73,26 @@ impl SubfieldMatcher {
     }
 }
 
+pub(crate) fn parse_subfield_matcher_short_form(
+    i: &mut &[u8],
+) -> ModalResult<SubfieldMatcher> {
+    alt((
+        parse_comparison_matcher_short.map(MatcherKind::Comparison),
+        parse_contains_matcher_short.map(MatcherKind::Contains),
+    ))
+    .map(|kind| SubfieldMatcher { kind })
+    .parse_next(i)
+}
+
+#[cfg_attr(feature = "perf-inline", inline(always))]
+pub(crate) fn parse_subfield_matcher(
+    i: &mut &[u8],
+) -> ModalResult<SubfieldMatcher> {
+    parse_matcher_kind
+        .map(|kind| SubfieldMatcher { kind })
+        .parse_next(i)
+}
+
 impl MatcherKind {
     /// Whether the given subfields matches against the matcher or not.
     ///
@@ -93,8 +116,18 @@ impl MatcherKind {
     ) -> bool {
         match self {
             Self::Comparison(m) => m.is_match(subfields, options),
+            Self::Contains(m) => m.is_match(subfields, options),
         }
     }
+}
+
+#[cfg_attr(feature = "perf-inline", inline(always))]
+fn parse_matcher_kind(i: &mut &[u8]) -> ModalResult<MatcherKind> {
+    alt((
+        parse_comparison_matcher.map(MatcherKind::Comparison),
+        parse_contains_matcher.map(MatcherKind::Contains),
+    ))
+    .parse_next(i)
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -125,47 +158,115 @@ impl ComparisonMatcher {
     }
 }
 
-#[cfg_attr(feature = "perf-inline", inline(always))]
-pub(crate) fn parse_subfield_matcher(
-    i: &mut &[u8],
-) -> ModalResult<SubfieldMatcher> {
-    parse_matcher_kind
-        .map(|kind| SubfieldMatcher { kind })
-        .parse_next(i)
-}
-
-#[cfg_attr(feature = "perf-inline", inline(always))]
-fn parse_matcher_kind(i: &mut &[u8]) -> ModalResult<MatcherKind> {
-    alt((parse_comparison_matcher.map(MatcherKind::Comparison),))
-        .parse_next(i)
-}
-
 fn parse_comparison_matcher(
     i: &mut &[u8],
 ) -> ModalResult<ComparisonMatcher> {
     seq! { ComparisonMatcher {
-        quantifier: opt(terminated(parse_quantifier, multispace1)).map(Option::unwrap_or_default),
+        quantifier: parse_quantifier_opt,
         codes: terminated(parse_codes, multispace1),
         matcher: parse_comparison_matcher_string,
     }}
     .parse_next(i)
 }
 
-pub(crate) fn parse_subfield_matcher_short_form(
+fn parse_comparison_matcher_short(
     i: &mut &[u8],
-) -> ModalResult<SubfieldMatcher> {
-    (
-        terminated(parse_codes, multispace1),
-        parse_comparison_matcher_string,
-    )
-        .map(|(codes, matcher)| SubfieldMatcher {
-            kind: MatcherKind::Comparison(ComparisonMatcher {
-                quantifier: Quantifier::Any,
-                codes,
-                matcher,
-            }),
-        })
-        .parse_next(i)
+) -> ModalResult<ComparisonMatcher> {
+    seq! { ComparisonMatcher {
+        quantifier: empty.value(Quantifier::default()),
+        codes: terminated(parse_codes, multispace1),
+        matcher: parse_comparison_matcher_string,
+    }}
+    .parse_next(i)
+}
+
+#[derive(Debug, PartialEq, Clone)]
+pub struct ContainsMatcher {
+    quantifier: Quantifier,
+    negated: bool,
+    codes: Vec<u8>,
+    needle: Vec<u8>,
+}
+
+impl ContainsMatcher {
+    /// Returns true if and only if a subfield value exists, which
+    /// contains the specified needle.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21::Subfield;
+    /// use marc21::matcher::SubfieldMatcher;
+    ///
+    /// let subfield = Subfield::from_bytes(b"\x1f0abc")?;
+    ///
+    /// let matcher = SubfieldMatcher::new("0 =? 'bc'")?;
+    /// assert!(matcher.is_match(&subfield, &Default::default()));
+    ///
+    /// let matcher = SubfieldMatcher::new("0 =? 'b'")?;
+    /// assert!(matcher.is_match(&subfield, &Default::default()));
+    ///
+    /// let matcher = SubfieldMatcher::new("0 !? 'xy'")?;
+    /// assert!(matcher.is_match(&subfield, &Default::default()));
+    ///
+    /// let matcher = SubfieldMatcher::new("0 !? 'ab'")?;
+    /// assert!(!matcher.is_match(&subfield, &Default::default()));
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn is_match<'a, S: IntoIterator<Item = &'a Subfield<'a>>>(
+        &self,
+        subfields: S,
+        _options: &MatchOptions,
+    ) -> bool {
+        let finder = Finder::new(&self.needle);
+
+        let mut subfields = subfields
+            .into_iter()
+            .filter(|subfield| self.codes.contains(subfield.code()));
+
+        let r#fn = |subfield: &Subfield| -> bool {
+            match self.negated {
+                false => finder.find(subfield.value()).is_some(),
+                true => finder.find(subfield.value()).is_none(),
+            }
+        };
+
+        match self.quantifier {
+            Quantifier::Any => subfields.any(r#fn),
+            Quantifier::All => subfields.all(r#fn),
+        }
+    }
+}
+
+fn parse_contains_matcher(
+    i: &mut &[u8],
+) -> ModalResult<ContainsMatcher> {
+    seq! { ContainsMatcher {
+        quantifier: parse_quantifier_opt,
+        codes: terminated(parse_codes, multispace1),
+        negated: alt((
+            terminated("=?", multispace1).value(false),
+            terminated("!?", multispace1).value(true),
+        )),
+        needle: parse_byte_string,
+    }}
+    .parse_next(i)
+}
+
+fn parse_contains_matcher_short(
+    i: &mut &[u8],
+) -> ModalResult<ContainsMatcher> {
+    seq! { ContainsMatcher {
+        quantifier: empty.value(Quantifier::Any),
+        codes: terminated(parse_codes, multispace1),
+        negated: alt((
+            terminated("=?", multispace1).value(false),
+            terminated("!?", multispace1).value(true),
+        )),
+        needle: parse_byte_string,
+    }}
+    .parse_next(i)
 }
 
 #[cfg(test)]
