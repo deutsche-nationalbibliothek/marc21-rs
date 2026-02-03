@@ -20,18 +20,18 @@ impl ComparisonMatcher {
     /// Returns true if and only if the comparison of the given value
     /// with respect to the comparison operator and comparison value
     /// match.
-    pub fn is_match<T: Into<Value>>(
+    pub fn is_match<T: PartialOrd<Value>>(
         &self,
         other: T,
         _options: &MatchOptions,
     ) -> bool {
         match self.op {
-            ComparisonOperator::Eq => other.into() == self.value,
-            ComparisonOperator::Ne => other.into() != self.value,
-            ComparisonOperator::Ge => other.into() >= self.value,
-            ComparisonOperator::Gt => other.into() > self.value,
-            ComparisonOperator::Le => other.into() <= self.value,
-            ComparisonOperator::Lt => other.into() < self.value,
+            ComparisonOperator::Eq => other == self.value,
+            ComparisonOperator::Ne => other != self.value,
+            ComparisonOperator::Ge => other >= self.value,
+            ComparisonOperator::Gt => other > self.value,
+            ComparisonOperator::Le => other <= self.value,
+            ComparisonOperator::Lt => other < self.value,
         }
     }
 }

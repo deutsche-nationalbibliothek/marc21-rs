@@ -27,6 +27,16 @@ impl<'a> Field<'a> {
             Self::Data(df) => df.tag(),
         }
     }
+
+    #[inline(always)]
+    pub fn is_control_field(&self) -> bool {
+        matches!(self, Self::Control(_))
+    }
+
+    #[inline(always)]
+    pub fn is_data_field(&self) -> bool {
+        matches!(self, Self::Data(_))
+    }
 }
 
 impl Display for Field<'_> {
