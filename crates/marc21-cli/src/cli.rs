@@ -13,13 +13,13 @@ pub(crate) struct Args {
 
 #[derive(Debug, Subcommand)]
 pub(crate) enum Command {
-    Completions(Completions),
-    Concat(Concat),
-    Count(Count),
-    Filter(Filter),
-    Invalid(Invalid),
-    Print(Print),
-    Sample(Sample),
+    Completions(Box<Completions>),
+    Concat(Box<Concat>),
+    Count(Box<Count>),
+    Filter(Box<Filter>),
+    Invalid(Box<Invalid>),
+    Print(Box<Print>),
+    Sample(Box<Sample>),
 }
 
 #[derive(Debug, clap::Args)]

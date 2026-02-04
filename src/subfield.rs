@@ -9,7 +9,7 @@ use winnow::token::{one_of, take_till};
 
 use crate::parse::*;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Subfield<'a> {
     pub(crate) code: u8,
     pub(crate) value: &'a [u8],

@@ -1,90 +1,10 @@
+use smallvec::SmallVec;
 use winnow::combinator::{alt, delimited, opt, repeat, separated_pair};
 use winnow::prelude::*;
 use winnow::stream::AsChar;
 use winnow::token::{one_of, take};
 
-use crate::Tag;
-use crate::matcher::ParseMatcherError;
-use crate::matcher::utils::ws;
-
-/// A matcher that can be applied on a [Tag].
-#[derive(Debug, PartialEq, Clone)]
-pub enum TagMatcher {
-    Tag(Vec<u8>),
-    Pattern {
-        constituents: Vec<PatternConstituent>,
-        input: Vec<u8>,
-    },
-}
-
-#[derive(Debug, PartialEq, Clone)]
-pub enum PatternConstituent {
-    Value(u8),
-    Class(Vec<u8>),
-    Wildcard,
-}
-
-impl TagMatcher {
-    /// Parse a tag matcher from a byte slice.
-    ///
-    /// # Example
-    ///
-    /// ```rust
-    /// use marc21::matcher::TagMatcher;
-    ///
-    /// let _matcher = TagMatcher::new("12[3-8]")?;
-    /// let _matcher = TagMatcher::new("001")?;
-    /// let _matcher = TagMatcher::new("12.")?;
-    ///
-    /// # Ok::<(), Box<dyn std::error::Error>>(())
-    /// ```
-    pub fn new<B: AsRef<[u8]>>(
-        matcher: B,
-    ) -> Result<Self, ParseMatcherError> {
-        parse_tag_matcher
-            .parse(matcher.as_ref())
-            .map_err(ParseMatcherError::from_parse)
-    }
-
-    /// Returns true if the the matcher matches against the given tag.
-    ///
-    /// # Example
-    ///
-    /// ```rust
-    /// use marc21::matcher::TagMatcher;
-    /// use marc21::prelude::*;
-    ///
-    /// let matcher = TagMatcher::new("1[2-4]3")?;
-    ///
-    /// let tag = Tag::from_bytes(b"123")?;
-    /// assert!(matcher.is_match(&tag));
-    ///
-    /// let tag = Tag::from_bytes(b"153")?;
-    /// assert!(!matcher.is_match(&tag));
-    ///
-    /// # Ok::<(), Box<dyn std::error::Error>>(())
-    /// ```
-    pub fn is_match(&self, tag: &Tag) -> bool {
-        match self {
-            Self::Tag(value) => tag == value,
-            Self::Pattern { constituents, .. } => {
-                constituents[0] == tag[0]
-                    && constituents[1] == tag[1]
-                    && constituents[2] == tag[2]
-            }
-        }
-    }
-}
-
-impl PartialEq<u8> for PatternConstituent {
-    fn eq(&self, other: &u8) -> bool {
-        match self {
-            Self::Class(values) => values.contains(other),
-            Self::Value(value) => value == other,
-            Self::Wildcard => true,
-        }
-    }
-}
+use crate::matcher::tag::{Constituent, Pattern, TagMatcher};
 
 #[cfg_attr(feature = "perf-inline", inline(always))]
 pub(crate) fn parse_tag_matcher(
@@ -107,16 +27,18 @@ fn parse_tag(i: &mut &[u8]) -> ModalResult<TagMatcher> {
 fn parse_pattern(i: &mut &[u8]) -> ModalResult<TagMatcher> {
     repeat(3, parse_pattern_constituent)
         .with_taken()
-        .map(|(constituents, input)| TagMatcher::Pattern {
-            input: input.to_vec(),
-            constituents,
+        .map(|(constituents, input)| {
+            TagMatcher::Pattern(Pattern {
+                constituents: SmallVec::from_vec(constituents),
+                input: input.to_vec(),
+            })
         })
         .parse_next(i)
 }
 
 fn parse_pattern_constituent(
     i: &mut &[u8],
-) -> ModalResult<PatternConstituent> {
+) -> ModalResult<Constituent> {
     alt((
         parse_pattern_constituent_value,
         parse_pattern_constituent_wildcard,
@@ -128,24 +50,24 @@ fn parse_pattern_constituent(
 #[cfg_attr(feature = "perf-inline", inline(always))]
 fn parse_pattern_constituent_value(
     i: &mut &[u8],
-) -> ModalResult<PatternConstituent> {
+) -> ModalResult<Constituent> {
     one_of(AsChar::is_dec_digit)
-        .map(PatternConstituent::Value)
+        .map(Constituent::Value)
         .parse_next(i)
 }
 
 #[cfg_attr(feature = "perf-inline", inline(always))]
 fn parse_pattern_constituent_wildcard(
     i: &mut &[u8],
-) -> ModalResult<PatternConstituent> {
-    b'.'.value(PatternConstituent::Wildcard).parse_next(i)
+) -> ModalResult<Constituent> {
+    b'.'.value(Constituent::Wildcard).parse_next(i)
 }
 
 fn parse_pattern_constituent_class(
     i: &mut &[u8],
-) -> ModalResult<PatternConstituent> {
+) -> ModalResult<Constituent> {
     delimited(
-        ws('['),
+        '[',
         (
             opt(b'^').map(|value| value.is_some()),
             repeat(
@@ -162,7 +84,7 @@ fn parse_pattern_constituent_class(
                 digits.sort_unstable();
                 digits.dedup();
 
-                PatternConstituent::Class(if negated {
+                Constituent::Class(if negated {
                     b"0123456789"
                         .iter()
                         .filter(|value| !digits.contains(value))
@@ -172,7 +94,7 @@ fn parse_pattern_constituent_class(
                     digits
                 })
             }),
-        ws(']'),
+        ']',
     )
     .parse_next(i)
 }
@@ -201,6 +123,8 @@ fn parse_pattern_constituent_class_range(
 
 #[cfg(test)]
 mod tests {
+    use smallvec::smallvec as svec;
+
     use super::*;
 
     #[test]
@@ -214,32 +138,32 @@ mod tests {
             };
         }
 
-        parse_success!("000", TagMatcher::Tag("000".into()));
-        parse_success!("065", TagMatcher::Tag("065".into()));
-        parse_success!("550", TagMatcher::Tag("550".into()));
+        parse_success!("000", TagMatcher::Tag(svec![b'0', b'0', b'0']));
+        parse_success!("065", TagMatcher::Tag(svec![b'0', b'6', b'5']));
+        parse_success!("550", TagMatcher::Tag(svec![b'5', b'5', b'0']));
 
         parse_success!(
             "55.",
-            TagMatcher::Pattern {
-                constituents: vec![
-                    PatternConstituent::Value(b'5'),
-                    PatternConstituent::Value(b'5'),
-                    PatternConstituent::Wildcard,
-                ],
+            TagMatcher::Pattern(Pattern {
+                constituents: SmallVec::from_vec(vec![
+                    Constituent::Value(b'5'),
+                    Constituent::Value(b'5'),
+                    Constituent::Wildcard,
+                ]),
                 input: b"55.".into()
-            }
+            })
         );
 
         parse_success!(
             "1[1-2].",
-            TagMatcher::Pattern {
-                constituents: vec![
-                    PatternConstituent::Value(b'1'),
-                    PatternConstituent::Class(b"12".into()),
-                    PatternConstituent::Wildcard,
-                ],
+            TagMatcher::Pattern(Pattern {
+                constituents: SmallVec::from_vec(vec![
+                    Constituent::Value(b'1'),
+                    Constituent::Class(b"12".into()),
+                    Constituent::Wildcard,
+                ]),
                 input: b"1[1-2].".into()
-            }
+            })
         );
 
         assert!(parse_tag_matcher.parse(b"00X").is_err());
@@ -253,9 +177,9 @@ mod tests {
             };
         }
 
-        parse_success!("000", TagMatcher::Tag("000".into()));
-        parse_success!("065", TagMatcher::Tag("065".into()));
-        parse_success!("550", TagMatcher::Tag("550".into()));
+        parse_success!("000", TagMatcher::Tag(svec![b'0', b'0', b'0']));
+        parse_success!("065", TagMatcher::Tag(svec![b'0', b'6', b'5']));
+        parse_success!("550", TagMatcher::Tag(svec![b'5', b'5', b'0']));
 
         assert!(parse_tag.parse(b"00X").is_err());
     }
@@ -266,63 +190,63 @@ mod tests {
             ($i:expr, $constituents:expr) => {
                 assert_eq!(
                     parse_pattern.parse($i.as_bytes()).unwrap(),
-                    TagMatcher::Pattern {
+                    TagMatcher::Pattern(Pattern {
                         constituents: $constituents,
                         input: $i.as_bytes().into(),
-                    }
+                    })
                 );
             };
         }
 
         parse_success!(
             "012",
-            vec![
-                PatternConstituent::Value(b'0'),
-                PatternConstituent::Value(b'1'),
-                PatternConstituent::Value(b'2'),
-            ]
+            SmallVec::from_vec(vec![
+                Constituent::Value(b'0'),
+                Constituent::Value(b'1'),
+                Constituent::Value(b'2'),
+            ])
         );
 
         parse_success!(
             "0.2",
-            vec![
-                PatternConstituent::Value(b'0'),
-                PatternConstituent::Wildcard,
-                PatternConstituent::Value(b'2'),
-            ]
+            SmallVec::from_vec(vec![
+                Constituent::Value(b'0'),
+                Constituent::Wildcard,
+                Constituent::Value(b'2'),
+            ])
         );
 
         parse_success!(
             "...",
-            vec![
-                PatternConstituent::Wildcard,
-                PatternConstituent::Wildcard,
-                PatternConstituent::Wildcard,
-            ]
+            SmallVec::from_vec(vec![
+                Constituent::Wildcard,
+                Constituent::Wildcard,
+                Constituent::Wildcard,
+            ])
         );
 
         parse_success!(
             "0.[2-5]",
-            vec![
-                PatternConstituent::Value(b'0'),
-                PatternConstituent::Wildcard,
-                PatternConstituent::Class(b"2345".to_vec())
-            ]
+            SmallVec::from_vec(vec![
+                Constituent::Value(b'0'),
+                Constituent::Wildcard,
+                Constituent::Class(b"2345".to_vec())
+            ])
         );
 
         parse_success!(
             "0.[^2-5]",
-            vec![
-                PatternConstituent::Value(b'0'),
-                PatternConstituent::Wildcard,
-                PatternConstituent::Class(b"016789".to_vec())
-            ]
+            SmallVec::from_vec(vec![
+                Constituent::Value(b'0'),
+                Constituent::Wildcard,
+                Constituent::Class(b"016789".to_vec())
+            ])
         );
     }
 
     #[test]
     fn test_parse_constituent() {
-        use PatternConstituent::*;
+        use Constituent::*;
 
         macro_rules! parse_success {
             ($i:expr, $o:expr) => {
@@ -358,7 +282,7 @@ mod tests {
         macro_rules! parse_success {
             ($i:expr, $o:expr) => {
                 assert_eq!(
-                    PatternConstituent::Value($o),
+                    Constituent::Value($o),
                     parse_pattern_constituent_value
                         .parse($i.as_bytes())
                         .unwrap(),
@@ -384,7 +308,7 @@ mod tests {
     fn test_parse_constituent_wildcard() {
         assert_eq!(
             parse_pattern_constituent_wildcard.parse(b".").unwrap(),
-            PatternConstituent::Wildcard
+            Constituent::Wildcard
         );
 
         assert!(parse_pattern_constituent_wildcard.parse(b"*").is_err())
@@ -395,7 +319,7 @@ mod tests {
         macro_rules! parse_success {
             ($i:expr, $o:expr) => {
                 assert_eq!(
-                    PatternConstituent::Class($o.as_bytes().to_vec()),
+                    Constituent::Class($o.as_bytes().to_vec()),
                     parse_pattern_constituent_class
                         .parse($i.as_bytes())
                         .unwrap()
