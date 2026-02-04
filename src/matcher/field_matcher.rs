@@ -1,5 +1,7 @@
-use winnow::ascii::multispace1;
-use winnow::combinator::{alt, opt, preceded, seq, terminated};
+use winnow::ascii::{multispace0, multispace1};
+use winnow::combinator::{
+    alt, delimited, opt, preceded, seq, terminated,
+};
 use winnow::prelude::*;
 
 use crate::Field;
@@ -69,6 +71,9 @@ impl FieldMatcher {
     /// assert!(matcher.is_match(record.fields(), &Default::default()));
     ///
     /// let matcher = FieldMatcher::new("#035 <= 6")?;
+    /// assert!(matcher.is_match(record.fields(), &Default::default()));
+    ///
+    /// let matcher = FieldMatcher::new("042.a == 'gnd1'")?;
     /// assert!(matcher.is_match(record.fields(), &Default::default()));
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -165,7 +170,8 @@ impl SubfieldMatcher {
 fn parse_subfield_matcher(
     i: &mut &[u8],
 ) -> ModalResult<SubfieldMatcher> {
-    alt((parse_subfield_matcher_short,)).parse_next(i)
+    alt((parse_subfield_matcher_short, parse_subfield_matcher_long))
+        .parse_next(i)
 }
 
 fn parse_subfield_matcher_short(
@@ -177,6 +183,22 @@ fn parse_subfield_matcher_short(
          indicator_matcher: parse_indicator_matcher_opt,
          subfield_matcher: preceded('.', parse_subfield_matcher_short_form),
     }}).parse_next(i)
+}
+
+fn parse_subfield_matcher_long(
+    i: &mut &[u8],
+) -> ModalResult<SubfieldMatcher> {
+    ws(seq! { SubfieldMatcher {
+         quantifier: parse_quantifier_opt,
+         tag_matcher: parse_tag_matcher,
+         indicator_matcher: parse_indicator_matcher_opt,
+         subfield_matcher: delimited(
+            terminated('{', multispace0),
+            subfield_matcher::parse_subfield_matcher,
+            preceded(multispace0, '}')
+        ),
+    }})
+    .parse_next(i)
 }
 
 #[derive(Debug, PartialEq, Clone)]
