@@ -2,6 +2,8 @@
 name = "marc21"
 version = "0.1.0"
 authors = ["Nico Wagner <n.wagner@dnb.de>"]
+repository = "https://github.com/deutsche-nationalbibliothek/marc21-rs"
+description = "A toolkit for processing MARC 21 records."
 license = "EUPL-1.2"
 rust-version = "1.93"
 edition = "2024"
