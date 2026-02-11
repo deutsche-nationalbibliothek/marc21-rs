@@ -2,8 +2,8 @@ use std::io::Write;
 use std::path::PathBuf;
 
 use clap::value_parser;
-use rand::rngs::StdRng;
-use rand::{Rng, SeedableRng, rng};
+use rand::prelude::*;
+use rand::rng;
 
 use crate::prelude::*;
 
