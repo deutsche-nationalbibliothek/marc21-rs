@@ -1,4 +1,6 @@
-use bstr::ByteSlice;
+use std::cmp::Ordering;
+
+use bstr::BString;
 use winnow::ascii::multispace1;
 use winnow::combinator::{
     alt, delimited, dispatch, fail, preceded, repeat, terminated,
@@ -8,50 +10,24 @@ use winnow::prelude::*;
 use winnow::stream::{AsChar, Compare, Stream, StreamIsPartial};
 use winnow::token::{one_of, take, take_till};
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, PartialOrd, Clone)]
 pub(crate) enum Value {
-    String(Vec<u8>),
+    String(BString),
     Char(u8),
     U32(u32),
 }
 
-impl PartialEq<Value> for &[u8] {
-    #[cfg_attr(feature = "perf-inline", inline(always))]
-    fn eq(&self, other: &Value) -> bool {
-        match other {
-            Value::String(value) => self == value,
-            _ => false,
-        }
+impl From<u32> for Value {
+    #[inline(always)]
+    fn from(value: u32) -> Self {
+        Self::U32(value)
     }
 }
 
-impl PartialOrd<Value> for &[u8] {
-    fn partial_cmp(&self, other: &Value) -> Option<std::cmp::Ordering> {
-        let Value::String(other) = other else {
-            return None;
-        };
-
-        self.as_bstr().partial_cmp(other.as_bstr())
-    }
-}
-
-impl PartialEq<Value> for u8 {
-    #[cfg_attr(feature = "perf-inline", inline(always))]
-    fn eq(&self, other: &Value) -> bool {
-        match other {
-            Value::Char(value) => self == value,
-            _ => false,
-        }
-    }
-}
-
-impl PartialOrd<Value> for u8 {
-    fn partial_cmp(&self, other: &Value) -> Option<std::cmp::Ordering> {
-        let Value::Char(other) = other else {
-            return None;
-        };
-
-        self.partial_cmp(other)
+impl From<u8> for Value {
+    #[inline(always)]
+    fn from(value: u8) -> Self {
+        Self::Char(value)
     }
 }
 
@@ -65,8 +41,38 @@ impl PartialEq<Value> for u32 {
     }
 }
 
+impl PartialEq<Value> for u8 {
+    #[cfg_attr(feature = "perf-inline", inline(always))]
+    fn eq(&self, other: &Value) -> bool {
+        match other {
+            Value::Char(value) => self == value,
+            _ => false,
+        }
+    }
+}
+
+impl PartialEq<Value> for &[u8] {
+    #[cfg_attr(feature = "perf-inline", inline(always))]
+    fn eq(&self, other: &Value) -> bool {
+        match other {
+            Value::String(value) => self == value,
+            _ => false,
+        }
+    }
+}
+
+impl PartialOrd<Value> for u8 {
+    fn partial_cmp(&self, other: &Value) -> Option<Ordering> {
+        let Value::Char(other) = other else {
+            return None;
+        };
+
+        self.partial_cmp(other)
+    }
+}
+
 impl PartialOrd<Value> for u32 {
-    fn partial_cmp(&self, other: &Value) -> Option<std::cmp::Ordering> {
+    fn partial_cmp(&self, other: &Value) -> Option<Ordering> {
         let Value::U32(other) = other else {
             return None;
         };
@@ -75,45 +81,42 @@ impl PartialOrd<Value> for u32 {
     }
 }
 
-impl From<u32> for Value {
-    fn from(value: u32) -> Self {
-        Self::U32(value)
+impl PartialOrd<Value> for &[u8] {
+    fn partial_cmp(&self, other: &Value) -> Option<Ordering> {
+        let Value::String(other) = other else {
+            return None;
+        };
+
+        self.partial_cmp(other)
     }
 }
 
-impl From<u8> for Value {
-    fn from(value: u8) -> Self {
-        Self::Char(value)
-    }
-}
-
-impl From<String> for Value {
-    fn from(value: String) -> Self {
-        Self::String(value.as_bytes().to_vec())
-    }
-}
-
-impl From<&[u8]> for Value {
-    fn from(value: &[u8]) -> Self {
-        Self::String(value.to_vec())
-    }
-}
-
-pub(crate) fn parse_value_u32(i: &mut &[u8]) -> ModalResult<Value> {
+#[cfg_attr(feature = "perf-inline", inline(always))]
+pub(crate) fn parse_u32(i: &mut &[u8]) -> ModalResult<u32> {
     repeat(1..=10, one_of(AsChar::is_dec_digit))
         .fold(|| 0u64, |acc, i| acc * 10 + ((i - b'0') as u64))
         .try_map(u32::try_from)
-        .map(Value::U32)
         .parse_next(i)
 }
 
-pub(crate) fn parse_value_char(i: &mut &[u8]) -> ModalResult<Value> {
+#[inline(always)]
+pub(crate) fn parse_u32_value(i: &mut &[u8]) -> ModalResult<Value> {
+    parse_u32.map(Value::U32).parse_next(i)
+}
+
+#[cfg_attr(feature = "perf-inline", inline(always))]
+pub(crate) fn parse_quoted_char(i: &mut &[u8]) -> ModalResult<u8> {
     alt((
         delimited('\'', take(1usize), '\''),
         delimited('"', take(1usize), '"'),
     ))
-    .map(|bytes: &[u8]| Value::Char(bytes[0]))
+    .map(|bytes: &[u8]| bytes[0])
     .parse_next(i)
+}
+
+#[inline(always)]
+pub(crate) fn parse_char_value(i: &mut &[u8]) -> ModalResult<Value> {
+    parse_quoted_char.map(Value::Char).parse_next(i)
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -129,14 +132,10 @@ enum Fragment<'a> {
     EscapedWs,
 }
 
-pub(crate) fn parse_value_string(i: &mut &[u8]) -> ModalResult<Value> {
-    dispatch! { one_of(b"'\"");
-        b'\'' => terminated(parse_quoted_string(Quotes::Single), '\''),
-        b'"' => terminated(parse_quoted_string(Quotes::Double), '"'),
-        _ => fail::<_, Vec<u8>, _>,
-    }
-    .map(Value::String)
-    .parse_next(i)
+pub(crate) fn parse_string_value(i: &mut &[u8]) -> ModalResult<Value> {
+    parse_byte_string
+        .map(|value| Value::String(BString::from(value)))
+        .parse_next(i)
 }
 
 pub(crate) fn parse_byte_string(i: &mut &[u8]) -> ModalResult<Vec<u8>> {
@@ -222,11 +221,11 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_parse_value_u32() {
+    fn test_parse_u32_value() {
         macro_rules! parse_success {
             ($i:expr, $e:expr) => {
                 assert_eq!(
-                    parse_value_u32.parse($i.as_bytes()).unwrap(),
+                    parse_u32_value.parse($i.as_bytes()).unwrap(),
                     Value::U32($e)
                 );
             };
@@ -238,15 +237,15 @@ mod tests {
         parse_success!("99999", 99999u32);
         parse_success!("4294967295", u32::MAX);
 
-        assert!(parse_value_u32.parse(b"4294967296").is_err());
+        assert!(parse_u32_value.parse(b"4294967296").is_err());
     }
 
     #[test]
-    fn test_parse_value_char() {
+    fn test_parse_char_value() {
         macro_rules! parse_success {
             ($i:expr, $e:expr) => {
                 assert_eq!(
-                    parse_value_char.parse($i.as_bytes()).unwrap(),
+                    parse_char_value.parse($i.as_bytes()).unwrap(),
                     $e
                 );
             };
@@ -254,15 +253,17 @@ mod tests {
 
         parse_success!("'a'", Value::Char(b'a'));
         parse_success!("\"a\"", Value::Char(b'a'));
+
+        assert!(parse_char_value.parse(b"a").is_err());
     }
 
     #[test]
-    fn test_parse_value_string() {
+    fn test_parse_string_value() {
         macro_rules! parse_success {
             ($i:expr, $o:expr) => {
                 assert_eq!(
-                    parse_value_string.parse($i).unwrap(),
-                    Value::String($o.to_vec())
+                    parse_string_value.parse($i).unwrap(),
+                    Value::String(BString::from($o))
                 );
             };
         }

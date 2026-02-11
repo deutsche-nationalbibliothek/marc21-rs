@@ -96,7 +96,9 @@ impl<'a> DataField<'a> {
     }
 
     #[inline(always)]
-    pub fn subfields(&self) -> impl Iterator<Item = &Subfield<'a>> {
+    pub fn subfields(
+        &self,
+    ) -> impl Iterator<Item = &Subfield<'a>> + Clone {
         self.subfields.iter()
     }
 

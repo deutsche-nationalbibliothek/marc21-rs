@@ -31,7 +31,6 @@ impl Filter {
 
         let options = Default::default();
         let matcher = self.filter;
-        // eprintln!("matcher = {matcher:?}");
 
         for path in self.path.iter() {
             let mut reader = MarcReadOptions::default()
