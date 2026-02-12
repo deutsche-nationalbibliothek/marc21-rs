@@ -69,7 +69,6 @@ follows:
 $ marc21 filter 'ldr.status == "z" && 100/1#?' DUMP.mrc.gz -o out.mrc
 ```
 
-
 The number of records contained in the input can be determined using the
 `count` command. The `--where` option can be used to count only those
 records that match a certain criterion:
@@ -87,7 +86,7 @@ combination with standard UNIX tools such as `grep`, `cut` or `sed`. In
 the following example, a single data record is printed on the console:
 
 ```shell
-$ marc21 print tests/data/ada.mrc
+$ marc21 print tests/data/ada.mrc --where '100/*.a =? "Love"'
 LDR 03612nz  a2200589nc 4500
 001 119232022
 003 DE-101
@@ -106,7 +105,7 @@ size:
 $ marc21 sample 10 GND.mrc.gz -o samples.mrc.gz
 ```
 
-## Operators
+### Operators
 
 The following operators are supported in filter expressions:
 
