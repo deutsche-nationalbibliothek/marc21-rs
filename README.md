@@ -110,7 +110,7 @@ $ marc21 sample 10 GND.mrc.gz -o samples.mrc.gz
 The following operators are supported in filter expressions:
 
 * Comparison operators `==`, `!=`, `>=`, `>`, `<=` and `<`,
-    e.g. `100 == 119232022`
+    e.g. `100 == "119232022"`
 * Substring search `=?` (and `!?` in negated form),
     e.g. `100/1#.a =? "Love"`
 
