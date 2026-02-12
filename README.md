@@ -69,6 +69,7 @@ follows:
 $ marc21 filter 'ldr.status == "z" && 100/1#?' DUMP.mrc.gz -o out.mrc
 ```
 
+
 The number of records contained in the input can be determined using the
 `count` command. The `--where` option can be used to count only those
 records that match a certain criterion:
@@ -104,6 +105,15 @@ size:
 ```shell
 $ marc21 sample 10 GND.mrc.gz -o samples.mrc.gz
 ```
+
+## Operators
+
+The following operators are supported in filter expressions:
+
+* Comparison operators `==`, `!=`, `>=`, `>`, `<=` and `<`,
+    e.g. `100 == 119232022`
+* Substring search `=?` (and `!?` in negated form),
+    e.g. `100/1#.a =? "Love"`
 
 ### Enable tab completion
 

@@ -1,5 +1,6 @@
 use std::ops::{BitAnd, BitOr};
 
+use memchr::memmem::Finder;
 use winnow::Parser;
 
 use crate::Subfield;
@@ -14,7 +15,8 @@ pub(crate) mod parse;
 /// A matcher that can be applied on a list of [Subfield]s.
 #[derive(Debug, PartialEq, Clone)]
 pub enum SubfieldMatcher {
-    Comparison(ComparisonMatcher),
+    Comparison(Box<ComparisonMatcher>),
+    Contains(Box<ContainsMatcher>),
     Group(Box<SubfieldMatcher>),
     Not(Box<SubfieldMatcher>),
     Composite {
@@ -41,6 +43,7 @@ impl SubfieldMatcher {
     /// let _matcher = SubfieldMatcher::new("!(0 == 'abc')")?;
     /// let _matcher = SubfieldMatcher::new("0 == 'abc' && 1 == 'def'")?;
     /// let _matcher = SubfieldMatcher::new("0 == 'abc' || 1 == 'def'")?;
+    /// let _matcher = SubfieldMatcher::new("a =? 'abc'")?;
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
@@ -78,6 +81,7 @@ impl SubfieldMatcher {
     ) -> bool {
         match self {
             Self::Comparison(m) => m.is_match(subfields, options),
+            Self::Contains(m) => m.is_match(subfields, options),
             Self::Group(m) => m.is_match(subfields, options),
             Self::Not(m) => !m.is_match(subfields, options),
             Self::Composite { lhs, op, rhs } => {
@@ -155,6 +159,48 @@ impl ComparisonMatcher {
                 ComparisonOperator::Gt => value > self.value,
                 ComparisonOperator::Le => value <= self.value,
                 ComparisonOperator::Lt => value < self.value,
+            }
+        };
+
+        match self.quantifier {
+            Quantifier::Any => subfields.any(r#fn),
+            Quantifier::All => subfields.all(r#fn),
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct ContainsMatcher {
+    finder: Finder<'static>,
+    quantifier: Quantifier,
+    negated: bool,
+    codes: Vec<u8>,
+    needle: Vec<u8>,
+}
+
+impl PartialEq for ContainsMatcher {
+    fn eq(&self, other: &Self) -> bool {
+        self.quantifier == other.quantifier
+            && self.negated == other.negated
+            && self.codes == other.codes
+            && self.needle == other.needle
+    }
+}
+
+impl ContainsMatcher {
+    pub fn is_match<'a, S: IntoIterator<Item = &'a Subfield<'a>>>(
+        &self,
+        subfields: S,
+        _options: &MatchOptions,
+    ) -> bool {
+        let mut subfields = subfields
+            .into_iter()
+            .filter(|subfield| self.codes.contains(subfield.code()));
+
+        let r#fn = |subfield: &Subfield| -> bool {
+            match self.negated {
+                false => self.finder.find(subfield.value()).is_some(),
+                true => self.finder.find(subfield.value()).is_none(),
             }
         };
 
