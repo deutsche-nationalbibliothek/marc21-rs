@@ -20,7 +20,7 @@ tool, [archives with a precompiled binary] are available for Windows,
 macOS and Linux. If a Rust toolchain is available, `marc21` can also be
 installed using `cargo` with the following command:
 
-```
+```shell
 $ cargo install marc21-cli  
 ```
 
@@ -38,6 +38,11 @@ The `marc21` tool provides the following commands:
 
 ## Tour
 
+> [!NOTE]
+> The following documentation is based on the current development
+> version. Features may be shown that will not be released until the
+> next version.
+
 The `marc21` program provides various commands for processing MARC-21
 data (see `marc21 --help` for a complete list of available commands).
 For example, the `concat` command can be used to combine multiple files
@@ -45,7 +50,7 @@ into a single output. In the following example the authority data files
 from the Integrated Authority Files ([GND]) are concatenated into the
 single file `GND.mrc.gz`.
 
-```console
+```shell
 $ marc21 concat -o GND.mrc.gz \
     authorities-gnd-geografikum_dnbmarc.mrc.gz \
     authorities-gnd-koerperschaft_dnbmarc.mrc.gz \
@@ -60,15 +65,15 @@ condition. For example, all records with status `z` and at least one
 field `100` with indicators `1` and `#` (space) can be filtered as
 follows:
 
-```console
-$ marc21 filter 'ldr.status == 'z' && 100/1#?' DUMP.mrc.gz -o out.mrc
+```shell
+$ marc21 filter 'ldr.status == "z" && 100/1#?' DUMP.mrc.gz -o out.mrc
 ```
 
 The number of records contained in the input can be determined using the
 `count` command. The `--where` option can be used to count only those
 records that match a certain criterion:
 
-```console
+```shell
 $ marc21 count GND.mrc.gz \
     --where 'ldr.type == "z" && 075{ b == "gik" && 2 == "gndspec" }'
 179672
@@ -80,8 +85,8 @@ are divided by a blank line. The output of the command can be used in
 combination with standard UNIX tools such as `grep`, `cut` or `sed`. In
 the following example, a single data record is printed on the console:
 
-```console
-$ marc12 print tests/data/ada.mrc
+```shell
+$ marc21 print tests/data/ada.mrc
 LDR 03612nz  a2200589nc 4500
 001 119232022
 003 DE-101
@@ -96,8 +101,8 @@ LDR 03612nz  a2200589nc 4500
 The `sample` command can be used to take random samples of a specified
 size:
 
-```console
-$ marc21 sample 10 GND.mrc.gz -o SAMPLES.mrc.gz
+```shell
+$ marc21 sample 10 GND.mrc.gz -o samples.mrc.gz
 ```
 
 ### Enable tab completion
