@@ -1,6 +1,3 @@
-[build]
-rustflags = ["-Ctarget-cpu=native"]
-
 # On Windows MSVC, statically link to the platform's standard C runtime
 # ("CRT").
 [target.i686-pc-windows-msvc]
