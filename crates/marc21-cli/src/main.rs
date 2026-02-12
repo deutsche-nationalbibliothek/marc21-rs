@@ -1,3 +1,4 @@
+use std::io::ErrorKind;
 use std::process::ExitCode;
 
 use clap::{CommandFactory, Parser};
@@ -26,6 +27,11 @@ fn main() -> ExitCode {
 
     match result {
         Ok(_) => ExitCode::SUCCESS,
+        Err(error::CliError::IO(e))
+            if e.kind() == ErrorKind::BrokenPipe =>
+        {
+            ExitCode::SUCCESS
+        }
         Err(e) => {
             eprintln!("error: {e:#}");
             ExitCode::FAILURE
