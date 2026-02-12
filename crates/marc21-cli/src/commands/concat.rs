@@ -13,18 +13,23 @@ pub(crate) struct Concat {
     #[arg(short, long, value_name = "FILENAME")]
     output: Option<PathBuf>,
 
+    #[command(flatten, next_help_heading = "Filter options")]
+    pub(crate) filter_opts: FilterOpts,
+
     #[command(flatten, next_help_heading = "Common options")]
     pub(crate) common: CommonOpts,
 }
 
 impl Concat {
-    pub(crate) fn execute(
-        self,
-    ) -> Result<(), Box<dyn std::error::Error>> {
+    pub(crate) fn execute(self) -> CliResult {
         let mut progress = Progress::new(self.common.progress);
+        let options = MatchOptions::default();
+
         let mut output = WriterBuilder::default()
             .with_compression(self.common.compression)
             .try_from_path_or_stdout(self.output)?;
+
+        let mut count = 0;
 
         for path in self.path.iter() {
             let mut reader = MarcReadOptions::default()
@@ -32,10 +37,25 @@ impl Concat {
 
             while let Some(result) = reader.next_byte_record() {
                 match result {
-                    Err(_) => progress.update(true),
-                    Ok(record) => {
+                    Err(ReadMarcError::Parse(_))
+                        if self.filter_opts.skip_invalid =>
+                    {
+                        progress.update(true);
+                        continue;
+                    }
+                    Err(e) => {
+                        return Err(CliError::from_parse(e, count));
+                    }
+                    Ok(ref record) => {
+                        if let Some(ref m) = self.filter_opts.filter
+                            && !m.is_match(record, &options)
+                        {
+                            continue;
+                        }
+
                         record.write_to(&mut output)?;
                         progress.update(false);
+                        count += 1;
                     }
                 }
             }

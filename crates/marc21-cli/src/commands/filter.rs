@@ -7,6 +7,11 @@ use crate::prelude::*;
 /// Concatenate records from multiple inputs
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Filter {
+    /// Skip invalid records that can't be decoded
+    #[arg(short, long)]
+    pub(crate) skip_invalid: bool,
+
+    /// An expression for filtering records
     filter: RecordMatcher,
 
     #[arg(default_value = "-", hide_default_value = true)]
@@ -21,16 +26,15 @@ pub(crate) struct Filter {
 }
 
 impl Filter {
-    pub(crate) fn execute(
-        self,
-    ) -> Result<(), Box<dyn std::error::Error>> {
+    pub(crate) fn execute(self) -> CliResult {
         let mut progress = Progress::new(self.common.progress);
         let mut output = WriterBuilder::default()
             .with_compression(self.common.compression)
             .try_from_path_or_stdout(self.output)?;
 
-        let options = Default::default();
+        let options = MatchOptions::default();
         let matcher = self.filter;
+        let mut count = 0;
 
         for path in self.path.iter() {
             let mut reader = MarcReadOptions::default()
@@ -38,13 +42,23 @@ impl Filter {
 
             while let Some(result) = reader.next_byte_record() {
                 match result {
-                    Err(_) => progress.update(true),
+                    Err(ReadMarcError::Parse(_))
+                        if self.skip_invalid =>
+                    {
+                        progress.update(true);
+                        continue;
+                    }
+                    Err(e) => {
+                        return Err(CliError::from_parse(e, count));
+                    }
                     Ok(ref record) => {
+                        progress.update(false);
+
                         if matcher.is_match(record, &options) {
                             record.write_to(&mut output)?;
                         }
 
-                        progress.update(false);
+                        count += 1;
                     }
                 }
             }

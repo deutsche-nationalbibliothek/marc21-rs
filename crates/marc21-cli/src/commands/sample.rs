@@ -12,30 +12,33 @@ use crate::prelude::*;
 pub(crate) struct Sample {
     /// Initialize the RNG with a seed value to get deterministic
     /// random record.
-    #[arg(short, long, value_name = "NUMBER")]
+    #[arg(long, value_name = "number")]
     seed: Option<u64>,
 
     /// Write output to FILENAME instead of stdout.
-    #[arg(short, long, value_name = "FILENAME")]
+    #[arg(short, long, value_name = "filename")]
     output: Option<PathBuf>,
 
     /// Sample size
-    #[arg(value_parser = value_parser!(u32).range(1..), value_name = "N")]
+    #[arg(value_parser = value_parser!(u32).range(1..), value_name = "n")]
     sample_size: u32,
 
     #[arg(default_value = "-", hide_default_value = true)]
     path: Vec<PathBuf>,
+
+    #[command(flatten, next_help_heading = "Filter options")]
+    pub(crate) filter_opts: FilterOpts,
 
     #[command(flatten, next_help_heading = "Common options")]
     pub(crate) common: CommonOpts,
 }
 
 impl Sample {
-    pub(crate) fn execute(
-        self,
-    ) -> Result<(), Box<dyn std::error::Error>> {
-        let sample_size = self.sample_size as usize;
+    pub(crate) fn execute(self) -> CliResult {
         let mut progress = Progress::new(self.common.progress);
+        let sample_size = self.sample_size as usize;
+        let options = MatchOptions::default();
+
         let mut output = WriterBuilder::default()
             .with_compression(self.common.compression)
             .try_from_path_or_stdout(self.output)?;
@@ -55,26 +58,41 @@ impl Sample {
                 .try_into_reader_from_path(path)?;
 
             while let Some(result) = reader.next_byte_record() {
-                if let Ok(record) = result {
-                    progress.update(false);
+                match result {
+                    Err(ReadMarcError::Parse(_))
+                        if self.filter_opts.skip_invalid =>
+                    {
+                        progress.update(true);
+                        continue;
+                    }
+                    Err(e) => {
+                        return Err(CliError::from_parse(e, count));
+                    }
+                    Ok(ref record) => {
+                        progress.update(false);
 
-                    if count < sample_size {
-                        let mut data = Vec::<u8>::new();
-                        record.write_to(&mut data)?;
-                        reservoir.push(data);
-                    } else {
-                        let j = rng.random_range(0..count);
-                        if j < sample_size {
+                        if let Some(ref m) = self.filter_opts.filter
+                            && !m.is_match(record, &options)
+                        {
+                            continue;
+                        }
+
+                        if count < sample_size {
                             let mut data = Vec::<u8>::new();
                             record.write_to(&mut data)?;
+                            reservoir.push(data);
+                        } else {
+                            let j = rng.random_range(0..count);
+                            if j < sample_size {
+                                let mut data = Vec::<u8>::new();
+                                record.write_to(&mut data)?;
 
-                            reservoir[j] = data;
+                                reservoir[j] = data;
+                            }
                         }
-                    }
 
-                    count += 1;
-                } else {
-                    progress.update(true);
+                        count += 1;
+                    }
                 }
             }
         }

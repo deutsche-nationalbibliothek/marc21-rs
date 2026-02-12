@@ -55,14 +55,6 @@ $ marc21 concat -o GND.mrc.gz \
     authorities-gnd-werk_dnbmarc.mrc.gz
 ```
 
-The number of records contained in the input can be determined using the
-`count` command:
-
-```console
-$ marc21 count GND.mrc.gz
-10122437
-```
-
 The `filter` command extracts those records that fulfill a specified
 condition. For example, all records with status `z` and at least one
 field `100` with indicators `1` and `#` (space) can be filtered as
@@ -70,6 +62,16 @@ follows:
 
 ```console
 $ marc21 filter 'ldr.status == 'z' && 100/1#?' DUMP.mrc.gz -o out.mrc
+```
+
+The number of records contained in the input can be determined using the
+`count` command. The `--where` option can be used to count only those
+records that match a certain criterion:
+
+```console
+$ marc21 count GND.mrc.gz \
+    --where 'ldr.type == "z" && 075{ b == "gik" && 2 == "gndspec" }'
+179672
 ```
 
 The `print` command output records in a human-readable format. The
