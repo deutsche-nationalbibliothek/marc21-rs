@@ -8,6 +8,17 @@ extraction of data into a rectangular schema. Since the extracted data
 is in tabular form, it can be processed with popular frameworks such as
 [Polars] ([Python]) or [Tidyverse] ([R]).
 
+## Installation
+
+The binary name of the command-line tool is `marc21`. To install the
+tool, [archives with a precompiled binary] are available for Windows,
+macOS and Linux. If a Rust toolchain is available, `marc21` can also be
+installed using `cargo` with the following command:
+
+```
+$ cargo install marc21-cli  
+```
+
 ## Commands
 
 The `marc21` tool provides the following commands:
@@ -105,6 +116,7 @@ Certificate of Origin][DCO].
 
 This project is licensed under the [European Union Public License 1.2].
 
+[archives with a precompiled binary]: https://github.com/deutsche-nationalbibliothek/marc21-rs/releases
 [Bash]: https://www.gnu.org/software/bash/
 [DCO]: https://developercertificate.org
 [Elvish]: https://elv.sh
