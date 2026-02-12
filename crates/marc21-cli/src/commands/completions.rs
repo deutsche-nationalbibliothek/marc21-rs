@@ -18,10 +18,7 @@ pub(crate) struct Completions {
 }
 
 impl Completions {
-    pub(crate) fn execute(
-        self,
-        cmd: &mut Command,
-    ) -> Result<(), Box<dyn std::error::Error>> {
+    pub(crate) fn execute(self, cmd: &mut Command) -> CliResult {
         use Shell::*;
 
         let mut wtr = WriterBuilder::default()

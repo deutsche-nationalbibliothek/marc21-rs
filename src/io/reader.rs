@@ -17,8 +17,8 @@ pub enum ReadMarcError<'a> {
 impl Display for ReadMarcError<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::Parse(e) => write!(f, "parse: {e}"),
-            Self::IO(e) => write!(f, "io: {e}"),
+            Self::Parse(e) => write!(f, "{e}"),
+            Self::IO(e) => write!(f, "{e}"),
         }
     }
 }

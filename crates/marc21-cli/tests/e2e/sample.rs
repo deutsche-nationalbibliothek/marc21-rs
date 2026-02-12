@@ -7,7 +7,7 @@ use crate::prelude::*;
 fn sample_write_output_stdout() -> TestResult {
     let mut cmd = marc21_cmd();
     let assert = cmd
-        .args(["sample", "1"])
+        .args(["sample", "-s", "1"])
         .arg(data_dir().join("ada.mrc.gz"))
         .arg(data_dir().join("invalid.mrc"))
         .arg(data_dir().join("ada.mrc"))

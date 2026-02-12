@@ -42,7 +42,7 @@ fn concat_stdin_stdout() -> TestResult {
 fn concat_write_output_stdout() -> TestResult {
     let mut cmd = marc21_cmd();
     let assert = cmd
-        .arg("concat")
+        .args(["concat", "-s"])
         .arg(data_dir().join("invalid.mrc"))
         .arg(data_dir().join("ada.mrc"))
         .assert();
@@ -65,7 +65,7 @@ fn concat_write_output_txt() -> TestResult {
 
     let mut cmd = marc21_cmd();
     let assert = cmd
-        .arg("concat")
+        .args(["concat", "-s"])
         .arg(data_dir().join("ada.mrc.gz"))
         .arg(data_dir().join("invalid.mrc"))
         .arg(data_dir().join("ada.mrc"))
@@ -98,7 +98,7 @@ fn concat_write_output_gzip() -> TestResult {
 
     let mut cmd = marc21_cmd();
     let assert = cmd
-        .arg("concat")
+        .args(["concat", "-s"])
         .arg(data_dir().join("invalid.mrc"))
         .arg(data_dir().join("ada.mrc"))
         .args(["-o", output.to_str().unwrap()])

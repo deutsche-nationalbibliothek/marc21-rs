@@ -6,6 +6,7 @@ use crate::cli::{Args, Command};
 
 mod cli;
 mod commands;
+mod error;
 pub(crate) mod prelude;
 mod progress;
 mod utils;

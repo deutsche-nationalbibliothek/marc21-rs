@@ -1,4 +1,5 @@
 use clap::{Parser, Subcommand, value_parser};
+use marc21::matcher::RecordMatcher;
 
 use crate::commands::*;
 
@@ -38,4 +39,15 @@ pub(crate) struct CommonOpts {
         requires = "output"
     )]
     pub(crate) compression: u32,
+}
+
+#[derive(Debug, Clone, clap::Args)]
+pub(crate) struct FilterOpts {
+    /// Skip invalid records that can't be decoded
+    #[arg(short, long)]
+    pub(crate) skip_invalid: bool,
+
+    /// An expression for filtering records
+    #[arg(long = "where", value_name = "predicate")]
+    pub(crate) filter: Option<RecordMatcher>,
 }

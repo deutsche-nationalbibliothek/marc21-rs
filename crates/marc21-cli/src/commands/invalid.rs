@@ -20,9 +20,7 @@ pub(crate) struct Invalid {
 }
 
 impl Invalid {
-    pub(crate) fn execute(
-        self,
-    ) -> Result<(), Box<dyn std::error::Error>> {
+    pub(crate) fn execute(self) -> CliResult {
         let mut progress = Progress::new(self.common.progress);
         let mut output = WriterBuilder::default()
             .with_compression(self.common.compression)
@@ -35,7 +33,7 @@ impl Invalid {
             while let Some(result) = reader.next_byte_record() {
                 match result {
                     Err(ReadMarcError::IO(e)) => {
-                        return Err(Box::new(e));
+                        return Err(e.into());
                     }
                     Err(ReadMarcError::Parse(e)) => {
                         let _ = output.write(e.data())?;
