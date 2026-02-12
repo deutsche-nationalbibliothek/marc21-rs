@@ -86,7 +86,7 @@ combination with standard UNIX tools such as `grep`, `cut` or `sed`. In
 the following example, a single data record is printed on the console:
 
 ```shell
-$ marc21 print tests/data/ada.mrc
+$ marc21 print tests/data/ada.mrc --where '100/*.a =? "Love"'
 LDR 03612nz  a2200589nc 4500
 001 119232022
 003 DE-101
@@ -104,6 +104,15 @@ size:
 ```shell
 $ marc21 sample 10 GND.mrc.gz -o samples.mrc.gz
 ```
+
+### Operators
+
+The following operators are supported in filter expressions:
+
+* Comparison operators `==`, `!=`, `>=`, `>`, `<=` and `<`,
+    e.g. `100 == "119232022"`
+* Substring search `=?` (and `!?` in negated form),
+    e.g. `100/1#.a =? "Love"`
 
 ### Enable tab completion
 

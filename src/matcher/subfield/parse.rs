@@ -1,21 +1,26 @@
 use std::cell::RefCell;
 
+use memchr::memmem::Finder;
 use winnow::combinator::{
     alt, delimited, empty, preceded, repeat, seq, terminated,
 };
 use winnow::prelude::*;
 
 use crate::matcher::shared::{
-    Quantifier, parse_codes, parse_comparison_operator,
-    parse_quantifier_opt, parse_string_value, ws0, ws1,
+    Quantifier, parse_byte_string, parse_codes,
+    parse_comparison_operator, parse_quantifier_opt,
+    parse_string_value, ws0, ws1,
 };
-use crate::matcher::subfield::{ComparisonMatcher, SubfieldMatcher};
+use crate::matcher::subfield::{
+    ComparisonMatcher, ContainsMatcher, SubfieldMatcher,
+};
 
 pub(crate) fn parse_subfield_matcher(
     i: &mut &[u8],
 ) -> ModalResult<SubfieldMatcher> {
     alt((
         parse_composite_matcher,
+        parse_contains_matcher,
         parse_comparison_matcher,
         parse_group_matcher,
         parse_not_matcher,
@@ -26,7 +31,8 @@ pub(crate) fn parse_subfield_matcher(
 pub(crate) fn parse_subfield_matcher_short(
     i: &mut &[u8],
 ) -> ModalResult<SubfieldMatcher> {
-    alt((parse_comparison_matcher_short,)).parse_next(i)
+    alt((parse_comparison_matcher_short, parse_contains_matcher_short))
+        .parse_next(i)
 }
 
 fn parse_comparison_matcher(
@@ -38,7 +44,7 @@ fn parse_comparison_matcher(
         operator: ws1(parse_comparison_operator),
         value: parse_string_value,
     }}
-    .map(SubfieldMatcher::Comparison)
+    .map(|m| SubfieldMatcher::Comparison(Box::new(m)))
     .parse_next(i)
 }
 
@@ -51,8 +57,47 @@ fn parse_comparison_matcher_short(
         operator: ws1(parse_comparison_operator),
         value: parse_string_value,
     }}
-    .map(SubfieldMatcher::Comparison)
+    .map(|m| SubfieldMatcher::Comparison(Box::new(m)))
     .parse_next(i)
+}
+
+fn parse_contains_matcher(
+    i: &mut &[u8],
+) -> ModalResult<SubfieldMatcher> {
+    (
+        parse_quantifier_opt,
+        parse_codes,
+        ws1(alt(("=?".value(false), "!?".value(true)))),
+        parse_byte_string,
+    )
+        .map(|(quantifier, codes, negated, needle)| ContainsMatcher {
+            finder: Finder::new(&needle).into_owned(),
+            quantifier,
+            codes,
+            negated,
+            needle,
+        })
+        .map(|m| SubfieldMatcher::Contains(Box::new(m)))
+        .parse_next(i)
+}
+
+fn parse_contains_matcher_short(
+    i: &mut &[u8],
+) -> ModalResult<SubfieldMatcher> {
+    (
+        parse_codes,
+        ws1(alt(("=?".value(false), "!?".value(true)))),
+        parse_byte_string,
+    )
+        .map(|(codes, negated, needle)| ContainsMatcher {
+            finder: Finder::new(&needle).into_owned(),
+            quantifier: Quantifier::Any,
+            codes,
+            negated,
+            needle,
+        })
+        .map(|m| SubfieldMatcher::Contains(Box::new(m)))
+        .parse_next(i)
 }
 
 thread_local! {
@@ -81,6 +126,7 @@ fn parse_group_matcher(i: &mut &[u8]) -> ModalResult<SubfieldMatcher> {
         alt((
             parse_composite_matcher,
             parse_comparison_matcher,
+            parse_contains_matcher,
             parse_group_matcher,
             parse_not_matcher,
         )),
@@ -109,6 +155,7 @@ fn parse_composite_and_matcher(
     let atom = |i: &mut &[u8]| -> ModalResult<SubfieldMatcher> {
         ws0(alt((
             parse_comparison_matcher,
+            parse_contains_matcher,
             parse_group_matcher,
             parse_not_matcher,
         )))
@@ -129,6 +176,7 @@ fn parse_composite_or_matcher(
         ws0(alt((
             parse_composite_and_matcher,
             parse_comparison_matcher,
+            parse_contains_matcher,
             parse_group_matcher,
             parse_not_matcher,
         )))
