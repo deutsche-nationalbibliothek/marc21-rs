@@ -107,12 +107,40 @@ $ marc21 sample 10 GND.mrc.gz -o samples.mrc.gz
 
 ### Operators
 
-The following operators are supported in filter expressions:
+The comparison operators `==`, `!=`, `>=`, `>`, `<=`, and `<` can be
+used for values in selected leader fields, values in control fields, and
+values in subfields. Here are a few examples
 
-* Comparison operators `==`, `!=`, `>=`, `>`, `<=` and `<`,
-    e.g. `100 == "119232022"`
-* Substring search `=?` (and `!?` in negated form),
-    e.g. `100/1#.a =? "Love"` or `100/*.a =? ["Hate", "Love"]`
+```shell
+$ marc21 filter '100/1#.a == "Lovelace, Ada"' DUMP.mrc.gz -o out.mrc.gz
+$ marc21 filter '100/*.a != "Curie, Marie"' DUMP.mrc.gz -o out.mrc.gz
+$ marc21 filter '001 == "119232022"' DUMP.mrc.gz -o out.mrc.gz
+$ marc21 filter 'ldr.length > 3000' DUMP.mrc.gz -o out.mrc.gz
+$ marc21 filter 'ldr.status == "z"' DUMP.mrc.gz -o out.mrc.gz
+```
+
+The `=?` operator and, in negated form, `!?` perform a substring search
+on subfield values. The operator allows simultaneous searching for
+multiple patterns (use `[]` notation).
+
+```shell
+$ marc21 filter '100/*.a =? ["Hate", "Love"]' DUMP.mrc.gz -o out.mrc.gz
+$ marc21 filter '100/1#.a =? "Love"' DUMP.mrc.gz -o out.mrc.gz
+```
+
+Subfield values can be checked against one or a set of regular
+expressions. The filter expression uses the `=~` operator or the `!~`
+operator in negated form. The underlying regex engine does not support
+all regex features; please refer to the [specification] to learn
+more about the syntax and possible limitations. The following example
+searches for all records with a field `533` that contains a subfield `n`
+whose value matches the regular expression for an ISBN.
+
+```shell
+$ marc21 filter -s \
+    '533.n =~ "(?i)ISBN(?:-1[03])?(?::?\\s*)?\\s(?:97[89][-\ ]?)?\\d{1,5}[-\\ ]?(?:\\d+[-\\ ]?){2}(?:\\d|X)"' \
+    DUMP.mrc.gz -o out.mrc.gz
+```
 
 ### Enable tab completion
 
@@ -151,3 +179,4 @@ This project is licensed under the [European Union Public License 1.2].
 [R]: https://www.r-project.org
 [Tidyverse]: https://tidyverse.org
 [ZSH]: https://www.zsh.org
+[specification]: https://docs.rs/regex/latest/regex/#syntax
