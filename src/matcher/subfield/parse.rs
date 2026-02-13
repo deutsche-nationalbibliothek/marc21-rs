@@ -2,8 +2,7 @@ use std::cell::RefCell;
 
 use aho_corasick::AhoCorasick;
 use winnow::combinator::{
-    alt, delimited, empty, opt, preceded, repeat, separated, seq,
-    terminated,
+    alt, delimited, opt, preceded, repeat, separated, terminated,
 };
 use winnow::error::{ContextError, ErrMode, ParserError};
 use winnow::prelude::*;
@@ -22,7 +21,7 @@ pub(crate) fn parse_subfield_matcher(
     alt((
         parse_composite_matcher,
         parse_contains_matcher(true),
-        parse_comparison_matcher,
+        parse_comparison_matcher(true),
         parse_group_matcher,
         parse_not_matcher,
     ))
@@ -33,36 +32,36 @@ pub(crate) fn parse_subfield_matcher_short(
     i: &mut &[u8],
 ) -> ModalResult<SubfieldMatcher> {
     alt((
-        parse_comparison_matcher_short,
+        parse_comparison_matcher(false),
         parse_contains_matcher(false),
     ))
     .parse_next(i)
 }
 
-fn parse_comparison_matcher(
-    i: &mut &[u8],
-) -> ModalResult<SubfieldMatcher> {
-    seq! { ComparisonMatcher {
-        quantifier: parse_quantifier_opt,
-        codes: parse_codes,
-        operator: ws1(parse_comparison_operator),
-        value: parse_string_value,
-    }}
-    .map(|m| SubfieldMatcher::Comparison(Box::new(m)))
-    .parse_next(i)
-}
+fn parse_comparison_matcher<'a, E>(
+    quantified: bool,
+) -> impl Parser<&'a [u8], SubfieldMatcher, E>
+where
+    E: ParserError<&'a [u8]> + From<ErrMode<ContextError>>,
+{
+    move |i: &mut &'a [u8]| {
+        let quantifier = if quantified {
+            parse_quantifier_opt.parse_next(i)?
+        } else {
+            Quantifier::Any
+        };
 
-fn parse_comparison_matcher_short(
-    i: &mut &[u8],
-) -> ModalResult<SubfieldMatcher> {
-    seq! { ComparisonMatcher {
-        quantifier: empty.value(Quantifier::Any),
-        codes: parse_codes,
-        operator: ws1(parse_comparison_operator),
-        value: parse_string_value,
-    }}
-    .map(|m| SubfieldMatcher::Comparison(Box::new(m)))
-    .parse_next(i)
+        let codes = parse_codes.parse_next(i)?;
+        let operator = ws1(parse_comparison_operator).parse_next(i)?;
+        let value = parse_string_value.parse_next(i)?;
+
+        Ok(SubfieldMatcher::Comparison(Box::new(ComparisonMatcher {
+            quantifier,
+            codes,
+            operator,
+            value,
+        })))
+    }
 }
 
 fn parse_contains_matcher<'a, E>(
@@ -134,7 +133,7 @@ fn parse_group_matcher(i: &mut &[u8]) -> ModalResult<SubfieldMatcher> {
         terminated(ws0('('), group_level_incr),
         alt((
             parse_composite_matcher,
-            parse_comparison_matcher,
+            parse_comparison_matcher(true),
             parse_contains_matcher(true),
             parse_group_matcher,
             parse_not_matcher,
@@ -163,7 +162,7 @@ fn parse_composite_and_matcher(
 ) -> ModalResult<SubfieldMatcher> {
     let atom = |i: &mut &[u8]| -> ModalResult<SubfieldMatcher> {
         ws0(alt((
-            parse_comparison_matcher,
+            parse_comparison_matcher(true),
             parse_contains_matcher(true),
             parse_group_matcher,
             parse_not_matcher,
@@ -184,7 +183,7 @@ fn parse_composite_or_matcher(
     let atom = |i: &mut &[u8]| -> ModalResult<SubfieldMatcher> {
         ws0(alt((
             parse_composite_and_matcher,
-            parse_comparison_matcher,
+            parse_comparison_matcher(true),
             parse_contains_matcher(true),
             parse_group_matcher,
             parse_not_matcher,
