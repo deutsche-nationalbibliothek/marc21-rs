@@ -485,6 +485,7 @@ dependencies = [
  "aho-corasick",
  "bstr",
  "flate2",
+ "regex",
  "serde",
  "serde_test",
  "smallvec",

@@ -3,6 +3,7 @@ use std::ops::{BitAnd, BitOr};
 use winnow::Parser;
 
 mod contains;
+mod regex;
 
 use crate::Subfield;
 use crate::matcher::shared::{
@@ -10,6 +11,7 @@ use crate::matcher::shared::{
 };
 use crate::matcher::subfield::contains::ContainsMatcher;
 use crate::matcher::subfield::parse::parse_subfield_matcher;
+use crate::matcher::subfield::regex::RegexMatcher;
 use crate::matcher::{MatchOptions, ParseMatcherError};
 
 pub(crate) mod parse;
@@ -19,6 +21,7 @@ pub(crate) mod parse;
 pub enum SubfieldMatcher {
     Comparison(Box<ComparisonMatcher>),
     Contains(Box<ContainsMatcher>),
+    Regex(Box<RegexMatcher>),
     Group(Box<SubfieldMatcher>),
     Not(Box<SubfieldMatcher>),
     Composite {
@@ -47,6 +50,8 @@ impl SubfieldMatcher {
     /// let _matcher = SubfieldMatcher::new("0 == 'abc' || 1 == 'def'")?;
     /// let _matcher = SubfieldMatcher::new("a =? 'abc'")?;
     /// let _matcher = SubfieldMatcher::new("a =? ['abc', 'def']")?;
+    /// let _matcher = SubfieldMatcher::new("a =~ '^abc'")?;
+    /// let _matcher = SubfieldMatcher::new("a =~ ['^abc', 'def$']")?;
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
@@ -85,6 +90,7 @@ impl SubfieldMatcher {
         match self {
             Self::Comparison(m) => m.is_match(subfields, options),
             Self::Contains(m) => m.is_match(subfields, options),
+            Self::Regex(m) => m.is_match(subfields, options),
             Self::Group(m) => m.is_match(subfields, options),
             Self::Not(m) => !m.is_match(subfields, options),
             Self::Composite { lhs, op, rhs } => {
