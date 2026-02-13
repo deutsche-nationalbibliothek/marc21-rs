@@ -112,7 +112,7 @@ The following operators are supported in filter expressions:
 * Comparison operators `==`, `!=`, `>=`, `>`, `<=` and `<`,
     e.g. `100 == "119232022"`
 * Substring search `=?` (and `!?` in negated form),
-    e.g. `100/1#.a =? "Love"`
+    e.g. `100/1#.a =? "Love"` or `100/*.a =? ["Hate", "Love"]`
 
 ### Enable tab completion
 
