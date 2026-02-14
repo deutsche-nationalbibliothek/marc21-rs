@@ -42,7 +42,7 @@ impl RegexMatcher {
         let r#fn = |subfield: &Subfield| -> bool {
             match self.negated {
                 false => self.matcher.is_match(subfield.value()),
-                true => self.matcher.is_match(subfield.value()),
+                true => !self.matcher.is_match(subfield.value()),
             }
         };
 

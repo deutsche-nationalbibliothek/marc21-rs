@@ -34,6 +34,10 @@ serde_test = { version = "1.0" }
 path = "tests/fuzz/lib.rs"
 name = "fuzz-regressions"
 
+[[test]]
+path = "tests/api/lib.rs"
+name = "api"
+
 [profile.release]
 strip = true
 lto = true
