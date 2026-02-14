@@ -1,6 +1,6 @@
 use winnow::ascii::multispace0;
 use winnow::combinator::{
-    alt, delimited, empty, opt, preceded, seq, terminated,
+    alt, delimited, opt, preceded, seq, terminated,
 };
 use winnow::prelude::*;
 
@@ -10,7 +10,7 @@ use crate::matcher::field::data::DataFieldMatcher;
 use crate::matcher::field::{ExistsMatcher, FieldMatcher};
 use crate::matcher::indicator::parse::parse_indicator_matcher_opt;
 use crate::matcher::shared::{
-    Quantifier, parse_comparison_operator, parse_quantifier_opt,
+    parse_comparison_operator, parse_quantifier_opt,
     parse_string_value, parse_usize, ws1,
 };
 use crate::matcher::subfield::parse::{
@@ -88,7 +88,7 @@ fn parse_data_field_matcher_short(
     i: &mut &[u8],
 ) -> ModalResult<DataFieldMatcher> {
     seq! { DataFieldMatcher {
-        quantifier: empty.value(Quantifier::Any),
+        quantifier: parse_quantifier_opt,
         tag_matcher: parse_tag_matcher,
         indicator_matcher: parse_indicator_matcher_opt,
         _: '.',
