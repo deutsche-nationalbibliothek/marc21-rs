@@ -82,6 +82,7 @@ where
             ),
         ))
         .parse_next(i)?;
+        eprintln!("patterns = {patterns:?}");
 
         if let Ok(matcher) =
             RegexSet::new(patterns.iter().map(|s| s.to_str().unwrap()))
