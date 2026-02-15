@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-use bstr::BString;
+use bstr::{BString, ByteSlice};
 use winnow::ascii::multispace1;
 use winnow::combinator::{
     alt, delimited, dispatch, fail, preceded, repeat, terminated,
@@ -153,6 +153,7 @@ fn parse_quoted_string<'a, E: ParserError<&'a [u8]>>(
     repeat(0.., parse_quoted_fragment::<E>(quotes)).fold(
         Vec::<u8>::new,
         |mut acc, fragment| {
+            eprintln!("fragement = {fragment:?}");
             match fragment {
                 Fragment::Literal(s) => acc.extend_from_slice(s),
                 Fragment::EscapedChar(c) => acc.push(c as u8),
@@ -170,7 +171,9 @@ fn parse_quoted_fragment<'a, E: ParserError<&'a [u8]>>(
     use Fragment::*;
 
     alt((
-        parse_literal::<&'a [u8], E>(quotes).map(Literal),
+        parse_literal::<&'a [u8], E>(quotes)
+            .verify(|s: &[u8]| s.is_utf8())
+            .map(Literal),
         parse_escaped_char::<&'a [u8], E>(quotes).map(EscapedChar),
         preceded('\\', multispace1).value(EscapedWs),
     ))
