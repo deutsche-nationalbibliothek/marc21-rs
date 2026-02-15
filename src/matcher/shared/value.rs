@@ -153,7 +153,6 @@ fn parse_quoted_string<'a, E: ParserError<&'a [u8]>>(
     repeat(0.., parse_quoted_fragment::<E>(quotes)).fold(
         Vec::<u8>::new,
         |mut acc, fragment| {
-            eprintln!("fragement = {fragment:?}");
             match fragment {
                 Fragment::Literal(s) => acc.extend_from_slice(s),
                 Fragment::EscapedChar(c) => acc.push(c as u8),
