@@ -151,6 +151,16 @@ $ marc21 filter -s '400/1#.a =^ ["Hate", "Love"]' DUMP.mrc.gz -o out.mrc.gz
 $ marc21 filter -s '400/1#{ [ac] =^ "Count" }' DUMP.mrc.gz -o out.mrc.gz
 ```
 
+In contrast, the `=$` operator can be used to check whether a subfield
+value ends with a specific suffix. Keep in mind that the `$` character
+often has a special meaning on the command line and may need to be
+quoted.
+
+```console
+$ marc21 filter -s '548.4 =$ "/gnd#dateOfBirthAndDeath"' DUMP.mrc.gz -o out.mrc.gz
+$ marc21 filter -s '401/1#.a !$ "Ada"' DUMP.mrc.gz -o out.mrc.gz
+```
+
 ### Enable tab completion
 
 `marc21` supports generating completion scripts for [Bash], [Elvish],
