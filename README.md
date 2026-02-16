@@ -142,6 +142,15 @@ $ marc21 filter -s \
     DUMP.mrc.gz -o out.mrc.gz
 ```
 
+To test whether a subfield value begins with a prefix or not, the `=^`
+operator or, in its negated form, the `!^` operator is used:
+
+```console
+$ marc21 filter -s '400/1#.a =^ "Love"' DUMP.mrc.gz -o out.mrc.gz
+$ marc21 filter -s '400/1#.a =^ ["Hate", "Love"]' DUMP.mrc.gz -o out.mrc.gz
+$ marc21 filter -s '400/1#{ [ac] =^ "Count" }' DUMP.mrc.gz -o out.mrc.gz
+```
+
 ### Enable tab completion
 
 `marc21` supports generating completion scripts for [Bash], [Elvish],

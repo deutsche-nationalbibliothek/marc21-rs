@@ -12,6 +12,7 @@ use crate::matcher::shared::{
 };
 use crate::matcher::subfield::contains::parse_contains_matcher;
 use crate::matcher::subfield::regex::parse_regex_matcher;
+use crate::matcher::subfield::starts_with::parse_starts_with_matcher;
 use crate::matcher::subfield::{ComparisonMatcher, SubfieldMatcher};
 
 pub(crate) fn parse_subfield_matcher(
@@ -22,6 +23,7 @@ pub(crate) fn parse_subfield_matcher(
         parse_comparison_matcher(true),
         parse_contains_matcher(true),
         parse_regex_matcher(true),
+        parse_starts_with_matcher(true),
         parse_group_matcher,
         parse_not_matcher,
     ))
@@ -35,6 +37,7 @@ pub(crate) fn parse_subfield_matcher_short(
         parse_comparison_matcher(false),
         parse_contains_matcher(false),
         parse_regex_matcher(false),
+        parse_starts_with_matcher(false),
     ))
     .parse_next(i)
 }
@@ -93,6 +96,7 @@ fn parse_group_matcher(i: &mut &[u8]) -> ModalResult<SubfieldMatcher> {
             parse_comparison_matcher(true),
             parse_contains_matcher(true),
             parse_regex_matcher(true),
+            parse_starts_with_matcher(true),
             parse_group_matcher,
             parse_not_matcher,
         )),
@@ -123,6 +127,7 @@ fn parse_composite_and_matcher(
             parse_comparison_matcher(true),
             parse_contains_matcher(true),
             parse_regex_matcher(true),
+            parse_starts_with_matcher(true),
             parse_group_matcher,
             parse_not_matcher,
         )))
@@ -145,6 +150,7 @@ fn parse_composite_or_matcher(
             parse_comparison_matcher(true),
             parse_contains_matcher(true),
             parse_regex_matcher(true),
+            parse_starts_with_matcher(true),
             parse_group_matcher,
             parse_not_matcher,
         )))
