@@ -4,6 +4,7 @@ use winnow::Parser;
 
 mod contains;
 mod regex;
+mod starts_with;
 
 use crate::Subfield;
 use crate::matcher::shared::{
@@ -12,6 +13,7 @@ use crate::matcher::shared::{
 use crate::matcher::subfield::contains::ContainsMatcher;
 use crate::matcher::subfield::parse::parse_subfield_matcher;
 use crate::matcher::subfield::regex::RegexMatcher;
+use crate::matcher::subfield::starts_with::StartsWithMatcher;
 use crate::matcher::{MatchOptions, ParseMatcherError};
 
 pub(crate) mod parse;
@@ -22,6 +24,7 @@ pub enum SubfieldMatcher {
     Comparison(Box<ComparisonMatcher>),
     Contains(Box<ContainsMatcher>),
     Regex(Box<RegexMatcher>),
+    StartsWith(Box<StartsWithMatcher>),
     Group(Box<SubfieldMatcher>),
     Not(Box<SubfieldMatcher>),
     Composite {
@@ -52,6 +55,10 @@ impl SubfieldMatcher {
     /// let _matcher = SubfieldMatcher::new("a =? ['abc', 'def']")?;
     /// let _matcher = SubfieldMatcher::new("a =~ '^abc'")?;
     /// let _matcher = SubfieldMatcher::new("a =~ ['^abc', 'def$']")?;
+    /// let _matcher = SubfieldMatcher::new("a =^ 'abc'")?;
+    /// let _matcher = SubfieldMatcher::new("a =^ ['foo', 'bar']")?;
+    /// let _matcher = SubfieldMatcher::new("a !^ 'abc'")?;
+    /// let _matcher = SubfieldMatcher::new("a !^ ['foo', 'bar']")?;
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
@@ -91,6 +98,7 @@ impl SubfieldMatcher {
             Self::Comparison(m) => m.is_match(subfields, options),
             Self::Contains(m) => m.is_match(subfields, options),
             Self::Regex(m) => m.is_match(subfields, options),
+            Self::StartsWith(m) => m.is_match(subfields, options),
             Self::Group(m) => m.is_match(subfields, options),
             Self::Not(m) => !m.is_match(subfields, options),
             Self::Composite { lhs, op, rhs } => {
