@@ -1,0 +1,55 @@
+LDR 06091nz  a2200673nc 4500
+001 040992918
+003 DE-101
+005 20240507154349.0
+008 880701n||azznnaabn           | ana    |c
+024/7# $a 4099291-3 $0 http://d-nb.info/gnd/4099291-3 $2 gnd
+035 $a (DE-101)040992918
+035 $a (DE-588)4099291-3
+035 $z (DE-588)1088068103
+035 $z (DE-588c)4099291-3 $9 v:zg
+040 $a DE-101 $c DE-101 $9 r:DE-101 $b ger $d 1140 $e rda
+042 $a gnd1
+043 $c XA-DE
+065 $a 12.2p $2 sswd
+075 $b u $2 gndgen
+075 $b wit $2 gndspec
+079 $a g $q s $q f $u w $u o $u v
+083/04 $a 832.6 $9 d:2 $9 t:2019-04-25 $2 23/ger
+100/1# $a Lessing, Gotthold Ephraim $d 1729-1781 $t Minna von Barnhelm
+377/#7 $a ger $2 iso639-2b
+380 $0 (DE-101)040128997 $0 (DE-588)4012899-4 $0 https://d-nb.info/gnd/4012899-4 $a Drama $2 gnd
+400/1# $a Lessing, Gotthold Ephraim $d 1729-1781 $t Das Soldatenglück $9 v:ISO639: ger
+400/1# $a Lessing, Gotthold Ephraim $d 1729-1781 $t Minna von Barnhelm oder Das Soldatenglück $9 v:ISO639: ger
+400/1# $a Lessing, Gotthold Ephraim $d 1729-1781 $t Minna de Barnhelm ou Le soldat heureux
+400/1# $a Lessing, Gotthold Ephraim $d 1729-1781 $t Minna von Barnhelm ou A felicidade do soldado
+400/1# $a Lessing, Gotthold Ephraim $d 1729-1781 $t Minna von Barnhelm o la felicidad del soldado $9 v:ISO639: spa
+400/1# $a Lessing, Gotthold Ephraim $d 1729-1781 $t Minna von Barnhelm o la fortuna del Soldat $9 v:ISO639: spa
+400/1# $a Lessing, Gotthold Ephraim $d 1729-1781 $t Minna von Barnhelm avagy A katonaszerencse
+400/1# $a Lessing, Gotthold Ephraim $d 1729-1781 $t Minna von Barnhelm ovvero la fortuna del soldato $9 v:ISO639: ita
+400/1# $a Lessing, Gotthold Ephraim $d 1729-1781 $t Minna von Barnhelm, or, The soldier's fortune $9 v:ISO639: eng
+400/1# $a Lessing, Gotthold Ephraim $d 1729-1781 $t Minna von Barnhelm, a comedy in five acts $9 v:ISO639: eng
+400/1# $a Lessing, Gotthold Ephraim $d 1729-1781 $t Mina p'on Parŭnhellŭm, ttonŭn kuninŭi haengun
+400/1# $a Lessing, Gotthold Ephraim $d 1729-1781 $t Mi na pon Ba leun hel leum, tto neun gun in ui haeng un
+500/1# $0 (DE-101)1261856783 $0 (DE-588)1261856783 $0 https://d-nb.info/gnd/1261856783 $a Wildenhain, Michael $d 1958- $t Minna $4 rela $4 https://d-nb.info/standards/elementset/gnd#relatedWork $w r $i Relation allgemein $9 v:Bearbeitet als
+500/1# $0 (DE-101)1261856864 $0 (DE-588)1261856864 $0 https://d-nb.info/gnd/1261856864 $a Weiskern, Friedrich Wilhelm $d 1711-1768 $t Minna von Barnhelm $4 rela $4 https://d-nb.info/standards/elementset/gnd#relatedWork $w r $i Relation allgemein $9 v:Bearbeitet als
+500/1# $0 (DE-101)1261938070 $0 (DE-588)1261938070 $0 https://d-nb.info/gnd/1261938070 $a Buecheler, Frank Alva $d 1957- $t Minna von Barnhelm oder Das Soldatenglück $4 rela $4 https://d-nb.info/standards/elementset/gnd#relatedWork $w r $i Relation allgemein $9 v:Bearbeitet als Hörspiel
+500/1# $0 (DE-101)1261938283 $0 (DE-588)1261938283 $0 https://d-nb.info/gnd/1261938283 $a Buecheler, Frank Alva $d 1957- $t Minna von Barnhelm oder Das Soldatenglück $g Hörspielmanuskript $4 rela $4 https://d-nb.info/standards/elementset/gnd#relatedWork $w r $i Relation allgemein $9 v:Bearbeitet als Hörspielmanuskript
+500/1# $0 (DE-101)1261938518 $0 (DE-588)1261938518 $0 https://d-nb.info/gnd/1261938518 $a Pfaff, Siegfried $d 1931-2018 $t Minna von Barnhelm $4 rela $4 https://d-nb.info/standards/elementset/gnd#relatedWork $w r $i Relation allgemein $9 v:Bearbeitet als Hörspiel
+500/1# $0 (DE-101)1261938674 $0 (DE-588)1261938674 $0 https://d-nb.info/gnd/1261938674 $a Pfaff, Siegfried $d 1931-2018 $t Minna von Barnhelm $g Hörspielmanuskript $4 rela $4 https://d-nb.info/standards/elementset/gnd#relatedWork $w r $i Relation allgemein $9 v:Bearbeitet als Hörspielmanuskript
+500/1# $0 (DE-101)042258650 $0 (DE-588)4225865-0 $0 https://d-nb.info/gnd/4225865-0 $a Wieland, Christoph Martin $d 1733-1813 $t Musarion $4 vbal $4 https://d-nb.info/standards/elementset/gnd#relatedTerm $w r $i Verwandter Begriff
+500/1# $0 (DE-101)118572121 $0 (DE-588)118572121 $0 https://d-nb.info/gnd/118572121 $a Lessing, Gotthold Ephraim $d 1729-1781 $4 aut1 $4 https://d-nb.info/standards/elementset/gnd#firstAuthor $w r $i Verfasserschaft1 $e Verfasserschaft1
+530/#0 $0 (DE-101)123691726X $0 (DE-588)123691726X $0 https://d-nb.info/gnd/123691726X $a Das Fräulein von Barnhelm $4 rela $4 https://d-nb.info/standards/elementset/gnd#relatedWork $w r $i Relation allgemein $9 v:Bearbeitet als Film
+530/#0 $0 (DE-101)1261857313 $0 (DE-588)1261857313 $0 https://d-nb.info/gnd/1261857313 $a Heldinnen $4 rela $4 https://d-nb.info/standards/elementset/gnd#relatedWork $w r $i Relation allgemein $9 v:Bearbeitet als Film
+530/#0 $0 (DE-101)1261856767 $0 (DE-588)1261856767 $0 https://d-nb.info/gnd/1261856767 $a Minna von Barnhelm $g Film $f 1962 $4 rela $4 https://d-nb.info/standards/elementset/gnd#relatedWork $w r $i Relation allgemein $9 v:Bearbeitet als Film
+530/#0 $0 (DE-101)126185683X $0 (DE-588)126185683X $0 https://d-nb.info/gnd/126185683X $a Minna $4 rela $4 https://d-nb.info/standards/elementset/gnd#relatedWork $w r $i Relation allgemein $9 v:Bearbeitet als Musical
+548 $a 1767 $4 datj $4 https://d-nb.info/standards/elementset/gnd#dateOfPublication $w r $i Erscheinungszeit
+548 $a 1763 $4 dats $4 https://d-nb.info/standards/elementset/gnd#dateOfProduction $w r $i Erstellungszeit
+667 $a Werktitel als Wissensraum $5 DE-32
+670 $a Kindler
+670 $a Die Leseliste : kommentierte Empfehlungen, 1994
+678 $b Epoche: Aufklärung
+678 $b Zeit- und Sachbezug: Lessing verwendete ein Höchstmaß an Sorgfalt auf Form und Sprache dieses Dramas, um, im Zusammenhang mit der Gründung eines deutschen Nationaltheaters, ein nachahmbares Muster jenes neuen, zeitgemäßen Komödientyps zu schaffen, der ihm vorschwebte.
+678 $b Inhalt: Lustspiel in 5 Akten. Spielt vor dem Hintergrund des Siebenjährigen Krieges.
+678 $b Überlieferung: Erste Entwürfe datieren aus dem Jahr 1763, das Stück erschien 1767 und wurde am Hamburger Nationaltheater am 30. September 1767 uraufgeführt.
+913 $S swd $i pt $a Lessing, Gotthold Ephraim: Minna von Barnhelm $0 (DE-588c)4099291-3
