@@ -1,4 +1,5 @@
 mod comparison;
+mod connectives;
 mod contains;
 mod ends_with;
 mod regex;
