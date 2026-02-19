@@ -1,5 +1,6 @@
 use std::path::PathBuf;
 
+use clap::value_parser;
 use marc21::matcher::RecordMatcher;
 
 use crate::prelude::*;
@@ -10,6 +11,15 @@ pub(crate) struct Filter {
     /// Skip invalid records that can't be decoded
     #[arg(short, long)]
     pub(crate) skip_invalid: bool,
+
+    /// The minimum score for string similarity comparisons (0 <= score
+    /// <= 100).
+    #[arg(long,
+        value_parser = value_parser!(u8).range(0..=100),
+        default_value = "80",
+        value_name = "n"
+    )]
+    pub(crate) strsim_threshold: u8,
 
     /// An expression for filtering records
     filter: RecordMatcher,
@@ -32,7 +42,9 @@ impl Filter {
             .with_compression(self.common.compression)
             .try_from_path_or_stdout(self.output)?;
 
-        let options = MatchOptions::default();
+        let options = MatchOptions::default()
+            .strsim_threshold(self.strsim_threshold as f64 / 100f64);
+
         let matcher = self.filter;
         let mut count = 0;
 

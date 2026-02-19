@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand, value_parser};
-use marc21::matcher::RecordMatcher;
+use marc21::matcher::{MatchOptions, RecordMatcher};
 
 use crate::commands::*;
 
@@ -47,7 +47,23 @@ pub(crate) struct FilterOpts {
     #[arg(short, long)]
     pub(crate) skip_invalid: bool,
 
+    /// The minimum score for string similarity comparisons (0 <= score
+    /// <= 100).
+    #[arg(long,
+        value_parser = value_parser!(u8).range(0..=100),
+        default_value = "80",
+        value_name = "n"
+    )]
+    pub(crate) strsim_threshold: u8,
+
     /// An expression for filtering records
     #[arg(long = "where", value_name = "predicate")]
     pub(crate) filter: Option<RecordMatcher>,
+}
+
+impl From<&FilterOpts> for MatchOptions {
+    fn from(opts: &FilterOpts) -> Self {
+        Self::default()
+            .strsim_threshold(opts.strsim_threshold as f64 / 100f64)
+    }
 }
