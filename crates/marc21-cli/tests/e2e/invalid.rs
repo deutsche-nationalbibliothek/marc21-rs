@@ -6,7 +6,7 @@ use flate2::read::GzDecoder;
 use crate::prelude::*;
 
 #[test]
-fn invalid_write_output_stdout() -> TestResult {
+fn invalid_stdout() -> TestResult {
     let mut cmd = marc21_cmd();
     let assert = cmd
         .arg("invalid")
@@ -24,8 +24,11 @@ fn invalid_write_output_stdout() -> TestResult {
         .stderr(predicates::str::is_empty());
 
     let mut cmd = marc21_cmd();
-    let assert =
-        cmd.arg("invalid").arg(data_dir().join("ada.mrc")).assert();
+    let assert = cmd
+        .arg("invalid")
+        .arg(data_dir().join("ada.mrc.gz"))
+        .arg(data_dir().join("minna.mrc"))
+        .assert();
 
     assert
         .success()
@@ -37,15 +40,14 @@ fn invalid_write_output_stdout() -> TestResult {
 }
 
 #[test]
-fn invalid_write_output_text() -> TestResult {
+fn invalid_output() -> TestResult {
     let temp_dir = TempDir::new()?;
     let output = temp_dir.child("invalid.mrc");
 
     let mut cmd = marc21_cmd();
     let assert = cmd
         .arg("invalid")
-        .arg(data_dir().join("invalid.mrc"))
-        .arg(data_dir().join("ada.mrc.gz"))
+        .arg(data_dir().join("DUMP.mrc.gz"))
         .args(["-o", output.to_str().unwrap()])
         .assert();
 
@@ -65,7 +67,7 @@ fn invalid_write_output_text() -> TestResult {
 }
 
 #[test]
-fn invalid_write_output_gzip() -> TestResult {
+fn invalid_gzip() -> TestResult {
     let temp_dir = TempDir::new()?;
     let output = temp_dir.child("invalid.mrc.gz");
 
