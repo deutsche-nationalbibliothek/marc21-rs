@@ -24,7 +24,7 @@ pub(crate) struct Count {
 impl Count {
     pub(crate) fn execute(self) -> CliResult {
         let mut progress = Progress::new(self.common.progress);
-        let options = MatchOptions::default();
+        let options = MatchOptions::from(&self.filter_opts);
 
         let mut output = WriterBuilder::default()
             .with_compression(self.common.compression)

@@ -24,6 +24,7 @@ bstr = { version = "1.12", features = ["std", "alloc"], default-features = false
 flate2 = { version = "1.1", features = ["zlib-rs"], default-features = false }
 regex = { version = "1.12" }
 serde = { version = "1.0", optional = true }
+strsim = { version = "0.11" }
 smallvec = { version = "1.15" }
 winnow = { version = "0.7" }
 

@@ -161,6 +161,18 @@ $ marc21 filter -s '548.4 =$ "/gnd#dateOfBirthAndDeath"' DUMP.mrc.gz -o out.mrc.
 $ marc21 filter -s '401/1#.a !$ "Ada"' DUMP.mrc.gz -o out.mrc.gz
 ```
 
+Similarity comparisons between character strings are performed using
+the `=*` operator (in negated form `!*`). The normalized [Levenshtein
+distance] is calculated between the subfield value and the comparison
+value. If this is greater than the specified threshold value, the
+comparison is considered a match. The default threshold value is `0.8`
+and can be changed using the command line option `--strsim-threshold`:
+
+```console
+$ marc21 filter -s --strsim-threshold 0.9 '100/1#.a =* "Lovelace, Bda"' \
+    DUMP.mrc.gz -o out.mrc.gz
+```
+
 ### Enable tab completion
 
 `marc21` supports generating completion scripts for [Bash], [Elvish],
@@ -191,11 +203,12 @@ This project is licensed under the [European Union Public License 1.2].
 [European Union Public License 1.2]: ./LICENSE
 [Fish]: https://fishshell.com
 [GND]: https://gnd.network
+[Levenshtein distance]: https://en.wikipedia.org/wiki/Levenshtein_distance
 [MARC-21]: https://www.loc.gov/marc
 [Polars]: https://pola.rs
 [PowerShell]: https://en.wikipedia.org/wiki/PowerShell
 [Python]: https://www.python.org
 [R]: https://www.r-project.org
+[specification]: https://docs.rs/regex/latest/regex/#syntax
 [Tidyverse]: https://tidyverse.org
 [ZSH]: https://www.zsh.org
-[specification]: https://docs.rs/regex/latest/regex/#syntax

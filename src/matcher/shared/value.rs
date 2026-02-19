@@ -138,6 +138,11 @@ pub(crate) fn parse_string_value(i: &mut &[u8]) -> ModalResult<Value> {
         .parse_next(i)
 }
 
+#[inline(always)]
+pub(crate) fn parse_string(i: &mut &[u8]) -> ModalResult<String> {
+    parse_byte_string.try_map(String::from_utf8).parse_next(i)
+}
+
 pub(crate) fn parse_byte_string(i: &mut &[u8]) -> ModalResult<Vec<u8>> {
     dispatch! { one_of(b"'\"");
         b'\'' => terminated(parse_quoted_string(Quotes::Single), '\''),
