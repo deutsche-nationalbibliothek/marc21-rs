@@ -22,6 +22,7 @@ pub(crate) struct Filter {
     pub(crate) strsim_threshold: u8,
 
     /// An expression for filtering records
+    #[arg(value_name = "filter")]
     filter: RecordMatcher,
 
     #[arg(default_value = "-", hide_default_value = true)]
