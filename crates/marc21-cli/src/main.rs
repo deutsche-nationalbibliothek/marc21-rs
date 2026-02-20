@@ -20,6 +20,7 @@ fn main() -> ExitCode {
         Command::Concat(cmd) => cmd.execute(),
         Command::Count(cmd) => cmd.execute(),
         Command::Filter(cmd) => cmd.execute(),
+        Command::Hash(cmd) => cmd.execute(),
         Command::Invalid(cmd) => cmd.execute(),
         Command::Print(cmd) => cmd.execute(),
         Command::Sample(cmd) => cmd.execute(),
