@@ -21,6 +21,7 @@ pub(crate) enum Command {
     Invalid(Box<Invalid>),
     Print(Box<Print>),
     Sample(Box<Sample>),
+    Split(Box<Split>),
 }
 
 #[derive(Debug, clap::Args)]

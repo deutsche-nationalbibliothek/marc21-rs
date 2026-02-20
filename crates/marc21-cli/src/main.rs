@@ -23,6 +23,7 @@ fn main() -> ExitCode {
         Command::Invalid(cmd) => cmd.execute(),
         Command::Print(cmd) => cmd.execute(),
         Command::Sample(cmd) => cmd.execute(),
+        Command::Split(cmd) => cmd.execute(),
     };
 
     match result {
