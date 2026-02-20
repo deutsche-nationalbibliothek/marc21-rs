@@ -55,7 +55,7 @@ impl Print {
                             continue;
                         }
 
-                        write!(output, "{record}")?;
+                        writeln!(output, "{record}")?;
                         count += 1;
                     }
                 }
