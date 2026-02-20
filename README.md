@@ -35,6 +35,7 @@ The `marc21` tool provides the following commands:
 - `invalid` — Outputs invalid records that cannot be decoded
 - `print` — Print records in human readable format
 - `sample` — Selects a random permutation of records
+- `split` — Splits the input into chunks of a given size
 
 ## Tour
 
