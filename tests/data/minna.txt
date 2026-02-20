@@ -53,3 +53,4 @@ LDR 06091nz  a2200673nc 4500
 678 $b Inhalt: Lustspiel in 5 Akten. Spielt vor dem Hintergrund des Siebenjährigen Krieges.
 678 $b Überlieferung: Erste Entwürfe datieren aus dem Jahr 1763, das Stück erschien 1767 und wurde am Hamburger Nationaltheater am 30. September 1767 uraufgeführt.
 913 $S swd $i pt $a Lessing, Gotthold Ephraim: Minna von Barnhelm $0 (DE-588c)4099291-3
+
