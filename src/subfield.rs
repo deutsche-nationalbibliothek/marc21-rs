@@ -48,7 +48,11 @@ impl<'a> Subfield<'a> {
 
 impl Display for Subfield<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "${} {}", self.code as char, self.value.as_bstr())
+        if !self.value.is_empty() {
+            write!(f, "${} {}", self.code as char, self.value.as_bstr())
+        } else {
+            write!(f, "${}", self.code as char)
+        }
     }
 }
 
@@ -68,7 +72,7 @@ pub(crate) fn parse_subfield<'a>(
         UNIT_SEPARATOR,
         (
             one_of(AsChar::is_alphanum),
-            take_till(1.., |b| {
+            take_till(0.., |b| {
                 b == UNIT_SEPARATOR || b == RECORD_SEPARATOR
             }),
         ),
