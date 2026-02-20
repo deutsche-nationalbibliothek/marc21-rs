@@ -5,7 +5,7 @@ use predicates::prelude::*;
 use crate::prelude::*;
 
 #[test]
-fn completions_write_output_stdout() -> TestResult {
+fn completions_stdout() -> TestResult {
     for shell in ["bash", "zsh", "elvish", "powershell", "fish"] {
         let mut cmd = marc21_cmd();
         let assert = cmd.arg("completions").arg(shell).assert();
