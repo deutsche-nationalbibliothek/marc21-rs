@@ -6,7 +6,7 @@ use flate2::read::GzDecoder;
 use crate::prelude::*;
 
 #[test]
-fn concat_stdin_stdout() -> TestResult {
+fn concat_stdin() -> TestResult {
     let mut cmd = marc21_cmd();
     let assert = cmd
         .arg("concat")
@@ -39,7 +39,7 @@ fn concat_stdin_stdout() -> TestResult {
 }
 
 #[test]
-fn concat_write_output_stdout() -> TestResult {
+fn concat_stdout() -> TestResult {
     let mut cmd = marc21_cmd();
     let assert = cmd
         .args(["concat", "-s"])
@@ -59,7 +59,7 @@ fn concat_write_output_stdout() -> TestResult {
 }
 
 #[test]
-fn concat_write_output_txt() -> TestResult {
+fn concat_output() -> TestResult {
     let temp_dir = TempDir::new()?;
     let output = temp_dir.child("out.mrc");
 
@@ -92,7 +92,7 @@ fn concat_write_output_txt() -> TestResult {
 }
 
 #[test]
-fn concat_write_output_gzip() -> TestResult {
+fn concat_output_gzip() -> TestResult {
     let temp_dir = TempDir::new()?;
     let output = temp_dir.child("out.mrc.gz");
 
@@ -117,5 +117,57 @@ fn concat_write_output_gzip() -> TestResult {
     assert_eq!(fs::read(data_dir().join("ada.mrc"))?, actual);
 
     temp_dir.close()?;
+    Ok(())
+}
+
+#[test]
+fn concat_skip_invalid() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .arg("concat")
+        .arg(data_dir().join("invalid.mrc"))
+        .assert();
+
+    assert
+        .failure()
+        .code(1)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::starts_with(
+            "error: could not parse record 0",
+        ));
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["concat", "-s"])
+        .arg(data_dir().join("invalid.mrc"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
+
+#[test]
+fn concat_where() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["concat", "-s"])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .arg(data_dir().join("ada.mrc"))
+        .args(["--where", "001 == '119232022'"])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(fs::read(
+            data_dir().join("ada.mrc"),
+        )?))
+        .stderr(predicates::str::is_empty());
+
     Ok(())
 }
