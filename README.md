@@ -1,9 +1,17 @@
-# marc21
+<p align="center">
+    <img width="250" height="325" src="https://github.com/user-attachments/assets/4220de0e-a5d9-42f1-b590-a6003f71ffce" />
+</p>
+
+<div align="center" markdown="1">
 
 [![CI](https://github.com/deutsche-nationalbibliothek/marc21-rs/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/deutsche-nationalbibliothek/marc21-rs/actions/workflows/ci.yaml)
 [![crates.io](https://img.shields.io/crates/v/marc21)](https://crates.io/crates/marc21)
 [![docs.rs](https://img.shields.io/docsrs/marc21)](https://docs.rs/marc21/latest/marc21/)
 [![License](https://img.shields.io/github/license/deutsche-nationalbibliothek/marc21-rs?color=blue)](./LICENSE)
+
+</div>
+
+<hr />
 
 This project provides a toolkit for efficiently processing bibliographic
 records encoded in [MARC-21], which is a popular file format used
