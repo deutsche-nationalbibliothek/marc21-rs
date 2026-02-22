@@ -16,10 +16,10 @@
 This project provides a toolkit for efficiently processing bibliographic
 records encoded in [MARC-21], which is a popular file format used
 to exchange bibliographic data between libraries. In particular, the
-command line tool `marc` allows efficient filtering of records and
+command line tool `marc21` allows efficient filtering of records and
 extraction of data into a rectangular schema. Since the extracted data
 is in tabular form, it can be processed with popular frameworks such as
-[Polars] ([Python]) or [Tidyverse] ([R]).
+[Polars] or [Tidyverse].
 
 ## Installation
 
@@ -28,7 +28,7 @@ tool, [archives with a precompiled binary] are available for Windows,
 macOS and Linux. If a Rust toolchain is available, `marc21` can also be
 installed using `cargo` with the following command:
 
-```shell
+```console
 $ cargo install marc21-cli  
 ```
 
@@ -60,8 +60,8 @@ into a single output. In the following example the authority data files
 from the Integrated Authority Files ([GND]) are concatenated into the
 single file `GND.mrc.gz`.
 
-```shell
-$ marc21 concat -o GND.mrc.gz \
+```console
+$ marc21 concat -s -o GND.mrc.gz \
     authorities-gnd-geografikum_dnbmarc.mrc.gz \
     authorities-gnd-koerperschaft_dnbmarc.mrc.gz \
     authorities-gnd-kongress_dnbmarc.mrc.gz \
@@ -75,15 +75,15 @@ condition. For example, all records with status `z` and at least one
 field `100` with indicators `1` and `#` (space) can be filtered as
 follows:
 
-```shell
-$ marc21 filter 'ldr.status == "z" && 100/1#?' DUMP.mrc.gz -o out.mrc
+```console
+$ marc21 filter -s 'ldr.status == "z" && 100/1#?' DUMP.mrc.gz -o out.mrc
 ```
 
 The number of records contained in the input can be determined using the
 `count` command. The `--where` option can be used to count only those
 records that match a certain criterion:
 
-```shell
+```console
 $ marc21 count GND.mrc.gz \
     --where 'ldr.type == "z" && 075{ b == "gik" && 2 == "gndspec" }'
 179672
@@ -95,7 +95,7 @@ are divided by a blank line. The output of the command can be used in
 combination with standard UNIX tools such as `grep`, `cut` or `sed`. In
 the following example, a single data record is printed on the console:
 
-```shell
+```console
 $ marc21 print tests/data/ada.mrc --where '100/*.a =? "Love"'
 LDR 03612nz  a2200589nc 4500
 001 119232022
@@ -111,7 +111,7 @@ LDR 03612nz  a2200589nc 4500
 The `sample` command can be used to take random samples of a specified
 size:
 
-```shell
+```console
 $ marc21 sample 10 GND.mrc.gz -o samples.mrc.gz
 ```
 
@@ -121,19 +121,19 @@ The comparison operators `==`, `!=`, `>=`, `>`, `<=`, and `<` can be
 used for values in selected leader fields, values in control fields, and
 values in subfields. Here are a few examples
 
-```shell
-$ marc21 filter '100/1#.a == "Lovelace, Ada"' DUMP.mrc.gz -o out.mrc.gz
-$ marc21 filter '100/*.a != "Curie, Marie"' DUMP.mrc.gz -o out.mrc.gz
-$ marc21 filter '001 == "119232022"' DUMP.mrc.gz -o out.mrc.gz
-$ marc21 filter 'ldr.length > 3000' DUMP.mrc.gz -o out.mrc.gz
-$ marc21 filter 'ldr.status == "z"' DUMP.mrc.gz -o out.mrc.gz
+```console
+$ marc21 filter -s '100/1#.a == "Lovelace, Ada"' DUMP.mrc.gz -o out.mrc
+$ marc21 filter -s '100/*.a != "Curie, Marie"' DUMP.mrc.gz -o out.mrc
+$ marc21 filter -s '001 == "119232022"' DUMP.mrc.gz -o out.mrc
+$ marc21 filter -s 'ldr.length > 3000' DUMP.mrc.gz -o out.mrc
+$ marc21 filter -s 'ldr.status == "z"' DUMP.mrc.gz -o out.mrc
 ```
 
 The `=?` operator and, in negated form, `!?` perform a substring search
 on subfield values. The operator allows simultaneous searching for
 multiple patterns (use `[]` notation).
 
-```shell
+```console
 $ marc21 filter '100/*.a =? ["Hate", "Love"]' DUMP.mrc.gz -o out.mrc.gz
 $ marc21 filter '100/1#.a =? "Love"' DUMP.mrc.gz -o out.mrc.gz
 ```
@@ -146,7 +146,7 @@ more about the syntax and possible limitations. The following example
 searches for all records with a field `533` that contains a subfield `n`
 whose value matches the regular expression for an ISBN.
 
-```shell
+```console
 $ marc21 filter -s \
     '533.n =~ "(?i)ISBN(?:-1[03])?(?::?\\s*)?\\s(?:97[89][-\ ]?)?\\d{1,5}[-\\ ]?(?:\\d+[-\\ ]?){2}(?:\\d|X)"' \
     DUMP.mrc.gz -o out.mrc.gz
@@ -217,8 +217,6 @@ This project is licensed under the [European Union Public License 1.2].
 [MARC-21]: https://www.loc.gov/marc
 [Polars]: https://pola.rs
 [PowerShell]: https://en.wikipedia.org/wiki/PowerShell
-[Python]: https://www.python.org
-[R]: https://www.r-project.org
 [specification]: https://docs.rs/regex/latest/regex/#syntax
 [Tidyverse]: https://tidyverse.org
 [ZSH]: https://www.zsh.org
