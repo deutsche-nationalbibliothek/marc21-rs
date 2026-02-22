@@ -7,11 +7,15 @@ use sha2::{Digest, Sha256};
 
 use crate::prelude::*;
 
-/// Prints the number of records in the input data.
+/// Compute SHA-256 checksum of records.
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Hash {
     #[arg(default_value = "-", hide_default_value = true)]
     path: Vec<PathBuf>,
+
+    /// Write output tab-separated (TSV)
+    #[arg(long)]
+    tsv: bool,
 
     /// Write output to FILENAME instead of stdout.
     #[arg(short, long, value_name = "FILENAME")]
@@ -30,7 +34,32 @@ impl Hash {
         let options = MatchOptions::from(&self.filter_opts);
         let mut count = 0;
 
-        println!("cn,hash");
+        let separator = if self.tsv {
+            b'\t'
+        } else if let Some(ref path) = self.output {
+            let filename = path.file_name().unwrap_or_default();
+            let filename_str = filename.to_str().unwrap_or_default();
+
+            if filename_str.ends_with(".tsv")
+                || filename_str.ends_with(".tsv.gz")
+            {
+                b'\t'
+            } else {
+                b','
+            }
+        } else {
+            b','
+        };
+
+        let output = WriterBuilder::default()
+            .with_compression(self.common.compression)
+            .try_from_path_or_stdout(self.output)?;
+
+        let mut wtr = csv::WriterBuilder::new()
+            .delimiter(separator)
+            .from_writer(output);
+
+        wtr.write_record(["cn", "hash"])?;
 
         for path in self.path.iter() {
             let mut reader = MarcReadOptions::default()
@@ -77,10 +106,13 @@ impl Hash {
                                 out
                             });
 
-                        let cn =
-                            record.control_number().unwrap_or_default();
+                        let cn = record
+                            .control_number()
+                            .unwrap_or_default()
+                            .to_str_lossy()
+                            .to_string();
 
-                        println!("{},{hash}", cn.as_bstr());
+                        wtr.write_record([cn, hash])?;
                         count += 1;
                     }
                 }
@@ -88,6 +120,7 @@ impl Hash {
         }
 
         progress.finish();
+        wtr.flush()?;
 
         Ok(())
     }

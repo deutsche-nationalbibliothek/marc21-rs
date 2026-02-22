@@ -9,6 +9,7 @@ pub(crate) type CliResult = Result<(), CliError>;
 pub(crate) enum CliError {
     Parse(String),
     IO(std::io::Error),
+    Csv(csv::Error),
 }
 
 impl CliError {
@@ -32,6 +33,7 @@ impl Display for CliError {
         match self {
             Self::Parse(e) => writeln!(f, "{e}"),
             Self::IO(e) => writeln!(f, "{e}"),
+            Self::Csv(e) => writeln!(f, "{e}"),
         }
     }
 }
@@ -39,6 +41,12 @@ impl Display for CliError {
 impl From<std::io::Error> for CliError {
     fn from(e: std::io::Error) -> Self {
         Self::IO(e)
+    }
+}
+
+impl From<csv::Error> for CliError {
+    fn from(e: csv::Error) -> Self {
+        Self::Csv(e)
     }
 }
 

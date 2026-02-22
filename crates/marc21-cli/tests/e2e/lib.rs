@@ -2,6 +2,7 @@ mod completions;
 mod concat;
 mod count;
 mod filter;
+mod hash;
 mod invalid;
 mod print;
 mod sample;
@@ -15,6 +16,7 @@ pub(crate) mod prelude {
     use assert_cmd::Command;
     pub(crate) use assert_fs::TempDir;
     pub(crate) use assert_fs::prelude::*;
+    pub(crate) use predicates::prelude::PredicateBooleanExt;
 
     pub(crate) type TestResult = anyhow::Result<()>;
 
