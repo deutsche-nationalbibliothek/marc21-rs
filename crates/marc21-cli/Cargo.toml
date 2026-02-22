@@ -20,12 +20,14 @@ performant = ["marc21/performant"]
 
 [dependencies]
 bstr = { version = "1.12", features = ["std"], default-features = false }
+csv = { version = "1.4" }
 clap_complete = { version = "4.5" }
 clap = { version = "4.5", features = ["derive"] }
 flate2 = { version = "1.1" }
 indicatif = { version = "0.18" }
 marc21 = { path = "../../", version = "0.1" }
 rand = { version = "0.10" }
+sha2 = { version = "0.10" }
 
 [dev-dependencies]
 anyhow = { version = "1.0" }

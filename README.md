@@ -40,6 +40,7 @@ The `marc21` tool provides the following commands:
 - `concat` — Concatenate records from multiple inputs (alias `cat`)
 - `count` — Print the number of records in the input data (alias `cnt`)
 - `filter` — Filters those records that fulfill a specified condition
+- `hash` — Compute SHA-256 checksum of records
 - `invalid` — Outputs invalid records that cannot be decoded
 - `print` — Print records in human readable format
 - `sample` — Selects a random permutation of records

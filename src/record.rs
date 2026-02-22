@@ -69,6 +69,23 @@ impl<'a> ByteRecord<'a> {
         self.fields.iter()
     }
 
+    pub fn control_number(&self) -> Option<&'a [u8]> {
+        while let Some(Field::Control(ControlField { tag, value })) =
+            self.fields().next()
+        {
+            if tag == b"001" {
+                return Some(value);
+            }
+        }
+
+        None
+    }
+
+    #[inline(always)]
+    pub fn raw_data(&self) -> Option<&'a [u8]> {
+        self.raw_data
+    }
+
     /// Returns an [`std::str::Utf8Error`](Utf8Error) if the record
     /// contains invalid UTF-8 data, otherwise the unit.
     pub fn validate(&self) -> Result<(), Utf8Error> {
