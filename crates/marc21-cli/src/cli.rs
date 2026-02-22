@@ -18,6 +18,7 @@ pub(crate) enum Command {
     Concat(Box<Concat>),
     Count(Box<Count>),
     Filter(Box<Filter>),
+    Hash(Box<Hash>),
     Invalid(Box<Invalid>),
     Print(Box<Print>),
     Sample(Box<Sample>),
