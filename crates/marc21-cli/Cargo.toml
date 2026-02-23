@@ -17,6 +17,7 @@ path = "src/main.rs"
 [features]
 default = ["performant"]
 performant = ["marc21/performant"]
+unstable = ["marc21/unstable"]
 
 [dependencies]
 bstr = { version = "1.12", features = ["std"], default-features = false }

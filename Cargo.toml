@@ -19,6 +19,7 @@ default = ["performant"]
 performant = ["winnow/simd", "perf-inline"]
 serde = ["dep:serde"]
 perf-inline = []
+unstable = []
 
 [dependencies]
 aho-corasick = { version = "1.1" }
