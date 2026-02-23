@@ -1,0 +1,19 @@
+[book]
+title = "marc21"
+authors = ["Nico Wagner"]
+language = "en"
+
+[build]
+create-missing = true
+
+[output.html]
+additional-css = ["custom.css"]
+no-section-label = false
+definition-lists = true
+mathjax-support = true
+git-repository-url = "https://github.com/deutsche-nationalbibliothek/marc21-rs"
+git-repository-icon = "fab-github"
+sidebar-header-nav = false
+
+[rust]
+edition = "2024"
