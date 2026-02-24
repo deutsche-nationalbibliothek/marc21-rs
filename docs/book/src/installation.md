@@ -20,7 +20,7 @@ $ sudo install -Dm755 marc21-0.1.0-x86_64-unknown-linux-musl/marc21 \
 
 If a Rust toolchain is available, `marc21` can also be installed using
 the Rust package manager [cargo]. The project requires a Rust compiler
-with a minimum version of 1.93. Use the following command to installs
+with a minimum version of 1.93. Use the following command to install
 the program with the default features:
 
 ```console
