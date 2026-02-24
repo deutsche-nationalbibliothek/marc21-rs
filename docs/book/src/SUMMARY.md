@@ -1,4 +1,4 @@
 # Summary
 
 [Introduction](index.md)
-[Installaion](installation.md)
+[Installation](installation.md)

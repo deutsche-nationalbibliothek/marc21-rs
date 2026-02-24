@@ -1,4 +1,4 @@
-# Installaion
+# Installation
 
 ## Binaries
 In order to install the `marc21` binary, [archives with a precompiled
