@@ -11,7 +11,7 @@ records (see `marc21 --help` for a complete list of available commands).
 ## Concatenate Multiple Files
 
 The [concat] command can be used to combine multiple files into a
-single output. In the following example the authority data files from
+single output. In the following example, the authority data files from
 the Integrated Authority Files ([GND]) are concatenated into the single
 file `GND.mrc.gz`.
 
@@ -20,11 +20,10 @@ $ marc21 concat -ps authorities-gnd-*.mrc.gz -o GND.mrc.gz
 10,122,437 records, 0 invalid | 49,035 records/s, elapsed: 00:03:19
 ```
 
-The `--skip-invalid` (`-s`) option is used to skip invalid data
-records that could not be decoded. If the option is not specified,
-processing would abort at the first invalid data record. In addition,
-the processing progress can be displayed with the `--progress` (`-p`)
-option.
+The `--skip-invalid` (`-s`) option is used to skip invalid  records that
+could not be decoded. If the option is not specified, processing will
+abort at the first invalid record. In addition, the processing progress
+can be displayed with the `--progress` (`-p`) option.
 
 ## Filtering Records
 
@@ -52,7 +51,7 @@ $ marc21 filter -s 'ldr.status == "z"' DUMP.mrc.gz -o out.mrc
 ```
 
 The `=?` operator and, in negated form, `!?` perform a substring search
-on subfield values. The operator allows simultaneous searching for
+on subfield values. These operators allows simultaneous searching for
 multiple patterns by using the `[]`-notation:
 
 ```console
@@ -126,10 +125,11 @@ $ marc21 count GND.mrc.gz --where 'ldr.type == "z" && 075{ b == "gik" && 2 == "g
 ## Print Records
 
 The [print] command output records in a human-readable format. The
-leader and fields are written on a separate line. Consecutive records
-are divided by a blank line. The output of the command can be used in
-combination with standard UNIX tools such as `grep`, `cut` or `sed`. In
-the following example, a single data record is printed on the console:
+leader, control and data fields are written on a separate line.
+Consecutive records are divided by a blank line. The output of the
+command can be used in combination with standard UNIX tools such as
+`grep`, `cut` or `sed`. In the following example, a single data record
+is printed on the console:
 
 ```console
 $ marc21 print tests/data/ada.mrc --where '100/*.a =? "Love"'
@@ -165,7 +165,7 @@ LDR 03612nz  a2200589nc 4500
 ...
 ```
 
-## Enable tab completion
+## Enable Tab Completion
 
 `marc21` supports generating completion scripts for [Bash], [Elvish],
 [Fish], [PowerShell] and [ZSH].
