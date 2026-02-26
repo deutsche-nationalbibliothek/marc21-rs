@@ -1,6 +1,7 @@
 use winnow::ascii::multispace0;
 use winnow::combinator::{
-    alt, delimited, opt, preceded, separated_pair, seq, terminated,
+    alt, delimited, opt, preceded, separated, separated_pair, seq,
+    terminated,
 };
 use winnow::prelude::*;
 
@@ -10,8 +11,8 @@ use crate::matcher::field::data::DataFieldMatcher;
 use crate::matcher::field::{ExistsMatcher, FieldMatcher};
 use crate::matcher::indicator::parse::parse_indicator_matcher_opt;
 use crate::matcher::shared::{
-    parse_comparison_operator, parse_quantifier_opt,
-    parse_string_value, parse_usize, ws1,
+    parse_byte_string, parse_comparison_operator, parse_quantifier_opt,
+    parse_string_value, parse_usize, ws0, ws1,
 };
 use crate::matcher::subfield::parse::{
     parse_subfield_matcher, parse_subfield_matcher_short,
@@ -58,8 +59,11 @@ fn parse_count_matcher(i: &mut &[u8]) -> ModalResult<CountMatcher> {
 fn parse_control_field_matcher(
     i: &mut &[u8],
 ) -> ModalResult<ControlFieldMatcher> {
-    alt((parse_control_field_comparison_matcher
-        .map(ControlFieldMatcher::Comparison),))
+    alt((
+        parse_control_field_comparison_matcher
+            .map(ControlFieldMatcher::Comparison),
+        parse_control_field_in_matcher.map(ControlFieldMatcher::In),
+    ))
     .parse_next(i)
 }
 
@@ -89,6 +93,28 @@ fn parse_control_field_comparison_matcher(
         range: opt(parse_range),
         operator: ws1(parse_comparison_operator),
         value: parse_string_value,
+    }}
+    .parse_next(i)
+}
+
+fn parse_control_field_in_matcher(
+    i: &mut &[u8],
+) -> ModalResult<control::InMatcher> {
+    seq! { control::InMatcher{
+        tag_matcher: parse_tag_matcher,
+        negated: alt((
+            ws1("not in").value(true),
+            ws1("in").value(false),
+            )),
+        values:
+            delimited(
+                ws0('['),
+                terminated(
+                    separated(1.., parse_byte_string, ws0(',')),
+                    opt(ws0(',')),
+                ),
+                ws0(']'),
+            ),
     }}
     .parse_next(i)
 }
@@ -130,4 +156,62 @@ fn parse_data_field_matcher_long(
         )
     }}
     .parse_next(i)
+}
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+    use crate::matcher::TagMatcher;
+    use crate::matcher::field::control::InMatcher;
+
+    #[test]
+    fn test_parse_control_field_in_matcher() {
+        macro_rules! parse_success {
+            ($i:expr, $o:expr) => {
+                assert_eq!(
+                    parse_control_field_in_matcher
+                        .parse($i.as_bytes())
+                        .unwrap(),
+                    $o
+                );
+            };
+        }
+
+        parse_success!(
+            "001 in ['A', 'B']",
+            InMatcher {
+                tag_matcher: TagMatcher::new("001").unwrap(),
+                values: vec![b"A".to_vec(), b"B".to_vec()],
+                negated: false,
+            }
+        );
+
+        parse_success!(
+            "001 not in ['A', 'B']",
+            InMatcher {
+                tag_matcher: TagMatcher::new("001").unwrap(),
+                values: vec![b"A".to_vec(), b"B".to_vec()],
+                negated: true,
+            }
+        );
+
+        parse_success!(
+            "001 in ['A']",
+            InMatcher {
+                tag_matcher: TagMatcher::new("001").unwrap(),
+                values: vec![b"A".to_vec()],
+                negated: false,
+            }
+        );
+
+        parse_success!(
+            "001 in ['A', 'B', ]",
+            InMatcher {
+                tag_matcher: TagMatcher::new("001").unwrap(),
+                values: vec![b"A".to_vec(), b"B".to_vec()],
+                negated: false,
+            }
+        );
+    }
 }
