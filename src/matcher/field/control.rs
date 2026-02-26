@@ -22,6 +22,7 @@ impl ControlFieldMatcher {
 #[derive(Debug, PartialEq, Clone)]
 pub struct ComparisonMatcher {
     pub(crate) tag_matcher: TagMatcher,
+    pub(crate) range: Option<(Option<usize>, Option<usize>)>,
     pub(crate) operator: ComparisonOperator,
     pub(crate) value: Value,
 }
@@ -56,13 +57,30 @@ impl ComparisonMatcher {
             iter.next()
         {
             if self.tag_matcher.is_match(tag) {
+                let lhs = if let Some(range) = self.range {
+                    match range {
+                        (Some(start), Some(end)) => {
+                            value.get(start..end).unwrap_or_default()
+                        }
+                        (Some(start), None) => value
+                            .get(start..value.len())
+                            .unwrap_or_default(),
+                        (None, Some(end)) => {
+                            value.get(0..end).unwrap_or_default()
+                        }
+                        _ => unreachable!(),
+                    }
+                } else {
+                    value
+                };
+
                 let result = match self.operator {
-                    ComparisonOperator::Eq => *value == self.value,
-                    ComparisonOperator::Ne => *value != self.value,
-                    ComparisonOperator::Ge => *value >= self.value,
-                    ComparisonOperator::Gt => *value > self.value,
-                    ComparisonOperator::Le => *value <= self.value,
-                    ComparisonOperator::Lt => *value < self.value,
+                    ComparisonOperator::Eq => lhs == self.value,
+                    ComparisonOperator::Ne => lhs != self.value,
+                    ComparisonOperator::Ge => lhs >= self.value,
+                    ComparisonOperator::Gt => lhs > self.value,
+                    ComparisonOperator::Le => lhs <= self.value,
+                    ComparisonOperator::Lt => lhs < self.value,
                 };
 
                 if result {

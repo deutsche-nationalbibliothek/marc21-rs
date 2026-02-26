@@ -1,6 +1,6 @@
 use winnow::ascii::multispace0;
 use winnow::combinator::{
-    alt, delimited, opt, preceded, seq, terminated,
+    alt, delimited, opt, preceded, separated_pair, seq, terminated,
 };
 use winnow::prelude::*;
 
@@ -63,11 +63,30 @@ fn parse_control_field_matcher(
     .parse_next(i)
 }
 
+fn parse_range(
+    i: &mut &[u8],
+) -> ModalResult<(Option<usize>, Option<usize>)> {
+    delimited(
+        '[',
+        alt((
+            separated_pair(parse_usize, ':', parse_usize)
+                .map(|(start, end)| (Some(start), Some(end))),
+            preceded(':', parse_usize).map(|end| (None, Some(end))),
+            terminated(parse_usize, ':')
+                .map(|start| (Some(start), None)),
+            parse_usize.map(|start| (Some(start), Some(start + 1))),
+        )),
+        ']',
+    )
+    .parse_next(i)
+}
+
 fn parse_control_field_comparison_matcher(
     i: &mut &[u8],
 ) -> ModalResult<control::ComparisonMatcher> {
     seq! { control::ComparisonMatcher{
         tag_matcher: parse_tag_matcher,
+        range: opt(parse_range),
         operator: ws1(parse_comparison_operator),
         value: parse_string_value,
     }}
