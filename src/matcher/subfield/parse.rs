@@ -12,6 +12,7 @@ use crate::matcher::shared::{
 };
 use crate::matcher::subfield::contains::parse_contains_matcher;
 use crate::matcher::subfield::ends_with::parse_ends_with_matcher;
+use crate::matcher::subfield::r#in::parse_in_matcher;
 use crate::matcher::subfield::regex::parse_regex_matcher;
 use crate::matcher::subfield::starts_with::parse_starts_with_matcher;
 use crate::matcher::subfield::strsim::parse_strsim_matcher;
@@ -23,6 +24,7 @@ pub(crate) fn parse_subfield_matcher(
     alt((
         parse_composite_matcher,
         parse_comparison_matcher(true),
+        parse_in_matcher(true),
         parse_contains_matcher(true),
         parse_regex_matcher(true),
         parse_starts_with_matcher(true),
@@ -39,6 +41,7 @@ pub(crate) fn parse_subfield_matcher_short(
 ) -> ModalResult<SubfieldMatcher> {
     alt((
         parse_comparison_matcher(false),
+        parse_in_matcher(false),
         parse_contains_matcher(false),
         parse_regex_matcher(false),
         parse_starts_with_matcher(false),
@@ -100,6 +103,7 @@ fn parse_group_matcher(i: &mut &[u8]) -> ModalResult<SubfieldMatcher> {
         alt((
             parse_composite_matcher,
             parse_comparison_matcher(true),
+            parse_in_matcher(true),
             parse_contains_matcher(true),
             parse_regex_matcher(true),
             parse_starts_with_matcher(true),
@@ -133,6 +137,7 @@ fn parse_composite_and_matcher(
     let atom = |i: &mut &[u8]| -> ModalResult<SubfieldMatcher> {
         ws0(alt((
             parse_comparison_matcher(true),
+            parse_in_matcher(true),
             parse_contains_matcher(true),
             parse_regex_matcher(true),
             parse_starts_with_matcher(true),
@@ -158,6 +163,7 @@ fn parse_composite_or_matcher(
         ws0(alt((
             parse_composite_and_matcher,
             parse_comparison_matcher(true),
+            parse_in_matcher(true),
             parse_contains_matcher(true),
             parse_regex_matcher(true),
             parse_starts_with_matcher(true),
@@ -174,4 +180,104 @@ fn parse_composite_or_matcher(
             tail.into_iter().fold(head, |prev, next| prev | next)
         })
         .parse_next(i)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::matcher::subfield::r#in::InMatcher;
+
+    #[test]
+    fn test_parse_in_matcher() {
+        macro_rules! parse_success {
+            ($i:expr, $o:expr) => {
+                assert_eq!(
+                    parse_subfield_matcher
+                        .parse($i.as_bytes())
+                        .unwrap(),
+                    SubfieldMatcher::In(Box::new($o)),
+                );
+            };
+        }
+
+        parse_success!(
+            "a in ['28p']",
+            InMatcher {
+                quantifier: Quantifier::Any,
+                codes: vec![b'a'],
+                values: vec![b"28p".into()],
+                negated: false,
+            }
+        );
+
+        parse_success!(
+            "a in ['28p', '9.5p']",
+            InMatcher {
+                quantifier: Quantifier::Any,
+                codes: vec![b'a'],
+                values: vec![b"28p".into(), b"9.5p".into()],
+                negated: false,
+            }
+        );
+
+        parse_success!(
+            "ALL a in ['28p', '9.5p']",
+            InMatcher {
+                quantifier: Quantifier::All,
+                codes: vec![b'a'],
+                values: vec![b"28p".into(), b"9.5p".into()],
+                negated: false,
+            }
+        );
+
+        parse_success!(
+            "ANY a in ['28p', '9.5p']",
+            InMatcher {
+                quantifier: Quantifier::Any,
+                codes: vec![b'a'],
+                values: vec![b"28p".into(), b"9.5p".into()],
+                negated: false,
+            }
+        );
+
+        parse_success!(
+            "a not in ['28p']",
+            InMatcher {
+                quantifier: Quantifier::Any,
+                codes: vec![b'a'],
+                values: vec![b"28p".into()],
+                negated: true,
+            }
+        );
+
+        parse_success!(
+            "a not in ['28p', '9.5p']",
+            InMatcher {
+                quantifier: Quantifier::Any,
+                codes: vec![b'a'],
+                values: vec![b"28p".into(), b"9.5p".into()],
+                negated: true,
+            }
+        );
+
+        parse_success!(
+            "ALL a not in ['28p', '9.5p']",
+            InMatcher {
+                quantifier: Quantifier::All,
+                codes: vec![b'a'],
+                values: vec![b"28p".into(), b"9.5p".into()],
+                negated: true,
+            }
+        );
+
+        parse_success!(
+            "ANY a not in ['28p', '9.5p']",
+            InMatcher {
+                quantifier: Quantifier::Any,
+                codes: vec![b'a'],
+                values: vec![b"28p".into(), b"9.5p".into()],
+                negated: true,
+            }
+        );
+    }
 }
