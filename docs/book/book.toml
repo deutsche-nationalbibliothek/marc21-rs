@@ -8,7 +8,7 @@ create-missing = true
 
 [output.html]
 additional-css = ["custom.css"]
-no-section-label = false
+no-section-label = true
 definition-lists = true
 mathjax-support = true
 git-repository-url = "https://github.com/deutsche-nationalbibliothek/marc21-rs"
