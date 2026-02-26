@@ -23,6 +23,9 @@ pub(crate) enum Command {
     Print(Box<Print>),
     Sample(Box<Sample>),
     Split(Box<Split>),
+
+    #[cfg(feature = "build")]
+    BuildMan(Box<BuildMan>),
 }
 
 #[derive(Debug, clap::Args)]

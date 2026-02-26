@@ -1,3 +1,5 @@
+#[cfg(feature = "build")]
+mod build_man;
 mod completions;
 mod concat;
 mod count;

@@ -39,8 +39,8 @@ jobs:
       - name: Run tests
         if: ${{ matrix.target.toolchain != 'nightly' }}
         run: |
-          cargo nextest run --target ${{ matrix.target.triple }} --workspace -F performant,serde --no-fail-fast
-          cargo test --target ${{ matrix.target.triple }} --doc --workspace -F performant,serde --no-fail-fast
+          cargo nextest run --target ${{ matrix.target.triple }} --workspace -F performant,serde,build --no-fail-fast
+          cargo test --target ${{ matrix.target.triple }} --doc --workspace -F performant,serde,build --no-fail-fast
       - name: Run tests (nightly)
         if: ${{ matrix.target.toolchain == 'nightly' }}
         run: |

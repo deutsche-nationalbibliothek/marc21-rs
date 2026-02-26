@@ -76,7 +76,7 @@ jobs:
           triple="${{ matrix.target.triple }}"
           ARCHIVE="marc21-$version-$triple"
           echo "ARCHIVE=$ARCHIVE" >> $GITHUB_ENV
-          mkdir -p "$ARCHIVE"
+          cargo run -F build -- build-man -o "$ARCHIVE/doc"
           cp "$BINARY" "$ARCHIVE"/
           cp "README.md" "$ARCHIVE"/
           cp "LICENSE" "$ARCHIVE"/
