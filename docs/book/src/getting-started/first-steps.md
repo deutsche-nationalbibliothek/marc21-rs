@@ -50,6 +50,17 @@ $ marc21 filter -s 'ldr.length > 3000' DUMP.mrc.gz -o out.mrc
 $ marc21 filter -s 'ldr.status == "z"' DUMP.mrc.gz -o out.mrc
 ```
 
+To check whether a value (control field or data field) comes from a
+specified list, the `in` operator is used. In contrast, the `not in`
+operator checks whether a value is not contained in the list. The
+following example tests whether a field `100` exists that has a subfield
+`a` with the value _"Curie, Marie"_ **or** _"Lovelace, Ada"_:
+
+```console
+$ marc21 filter -s '100/*.a in ["Lovelace, Ada", "Curie, Marie"]' \
+    DUMP.mrc.gz -o out.mrc
+```
+
 The `=?` operator and, in negated form, `!?` perform a substring search
 on subfield values. These operators allow simultaneous searching for
 multiple patterns by using the `[]`-notation:
