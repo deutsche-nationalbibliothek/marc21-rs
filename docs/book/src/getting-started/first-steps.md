@@ -51,7 +51,7 @@ $ marc21 filter -s 'ldr.status == "z"' DUMP.mrc.gz -o out.mrc
 ```
 
 The `=?` operator and, in negated form, `!?` perform a substring search
-on subfield values. These operators allows simultaneous searching for
+on subfield values. These operators allow simultaneous searching for
 multiple patterns by using the `[]`-notation:
 
 ```console
@@ -85,7 +85,7 @@ $ marc21 filter -s '400/1#{ [ac] =^ "Count" }' DUMP.mrc.gz -o out.mrc.gz
 In contrast, the `=$` operator can be used to check whether a subfield
 value ends with a specific suffix. Keep in mind that the `$` character
 often has a special meaning on the command line and may need to be
-quoted.
+escaped.
 
 ```console
 $ marc21 filter -s '548.4 =$ "/gnd#dateOfBirthAndDeath"' DUMP.mrc.gz -o out.mrc.gz
