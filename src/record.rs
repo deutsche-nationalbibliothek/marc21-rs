@@ -188,7 +188,6 @@ fn parse_record<'a>(i: &mut &'a [u8]) -> ModalResult<ByteRecord<'a>> {
                 seq! { ControlField {
                     tag: empty.value(entry.tag().clone()),
                     value: terminated(take(entry.length() - 1), b'\x1e')
-                        .map(|value: &[u8]| value.as_bstr())
                 }}
                 .parse_next(&mut payload)?,
             )
@@ -259,11 +258,11 @@ mod tests {
             vec![
                 Subfield {
                     code: b'a',
-                    value: b"123".as_bstr(),
+                    value: b"123",
                 },
                 Subfield {
                     code: b'b',
-                    value: b"456".as_bstr(),
+                    value: b"456",
                 },
             ]
         )
