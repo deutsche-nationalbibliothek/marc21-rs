@@ -3,7 +3,6 @@ use std::io::{self, Write};
 use std::ops::Deref;
 use std::str::Utf8Error;
 
-use bstr::ByteSlice;
 use winnow::combinator::{empty, repeat, seq, terminated};
 use winnow::token::{one_of, take};
 
@@ -48,6 +47,22 @@ impl<'a> ByteRecord<'a> {
             .map_err(ParseRecordError::from_parse)
     }
 
+    /// Returns the leader of the record.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21::prelude::*;
+    ///
+    /// let data = include_bytes!("../tests/data/ada.mrc");
+    /// let record = ByteRecord::from_bytes(data)?;
+    /// let leader = record.leader();
+    ///
+    /// assert_eq!(leader.status(), b'n');
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    #[inline(always)]
     pub fn leader(&self) -> &Leader {
         &self.leader
     }
@@ -69,6 +84,23 @@ impl<'a> ByteRecord<'a> {
         self.fields.iter()
     }
 
+    /// Returns the control number of the record.
+    ///
+    /// If the record does not have a control field, `None` is returned.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21::prelude::*;
+    ///
+    /// let data = include_bytes!("../tests/data/ada.mrc");
+    /// let record = ByteRecord::from_bytes(data)?;
+    ///
+    /// let cn = record.control_number().unwrap();
+    /// assert_eq!(cn, "119232022".as_bytes());
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
     pub fn control_number(&self) -> Option<&'a [u8]> {
         while let Some(Field::Control(ControlField { tag, value })) =
             self.fields().next()
@@ -81,6 +113,22 @@ impl<'a> ByteRecord<'a> {
         None
     }
 
+    /// Returns the complete record as a byte slice.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21::prelude::*;
+    ///
+    /// let data = include_bytes!("../tests/data/ada.mrc");
+    /// let record = ByteRecord::from_bytes(data)?;
+    /// let raw_data = record.raw_data().unwrap();
+    /// let leader = record.leader();
+    ///
+    /// assert_eq!(raw_data.len(), leader.length() as usize);
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
     #[inline(always)]
     pub fn raw_data(&self) -> Option<&'a [u8]> {
         self.raw_data
@@ -88,6 +136,18 @@ impl<'a> ByteRecord<'a> {
 
     /// Returns an [`std::str::Utf8Error`](Utf8Error) if the record
     /// contains invalid UTF-8 data, otherwise the unit.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21::prelude::*;
+    ///
+    /// let data = include_bytes!("../tests/data/ada.mrc");
+    /// let record = ByteRecord::from_bytes(data)?;
+    /// assert!(record.validate().is_ok());
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
     pub fn validate(&self) -> Result<(), Utf8Error> {
         for field in self.fields() {
             field.validate()?;
@@ -231,8 +291,6 @@ fn parse_subfields<'a>(
 
 #[cfg(test)]
 mod tests {
-    use bstr::ByteSlice;
-
     use super::*;
 
     #[test]
