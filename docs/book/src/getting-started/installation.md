@@ -11,8 +11,8 @@ version of the host system. The following commands install the binary
 into the `/usr/local/bin` directory:
 
 ```console
-$ tar xfz marc21-0.1.0-x86_64-unknown-linux-musl.tar.gz
-$ sudo install -Dm755 marc21-0.1.0-x86_64-unknown-linux-musl/marc21 \
+$ tar xfz marc21-0.2.0-x86_64-unknown-linux-musl.tar.gz
+$ sudo install -Dm755 marc21-0.2.0-x86_64-unknown-linux-musl/marc21 \
    /usr/local/bin/marc21
 ```
 

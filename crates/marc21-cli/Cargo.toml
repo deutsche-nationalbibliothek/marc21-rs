@@ -1,9 +1,9 @@
 [package]
 name = "marc21-cli"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Nico Wagner <n.wagner@dnb.de>"]
 repository = "https://github.com/deutsche-nationalbibliothek/marc21-rs"
-description = "A command-line tool for processing MARC21 records."
+description = "A command-line tool for processing MARC-21 records."
 categories = ["command-line-utilities"]
 keywords = ["marc21", "cli", "code4lib"]
 license = "EUPL-1.2"
@@ -28,7 +28,7 @@ clap = { version = "4.5", features = ["derive"] }
 csv = { version = "1.4" }
 flate2 = { version = "1.1" }
 indicatif = { version = "0.18" }
-marc21 = { path = "../../", version = "0.1" }
+marc21 = { path = "../../", version = "0.2" }
 rand = { version = "0.10" }
 sha2 = { version = "0.10" }
 
