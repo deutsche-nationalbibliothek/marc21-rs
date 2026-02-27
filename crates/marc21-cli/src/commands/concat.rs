@@ -9,8 +9,8 @@ pub(crate) struct Concat {
     #[arg(default_value = "-", hide_default_value = true)]
     path: Vec<PathBuf>,
 
-    /// Write output to FILENAME instead of stdout.
-    #[arg(short, long, value_name = "FILENAME")]
+    /// Write output to <filename> instead of stdout.
+    #[arg(short, long, value_name = "filename")]
     output: Option<PathBuf>,
 
     #[command(flatten, next_help_heading = "Filter options")]

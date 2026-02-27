@@ -1,3 +1,5 @@
+#[cfg(feature = "build")]
+pub(crate) use build_man::BuildMan;
 pub(crate) use completions::Completions;
 pub(crate) use concat::Concat;
 pub(crate) use count::Count;
@@ -17,3 +19,6 @@ mod invalid;
 mod print;
 mod sample;
 mod split;
+
+#[cfg(feature = "build")]
+mod build_man;

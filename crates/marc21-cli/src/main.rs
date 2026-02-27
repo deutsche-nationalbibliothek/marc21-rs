@@ -25,6 +25,9 @@ fn main() -> ExitCode {
         Command::Print(cmd) => cmd.execute(),
         Command::Sample(cmd) => cmd.execute(),
         Command::Split(cmd) => cmd.execute(),
+
+        #[cfg(feature = "build")]
+        Command::BuildMan(cmd) => cmd.execute(&Args::command()),
     };
 
     match result {
