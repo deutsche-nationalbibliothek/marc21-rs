@@ -26,6 +26,21 @@ National Library] (DNB). It is used for data analysis and for automating
 metadata workflows (data engineering) as part of automatic content
 indexing.
 
+The `marc21` tool provides the following commands:
+
+- `completions` — Generate shell completions (e.g. [Bash] or [ZSH])
+- [concat] — Concatenate records from multiple inputs (alias `cat`)
+- [count] — Print the number of records in the input data (alias `cnt`)
+- [filter] — Filter records that fulfill a specified condition
+- [hash] — Compute SHA-256 checksum of records
+- [invalid] — Output invalid records that cannot be decoded
+- [print] — Print records in human readable format
+- [sample] — Select a random permutation of records
+- [split] — Split the input into chunks of a given size
+
+Check out the [documentation] to learn more about installing and using
+the tool.
+
 ## Contributing
 
 All contributors are required to "sign-off" their commits (using
@@ -36,9 +51,22 @@ Certificate of Origin][DCO].
 
 This project is licensed under the [European Union Public License 1.2].
 
+[Bash]: https://www.gnu.org/software/bash/
 [DCO]: https://developercertificate.org
 [European Union Public License 1.2]: ./LICENSE
 [German National Library]: https://dnb.de/
 [MARC 21]: https://www.loc.gov/marc
 [Polars]: https://pola.rs
 [Tidyverse]: https://tidyverse.org
+[ZSH]: https://www.zsh.org
+
+[documentation]: https://deutsche-nationalbibliothek.github.io/marc21-rs/
+[concat]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-concat.html
+[count]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-count.html
+[filter]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-filter.html
+[hash]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-hash.html
+[invalid]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-invalid.html
+[print]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-print.html
+[sample]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-sample.html
+[split]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-split.html
+
