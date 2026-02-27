@@ -14,7 +14,6 @@ pub(crate) struct Args {
 
 #[derive(Debug, Subcommand)]
 pub(crate) enum Command {
-    Completions(Box<Completions>),
     Concat(Box<Concat>),
     Count(Box<Count>),
     Filter(Box<Filter>),
@@ -24,6 +23,8 @@ pub(crate) enum Command {
     Sample(Box<Sample>),
     Split(Box<Split>),
 
+    #[cfg(feature = "build")]
+    BuildCompletion(Box<BuildCompletion>),
     #[cfg(feature = "build")]
     BuildMan(Box<BuildMan>),
 }

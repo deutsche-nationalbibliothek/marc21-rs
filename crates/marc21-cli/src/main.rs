@@ -16,7 +16,6 @@ fn main() -> ExitCode {
     let args = Args::parse();
 
     let result = match *args.cmd {
-        Command::Completions(cmd) => cmd.execute(&mut Args::command()),
         Command::Concat(cmd) => cmd.execute(),
         Command::Count(cmd) => cmd.execute(),
         Command::Filter(cmd) => cmd.execute(),
@@ -26,6 +25,8 @@ fn main() -> ExitCode {
         Command::Sample(cmd) => cmd.execute(),
         Command::Split(cmd) => cmd.execute(),
 
+        #[cfg(feature = "build")]
+        Command::BuildCompletion(cmd) => cmd.execute(&Args::command()),
         #[cfg(feature = "build")]
         Command::BuildMan(cmd) => cmd.execute(&Args::command()),
     };
