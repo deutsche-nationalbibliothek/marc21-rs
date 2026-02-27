@@ -21,10 +21,10 @@ pub(crate) struct BuildCompletion {
 
 impl BuildCompletion {
     pub(crate) fn execute(self, cmd: &Command) -> CliResult {
-        if let Some(parent) = self.output.parent() {
-            if !parent.exists() {
-                create_dir_all(parent)?;
-            }
+        if let Some(parent) = self.output.parent()
+            && !parent.exists()
+        {
+            create_dir_all(parent)?;
         }
 
         let mut wtr = WriterBuilder::default()
