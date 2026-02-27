@@ -1,1 +1,2 @@
 *.mrc linguist-documentation
+contrib/** linguist-vendored
