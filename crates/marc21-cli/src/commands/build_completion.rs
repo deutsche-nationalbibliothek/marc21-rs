@@ -9,6 +9,7 @@ use crate::prelude::*;
 
 /// Generate shell completions (e.g. Bash or ZSH)
 #[derive(Parser, Debug)]
+#[clap(hide = true)]
 pub(crate) struct BuildCompletion {
     /// Output the shell completion file for the given shell.
     shell: Shell,
