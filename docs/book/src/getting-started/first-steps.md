@@ -176,40 +176,14 @@ LDR 03612nz  a2200589nc 4500
 ...
 ```
 
-## Enable Tab Completion
-
-`marc21` supports generating completion scripts for [Bash], [Elvish],
-[Fish], [PowerShell] and [ZSH].
-
-For example, the following code snippet can be included in the `.zshrc`
-in order to enable tab completion in [ZSH]:
-
-```zsh
-type marc21 >/dev/null && source <(marc21 completions zsh)
-```
-
-Or analogously in the `.bashrc` for the [Bash] shell:
-
-```bash
-type marc21 >/dev/null && source <(marc21 completions bash)
-```
-
-
-
-
-[Bash]: https://www.gnu.org/software/bash/
-[Elvish]: https://elv.sh
-[Fish]: https://fishshell.com
-[GND]: https://gnd.network
-[Levenshtein distance]: https://en.wikipedia.org/wiki/Levenshtein_distance
-[PowerShell]: https://en.wikipedia.org/wiki/PowerShell
-[specification]: https://docs.rs/regex/latest/regex/#syntax
-[ZSH]: https://www.zsh.org
 
 [commands]: ../reference/commands/index.md
 [concat]: ../reference/commands/marc21-concat.md
 [count]: ../reference/commands/marc21-count.md
 [filter]: ../reference/commands/marc21-filter.md
+[GND]: https://gnd.network
+[Levenshtein distance]: https://en.wikipedia.org/wiki/Levenshtein_distance
 [print]: ../reference/commands/marc21-print.md
+[specification]: https://docs.rs/regex/latest/regex/#syntax
 
 
