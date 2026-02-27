@@ -1,9 +1,9 @@
 [package]
 name = "marc21"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Nico Wagner <n.wagner@dnb.de>"]
 repository = "https://github.com/deutsche-nationalbibliothek/marc21-rs"
-description = "A toolkit for processing MARC 21 records."
+description = "A toolkit for processing MARC-21 records."
 categories = ["parser-implementations"]
 keywords = ["marc21", "code4lib"]
 license = "EUPL-1.2"
