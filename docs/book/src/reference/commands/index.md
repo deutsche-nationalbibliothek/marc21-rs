@@ -2,7 +2,6 @@
 
 The `marc21` tool provides the following commands:
 
-- `completions` — Generate shell completions (e.g. [Bash] or [ZSH])
 - [concat] — Concatenate records from multiple inputs (alias `cat`)
 - [count] — Print the number of records in the input data (alias `cnt`)
 - [filter] — Filter records that fulfill a specified condition
@@ -11,9 +10,6 @@ The `marc21` tool provides the following commands:
 - [print] — Print records in human readable format
 - [sample] — Select a random permutation of records
 - [split] — Split the input into chunks of a given size
-
-[Bash]: https://www.gnu.org/software/bash/
-[ZSH]: https://www.zsh.org
 
 [concat]: ./marc21-concat.md
 [count]: ./marc21-count.md
