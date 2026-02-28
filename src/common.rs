@@ -9,22 +9,26 @@ pub(crate) type TestResult = Result<(), Box<dyn std::error::Error>>;
 pub(crate) const RECORD_SEPARATOR: u8 = b'\x1e';
 pub(crate) const UNIT_SEPARATOR: u8 = b'\x1f';
 
+#[cfg_attr(feature = "perf-inline", inline(always))]
 pub(crate) fn parse_digits_u32(i: &mut &[u8]) -> ModalResult<u32> {
     repeat(5usize, one_of(AsChar::is_dec_digit))
         .fold(|| 0u32, |acc, i| acc * 10 + (i - b'0') as u32)
         .parse_next(i)
 }
 
+#[cfg_attr(feature = "perf-inline", inline(always))]
 pub(crate) fn parse_digits_u16(i: &mut &[u8]) -> ModalResult<u16> {
     repeat(4usize, one_of(AsChar::is_dec_digit))
         .fold(|| 0u16, |acc, i| acc * 10 + (i - b'0') as u16)
         .parse_next(i)
 }
 
+#[cfg_attr(feature = "perf-inline", inline(always))]
 pub(crate) fn parse_ascii_graphic(i: &mut &[u8]) -> ModalResult<u8> {
     one_of(|b: u8| b.is_ascii_graphic()).parse_next(i)
 }
 
+#[cfg_attr(feature = "perf-inline", inline(always))]
 pub(crate) fn parse_space_or_ascii_graphic(
     i: &mut &[u8],
 ) -> ModalResult<u8> {
