@@ -58,6 +58,7 @@ impl Leader {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
+    #[inline(always)]
     pub fn length(&self) -> u32 {
         debug_assert!(self.length <= 99999);
         self.length
@@ -75,6 +76,7 @@ impl Leader {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
+    #[inline(always)]
     pub fn status(&self) -> u8 {
         self.status
     }
@@ -91,6 +93,7 @@ impl Leader {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
+    #[inline(always)]
     pub fn r#type(&self) -> u8 {
         self.r#type
     }
@@ -108,6 +111,7 @@ impl Leader {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
+    #[inline(always)]
     pub fn is_bibliographic(&self) -> bool {
         matches!(self.r#type, b'a'
             | b'c'..=b'g'
@@ -133,6 +137,7 @@ impl Leader {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
+    #[inline(always)]
     pub fn is_community_information(&self) -> bool {
         self.r#type == b'q'
     }
@@ -150,6 +155,7 @@ impl Leader {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
+    #[inline]
     pub fn bibliographic_level(&self) -> Option<u8> {
         if self.is_bibliographic() && self.idef1.is_ascii_graphic() {
             Some(self.idef1)
@@ -171,6 +177,7 @@ impl Leader {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
+    #[inline]
     pub fn kind_of_data(&self) -> Option<u8> {
         if self.is_community_information() && self.idef1 != b' ' {
             Some(self.idef1)
@@ -192,6 +199,7 @@ impl Leader {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
+    #[inline]
     pub fn type_of_control(&self) -> Option<u8> {
         if self.is_bibliographic() && self.idef2 != b' ' {
             Some(self.idef2)
@@ -213,6 +221,7 @@ impl Leader {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
+    #[inline(always)]
     pub fn encoding(&self) -> u8 {
         self.encoding
     }
@@ -232,6 +241,7 @@ impl Leader {
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
+    #[inline(always)]
     pub fn base_addr(&self) -> u32 {
         self.base_address
     }
