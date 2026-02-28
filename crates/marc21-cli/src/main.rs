@@ -1,7 +1,9 @@
 use std::io::ErrorKind;
 use std::process::ExitCode;
 
-use clap::{CommandFactory, Parser};
+#[cfg(feature = "build")]
+use clap::CommandFactory;
+use clap::Parser;
 
 use crate::cli::{Args, Command};
 
