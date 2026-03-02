@@ -29,6 +29,12 @@ $ cargo install marc21-cli
 
 The binary can be built with the following features as needed:
 
+`build`
+: Commands and functions that are only needed during the build process
+or packaging are activated with the `build` feature. This includes, for
+example, the commands for generating man pages (`build-man`) and shell
+completions (`build-completion`).
+
 `performant`
 : This feature activates optimizations aimed at improving performance.
 This includes, for example, the activation of SIMD or a more aggressive

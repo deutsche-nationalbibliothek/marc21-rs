@@ -14,11 +14,9 @@ edition = "2024"
 name = "marc21"
 path = "src/main.rs"
 
-[features]
-default = ["performant"]
-performant = ["marc21/performant"]
-unstable = ["marc21/unstable"]
-build = ["dep:clap_mangen", "dep:clap_complete"]
+[[test]]
+path = "tests/e2e/lib.rs"
+name = "e2e"
 
 [dependencies]
 bstr = { version = "1.12", features = ["std"], default-features = false }
@@ -38,7 +36,23 @@ assert_cmd = { version = "2.1" }
 assert_fs = { version = "1.1" }
 predicates = { version = "3.1" }
 
-[[test]]
-path = "tests/e2e/lib.rs"
-name = "e2e"
+[features]
+default = ["performant"]
+
+# Commands and functions that are only needed during the build process
+# or packaging are activated with the `build` feature. This includes,
+# for example, the commands for generating man pages (`build-man`) and
+# shell completions (`build-completion`).
+build = ["dep:clap_mangen", "dep:clap_complete"]
+
+# This feature activates optimizations aimed at improving performance.
+# This includes, for example, the activation of SIMD or a more
+# aggressive inline strategy. Since the main goal of the project is high
+# performance, the feature is enabled by default.
+performant = ["marc21/performant"]
+
+# New features that are still in the testing phase can be activated
+# using the `unstable` feature. Keep in mind that these functions may
+# change at any time.
+unstable = ["marc21/unstable"]
 
