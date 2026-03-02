@@ -4,7 +4,8 @@ h1.menu-title {
 
 h2,
 h3 {
-  margin-block-start: 1em;
+  margin-block-start: 20px;
+  writing-mode: horizontal-tb;
 }
 
 .content main {

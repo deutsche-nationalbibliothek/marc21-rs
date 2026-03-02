@@ -7,7 +7,7 @@ use rand::rng;
 
 use crate::prelude::*;
 
-/// Selects a random permutation of records
+/// Select a random permutation of records
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Sample {
     /// Initialize the RNG with a seed value to get deterministic
