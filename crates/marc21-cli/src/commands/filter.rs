@@ -5,7 +5,7 @@ use marc21::matcher::RecordMatcher;
 
 use crate::prelude::*;
 
-/// Concatenate records from multiple inputs
+/// Filter records that fulfill a specified condition
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Filter {
     /// Skip invalid records that can't be decoded

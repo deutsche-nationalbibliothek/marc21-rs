@@ -5,7 +5,7 @@ use marc21::io::ReadMarcError;
 
 use crate::prelude::*;
 
-/// Outputs invalid records that cannot be decoded.
+/// Output invalid records that cannot be decoded
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Invalid {
     #[arg(default_value = "-", hide_default_value = true)]

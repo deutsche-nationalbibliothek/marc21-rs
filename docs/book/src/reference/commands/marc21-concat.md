@@ -14,10 +14,19 @@
 The `concat` command is used to combine records from multiple files into
 a single file or output (`stdout`).
 
+## OPTIONS
+
+### FILTER OPTIONS
+
+{{ #include filter-opts.md }}
+
+### COMMON OPTIONS
+
+{{ #include common-opts.md }}
+
 ## EXIT STATUS
 
-* `0` --- Command succeeded.
-* `1` --- Command failed.
+{{ #include exit-status.md }}
 
 ## EXAMPLES
 

@@ -228,11 +228,11 @@ _marc21_commands() {
 'cat:Concatenate records from multiple inputs' \
 'count:Prints the number of records in the input data' \
 'cnt:Prints the number of records in the input data' \
-'filter:Concatenate records from multiple inputs' \
+'filter:Filter records that fulfill a specified condition' \
 'hash:Compute SHA-256 checksum of records' \
-'invalid:Outputs invalid records that cannot be decoded' \
+'invalid:Output invalid records that cannot be decoded' \
 'print:Print records in human readable format' \
-'sample:Selects a random permutation of records' \
+'sample:Select a random permutation of records' \
 'split:Splits a list of records into chunks' \
 'build-completion:Generate shell completions (e.g. Bash or ZSH)' \
 'build-man:' \
