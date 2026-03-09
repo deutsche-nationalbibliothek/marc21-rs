@@ -4,14 +4,16 @@ use std::ops::Deref;
 use std::str::Utf8Error;
 
 use winnow::combinator::{empty, repeat, seq, terminated};
+use winnow::prelude::*;
 use winnow::token::{one_of, take};
 
 use crate::directory::parse_directory;
 use crate::field::DataField;
 use crate::leader::parse_leader;
-use crate::parse::*;
 use crate::subfield::parse_subfield;
-use crate::{ControlField, Directory, Field, Leader, Subfield};
+use crate::{
+    ControlField, Directory, Field, Leader, ParseRecordError, Subfield,
+};
 
 /// A record, that may contain invalid UTF-8 data.
 #[derive(Debug, PartialEq)]
@@ -292,6 +294,7 @@ fn parse_subfields<'a>(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::common::TestResult;
 
     #[test]
     fn test_parse_indicator() {

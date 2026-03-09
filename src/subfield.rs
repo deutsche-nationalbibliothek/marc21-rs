@@ -4,10 +4,12 @@ use std::str::Utf8Error;
 
 use bstr::ByteSlice;
 use winnow::combinator::preceded;
+use winnow::prelude::*;
 use winnow::stream::AsChar;
 use winnow::token::{one_of, take_till};
 
-use crate::parse::*;
+use crate::ParseRecordError;
+use crate::common::*;
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Subfield<'a> {

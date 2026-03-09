@@ -25,10 +25,3 @@ pub mod prelude {
         StringRecord, Subfield, Tag,
     };
 }
-
-pub(crate) mod parse {
-    pub(crate) use winnow::prelude::*;
-
-    pub(crate) use super::ParseRecordError;
-    pub(crate) use super::common::*;
-}
