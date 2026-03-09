@@ -1,10 +1,11 @@
 use std::fmt::Debug;
 
 use winnow::combinator::{repeat, seq, terminated};
+use winnow::prelude::*;
 
-use crate::Tag;
-use crate::parse::*;
+use crate::common::*;
 use crate::tag::parse_tag;
+use crate::{ParseRecordError, Tag};
 
 /// An index entry containing metadata about a variable field.
 #[derive(Debug, PartialEq)]

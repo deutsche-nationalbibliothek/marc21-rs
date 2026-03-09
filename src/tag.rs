@@ -2,9 +2,10 @@ use std::fmt::{self, Display};
 use std::ops::Index;
 
 use bstr::ByteSlice;
+use winnow::prelude::*;
 use winnow::token::take;
 
-use crate::parse::*;
+use crate::ParseRecordError;
 
 /// A three character string to identify variable fields.
 #[derive(Debug, Clone, PartialEq)]
