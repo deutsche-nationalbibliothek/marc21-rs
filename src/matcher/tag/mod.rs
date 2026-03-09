@@ -174,8 +174,7 @@ mod tests {
     use smallvec::smallvec as svec;
 
     use super::*;
-
-    type TestResult = Result<(), Box<dyn std::error::Error>>;
+    use crate::common::TestResult;
 
     #[test]
     fn test_tag_matcher_new() -> TestResult {

@@ -294,6 +294,7 @@ fn parse_subfields<'a>(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::common::TestResult;
 
     #[test]
     fn test_parse_indicator() {

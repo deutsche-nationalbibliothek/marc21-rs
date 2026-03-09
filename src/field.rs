@@ -154,7 +154,7 @@ impl Display for DataField<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::parse::TestResult;
+    use crate::common::TestResult;
 
     #[test]
     fn test_control_field_to_string() -> TestResult {

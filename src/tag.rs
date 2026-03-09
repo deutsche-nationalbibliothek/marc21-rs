@@ -114,6 +114,7 @@ pub(crate) fn parse_tag<'a>(i: &mut &'a [u8]) -> ModalResult<Tag<'a>> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::common::TestResult;
 
     #[test]
     fn test_parse_tag_ref() -> TestResult {
