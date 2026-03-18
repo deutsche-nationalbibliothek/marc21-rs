@@ -23,13 +23,15 @@ pub(crate) fn parse_subfield_matcher(
 ) -> ModalResult<SubfieldMatcher> {
     alt((
         parse_composite_matcher,
-        parse_comparison_matcher(true),
-        parse_in_matcher(true),
-        parse_contains_matcher(true),
-        parse_regex_matcher(true),
-        parse_starts_with_matcher(true),
-        parse_ends_with_matcher(true),
-        parse_strsim_matcher(true),
+        alt((
+            parse_comparison_matcher(true),
+            parse_in_matcher(true),
+            parse_contains_matcher(true),
+            parse_regex_matcher(true),
+            parse_starts_with_matcher(true),
+            parse_ends_with_matcher(true),
+            parse_strsim_matcher(true),
+        )),
         parse_group_matcher,
         parse_not_matcher,
     ))
@@ -102,13 +104,15 @@ fn parse_group_matcher(i: &mut &[u8]) -> ModalResult<SubfieldMatcher> {
         terminated(ws0('('), group_level_incr),
         alt((
             parse_composite_matcher,
-            parse_comparison_matcher(true),
-            parse_in_matcher(true),
-            parse_contains_matcher(true),
-            parse_regex_matcher(true),
-            parse_starts_with_matcher(true),
-            parse_ends_with_matcher(true),
-            parse_strsim_matcher(true),
+            alt((
+                parse_comparison_matcher(true),
+                parse_in_matcher(true),
+                parse_contains_matcher(true),
+                parse_regex_matcher(true),
+                parse_starts_with_matcher(true),
+                parse_ends_with_matcher(true),
+                parse_strsim_matcher(true),
+            )),
             parse_group_matcher,
             parse_not_matcher,
         )),
@@ -162,13 +166,15 @@ fn parse_composite_or_matcher(
     let atom = |i: &mut &[u8]| -> ModalResult<SubfieldMatcher> {
         ws0(alt((
             parse_composite_and_matcher,
-            parse_comparison_matcher(true),
-            parse_in_matcher(true),
-            parse_contains_matcher(true),
-            parse_regex_matcher(true),
-            parse_starts_with_matcher(true),
-            parse_ends_with_matcher(true),
-            parse_strsim_matcher(true),
+            alt((
+                parse_comparison_matcher(true),
+                parse_in_matcher(true),
+                parse_contains_matcher(true),
+                parse_regex_matcher(true),
+                parse_starts_with_matcher(true),
+                parse_ends_with_matcher(true),
+                parse_strsim_matcher(true),
+            )),
             parse_group_matcher,
             parse_not_matcher,
         )))
