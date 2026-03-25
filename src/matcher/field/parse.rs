@@ -1,7 +1,6 @@
 use winnow::ascii::multispace0;
 use winnow::combinator::{
-    alt, delimited, opt, preceded, separated, separated_pair, seq,
-    terminated,
+    alt, delimited, opt, preceded, separated, seq, terminated,
 };
 use winnow::prelude::*;
 
@@ -12,7 +11,7 @@ use crate::matcher::field::{ExistsMatcher, FieldMatcher};
 use crate::matcher::indicator::parse::parse_indicator_matcher_opt;
 use crate::matcher::shared::{
     parse_byte_string, parse_comparison_operator, parse_quantifier_opt,
-    parse_string_value, parse_usize, ws0, ws1,
+    parse_range, parse_string_value, parse_usize, ws0, ws1,
 };
 use crate::matcher::subfield::parse::{
     parse_subfield_matcher, parse_subfield_matcher_short,
@@ -64,24 +63,6 @@ fn parse_control_field_matcher(
             .map(ControlFieldMatcher::Comparison),
         parse_control_field_in_matcher.map(ControlFieldMatcher::In),
     ))
-    .parse_next(i)
-}
-
-fn parse_range(
-    i: &mut &[u8],
-) -> ModalResult<(Option<usize>, Option<usize>)> {
-    delimited(
-        '[',
-        alt((
-            separated_pair(parse_usize, ':', parse_usize)
-                .map(|(start, end)| (Some(start), Some(end))),
-            preceded(':', parse_usize).map(|end| (None, Some(end))),
-            terminated(parse_usize, ':')
-                .map(|start| (Some(start), None)),
-            parse_usize.map(|start| (Some(start), Some(start + 1))),
-        )),
-        ']',
-    )
     .parse_next(i)
 }
 
