@@ -27,3 +27,10 @@ path = "fuzz_targets/record_matcher.rs"
 test = false
 doc = false
 bench = false
+
+[[bin]]
+name = "path"
+path = "fuzz_targets/path.rs"
+test = false
+doc = false
+bench = false

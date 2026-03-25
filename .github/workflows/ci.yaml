@@ -56,6 +56,7 @@ jobs:
         item:
           - {target: record-matcher, max-total-time: 240}
           - {target: byte-record, max-total-time: 180}
+          - {target: path, max-total-time: 240}
     steps:
       - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@nightly

@@ -2,7 +2,9 @@ pub(crate) use operator::*;
 pub(crate) use quantifier::*;
 pub(crate) use value::*;
 use winnow::ascii::{multispace0, multispace1};
-use winnow::combinator::{alt, delimited, repeat};
+use winnow::combinator::{
+    alt, delimited, preceded, repeat, separated_pair, terminated,
+};
 use winnow::error::ParserError;
 use winnow::prelude::*;
 use winnow::stream::{AsChar, Stream, StreamIsPartial};
@@ -63,5 +65,23 @@ pub(crate) fn parse_codes(i: &mut &[u8]) -> ModalResult<Vec<u8>> {
             },
         ),
     ))
+    .parse_next(i)
+}
+
+pub(crate) fn parse_range(
+    i: &mut &[u8],
+) -> ModalResult<(Option<usize>, Option<usize>)> {
+    delimited(
+        '[',
+        alt((
+            separated_pair(parse_usize, ':', parse_usize)
+                .map(|(start, end)| (Some(start), Some(end))),
+            preceded(':', parse_usize).map(|end| (None, Some(end))),
+            terminated(parse_usize, ':')
+                .map(|start| (Some(start), None)),
+            parse_usize.map(|start| (Some(start), Some(start + 1))),
+        )),
+        ']',
+    )
     .parse_next(i)
 }
