@@ -8,8 +8,8 @@ use winnow::prelude::*;
 use winnow::stream::AsChar;
 use winnow::token::{one_of, take_till};
 
-use crate::ParseRecordError;
 use crate::common::*;
+use crate::error::ParseRecordError;
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Subfield<'a> {

@@ -5,7 +5,7 @@ use bstr::ByteSlice;
 use winnow::prelude::*;
 use winnow::token::take;
 
-use crate::ParseRecordError;
+use crate::error::ParseRecordError;
 
 /// A three character string to identify variable fields.
 #[derive(Debug, Clone, PartialEq)]

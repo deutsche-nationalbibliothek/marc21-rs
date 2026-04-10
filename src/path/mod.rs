@@ -1,4 +1,3 @@
-mod error;
 mod parse;
 
 use std::borrow::Cow;
@@ -6,10 +5,10 @@ use std::fmt::{self, Display};
 use std::str::FromStr;
 
 use bstr::ByteSlice;
-pub use error::ParsePathError;
 use parse::parse_path;
 use winnow::Parser;
 
+use crate::error::ParsePathError;
 use crate::matcher::leader::LeaderField;
 use crate::matcher::{
     IndicatorMatcher, MatchOptions, SubfieldMatcher, TagMatcher,
