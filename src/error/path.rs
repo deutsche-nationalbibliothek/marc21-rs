@@ -1,33 +1,28 @@
-use std::error::Error;
 use std::fmt::{self, Display};
 use std::ops::Range;
 
 use winnow::error::{ContextError, ParseError};
 
+use crate::error::{Error, ErrorKind};
+
 /// An error that can occur when parsing MARC 21 records.
 #[derive(Debug)]
-pub struct ParseRecordError<'a> {
+pub struct ParsePathError {
     #[allow(dead_code)]
     message: String,
     span: Range<usize>,
-    data: &'a [u8],
 }
 
-impl<'a> ParseRecordError<'a> {
-    pub fn from_parse(err: ParseError<&'a [u8], ContextError>) -> Self {
+impl ParsePathError {
+    pub fn from_parse(err: ParseError<&[u8], ContextError>) -> Self {
         Self {
             message: err.inner().to_string(),
             span: err.char_span(),
-            data: err.input(),
         }
-    }
-
-    pub fn data(&self) -> &'a [u8] {
-        self.data
     }
 }
 
-impl Display for ParseRecordError<'_> {
+impl Display for ParsePathError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let start = self.span.start;
         let end = self.span.end;
@@ -40,4 +35,10 @@ impl Display for ParseRecordError<'_> {
     }
 }
 
-impl Error for ParseRecordError<'_> {}
+impl std::error::Error for ParsePathError {}
+
+impl From<ParsePathError> for Error<'_> {
+    fn from(err: ParsePathError) -> Self {
+        ErrorKind::Path(err).into()
+    }
+}

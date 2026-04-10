@@ -5,8 +5,8 @@ use bstr::ByteSlice;
 use winnow::combinator::seq;
 use winnow::{ModalResult, Parser};
 
-use crate::ParseRecordError;
 use crate::common::*;
+use crate::error::ParseRecordError;
 
 /// The leader contains essential metadata about the record.
 #[derive(Debug, Clone, PartialEq)]

@@ -8,12 +8,11 @@ use winnow::prelude::*;
 use winnow::token::{one_of, take};
 
 use crate::directory::parse_directory;
+use crate::error::ParseRecordError;
 use crate::field::DataField;
 use crate::leader::parse_leader;
 use crate::subfield::parse_subfield;
-use crate::{
-    ControlField, Directory, Field, Leader, ParseRecordError, Subfield,
-};
+use crate::{ControlField, Directory, Field, Leader, Subfield};
 
 /// A record, that may contain invalid UTF-8 data.
 #[derive(Debug, PartialEq)]

@@ -5,7 +5,8 @@ use std::path::Path;
 
 use flate2::read::GzDecoder;
 
-use crate::{ByteRecord, ParseRecordError};
+use crate::ByteRecord;
+use crate::error::ParseRecordError;
 
 /// An error that can occur when reading records.
 #[derive(Debug)]
