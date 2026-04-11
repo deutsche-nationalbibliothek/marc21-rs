@@ -30,7 +30,6 @@
 //!
 //! [`ByteRecord`]: crate::ByteRecord
 
-pub use error::ParseMatcherError;
 pub use field::FieldMatcher;
 pub use indicator::IndicatorMatcher;
 pub use leader::LeaderMatcher;
@@ -39,7 +38,8 @@ pub use record::RecordMatcher;
 pub use subfield::SubfieldMatcher;
 pub use tag::TagMatcher;
 
-pub(crate) mod error;
+pub use crate::error::ParseMatcherError;
+
 pub(crate) mod field;
 pub(crate) mod indicator;
 pub(crate) mod leader;

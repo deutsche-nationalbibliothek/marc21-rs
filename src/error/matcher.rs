@@ -1,9 +1,10 @@
-use std::error::Error;
 use std::fmt::{self, Display};
 use std::ops::Range;
 
 use bstr::{BString, ByteSlice};
 use winnow::error::{ContextError, ParseError};
+
+use super::{Error, ErrorKind};
 
 /// An error that can occur when parsing matchers.
 #[derive(Debug)]
@@ -37,4 +38,10 @@ impl Display for ParseMatcherError {
     }
 }
 
-impl Error for ParseMatcherError {}
+impl std::error::Error for ParseMatcherError {}
+
+impl From<ParseMatcherError> for Error<'_> {
+    fn from(err: ParseMatcherError) -> Self {
+        ErrorKind::Matcher(err).into()
+    }
+}
