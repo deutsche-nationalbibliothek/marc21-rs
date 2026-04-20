@@ -17,40 +17,40 @@ _marc21() {
                 cmd="marc21"
                 ;;
             marc21,build-completion)
-                cmd="marc21__build__completion"
+                cmd="marc21__subcmd__build__subcmd__completion"
                 ;;
             marc21,build-man)
-                cmd="marc21__build__man"
+                cmd="marc21__subcmd__build__subcmd__man"
                 ;;
             marc21,cat)
-                cmd="marc21__concat"
+                cmd="marc21__subcmd__concat"
                 ;;
             marc21,cnt)
-                cmd="marc21__count"
+                cmd="marc21__subcmd__count"
                 ;;
             marc21,concat)
-                cmd="marc21__concat"
+                cmd="marc21__subcmd__concat"
                 ;;
             marc21,count)
-                cmd="marc21__count"
+                cmd="marc21__subcmd__count"
                 ;;
             marc21,filter)
-                cmd="marc21__filter"
+                cmd="marc21__subcmd__filter"
                 ;;
             marc21,hash)
-                cmd="marc21__hash"
+                cmd="marc21__subcmd__hash"
                 ;;
             marc21,invalid)
-                cmd="marc21__invalid"
+                cmd="marc21__subcmd__invalid"
                 ;;
             marc21,print)
-                cmd="marc21__print"
+                cmd="marc21__subcmd__print"
                 ;;
             marc21,sample)
-                cmd="marc21__sample"
+                cmd="marc21__subcmd__sample"
                 ;;
             marc21,split)
-                cmd="marc21__split"
+                cmd="marc21__subcmd__split"
                 ;;
             *)
                 ;;
@@ -72,7 +72,7 @@ _marc21() {
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
-        marc21__build__completion)
+        marc21__subcmd__build__subcmd__completion)
             opts="-o -h --output --help bash elvish fish powershell zsh"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
@@ -94,7 +94,7 @@ _marc21() {
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
-        marc21__build__man)
+        marc21__subcmd__build__subcmd__man)
             opts="-o -h --outdir --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
@@ -116,7 +116,7 @@ _marc21() {
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
-        marc21__concat)
+        marc21__subcmd__concat)
             opts="-o -s -p -c -h --output --skip-invalid --strsim-threshold --where --progress --compression --help [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
@@ -154,7 +154,7 @@ _marc21() {
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
-        marc21__count)
+        marc21__subcmd__count)
             opts="-o -s -p -c -h --output --skip-invalid --strsim-threshold --where --progress --compression --help [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
@@ -192,7 +192,7 @@ _marc21() {
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
-        marc21__filter)
+        marc21__subcmd__filter)
             opts="-s -o -p -c -h --skip-invalid --strsim-threshold --output --progress --compression --help <filter> [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
@@ -226,7 +226,7 @@ _marc21() {
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
-        marc21__hash)
+        marc21__subcmd__hash)
             opts="-o -s -p -c -h --tsv --output --skip-invalid --strsim-threshold --where --progress --compression --help [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
@@ -264,7 +264,7 @@ _marc21() {
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
-        marc21__invalid)
+        marc21__subcmd__invalid)
             opts="-o -p -c -h --output --progress --compression --help [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
@@ -294,7 +294,7 @@ _marc21() {
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
-        marc21__print)
+        marc21__subcmd__print)
             opts="-o -s -p -c -h --output --skip-invalid --strsim-threshold --where --progress --compression --help [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
@@ -332,7 +332,7 @@ _marc21() {
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
-        marc21__sample)
+        marc21__subcmd__sample)
             opts="-o -s -p -c -h --seed --output --skip-invalid --strsim-threshold --where --progress --compression --help <n> [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
@@ -374,7 +374,7 @@ _marc21() {
             COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
             return 0
             ;;
-        marc21__split)
+        marc21__subcmd__split)
             opts="-o -s -p -c -h --filename --outdir --skip-invalid --strsim-threshold --where --progress --compression --help <CHUNK_SIZE> [PATHS]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
