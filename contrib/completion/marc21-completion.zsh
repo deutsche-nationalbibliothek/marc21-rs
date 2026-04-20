@@ -239,53 +239,53 @@ _marc21_commands() {
     )
     _describe -t commands 'marc21 commands' commands "$@"
 }
-(( $+functions[_marc21__build-completion_commands] )) ||
-_marc21__build-completion_commands() {
+(( $+functions[_marc21__subcmd__build-completion_commands] )) ||
+_marc21__subcmd__build-completion_commands() {
     local commands; commands=()
     _describe -t commands 'marc21 build-completion commands' commands "$@"
 }
-(( $+functions[_marc21__build-man_commands] )) ||
-_marc21__build-man_commands() {
+(( $+functions[_marc21__subcmd__build-man_commands] )) ||
+_marc21__subcmd__build-man_commands() {
     local commands; commands=()
     _describe -t commands 'marc21 build-man commands' commands "$@"
 }
-(( $+functions[_marc21__concat_commands] )) ||
-_marc21__concat_commands() {
+(( $+functions[_marc21__subcmd__concat_commands] )) ||
+_marc21__subcmd__concat_commands() {
     local commands; commands=()
     _describe -t commands 'marc21 concat commands' commands "$@"
 }
-(( $+functions[_marc21__count_commands] )) ||
-_marc21__count_commands() {
+(( $+functions[_marc21__subcmd__count_commands] )) ||
+_marc21__subcmd__count_commands() {
     local commands; commands=()
     _describe -t commands 'marc21 count commands' commands "$@"
 }
-(( $+functions[_marc21__filter_commands] )) ||
-_marc21__filter_commands() {
+(( $+functions[_marc21__subcmd__filter_commands] )) ||
+_marc21__subcmd__filter_commands() {
     local commands; commands=()
     _describe -t commands 'marc21 filter commands' commands "$@"
 }
-(( $+functions[_marc21__hash_commands] )) ||
-_marc21__hash_commands() {
+(( $+functions[_marc21__subcmd__hash_commands] )) ||
+_marc21__subcmd__hash_commands() {
     local commands; commands=()
     _describe -t commands 'marc21 hash commands' commands "$@"
 }
-(( $+functions[_marc21__invalid_commands] )) ||
-_marc21__invalid_commands() {
+(( $+functions[_marc21__subcmd__invalid_commands] )) ||
+_marc21__subcmd__invalid_commands() {
     local commands; commands=()
     _describe -t commands 'marc21 invalid commands' commands "$@"
 }
-(( $+functions[_marc21__print_commands] )) ||
-_marc21__print_commands() {
+(( $+functions[_marc21__subcmd__print_commands] )) ||
+_marc21__subcmd__print_commands() {
     local commands; commands=()
     _describe -t commands 'marc21 print commands' commands "$@"
 }
-(( $+functions[_marc21__sample_commands] )) ||
-_marc21__sample_commands() {
+(( $+functions[_marc21__subcmd__sample_commands] )) ||
+_marc21__subcmd__sample_commands() {
     local commands; commands=()
     _describe -t commands 'marc21 sample commands' commands "$@"
 }
-(( $+functions[_marc21__split_commands] )) ||
-_marc21__split_commands() {
+(( $+functions[_marc21__subcmd__split_commands] )) ||
+_marc21__subcmd__split_commands() {
     local commands; commands=()
     _describe -t commands 'marc21 split commands' commands "$@"
 }
