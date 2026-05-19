@@ -2,6 +2,7 @@ use std::fmt::{self, Display};
 use std::io::{self, Write};
 use std::ops::Deref;
 use std::str::Utf8Error;
+use std::sync::LazyLock;
 
 use winnow::combinator::{empty, repeat, seq, terminated};
 use winnow::prelude::*;
@@ -11,8 +12,11 @@ use crate::directory::parse_directory;
 use crate::error::ParseRecordError;
 use crate::field::DataField;
 use crate::leader::parse_leader;
+use crate::matcher::MatchOptions;
 use crate::subfield::parse_subfield;
-use crate::{ControlField, Directory, Field, Leader, Subfield};
+use crate::{
+    ControlField, Directory, Field, Leader, Path, Subfield, Value,
+};
 
 /// A record, that may contain invalid UTF-8 data.
 #[derive(Debug, PartialEq)]
@@ -98,20 +102,40 @@ impl<'a> ByteRecord<'a> {
     /// let record = ByteRecord::from_bytes(data)?;
     ///
     /// let cn = record.control_number().unwrap();
-    /// assert_eq!(cn, "119232022".as_bytes());
+    /// assert_eq!(cn, "119232022");
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn control_number(&self) -> Option<&'a [u8]> {
-        while let Some(Field::Control(ControlField { tag, value })) =
-            self.fields().next()
-        {
-            if tag == b"001" {
-                return Some(value);
-            }
-        }
+    pub fn control_number(&self) -> Option<Value<'a>> {
+        static PATH: LazyLock<Path> =
+            LazyLock::new(|| Path::new("001").unwrap());
 
-        None
+        self.path(&PATH, &Default::default()).into_iter().next()
+    }
+
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21::prelude::*;
+    ///
+    /// let data = include_bytes!("../tests/data/ada.mrc");
+    /// let record = ByteRecord::from_bytes(data)?;
+    /// let path = Path::new("065{ a | 2 == 'sswd' }")?;
+    /// let values = record.path(&path, &Default::default());
+    ///
+    /// assert_eq!(values.len(), 2);
+    /// assert_eq!(values[0], "28p");
+    /// assert_eq!(values[1], "9.5p");
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    #[inline(always)]
+    pub fn path(
+        &self,
+        path: &Path,
+        options: &MatchOptions,
+    ) -> Vec<Value<'a>> {
+        path.project(self, options)
     }
 
     /// Returns the complete record as a byte slice.

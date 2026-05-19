@@ -1,6 +1,5 @@
 mod parse;
 
-use std::borrow::Cow;
 use std::fmt::{self, Display};
 use std::str::FromStr;
 
@@ -13,6 +12,7 @@ use crate::matcher::leader::LeaderField;
 use crate::matcher::{
     IndicatorMatcher, MatchOptions, SubfieldMatcher, TagMatcher,
 };
+use crate::value::Value;
 use crate::{ByteRecord, ControlField, Field};
 
 #[derive(Debug, PartialEq)]
@@ -22,6 +22,32 @@ pub struct Path {
 }
 
 impl Path {
+    /// Creates a new path from a string slice.
+    ///
+    /// # Errors
+    ///
+    /// This function returns an error if the given string slice is not
+    /// a valid path expression.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21::Path;
+    ///
+    /// let _path = Path::new("ldr.length")?;
+    /// let _path = Path::new("001")?;
+    /// let _path = Path::new("005[0:4]")?;
+    /// let _path = Path::new("075{ _ | 2 == 'gndspec' }")?;
+    /// let _path = Path::new("075{ b | 2 == 'gndspec' }")?;
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn new(path: &str) -> Result<Self, ParsePathError> {
+        parse_path
+            .parse(path.as_bytes())
+            .map_err(ParsePathError::from_parse)
+    }
+
     /// Creates a new path from a byte slice.
     ///
     /// # Errors
@@ -138,7 +164,7 @@ impl Path {
         &self,
         record: &ByteRecord<'a>,
         options: &MatchOptions,
-    ) -> Vec<Cow<'a, [u8]>> {
+    ) -> Vec<Value<'a>> {
         use PathKind::*;
 
         match self.kind {
@@ -194,17 +220,19 @@ impl LeaderPath {
         &self,
         record: &ByteRecord<'a>,
         _options: &MatchOptions,
-    ) -> Vec<Cow<'a, [u8]>> {
+    ) -> Vec<Value<'a>> {
         let ldr = record.leader();
         let value = match self.field {
             LeaderField::BaseAddr => ldr.base_addr().to_string(),
-            LeaderField::Encoding => ldr.encoding().to_string(),
+            LeaderField::Encoding => {
+                char::from(ldr.encoding()).to_string()
+            }
             LeaderField::Length => ldr.length().to_string(),
-            LeaderField::Status => ldr.status().to_string(),
-            LeaderField::Type => ldr.r#type().to_string(),
+            LeaderField::Status => char::from(ldr.status()).to_string(),
+            LeaderField::Type => char::from(ldr.r#type()).to_string(),
         };
 
-        vec![Cow::Owned(value.into_bytes())]
+        vec![value.into()]
     }
 }
 
@@ -219,7 +247,7 @@ impl ControlFieldPath {
         &self,
         record: &ByteRecord<'a>,
         _options: &MatchOptions,
-    ) -> Vec<Cow<'a, [u8]>> {
+    ) -> Vec<Value<'a>> {
         let mut iter = record.fields();
         let mut values = vec![];
 
@@ -247,7 +275,7 @@ impl ControlFieldPath {
                 value
             };
 
-            values.push(Cow::Borrowed(value));
+            values.push(value.into());
         }
 
         values
@@ -267,7 +295,7 @@ impl DataFieldPath {
         &self,
         record: &ByteRecord<'a>,
         options: &MatchOptions,
-    ) -> Vec<Cow<'a, [u8]>> {
+    ) -> Vec<Value<'a>> {
         let mut values = vec![];
 
         let fields = record
@@ -293,7 +321,7 @@ impl DataFieldPath {
                     .iter()
                     .any(|codes| codes.contains(subfield.code()))
                 {
-                    values.push(Cow::Borrowed(subfield.value()));
+                    values.push(subfield.value().into());
                 }
             }
         }
@@ -306,5 +334,5 @@ impl DataFieldPath {
 struct EmptyPath {
     tag_matcher: TagMatcher,
     indicator_matcher: IndicatorMatcher,
-    subfield_matcher: SubfieldMatcher,
+    subfield_matcher: Option<SubfieldMatcher>,
 }

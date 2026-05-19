@@ -2,7 +2,6 @@ use std::fmt::Write as _;
 use std::io::Cursor;
 use std::path::PathBuf;
 
-use bstr::ByteSlice;
 use sha2::{Digest, Sha256};
 
 use crate::prelude::*;
