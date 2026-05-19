@@ -4,6 +4,7 @@ use winnow::Parser;
 
 mod contains;
 mod ends_with;
+pub(crate) mod exists;
 mod r#in;
 mod regex;
 mod starts_with;
@@ -15,6 +16,7 @@ use crate::matcher::shared::{
 };
 use crate::matcher::subfield::contains::ContainsMatcher;
 use crate::matcher::subfield::ends_with::EndsWithMatcher;
+use crate::matcher::subfield::exists::ExistsMatcher;
 use crate::matcher::subfield::r#in::InMatcher;
 use crate::matcher::subfield::parse::parse_subfield_matcher;
 use crate::matcher::subfield::regex::RegexMatcher;
@@ -27,6 +29,7 @@ pub(crate) mod parse;
 /// A matcher that can be applied on a list of [Subfield]s.
 #[derive(Debug, PartialEq, Clone)]
 pub enum SubfieldMatcher {
+    Exists(Box<ExistsMatcher>),
     Comparison(Box<ComparisonMatcher>),
     Contains(Box<ContainsMatcher>),
     In(Box<InMatcher>),
@@ -51,6 +54,8 @@ impl SubfieldMatcher {
     /// ```rust
     /// use marc21::matcher::SubfieldMatcher;
     ///
+    /// let _matcher = SubfieldMatcher::new("!0?")?;
+    /// let _matcher = SubfieldMatcher::new("0?")?;
     /// let _matcher = SubfieldMatcher::new("0 == 'abc'")?;
     /// let _matcher = SubfieldMatcher::new("0 != 'abc'")?;
     /// let _matcher = SubfieldMatcher::new("[012] == 'abc'")?;
@@ -114,6 +119,7 @@ impl SubfieldMatcher {
         options: &MatchOptions,
     ) -> bool {
         match self {
+            Self::Exists(m) => m.is_match(subfields, options),
             Self::Comparison(m) => m.is_match(subfields, options),
             Self::Contains(m) => m.is_match(subfields, options),
             Self::In(m) => m.is_match(subfields, options),

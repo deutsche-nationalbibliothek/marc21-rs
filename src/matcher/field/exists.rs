@@ -1,10 +1,13 @@
 use crate::Field;
-use crate::matcher::{IndicatorMatcher, MatchOptions, TagMatcher};
+use crate::matcher::{
+    IndicatorMatcher, MatchOptions, SubfieldMatcher, TagMatcher,
+};
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct ExistsMatcher {
     pub(crate) tag_matcher: TagMatcher,
     pub(crate) indicator_matcher: IndicatorMatcher,
+    pub(crate) subfield_matcher: Option<SubfieldMatcher>,
     pub(crate) negated: bool,
 }
 
@@ -36,12 +39,23 @@ impl ExistsMatcher {
     pub fn is_match<'a, F: Iterator<Item = &'a Field<'a>>>(
         &self,
         fields: F,
-        _options: &MatchOptions,
+        options: &MatchOptions,
     ) -> bool {
-        fields.into_iter().any(|field| {
+        let result = fields.into_iter().any(|field| {
             let result = self.tag_matcher.is_match(field.tag())
                 && self.indicator_matcher.is_match(field);
-            if self.negated { !result } else { result }
-        })
+
+            if let Some(ref matcher) = self.subfield_matcher {
+                if let Field::Data(df) = field {
+                    result && matcher.is_match(df.subfields(), options)
+                } else {
+                    result
+                }
+            } else {
+                result
+            }
+        });
+
+        if self.negated { !result } else { result }
     }
 }

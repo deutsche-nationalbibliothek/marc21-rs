@@ -2,6 +2,7 @@ mod comparison;
 mod connectives;
 mod contains;
 mod ends_with;
+mod exists;
 mod fixed_length;
 mod r#in;
 mod regex;
