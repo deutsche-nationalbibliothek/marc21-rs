@@ -9,6 +9,7 @@ mod path;
 mod record;
 mod subfield;
 mod tag;
+mod value;
 
 pub use directory::{Directory, Entry};
 pub use error::Error;
@@ -18,12 +19,13 @@ pub use path::Path;
 pub use record::{ByteRecord, StringRecord};
 pub use subfield::Subfield;
 pub use tag::Tag;
+pub use value::Value;
 
 /// Core types available for glob import.
 pub mod prelude {
     pub use super::io::{ByteRecordsIter, MarcReadOptions, MarcReader};
     pub use super::{
-        ByteRecord, Directory, Entry, Leader, StringRecord, Subfield,
-        Tag,
+        ByteRecord, Directory, Entry, Leader, Path, StringRecord,
+        Subfield, Tag,
     };
 }

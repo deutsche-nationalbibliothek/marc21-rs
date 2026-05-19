@@ -7,7 +7,7 @@ use winnow::prelude::*;
 use super::Path;
 use crate::matcher::indicator::parse::parse_indicator_matcher_opt;
 use crate::matcher::leader::parse::parse_leader_field;
-use crate::matcher::shared::{parse_codes, parse_range, ws0, ws1};
+use crate::matcher::shared::{parse_codes, parse_range, ws0};
 use crate::matcher::subfield::parse::parse_subfield_matcher;
 use crate::matcher::tag::parse::parse_tag_matcher;
 use crate::path::{
@@ -84,11 +84,13 @@ fn parse_data_field_path_long(
 }
 
 fn parse_empty_path(i: &mut &[u8]) -> ModalResult<EmptyPath> {
+    // let path = Path::new("100{ _ }")?;
     seq! { EmptyPath {
         tag_matcher: parse_tag_matcher,
         indicator_matcher: parse_indicator_matcher_opt,
         _: terminated('{', multispace1),
-        subfield_matcher: preceded('_', preceded(ws1('|'), parse_subfield_matcher)),
+        _: terminated('_', multispace1),
+        subfield_matcher: opt(preceded(ws0('|'), parse_subfield_matcher)),
         _: preceded(multispace0, '}')
 
     }}
