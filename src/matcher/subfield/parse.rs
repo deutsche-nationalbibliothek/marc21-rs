@@ -12,6 +12,7 @@ use crate::matcher::shared::{
 };
 use crate::matcher::subfield::contains::parse_contains_matcher;
 use crate::matcher::subfield::ends_with::parse_ends_with_matcher;
+use crate::matcher::subfield::exists::parse_exists_matcher;
 use crate::matcher::subfield::r#in::parse_in_matcher;
 use crate::matcher::subfield::regex::parse_regex_matcher;
 use crate::matcher::subfield::starts_with::parse_starts_with_matcher;
@@ -23,10 +24,11 @@ pub(crate) fn parse_subfield_matcher(
 ) -> ModalResult<SubfieldMatcher> {
     alt((
         parse_composite_matcher,
+        parse_exists_matcher(true),
+        parse_comparison_matcher(true),
+        parse_in_matcher(true),
+        parse_contains_matcher(true),
         alt((
-            parse_comparison_matcher(true),
-            parse_in_matcher(true),
-            parse_contains_matcher(true),
             parse_regex_matcher(true),
             parse_starts_with_matcher(true),
             parse_ends_with_matcher(true),
@@ -42,6 +44,7 @@ pub(crate) fn parse_subfield_matcher_short(
     i: &mut &[u8],
 ) -> ModalResult<SubfieldMatcher> {
     alt((
+        parse_exists_matcher(false),
         parse_comparison_matcher(false),
         parse_in_matcher(false),
         parse_contains_matcher(false),
@@ -105,6 +108,7 @@ fn parse_group_matcher(i: &mut &[u8]) -> ModalResult<SubfieldMatcher> {
         alt((
             parse_composite_matcher,
             alt((
+                parse_exists_matcher(true),
                 parse_comparison_matcher(true),
                 parse_in_matcher(true),
                 parse_contains_matcher(true),
@@ -140,15 +144,18 @@ fn parse_composite_and_matcher(
 ) -> ModalResult<SubfieldMatcher> {
     let atom = |i: &mut &[u8]| -> ModalResult<SubfieldMatcher> {
         ws0(alt((
+            parse_exists_matcher(true),
             parse_comparison_matcher(true),
             parse_in_matcher(true),
             parse_contains_matcher(true),
-            parse_regex_matcher(true),
-            parse_starts_with_matcher(true),
-            parse_ends_with_matcher(true),
-            parse_strsim_matcher(true),
-            parse_group_matcher,
-            parse_not_matcher,
+            alt((
+                parse_regex_matcher(true),
+                parse_starts_with_matcher(true),
+                parse_ends_with_matcher(true),
+                parse_strsim_matcher(true),
+                parse_group_matcher,
+                parse_not_matcher,
+            )),
         )))
         .parse_next(i)
     };
@@ -166,6 +173,7 @@ fn parse_composite_or_matcher(
     let atom = |i: &mut &[u8]| -> ModalResult<SubfieldMatcher> {
         ws0(alt((
             parse_composite_and_matcher,
+            parse_exists_matcher(true),
             alt((
                 parse_comparison_matcher(true),
                 parse_in_matcher(true),
