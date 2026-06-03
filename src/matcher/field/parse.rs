@@ -37,7 +37,7 @@ fn parse_exists_matcher(i: &mut &[u8]) -> ModalResult<ExistsMatcher> {
         indicator_matcher:  parse_indicator_matcher_opt,
         subfield_matcher: alt((
             preceded('.', crate::matcher::subfield::exists::parse_exists_matcher(false))
-                .map(|m| Some(m)),
+                .map(Some),
             '?'.value(None)
         )),
     }}
