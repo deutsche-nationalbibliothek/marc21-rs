@@ -43,6 +43,9 @@ _marc21() {
             marc21,invalid)
                 cmd="marc21__subcmd__invalid"
                 ;;
+            marc21,partition)
+                cmd="marc21__subcmd__partition"
+                ;;
             marc21,print)
                 cmd="marc21__subcmd__print"
                 ;;
@@ -59,7 +62,7 @@ _marc21() {
 
     case "${cmd}" in
         marc21)
-            opts="-h -V --help --version concat cat count cnt filter hash invalid print sample split build-completion build-man"
+            opts="-h -V --help --version concat cat count cnt filter hash invalid partition print sample split build-completion build-man"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 1 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -276,6 +279,52 @@ _marc21() {
                     return 0
                     ;;
                 -o)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --compression)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -c)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
+        marc21__subcmd__partition)
+            opts="-t -o -s -p -c -h --template --output --skip-invalid --strsim-threshold --where --progress --compression --help <PATH> [FILENAMES]..."
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                return 0
+            fi
+            case "${prev}" in
+                --template)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -t)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --output)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -o)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --strsim-threshold)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --where)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
