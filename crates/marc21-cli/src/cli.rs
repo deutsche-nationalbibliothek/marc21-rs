@@ -19,6 +19,7 @@ pub(crate) enum Command {
     Filter(Box<Filter>),
     Hash(Box<Hash>),
     Invalid(Box<Invalid>),
+    Partition(Box<Partition>),
     Print(Box<Print>),
     Sample(Box<Sample>),
     Split(Box<Split>),

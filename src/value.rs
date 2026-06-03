@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use bstr::ByteSlice;
 
-#[derive(Debug, PartialEq, Default)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub struct Value<'a>(Cow<'a, [u8]>);
 
 impl<'a> Value<'a> {

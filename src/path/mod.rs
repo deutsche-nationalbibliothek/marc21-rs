@@ -15,7 +15,7 @@ use crate::matcher::{
 use crate::value::Value;
 use crate::{ByteRecord, ControlField, Field};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Path {
     kind: PathKind,
     input: Vec<u8>,
@@ -202,7 +202,7 @@ impl FromStr for Path {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 enum PathKind {
     Leader(LeaderPath),
     ControlField(ControlFieldPath),
@@ -210,7 +210,7 @@ enum PathKind {
     Empty(EmptyPath),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 struct LeaderPath {
     field: LeaderField,
 }
@@ -236,7 +236,7 @@ impl LeaderPath {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 struct ControlFieldPath {
     tag_matcher: TagMatcher,
     range: Option<(Option<usize>, Option<usize>)>,
@@ -282,7 +282,7 @@ impl ControlFieldPath {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 struct DataFieldPath {
     tag_matcher: TagMatcher,
     indicator_matcher: IndicatorMatcher,
@@ -330,7 +330,7 @@ impl DataFieldPath {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 struct EmptyPath {
     tag_matcher: TagMatcher,
     indicator_matcher: IndicatorMatcher,
