@@ -176,14 +176,49 @@ LDR 03612nz  a2200589nc 4500
 ...
 ```
 
+## Partitioning
+
+The input can be split into different subsets based on the values
+of a field or subfield using the [partition] command. For example, the
+following command partitions the authority records based on the GND
+classifications (field [065]):
+
+```console
+$ marc21 partition -ps '065{ a | 2 == "sswd" }' \
+    authorities-gnd-sachbegriff_dnbmarc.mrc.gz -o out
+207,505 records, 0 invalid | 100,033 records/s, elapsed: 00:00:01
+
+$ tree out
+out
+├── 00.mrc
+├── 10.10.mrc
+├── 10.11a.mrc
+├── 10.11b.mrc
+├── 10.11c.mrc
+...
+├── 9.5b.mrc
+├── 9.5c.mrc
+└── 9.5p.mrc
+
+1 directory, 346 files
+```
+
+Since the path expression for a record can produce multiple values,
+the partitions are generally not disjoint. If a value occurs multiple
+times for a record, the record is written to the respective partition
+only once.
+
+
+[GND]: https://gnd.network
+[Levenshtein distance]: https://en.wikipedia.org/wiki/Levenshtein_distance
+[065]: https://www.loc.gov/marc/authority/ad065.html
+[specification]: https://docs.rs/regex/latest/regex/#syntax
 
 [commands]: ../reference/commands/index.md
 [concat]: ../reference/commands/marc21-concat.md
 [count]: ../reference/commands/marc21-count.md
 [filter]: ../reference/commands/marc21-filter.md
-[GND]: https://gnd.network
-[Levenshtein distance]: https://en.wikipedia.org/wiki/Levenshtein_distance
+[partition]: ../reference/commands/marc21-partition.md
 [print]: ../reference/commands/marc21-print.md
-[specification]: https://docs.rs/regex/latest/regex/#syntax
 
 

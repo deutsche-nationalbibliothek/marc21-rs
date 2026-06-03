@@ -13,6 +13,7 @@
     * [filter](reference/commands/marc21-filter.md)
     * [hash](reference/commands/marc21-hash.md)
     * [invalid](reference/commands/marc21-invalid.md)
+    * [partition](reference/commands/marc21-partition.md)
     * [print](reference/commands/marc21-print.md)
     * [sample](reference/commands/marc21-sample.md)
     * [split](reference/commands/marc21-split.md)

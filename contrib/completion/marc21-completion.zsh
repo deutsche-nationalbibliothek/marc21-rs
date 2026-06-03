@@ -144,6 +144,26 @@ _arguments "${_arguments_options[@]}" : \
 '*::path:_files' \
 && ret=0
 ;;
+(partition)
+_arguments "${_arguments_options[@]}" : \
+'-t+[A template for naming the individual partitions. The placeholder \`{}\` is replaced by the value of the path expression. If the template ends with the suffix \`.gz\`, the partitions are compressed in Gzip format]:template:_default' \
+'--template=[A template for naming the individual partitions. The placeholder \`{}\` is replaced by the value of the path expression. If the template ends with the suffix \`.gz\`, the partitions are compressed in Gzip format]:template:_default' \
+'-o+[Write output to <path>; by default all partitions are written to the current working directory]:path:_files' \
+'--output=[Write output to <path>; by default all partitions are written to the current working directory]:path:_files' \
+'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--where=[An expression for filtering records]:predicate:_default' \
+'-c+[Specify compression level]:n:_default' \
+'--compression=[Specify compression level]:n:_default' \
+'-s[Skip invalid records that can'\''t be decoded]' \
+'--skip-invalid[Skip invalid records that can'\''t be decoded]' \
+'-p[If set, show a progress bar]' \
+'--progress[If set, show a progress bar]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':path -- A MARC-21 Path expression:_default' \
+'*::filenames:_files' \
+&& ret=0
+;;
 (print)
 _arguments "${_arguments_options[@]}" : \
 '-o+[Write output to FILENAME instead of stdout]:FILENAME:_files' \
@@ -231,6 +251,7 @@ _marc21_commands() {
 'filter:Filter records that fulfill a specified condition' \
 'hash:Compute SHA-256 checksum of records' \
 'invalid:Output invalid records that cannot be decoded' \
+'partition:Partition records by values' \
 'print:Print records in human readable format' \
 'sample:Select a random permutation of records' \
 'split:Splits a list of records into chunks' \
@@ -273,6 +294,11 @@ _marc21__subcmd__hash_commands() {
 _marc21__subcmd__invalid_commands() {
     local commands; commands=()
     _describe -t commands 'marc21 invalid commands' commands "$@"
+}
+(( $+functions[_marc21__subcmd__partition_commands] )) ||
+_marc21__subcmd__partition_commands() {
+    local commands; commands=()
+    _describe -t commands 'marc21 partition commands' commands "$@"
 }
 (( $+functions[_marc21__subcmd__print_commands] )) ||
 _marc21__subcmd__print_commands() {

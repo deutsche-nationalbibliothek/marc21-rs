@@ -33,6 +33,7 @@ complete -c marc21 -n "__fish_marc21_needs_command" -f -a "cnt" -d 'Prints the n
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "filter" -d 'Filter records that fulfill a specified condition'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "hash" -d 'Compute SHA-256 checksum of records'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "invalid" -d 'Output invalid records that cannot be decoded'
+complete -c marc21 -n "__fish_marc21_needs_command" -f -a "partition" -d 'Partition records by values'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "print" -d 'Print records in human readable format'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "sample" -d 'Select a random permutation of records'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "split" -d 'Splits a list of records into chunks'
@@ -84,6 +85,14 @@ complete -c marc21 -n "__fish_marc21_using_subcommand invalid" -s o -l output -d
 complete -c marc21 -n "__fish_marc21_using_subcommand invalid" -s c -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand invalid" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand invalid" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand partition" -s t -l template -d 'A template for naming the individual partitions. The placeholder `{}` is replaced by the value of the path expression. If the template ends with the suffix `.gz`, the partitions are compressed in Gzip format' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand partition" -s o -l output -d 'Write output to <path>; by default all partitions are written to the current working directory' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand partition" -l strsim-threshold -d 'The minimum score for string similarity comparisons (0 <= score <= 100)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand partition" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand partition" -s c -l compression -d 'Specify compression level' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand partition" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
+complete -c marc21 -n "__fish_marc21_using_subcommand partition" -s p -l progress -d 'If set, show a progress bar'
+complete -c marc21 -n "__fish_marc21_using_subcommand partition" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand print" -s o -l output -d 'Write output to FILENAME instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand print" -l strsim-threshold -d 'The minimum score for string similarity comparisons (0 <= score <= 100)' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand print" -l where -d 'An expression for filtering records' -r

@@ -33,6 +33,7 @@ The `marc21` tool provides the following commands:
 - [filter] — Filter records that fulfill a specified condition
 - [hash] — Compute SHA-256 checksum of records
 - [invalid] — Output invalid records that cannot be decoded
+- [partition] — Partition records by values
 - [print] — Print records in human readable format
 - [sample] — Select a random permutation of records
 - [split] — Split the input into chunks of a given size
@@ -65,6 +66,7 @@ This project is licensed under the [European Union Public License 1.2].
 [filter]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-filter.html
 [hash]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-hash.html
 [invalid]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-invalid.html
+[partition]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-partition.html
 [print]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-print.html
 [sample]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-sample.html
 [split]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-split.html
