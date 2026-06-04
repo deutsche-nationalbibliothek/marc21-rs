@@ -114,6 +114,42 @@ and can be changed using the command line option `--strsim-threshold`:
 $ marc21 filter -s --strsim-threshold 0.9 '100/1#.a =* "Lovelace, Bda"' \
     DUMP.mrc.gz -o out.mrc.gz
 ```
+## Transforming records into CSV/TSV format
+
+In the fields of data science and data engineering, it is essential that
+data be organized in a rectangular table schema (similar to a relational
+database). If the data to be analyzed is available in this format,
+efficient tools such as [Polars] can be used to perform data analysis
+on the underlying data. Using the [select] command, records can be
+efficiently transformed into a tabular format. By default, the output is
+written in CSV format.
+
+The following example demonstrates how to create a table in CSV format,
+where the first column (`cn`) contains the control number of the record,
+the second column (`label`) contains the name of the authority record,
+and the third column (`gndsys`) contains the GND classification. Since
+multiple notations from the GND classification can be assigned to a
+single authority record, the output generates multiple rows for these
+records.
+
+```
+$ marc21 select -ps --header 'cn,label,gndsys' \
+    '001, 150.a, 065{ a | 2 == "sswd" }' DUMP.mrc.gz -o out.csv
+207,505 records, 0 invalid | 102,139 records/s, elapsed: 00:00:01  
+
+$ cat out.csv
+cn,label,gndsys
+040000028,A 302 D,31.9b
+040000230,Aargauer,17.1
+040000303,Abakus,28
+040000443,Abbildung,28
+040000540,ABC-Schutz,7.15a
+040000540,ABC-Schutz,8.4
+040000567,ABC-Waffen,8.4
+040000656,Abdichtung,31.3b
+040000656,Abdichtung,31.6
+...
+```
 
 ## Counting Records
 
@@ -213,6 +249,7 @@ only once.
 [Levenshtein distance]: https://en.wikipedia.org/wiki/Levenshtein_distance
 [065]: https://www.loc.gov/marc/authority/ad065.html
 [specification]: https://docs.rs/regex/latest/regex/#syntax
+[Polars]: https://pola.rs/
 
 [commands]: ../reference/commands/index.md
 [concat]: ../reference/commands/marc21-concat.md
@@ -220,5 +257,6 @@ only once.
 [filter]: ../reference/commands/marc21-filter.md
 [partition]: ../reference/commands/marc21-partition.md
 [print]: ../reference/commands/marc21-print.md
+[select]: ../reference/commands/marc21-select.md
 
 

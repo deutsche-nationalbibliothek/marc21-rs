@@ -22,6 +22,7 @@ pub(crate) enum Command {
     Partition(Box<Partition>),
     Print(Box<Print>),
     Sample(Box<Sample>),
+    Select(Box<Select>),
     Split(Box<Split>),
 
     #[cfg(feature = "build")]

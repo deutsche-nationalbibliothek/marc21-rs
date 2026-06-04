@@ -36,6 +36,7 @@ complete -c marc21 -n "__fish_marc21_needs_command" -f -a "invalid" -d 'Output i
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "partition" -d 'Partition records by values'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "print" -d 'Print records in human readable format'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "sample" -d 'Select a random permutation of records'
+complete -c marc21 -n "__fish_marc21_needs_command" -f -a "select" -d 'Transforms records into CSV or TSV format'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "split" -d 'Splits a list of records into chunks'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "build-completion" -d 'Generate shell completions (e.g. Bash or ZSH)'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "build-man"
@@ -108,6 +109,15 @@ complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s c -l compressio
 complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -s H -l header -d 'Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -s o -l output -d 'Write output to <path> instead of stdout' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -l strsim-threshold -d 'The minimum score for string similarity comparisons (0 <= score <= 100)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -s c -l compression -d 'Specify compression level' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -l tsv -d 'Write output tab-separated (TSV)'
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -s p -l progress -d 'If set, show a progress bar'
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand split" -l filename -d 'Filename template ("{}" is replaced by the chunk number)' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand split" -s o -l outdir -d 'Write partitions into <path>' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand split" -l strsim-threshold -d 'The minimum score for string similarity comparisons (0 <= score <= 100)' -r

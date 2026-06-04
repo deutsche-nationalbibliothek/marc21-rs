@@ -10,6 +10,7 @@ mod invalid;
 mod partition;
 mod print;
 mod sample;
+mod select;
 mod split;
 
 pub(crate) mod prelude {

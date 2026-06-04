@@ -1,4 +1,5 @@
 use std::fmt::{self, Display};
+use std::str::FromStr;
 
 use bstr::ByteSlice;
 use parse::parse_query;
@@ -149,6 +150,26 @@ impl Display for Query {
     }
 }
 
+impl FromStr for Query {
+    type Err = ParseQueryError;
+
+    /// # Example
+    ///
+    /// ```rust
+    /// use std::str::FromStr;
+    ///
+    /// use marc21::Query;
+    ///
+    /// let _query = Query::from_str("ldr.length")?;
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    #[inline]
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Self::from_bytes(s.as_bytes())
+    }
+}
+
 #[derive(Debug, Clone, PartialEq)]
 enum Constituent {
     Path(Box<Path>),
@@ -294,9 +315,14 @@ fn project_data_field_path<'a>(
                     rows.push(vec![value]);
                 }
             } else {
-                for value in values {
-                    for row in rows.iter_mut() {
-                        row.push(value.clone());
+                let temp = rows.clone();
+                rows.clear();
+
+                for old_row in temp.iter() {
+                    for value in values.iter() {
+                        let mut new_row = old_row.clone();
+                        new_row.push(value.clone());
+                        rows.push(new_row);
                     }
                 }
             }
