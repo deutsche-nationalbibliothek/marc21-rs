@@ -104,10 +104,7 @@ impl Query {
     /// );
     ///
     /// let query = Query::new("100/1#{ _ | d == '1815-1852' }")?;
-    /// assert_eq!(
-    ///     query.project(&record, &Default::default()),
-    ///     vec![vec![""]]
-    /// );
+    /// assert!(query.project(&record, &Default::default()).is_empty());
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
