@@ -200,6 +200,27 @@ _arguments "${_arguments_options[@]}" : \
 '*::path:_files' \
 && ret=0
 ;;
+(select)
+_arguments "${_arguments_options[@]}" : \
+'-H+[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
+'--header=[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
+'-o+[Write output to <path> instead of stdout]:path:_files' \
+'--output=[Write output to <path> instead of stdout]:path:_files' \
+'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--where=[An expression for filtering records]:predicate:_default' \
+'-c+[Specify compression level]:n:_default' \
+'--compression=[Specify compression level]:n:_default' \
+'--tsv[Write output tab-separated (TSV)]' \
+'-s[Skip invalid records that can'\''t be decoded]' \
+'--skip-invalid[Skip invalid records that can'\''t be decoded]' \
+'-p[If set, show a progress bar]' \
+'--progress[If set, show a progress bar]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':query -- A query expression:_default' \
+'*::filenames:_files' \
+&& ret=0
+;;
 (split)
 _arguments "${_arguments_options[@]}" : \
 '--filename=[Filename template ("{}" is replaced by the chunk number)]:template:_default' \
@@ -254,6 +275,7 @@ _marc21_commands() {
 'partition:Partition records by values' \
 'print:Print records in human readable format' \
 'sample:Select a random permutation of records' \
+'select:Transforms records into CSV or TSV format' \
 'split:Splits a list of records into chunks' \
 'build-completion:Generate shell completions (e.g. Bash or ZSH)' \
 'build-man:' \
@@ -309,6 +331,11 @@ _marc21__subcmd__print_commands() {
 _marc21__subcmd__sample_commands() {
     local commands; commands=()
     _describe -t commands 'marc21 sample commands' commands "$@"
+}
+(( $+functions[_marc21__subcmd__select_commands] )) ||
+_marc21__subcmd__select_commands() {
+    local commands; commands=()
+    _describe -t commands 'marc21 select commands' commands "$@"
 }
 (( $+functions[_marc21__subcmd__split_commands] )) ||
 _marc21__subcmd__split_commands() {
