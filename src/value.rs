@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use bstr::ByteSlice;
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Default)]
+#[derive(Debug, Clone, Eq, PartialOrd, Ord, Default)]
 pub struct Value<'a>(Cow<'a, [u8]>);
 
 impl<'a> Value<'a> {
@@ -13,6 +13,12 @@ impl<'a> Value<'a> {
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
+    }
+}
+
+impl AsRef<[u8]> for Value<'_> {
+    fn as_ref(&self) -> &[u8] {
+        &self.0
     }
 }
 

@@ -16,4 +16,5 @@
     * [partition](reference/commands/marc21-partition.md)
     * [print](reference/commands/marc21-print.md)
     * [sample](reference/commands/marc21-sample.md)
+    * [select](reference/commands/marc21-select.md)
     * [split](reference/commands/marc21-split.md)

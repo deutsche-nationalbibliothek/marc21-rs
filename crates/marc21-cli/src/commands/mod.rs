@@ -10,6 +10,7 @@ pub(crate) use invalid::Invalid;
 pub(crate) use partition::Partition;
 pub(crate) use print::Print;
 pub(crate) use sample::Sample;
+pub(crate) use select::Select;
 pub(crate) use split::Split;
 
 #[cfg(feature = "build")]
@@ -24,4 +25,5 @@ mod invalid;
 mod partition;
 mod print;
 mod sample;
+mod select;
 mod split;
