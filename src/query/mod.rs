@@ -1,3 +1,6 @@
+use std::fmt::{self, Display};
+
+use bstr::ByteSlice;
 use parse::parse_query;
 use winnow::Parser;
 
@@ -137,6 +140,12 @@ impl Query {
                     .collect()
             })
             .unwrap_or_default()
+    }
+}
+
+impl Display for Query {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.input.to_str_lossy())
     }
 }
 
@@ -301,4 +310,58 @@ fn project_data_field_path<'a>(
     }
 
     result
+}
+
+#[cfg(feature = "serde")]
+impl serde::Serialize for Query {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(&self.to_string())
+    }
+}
+
+#[cfg(feature = "serde")]
+impl<'de> serde::Deserialize<'de> for Query {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::new(&s).map_err(serde::de::Error::custom)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+
+    use serde_test::{Token, assert_tokens};
+
+    use super::*;
+    use crate::common::TestResult;
+
+    #[test]
+    #[cfg(feature = "serde")]
+    fn test_query_serde() -> TestResult {
+        assert_tokens(&Query::new("001")?, &[Token::Str("001")]);
+        assert_tokens(
+            &Query::new("ldr.length")?,
+            &[Token::Str("ldr.length")],
+        );
+        assert_tokens(
+            &Query::new("005[0:4]")?,
+            &[Token::Str("005[0:4]")],
+        );
+        assert_tokens(
+            &Query::new("075{ _ | 2 == 'gndspec' }")?,
+            &[Token::Str("075{ _ | 2 == 'gndspec' }")],
+        );
+        assert_tokens(
+            &Query::new("075{ b | 2 == 'gndspec' }")?,
+            &[Token::Str("075{ b | 2 == 'gndspec' }")],
+        );
+
+        Ok(())
+    }
 }
