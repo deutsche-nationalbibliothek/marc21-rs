@@ -15,7 +15,8 @@ use crate::leader::parse_leader;
 use crate::matcher::MatchOptions;
 use crate::subfield::parse_subfield;
 use crate::{
-    ControlField, Directory, Field, Leader, Path, Subfield, Value,
+    ControlField, Directory, Field, Leader, Path, Query, Subfield,
+    Value,
 };
 
 /// A record, that may contain invalid UTF-8 data.
@@ -136,6 +137,32 @@ impl<'a> ByteRecord<'a> {
         options: &MatchOptions,
     ) -> Vec<Value<'a>> {
         path.project(self, options)
+    }
+
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21::prelude::*;
+    ///
+    /// let data = include_bytes!("../tests/data/ada.mrc");
+    /// let record = ByteRecord::from_bytes(data)?;
+    /// let query = Query::new("001, 065{ a, 2 | 2 == 'sswd' }")?;
+    /// let values = record.query(&query, &Default::default());
+    ///
+    /// eprintln!("values = {values:?}");
+    /// assert_eq!(values.len(), 2);
+    /// // assert_eq!(values[0], vec!["119232022", "28p"]);
+    /// // assert_eq!(values[1], vec!["119232022", "9.5p"]);
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    #[inline(always)]
+    pub fn query(
+        &self,
+        query: &Query,
+        options: &MatchOptions,
+    ) -> Vec<Vec<Value<'a>>> {
+        query.project(self, options)
     }
 
     /// Returns the complete record as a byte slice.
