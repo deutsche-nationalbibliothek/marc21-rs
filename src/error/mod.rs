@@ -4,6 +4,8 @@ pub use matcher::ParseMatcherError;
 pub use path::ParsePathError;
 pub use record::ParseRecordError;
 
+use crate::query::ParseQueryError;
+
 mod matcher;
 mod path;
 mod record;
@@ -17,10 +19,11 @@ pub struct Error<'a> {
 
 /// The underlying kinds of a [`Error`].
 #[derive(Debug)]
-enum ErrorKind<'a> {
+pub(crate) enum ErrorKind<'a> {
     Record(ParseRecordError<'a>),
     Matcher(ParseMatcherError),
     Path(ParsePathError),
+    Query(ParseQueryError),
 }
 
 impl Display for Error<'_> {
@@ -29,6 +32,7 @@ impl Display for Error<'_> {
             ErrorKind::Record(ref err) => err.fmt(f),
             ErrorKind::Matcher(ref err) => err.fmt(f),
             ErrorKind::Path(ref err) => err.fmt(f),
+            ErrorKind::Query(ref err) => err.fmt(f),
         }
     }
 }

@@ -6,6 +6,7 @@ pub mod io;
 mod leader;
 pub mod matcher;
 mod path;
+mod query;
 mod record;
 mod subfield;
 mod tag;
@@ -16,6 +17,7 @@ pub use error::Error;
 pub use field::{ControlField, DataField, Field};
 pub use leader::Leader;
 pub use path::Path;
+pub use query::Query;
 pub use record::{ByteRecord, StringRecord};
 pub use subfield::Subfield;
 pub use tag::Tag;
@@ -25,7 +27,7 @@ pub use value::Value;
 pub mod prelude {
     pub use super::io::{ByteRecordsIter, MarcReadOptions, MarcReader};
     pub use super::{
-        ByteRecord, Directory, Entry, Leader, Path, StringRecord,
-        Subfield, Tag,
+        ByteRecord, Directory, Entry, Leader, Path, Query,
+        StringRecord, Subfield, Tag,
     };
 }

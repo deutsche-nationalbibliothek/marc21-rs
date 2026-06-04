@@ -1,4 +1,4 @@
-mod parse;
+pub(crate) mod parse;
 
 use std::fmt::{self, Display};
 use std::str::FromStr;
@@ -17,7 +17,7 @@ use crate::{ByteRecord, ControlField, Field};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Path {
-    kind: PathKind,
+    pub(crate) kind: PathKind,
     input: Vec<u8>,
 }
 
@@ -203,7 +203,7 @@ impl FromStr for Path {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-enum PathKind {
+pub(crate) enum PathKind {
     Leader(LeaderPath),
     ControlField(ControlFieldPath),
     DataField(DataFieldPath),
@@ -211,8 +211,8 @@ enum PathKind {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-struct LeaderPath {
-    field: LeaderField,
+pub(crate) struct LeaderPath {
+    pub(crate) field: LeaderField,
 }
 
 impl LeaderPath {
@@ -237,9 +237,9 @@ impl LeaderPath {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-struct ControlFieldPath {
-    tag_matcher: TagMatcher,
-    range: Option<(Option<usize>, Option<usize>)>,
+pub(crate) struct ControlFieldPath {
+    pub(crate) tag_matcher: TagMatcher,
+    pub(crate) range: Option<(Option<usize>, Option<usize>)>,
 }
 
 impl ControlFieldPath {
@@ -283,11 +283,11 @@ impl ControlFieldPath {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-struct DataFieldPath {
-    tag_matcher: TagMatcher,
-    indicator_matcher: IndicatorMatcher,
-    codes: Vec<Vec<u8>>,
-    subfield_matcher: Option<SubfieldMatcher>,
+pub(crate) struct DataFieldPath {
+    pub(crate) tag_matcher: TagMatcher,
+    pub(crate) indicator_matcher: IndicatorMatcher,
+    pub(crate) codes: Vec<Vec<u8>>,
+    pub(crate) subfield_matcher: Option<SubfieldMatcher>,
 }
 
 impl DataFieldPath {
@@ -331,7 +331,7 @@ impl DataFieldPath {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-struct EmptyPath {
+pub(crate) struct EmptyPath {
     tag_matcher: TagMatcher,
     indicator_matcher: IndicatorMatcher,
     subfield_matcher: Option<SubfieldMatcher>,

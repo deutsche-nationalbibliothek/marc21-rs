@@ -9,6 +9,11 @@ impl<'a> Value<'a> {
     pub fn to_str_lossy(&self) -> Cow<'_, str> {
         self.0.to_str_lossy()
     }
+
+    #[inline(always)]
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
 }
 
 impl From<String> for Value<'_> {
@@ -19,6 +24,12 @@ impl From<String> for Value<'_> {
 
 impl<'a> From<&'a [u8]> for Value<'a> {
     fn from(value: &'a [u8]) -> Self {
+        Self(Cow::Borrowed(value))
+    }
+}
+
+impl<'a> From<&'a [u8; 0]> for Value<'a> {
+    fn from(value: &'a [u8; 0]) -> Self {
         Self(Cow::Borrowed(value))
     }
 }
