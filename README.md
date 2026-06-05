@@ -30,6 +30,7 @@ The `marc21` tool provides the following commands:
 
 - [concat] — Concatenate records from multiple inputs (alias `cat`)
 - [count] — Print the number of records in the input data (alias `cnt`)
+- [dedup] — Remove duplicate records from the input
 - [filter] — Filter records that fulfill a specified condition
 - [frequency] — Compute a frequency table of values (alias `freq`)
 - [hash] — Compute SHA-256 checksum of records
@@ -64,6 +65,7 @@ This project is licensed under the [European Union Public License 1.2].
 [documentation]: https://deutsche-nationalbibliothek.github.io/marc21-rs/
 [concat]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-concat.html
 [count]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-count.html
+[dedup]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-dedup.html
 [filter]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-filter.html
 [frequency]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-frequency.html
 [hash]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-hash.html

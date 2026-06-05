@@ -10,6 +10,7 @@
   * [Commands](reference/commands/index.md)
     * [concat](reference/commands/marc21-concat.md)
     * [count](reference/commands/marc21-count.md)
+    * [dedup](reference/commands/marc21-dedup.md)
     * [filter](reference/commands/marc21-filter.md)
     * [frequency](reference/commands/marc21-frequency.md)
     * [hash](reference/commands/marc21-hash.md)
