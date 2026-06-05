@@ -1,5 +1,5 @@
 <p align="center">
-    <img width="250" height="325" src="https://github.com/user-attachments/assets/4220de0e-a5d9-42f1-b590-a6003f71ffce" />
+    <img width="250" height="325" src="docs/book/src/img/marc21_white_bg.png" />
 </p>
 
 <div align="center" markdown="1">
