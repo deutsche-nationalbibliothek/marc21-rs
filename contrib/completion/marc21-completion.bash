@@ -135,7 +135,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__concat)
-            opts="-o -s -p -c -h --output --skip-invalid --strsim-threshold --where --progress --compression --help [PATH]..."
+            opts="-o -s -l -p -c -h --output --skip-invalid --limit --strsim-threshold --where --progress --compression --help [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -146,6 +146,14 @@ _marc21() {
                     return 0
                     ;;
                 -o)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --limit)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -l)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -173,7 +181,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__count)
-            opts="-o -s -p -c -h --output --skip-invalid --strsim-threshold --where --progress --compression --help [PATH]..."
+            opts="-o -s -l -p -c -h --output --skip-invalid --limit --strsim-threshold --where --progress --compression --help [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -184,6 +192,14 @@ _marc21() {
                     return 0
                     ;;
                 -o)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --limit)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -l)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -211,7 +227,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__dedup)
-            opts="-o -s -p -c -h --output --skip-invalid --strsim-threshold --where --progress --compression --help [PATH]..."
+            opts="-o -s -l -p -c -h --output --skip-invalid --limit --strsim-threshold --where --progress --compression --help [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -222,6 +238,14 @@ _marc21() {
                     return 0
                     ;;
                 -o)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --limit)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -l)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -249,7 +273,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__describe)
-            opts="-o -s -p -c -h --tsv --output --skip-invalid --strsim-threshold --where --progress --compression --help [PATH]..."
+            opts="-o -s -l -p -c -h --tsv --output --skip-invalid --limit --strsim-threshold --where --progress --compression --help [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -260,6 +284,14 @@ _marc21() {
                     return 0
                     ;;
                 -o)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --limit)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -l)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -287,12 +319,20 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__filter)
-            opts="-s -o -p -c -h --skip-invalid --strsim-threshold --output --progress --compression --help <filter> [PATH]..."
+            opts="-s -l -o -p -c -h --skip-invalid --limit --strsim-threshold --output --progress --compression --help <filter> [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
+                --limit)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -l)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 --strsim-threshold)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
@@ -321,7 +361,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__frequency)
-            opts="-H -o -s -p -c -h --tsv --header --output --skip-invalid --strsim-threshold --where --progress --compression --help <QUERY> [PATH]..."
+            opts="-H -o -s -l -p -c -h --tsv --header --output --skip-invalid --limit --strsim-threshold --where --progress --compression --help <QUERY> [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -340,6 +380,14 @@ _marc21() {
                     return 0
                     ;;
                 -o)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --limit)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -l)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -367,7 +415,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__hash)
-            opts="-o -s -p -c -h --tsv --output --skip-invalid --strsim-threshold --where --progress --compression --help [PATH]..."
+            opts="-o -s -l -p -c -h --tsv --output --skip-invalid --limit --strsim-threshold --where --progress --compression --help [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -378,6 +426,14 @@ _marc21() {
                     return 0
                     ;;
                 -o)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --limit)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -l)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -435,7 +491,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__partition)
-            opts="-t -o -s -p -c -h --template --output --skip-invalid --strsim-threshold --where --progress --compression --help <PATH> [FILENAMES]..."
+            opts="-t -o -s -l -p -c -h --template --output --skip-invalid --limit --strsim-threshold --where --progress --compression --help <PATH> [FILENAMES]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -454,6 +510,14 @@ _marc21() {
                     return 0
                     ;;
                 -o)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --limit)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -l)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -481,7 +545,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__print)
-            opts="-o -s -p -c -h --output --skip-invalid --strsim-threshold --where --progress --compression --help [PATH]..."
+            opts="-o -s -l -p -c -h --output --skip-invalid --limit --strsim-threshold --where --progress --compression --help [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -492,6 +556,14 @@ _marc21() {
                     return 0
                     ;;
                 -o)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --limit)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -l)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -519,7 +591,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__sample)
-            opts="-o -s -p -c -h --seed --output --skip-invalid --strsim-threshold --where --progress --compression --help <n> [PATH]..."
+            opts="-o -s -l -p -c -h --seed --output --skip-invalid --limit --strsim-threshold --where --progress --compression --help <n> [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -534,6 +606,14 @@ _marc21() {
                     return 0
                     ;;
                 -o)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --limit)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -l)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -561,7 +641,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__select)
-            opts="-H -o -s -p -c -h --tsv --header --output --skip-invalid --strsim-threshold --where --progress --compression --help <QUERY> [FILENAMES]..."
+            opts="-H -o -s -l -p -c -h --tsv --header --output --skip-invalid --limit --strsim-threshold --where --progress --compression --help <QUERY> [FILENAMES]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -580,6 +660,14 @@ _marc21() {
                     return 0
                     ;;
                 -o)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --limit)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -l)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
@@ -607,7 +695,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__split)
-            opts="-o -s -p -c -h --filename --outdir --skip-invalid --strsim-threshold --where --progress --compression --help <CHUNK_SIZE> [PATHS]..."
+            opts="-o -s -l -p -c -h --filename --outdir --skip-invalid --limit --strsim-threshold --where --progress --compression --help <CHUNK_SIZE> [PATHS]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -622,6 +710,14 @@ _marc21() {
                     return 0
                     ;;
                 -o)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --limit)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -l)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;

@@ -58,6 +58,11 @@ pub(crate) struct FilterOpts {
     #[arg(short, long)]
     pub(crate) skip_invalid: bool,
 
+    /// Limit the result to first <n> records (a limit value `0` means
+    /// no limit).
+    #[arg(long, short, value_name = "n", default_value = "0")]
+    pub(crate) limit: usize,
+
     /// The minimum score for string similarity comparisons (0 <= score
     /// <= 100).
     #[arg(long,

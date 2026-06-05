@@ -58,6 +58,7 @@ impl Partition {
         let mut progress = Progress::new(self.common.progress);
         let options = MatchOptions::from(&self.filter_opts);
         let mut count = 0;
+        let mut line = 0;
 
         if self.path.arity() == 0 {
             // If a path's arity is zero, it is impossible to produce a
@@ -74,11 +75,13 @@ impl Partition {
         let template = self.template.unwrap_or("{}.mrc".into());
         let mut writers: BTreeMap<String, Writer> = BTreeMap::new();
 
-        for filename in self.filenames.iter() {
+        'outer: for filename in self.filenames.iter() {
             let mut reader = MarcReadOptions::default()
                 .try_into_reader_from_path(filename)?;
 
             while let Some(result) = reader.next_byte_record() {
+                line += 1;
+
                 match result {
                     Err(ReadMarcError::Parse(_))
                         if self.filter_opts.skip_invalid =>
@@ -87,7 +90,7 @@ impl Partition {
                         continue;
                     }
                     Err(e) => {
-                        return Err(CliError::from_parse(e, count));
+                        return Err(CliError::from_parse(e, line));
                     }
                     Ok(ref record) => {
                         progress.update(false);
@@ -133,6 +136,9 @@ impl Partition {
                         }
 
                         count += 1;
+                        if self.filter_opts.limit == count {
+                            break 'outer;
+                        }
                     }
                 }
             }

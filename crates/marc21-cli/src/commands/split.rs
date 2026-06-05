@@ -57,6 +57,7 @@ impl Split {
         let options = MatchOptions::from(&self.filter_opts);
         let mut chunk: u32 = 0;
         let mut count: u32 = 0;
+        let mut line = 0;
 
         if !self.output.exists() {
             fs::create_dir_all(&self.output)?;
@@ -64,11 +65,13 @@ impl Split {
 
         let mut output = create_writer(chunk, &self)?;
 
-        for path in self.paths.iter() {
+        'outer: for path in self.paths.iter() {
             let mut reader = MarcReadOptions::default()
                 .try_into_reader_from_path(path)?;
 
             while let Some(result) = reader.next_byte_record() {
+                line += 1;
+
                 match result {
                     Err(ReadMarcError::Parse(_))
                         if self.filter_opts.skip_invalid =>
@@ -77,10 +80,7 @@ impl Split {
                         continue;
                     }
                     Err(e) => {
-                        return Err(CliError::from_parse(
-                            e,
-                            count as usize,
-                        ));
+                        return Err(CliError::from_parse(e, line));
                     }
                     Ok(ref record) => {
                         progress.update(false);
@@ -100,7 +100,11 @@ impl Split {
                         }
 
                         record.write_to(&mut output)?;
+
                         count += 1;
+                        if self.filter_opts.limit == count as usize {
+                            break 'outer;
+                        }
                     }
                 }
             }

@@ -241,7 +241,7 @@ fn select_skip_invalid() -> TestResult {
         .code(1)
         .stdout(predicates::str::is_empty())
         .stderr(predicates::str::starts_with(
-            "error: could not parse record 0",
+            "error: could not parse record (line 1",
         ));
 
     let mut cmd = marc21_cmd();
@@ -254,6 +254,29 @@ fn select_skip_invalid() -> TestResult {
         .success()
         .code(0)
         .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
+
+#[test]
+fn select_limit() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "-s", "--limit", "3"])
+        .arg("001,075{ b | 2 == 'gndgen' }")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    let expected = r#"118540238,p
+118572121,p
+118607626,p
+"#;
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(expected))
         .stderr(predicates::str::is_empty());
 
     Ok(())

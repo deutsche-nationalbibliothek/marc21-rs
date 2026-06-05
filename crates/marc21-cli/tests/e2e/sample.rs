@@ -82,7 +82,7 @@ fn sample_skip_invalid() -> TestResult {
         .code(1)
         .stdout(predicates::str::is_empty())
         .stderr(predicates::str::starts_with(
-            "error: could not parse record 7",
+            "error: could not parse record (line 8",
         ));
 
     let mut cmd = marc21_cmd();
@@ -95,6 +95,28 @@ fn sample_skip_invalid() -> TestResult {
         .success()
         .code(0)
         .stdout(predicates::str::is_empty().not())
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
+
+#[test]
+fn sample_limit() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["sample", "-s", "--limit", "1", "--seed", "21", "1"])
+        .arg(data_dir().join("minna.mrc"))
+        .arg(data_dir().join("minna.mrc"))
+        .arg(data_dir().join("minna.mrc"))
+        .args(["--where", "001 == '040992918' || 001 == '118572121'"])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(fs::read(
+            data_dir().join("minna.mrc"),
+        )?))
         .stderr(predicates::str::is_empty());
 
     Ok(())

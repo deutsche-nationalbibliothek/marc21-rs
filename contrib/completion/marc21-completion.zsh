@@ -32,6 +32,8 @@ _marc21() {
 _arguments "${_arguments_options[@]}" : \
 '-o+[Write output to <filename> instead of stdout]:filename:_files' \
 '--output=[Write output to <filename> instead of stdout]:filename:_files' \
+'-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '-c+[Specify compression level]:n:_default' \
@@ -49,6 +51,8 @@ _arguments "${_arguments_options[@]}" : \
 _arguments "${_arguments_options[@]}" : \
 '-o+[Write output to <filename> instead of stdout]:filename:_files' \
 '--output=[Write output to <filename> instead of stdout]:filename:_files' \
+'-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '-c+[Specify compression level]:n:_default' \
@@ -66,6 +70,8 @@ _arguments "${_arguments_options[@]}" : \
 _arguments "${_arguments_options[@]}" : \
 '-o+[Write output to FILENAME instead of stdout]:FILENAME:_files' \
 '--output=[Write output to FILENAME instead of stdout]:FILENAME:_files' \
+'-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '-c+[Specify compression level]:n:_default' \
@@ -83,6 +89,8 @@ _arguments "${_arguments_options[@]}" : \
 _arguments "${_arguments_options[@]}" : \
 '-o+[Write output to FILENAME instead of stdout]:FILENAME:_files' \
 '--output=[Write output to FILENAME instead of stdout]:FILENAME:_files' \
+'-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '-c+[Specify compression level]:n:_default' \
@@ -100,6 +108,8 @@ _arguments "${_arguments_options[@]}" : \
 _arguments "${_arguments_options[@]}" : \
 '-o+[Write output to FILENAME instead of stdout]:path:_files' \
 '--output=[Write output to FILENAME instead of stdout]:path:_files' \
+'-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '-c+[Specify compression level]:n:_default' \
@@ -117,6 +127,8 @@ _arguments "${_arguments_options[@]}" : \
 _arguments "${_arguments_options[@]}" : \
 '-o+[Write output to <path> instead of stdout]:path:_files' \
 '--output=[Write output to <path> instead of stdout]:path:_files' \
+'-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '-c+[Specify compression level]:n:_default' \
@@ -133,6 +145,8 @@ _arguments "${_arguments_options[@]}" : \
 ;;
 (filter)
 _arguments "${_arguments_options[@]}" : \
+'-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
 '-o+[Write output to FILENAME instead of stdout]:FILENAME:_files' \
 '--output=[Write output to FILENAME instead of stdout]:FILENAME:_files' \
@@ -154,6 +168,8 @@ _arguments "${_arguments_options[@]}" : \
 '--header=[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
 '-o+[Write output to <path> instead of stdout]:path:_files' \
 '--output=[Write output to <path> instead of stdout]:path:_files' \
+'-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '-c+[Specify compression level]:n:_default' \
@@ -175,6 +191,8 @@ _arguments "${_arguments_options[@]}" : \
 '--header=[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
 '-o+[Write output to <path> instead of stdout]:path:_files' \
 '--output=[Write output to <path> instead of stdout]:path:_files' \
+'-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '-c+[Specify compression level]:n:_default' \
@@ -194,6 +212,8 @@ _arguments "${_arguments_options[@]}" : \
 _arguments "${_arguments_options[@]}" : \
 '-o+[Write output to FILENAME instead of stdout]:FILENAME:_files' \
 '--output=[Write output to FILENAME instead of stdout]:FILENAME:_files' \
+'-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '-c+[Specify compression level]:n:_default' \
@@ -227,6 +247,8 @@ _arguments "${_arguments_options[@]}" : \
 '--template=[A template for naming the individual partitions. The placeholder \`{}\` is replaced by the value of the path expression. If the template ends with the suffix \`.gz\`, the partitions are compressed in Gzip format]:template:_default' \
 '-o+[Write output to <path>; by default all partitions are written to the current working directory]:path:_files' \
 '--output=[Write output to <path>; by default all partitions are written to the current working directory]:path:_files' \
+'-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '-c+[Specify compression level]:n:_default' \
@@ -245,6 +267,8 @@ _arguments "${_arguments_options[@]}" : \
 _arguments "${_arguments_options[@]}" : \
 '-o+[Write output to FILENAME instead of stdout]:FILENAME:_files' \
 '--output=[Write output to FILENAME instead of stdout]:FILENAME:_files' \
+'-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '-c+[Specify compression level]:n:_default' \
@@ -263,6 +287,8 @@ _arguments "${_arguments_options[@]}" : \
 '--seed=[Initialize the RNG with a seed value to get deterministic random record]:number:_default' \
 '-o+[Write output to FILENAME instead of stdout]:filename:_files' \
 '--output=[Write output to FILENAME instead of stdout]:filename:_files' \
+'-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '-c+[Specify compression level]:n:_default' \
@@ -283,6 +309,8 @@ _arguments "${_arguments_options[@]}" : \
 '--header=[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
 '-o+[Write output to <path> instead of stdout]:path:_files' \
 '--output=[Write output to <path> instead of stdout]:path:_files' \
+'-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '-c+[Specify compression level]:n:_default' \
@@ -303,6 +331,8 @@ _arguments "${_arguments_options[@]}" : \
 '--filename=[Filename template ("{}" is replaced by the chunk number)]:template:_default' \
 '-o+[Write partitions into <path>]:path:_files' \
 '--outdir=[Write partitions into <path>]:path:_files' \
+'-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '-c+[Specify compression level]:n:_default' \

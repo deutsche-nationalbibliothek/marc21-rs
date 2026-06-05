@@ -30,12 +30,15 @@ impl Concat {
             .try_from_path_or_stdout(self.output)?;
 
         let mut count = 0;
+        let mut line = 0;
 
-        for path in self.path.iter() {
+        'outer: for path in self.path.iter() {
             let mut reader = MarcReadOptions::default()
                 .try_into_reader_from_path(path)?;
 
             while let Some(result) = reader.next_byte_record() {
+                line += 1;
+
                 match result {
                     Err(ReadMarcError::Parse(_))
                         if self.filter_opts.skip_invalid =>
@@ -44,9 +47,11 @@ impl Concat {
                         continue;
                     }
                     Err(e) => {
-                        return Err(CliError::from_parse(e, count));
+                        return Err(CliError::from_parse(e, line));
                     }
                     Ok(ref record) => {
+                        progress.update(false);
+
                         if let Some(ref m) = self.filter_opts.filter
                             && !m.is_match(record, &options)
                         {
@@ -54,8 +59,11 @@ impl Concat {
                         }
 
                         record.write_to(&mut output)?;
-                        progress.update(false);
+
                         count += 1;
+                        if self.filter_opts.limit == count {
+                            break 'outer;
+                        }
                     }
                 }
             }

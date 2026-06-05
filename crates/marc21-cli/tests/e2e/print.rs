@@ -154,8 +154,31 @@ fn print_skip_invalid() -> TestResult {
         .code(1)
         .stdout(predicates::str::is_empty().not())
         .stderr(predicates::str::starts_with(
-            "error: could not parse record 7",
+            "error: could not parse record (line 8",
         ));
+
+    Ok(())
+}
+
+#[test]
+fn print_limit() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["print", "-l", "1"])
+        .arg(data_dir().join("ada.mrc"))
+        .arg(data_dir().join("ada.mrc"))
+        .assert();
+
+    let mut output = read_to_string(data_dir().join("ada.txt"))?;
+    if cfg!(windows) {
+        output = output.replace('\r', "");
+    }
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(output))
+        .stderr(predicates::str::is_empty());
 
     Ok(())
 }

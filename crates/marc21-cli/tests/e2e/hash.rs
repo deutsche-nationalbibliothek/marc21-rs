@@ -215,8 +215,26 @@ fn hash_skip_invalid() -> TestResult {
         .code(1)
         .stdout(predicates::str::is_empty().not())
         .stderr(predicates::str::starts_with(
-            "error: could not parse record 7",
+            "error: could not parse record (line 8",
         ));
+
+    Ok(())
+}
+
+#[test]
+fn hash_limit() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["hash", "-s", "--limit", "1"])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(
+            "cn,hash\n118540238,eea4295a94d4cf43cd96cdf146d47cb363d7a0760705da2038fb297795cd5dee\n"))
+        .stderr(predicates::str::is_empty());
 
     Ok(())
 }

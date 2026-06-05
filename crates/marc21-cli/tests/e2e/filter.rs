@@ -130,7 +130,7 @@ fn filter_skip_invalid() -> TestResult {
         .code(1)
         .stdout(predicates::str::is_empty().not())
         .stderr(predicates::str::starts_with(
-            "error: could not parse record 7",
+            "error: could not parse record (line 7",
         ));
 
     let mut cmd = marc21_cmd();
@@ -197,6 +197,37 @@ fn filter_invalid_filter() -> TestResult {
         .code(2)
         .stdout(predicates::str::is_empty())
         .stderr(predicates::str::starts_with("error: invalid value"));
+
+    Ok(())
+}
+
+#[test]
+fn filter_limit() -> TestResult {
+    let temp_dir = TempDir::new()?;
+    let output = temp_dir.child("out.mrc");
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s", "--limit", "2"])
+        .arg("001 == '040992918'")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let minna = fs::read(data_dir().join("minna.mrc"))?;
+    let mut expected = Vec::with_capacity(minna.len() * 2);
+    expected.extend_from_slice(&minna);
+    expected.extend_from_slice(&minna);
+
+    let actual = fs::read(output.path())?;
+    assert_eq!(actual, expected);
 
     Ok(())
 }

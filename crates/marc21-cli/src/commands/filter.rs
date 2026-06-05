@@ -10,7 +10,12 @@ use crate::prelude::*;
 pub(crate) struct Filter {
     /// Skip invalid records that can't be decoded
     #[arg(short, long)]
-    pub(crate) skip_invalid: bool,
+    skip_invalid: bool,
+
+    /// Limit the result to first <n> records (a limit value `0` means
+    /// no limit).
+    #[arg(long, short, value_name = "n", default_value = "0")]
+    limit: usize,
 
     /// The minimum score for string similarity comparisons (0 <= score
     /// <= 100).
@@ -19,7 +24,7 @@ pub(crate) struct Filter {
         default_value = "80",
         value_name = "n"
     )]
-    pub(crate) strsim_threshold: u8,
+    strsim_threshold: u8,
 
     /// An expression for filtering records
     #[arg(value_name = "filter")]
@@ -48,8 +53,9 @@ impl Filter {
 
         let matcher = self.filter;
         let mut count = 0;
+        let mut line = 0;
 
-        for path in self.path.iter() {
+        'outer: for path in self.path.iter() {
             let mut reader = MarcReadOptions::default()
                 .try_into_reader_from_path(path)?;
 
@@ -62,16 +68,22 @@ impl Filter {
                         continue;
                     }
                     Err(e) => {
-                        return Err(CliError::from_parse(e, count));
+                        return Err(CliError::from_parse(e, line));
                     }
                     Ok(ref record) => {
                         progress.update(false);
+                        line += 1;
 
-                        if matcher.is_match(record, &options) {
-                            record.write_to(&mut output)?;
+                        if !matcher.is_match(record, &options) {
+                            continue;
                         }
 
+                        record.write_to(&mut output)?;
+
                         count += 1;
+                        if self.limit > 0 && (count > self.limit) {
+                            break 'outer;
+                        }
                     }
                 }
             }
