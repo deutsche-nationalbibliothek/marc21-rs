@@ -37,6 +37,9 @@ _marc21() {
             marc21,dedup)
                 cmd="marc21__subcmd__dedup"
                 ;;
+            marc21,describe)
+                cmd="marc21__subcmd__describe"
+                ;;
             marc21,filter)
                 cmd="marc21__subcmd__filter"
                 ;;
@@ -74,7 +77,7 @@ _marc21() {
 
     case "${cmd}" in
         marc21)
-            opts="-h -V --help --version concat cat count cnt dedup filter frequency freq hash invalid partition print sample select split build-completion build-man"
+            opts="-h -V --help --version concat cat count cnt dedup describe filter frequency freq hash invalid partition print sample select split build-completion build-man"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 1 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -209,6 +212,44 @@ _marc21() {
             ;;
         marc21__subcmd__dedup)
             opts="-o -s -p -c -h --output --skip-invalid --strsim-threshold --where --progress --compression --help [PATH]..."
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                return 0
+            fi
+            case "${prev}" in
+                --output)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -o)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --strsim-threshold)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --where)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --compression)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -c)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
+        marc21__subcmd__describe)
+            opts="-o -s -p -c -h --tsv --output --skip-invalid --strsim-threshold --where --progress --compression --help [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
