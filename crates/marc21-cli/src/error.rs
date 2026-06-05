@@ -15,14 +15,14 @@ pub(crate) enum CliError {
 impl CliError {
     pub(crate) fn from_parse(
         error: ReadMarcError<'_>,
-        position: usize,
+        line: usize,
     ) -> Self {
         match error {
             ReadMarcError::Parse(e) => Self::Parse(format!(
-                "could not parse record {position} ({e})"
+                "could not parse record (line {line}, {e})"
             )),
             ReadMarcError::IO(e) => Self::Parse(format!(
-                "could not read record {position} ({e})"
+                "could not read record (line {line}, {e})"
             )),
         }
     }

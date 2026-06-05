@@ -141,7 +141,7 @@ fn count_skip_invalid() -> TestResult {
         .code(1)
         .stdout(predicates::str::is_empty())
         .stderr(predicates::str::starts_with(
-            "error: could not parse record 0",
+            "error: could not parse record (line 1",
         ));
 
     let mut cmd = marc21_cmd();
@@ -154,6 +154,24 @@ fn count_skip_invalid() -> TestResult {
         .success()
         .code(0)
         .stdout(predicates::ord::eq("0\n"))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
+
+#[test]
+fn count_limit() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "--limit", "2"])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .arg(data_dir().join("ada.mrc"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("2\n"))
         .stderr(predicates::str::is_empty());
 
     Ok(())

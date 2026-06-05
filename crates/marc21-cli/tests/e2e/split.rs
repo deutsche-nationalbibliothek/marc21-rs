@@ -77,7 +77,7 @@ fn split_skip_invalid() -> TestResult {
         .code(1)
         .stdout(predicates::str::is_empty())
         .stderr(predicates::str::starts_with(
-            "error: could not parse record 0",
+            "error: could not parse record (line 1",
         ));
 
     let mut cmd = marc21_cmd();
@@ -199,6 +199,54 @@ fn split_filename() -> TestResult {
         .success()
         .code(0)
         .stdout(predicates::ord::eq("1\n"))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
+
+#[test]
+fn split_limit() -> TestResult {
+    let temp_dir = TempDir::new()?;
+    let outdir = temp_dir.child("out");
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["split", "-s", "3"])
+        .args(["--limit", "5"])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["--outdir", outdir.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    // CHUNK 0
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .arg("count")
+        .arg(outdir.join("0.mrc").to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("3\n"))
+        .stderr(predicates::str::is_empty());
+
+    // CHUNK 1
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .arg("count")
+        .arg(outdir.join("1.mrc").to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("2\n"))
         .stderr(predicates::str::is_empty());
 
     Ok(())

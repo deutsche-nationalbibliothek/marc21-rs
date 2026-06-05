@@ -174,7 +174,7 @@ fn partition_skip_invalid() -> TestResult {
         .code(1)
         .stdout(predicates::str::is_empty())
         .stderr(predicates::str::starts_with(
-            "error: could not parse record 0",
+            "error: could not parse record (line 1",
         ));
 
     assert!(outdir.read_dir()?.next().is_none());
@@ -222,6 +222,47 @@ fn partition_by_065a_where() -> TestResult {
     let mut counts = HashMap::new();
     counts.insert("4.7p.mrc", "1\n".to_string());
     counts.insert("12.2p.mrc", "1\n".to_string());
+
+    for (path, count) in counts.iter() {
+        let mut cmd = marc21_cmd();
+        let assert = cmd.arg("count").arg(outdir.join(path)).assert();
+        assert
+            .success()
+            .code(0)
+            .stdout(predicates::ord::eq(count.as_str()))
+            .stderr(predicates::str::is_empty());
+    }
+
+    Ok(())
+}
+
+#[test]
+fn partition_limit() -> TestResult {
+    let outdir = TempDir::new()?;
+    let mut cmd = marc21_cmd();
+
+    let assert = cmd
+        .args(["partition", "--limit", "1"])
+        .arg("065{ a | 2 == 'sswd' }")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", outdir.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    assert_eq!(outdir.read_dir()?.count(), 6);
+
+    let mut counts = HashMap::new();
+    counts.insert("12.2p.mrc", "1\n".to_string());
+    counts.insert("16.5p.mrc", "1\n".to_string());
+    counts.insert("15.1p.mrc", "1\n".to_string());
+    counts.insert("13.4p.mrc", "1\n".to_string());
+    counts.insert("7.14p.mrc", "1\n".to_string());
+    counts.insert("18p.mrc", "1\n".to_string());
 
     for (path, count) in counts.iter() {
         let mut cmd = marc21_cmd();

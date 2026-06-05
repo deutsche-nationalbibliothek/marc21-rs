@@ -24,18 +24,20 @@ impl Print {
     pub(crate) fn execute(self) -> CliResult {
         let mut progress = Progress::new(self.common.progress);
         let options = MatchOptions::from(&self.filter_opts);
+        let mut count = 0;
+        let mut line = 0;
 
         let mut output = WriterBuilder::default()
             .with_compression(self.common.compression)
             .try_from_path_or_stdout(self.output)?;
 
-        let mut count = 0;
-
-        for path in self.path.iter() {
+        'outer: for path in self.path.iter() {
             let mut reader = MarcReadOptions::default()
                 .try_into_reader_from_path(path)?;
 
             while let Some(result) = reader.next_byte_record() {
+                line += 1;
+
                 match result {
                     Err(ReadMarcError::Parse(_))
                         if self.filter_opts.skip_invalid =>
@@ -44,7 +46,7 @@ impl Print {
                         continue;
                     }
                     Err(e) => {
-                        return Err(CliError::from_parse(e, count));
+                        return Err(CliError::from_parse(e, line));
                     }
                     Ok(ref record) => {
                         progress.update(false);
@@ -56,7 +58,11 @@ impl Print {
                         }
 
                         writeln!(output, "{record}")?;
+
                         count += 1;
+                        if self.filter_opts.limit == count {
+                            break 'outer;
+                        }
                     }
                 }
             }

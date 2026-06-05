@@ -265,7 +265,7 @@ fn frequency_skip_invalid() -> TestResult {
         .code(1)
         .stdout(predicates::str::is_empty())
         .stderr(predicates::str::starts_with(
-            "error: could not parse record 0",
+            "error: could not parse record (line 1",
         ));
 
     let mut cmd = marc21_cmd();
@@ -278,6 +278,33 @@ fn frequency_skip_invalid() -> TestResult {
         .success()
         .code(0)
         .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
+
+#[test]
+fn frequency_limit() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["frequency", "-s", "--limit", "2"])
+        .arg("065{ a | 2 == 'sswd' }")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    let expected = r#"12.2p,2
+13.4p,1
+15.1p,1
+16.5p,1
+18p,1
+4.7p,1
+7.14p,1
+"#;
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(expected))
         .stderr(predicates::str::is_empty());
 
     Ok(())
