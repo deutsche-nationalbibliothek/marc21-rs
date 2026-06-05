@@ -151,6 +151,35 @@ cn,label,gndsys
 ...
 ```
 
+## Summary Statistics
+
+The [frequency] command (alias `freq`) is used to calculate frequency
+tables based on the values (columns) of a query expression. The output
+is in CSV/TSV format and sorted in descending order.
+
+The following example generates a frequency table of the combinations
+`gndgen` and `gndspec` (subfield `2`) found in subfield `b` of field
+[065]:
+
+```console
+$ marc21 frequency -ps -H 'gndgen,gendspec,count' \
+    '065{ b | 2 == "gndgen" }, 065{ b | 2 == "gndspec" }' GND.mrc.gz \
+    -o out.csv.gz
+10,220,897 records, 0 invalid | 495,993 records/s, elapsed: 00:00:20
+
+$ zcat out.csv.gz | head -10
+gndgen,gndspec,count
+p,piz,6522289
+b,kiz,910734
+f,vie,807018
+b,,375426
+u,wim,330810
+u,wit,242153
+g,gik,180608
+s,saz,129500
+b,kio,115566
+```
+
 ## Counting Records
 
 The number of records contained in the input can be determined using the
@@ -254,6 +283,7 @@ only once.
 [commands]: ../reference/commands/index.md
 [concat]: ../reference/commands/marc21-concat.md
 [count]: ../reference/commands/marc21-count.md
+[frequency]: ../reference/commands/marc21-frequency.md
 [filter]: ../reference/commands/marc21-filter.md
 [partition]: ../reference/commands/marc21-partition.md
 [print]: ../reference/commands/marc21-print.md
