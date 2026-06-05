@@ -1,5 +1,6 @@
 <center>
-  <img src="https://github.com/user-attachments/assets/4220de0e-a5d9-42f1-b590-a6003f71ffce" width="250" height="325" />
+  <!-- <img src="https://github.com/user-attachments/assets/4220de0e-a5d9-42f1-b590-a6003f71ffce" width="250" height="325" /> -->
+  <img src="img/marc21_white_bg.png" width="250" height="325" />
 </center>
 
 This project provides a toolkit for efficiently processing bibliographic
