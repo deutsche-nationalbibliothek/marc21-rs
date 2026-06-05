@@ -72,6 +72,12 @@ impl<'a> Tag<'a> {
     pub fn is_data_field(&self) -> bool {
         !self.is_control_field()
     }
+
+    /// Copies the tag into a byte vector.
+    #[inline(always)]
+    pub fn to_vec(&self) -> Vec<u8> {
+        self.0.to_vec()
+    }
 }
 
 impl<B: AsRef<[u8]>> PartialEq<B> for Tag<'_> {
