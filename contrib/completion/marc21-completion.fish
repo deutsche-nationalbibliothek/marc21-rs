@@ -30,6 +30,7 @@ complete -c marc21 -n "__fish_marc21_needs_command" -f -a "concat" -d 'Concatena
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "cat" -d 'Concatenate records from multiple inputs'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "count" -d 'Prints the number of records in the input data'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "cnt" -d 'Prints the number of records in the input data'
+complete -c marc21 -n "__fish_marc21_needs_command" -f -a "dedup" -d 'Remove duplicate records from the input'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "filter" -d 'Filter records that fulfill a specified condition'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "frequency" -d 'Compute a frequency table of values'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "freq" -d 'Compute a frequency table of values'
@@ -70,6 +71,13 @@ complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -s c -l compression -
 complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -s o -l output -d 'Write output to FILENAME instead of stdout' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -l strsim-threshold -d 'The minimum score for string similarity comparisons (0 <= score <= 100)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -s c -l compression -d 'Specify compression level' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
+complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -s p -l progress -d 'If set, show a progress bar'
+complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -l strsim-threshold -d 'The minimum score for string similarity comparisons (0 <= score <= 100)' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s o -l output -d 'Write output to FILENAME instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s c -l compression -d 'Specify compression level' -r

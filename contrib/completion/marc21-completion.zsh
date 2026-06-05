@@ -96,6 +96,23 @@ _arguments "${_arguments_options[@]}" : \
 '*::path:_files' \
 && ret=0
 ;;
+(dedup)
+_arguments "${_arguments_options[@]}" : \
+'-o+[Write output to FILENAME instead of stdout]:path:_files' \
+'--output=[Write output to FILENAME instead of stdout]:path:_files' \
+'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--where=[An expression for filtering records]:predicate:_default' \
+'-c+[Specify compression level]:n:_default' \
+'--compression=[Specify compression level]:n:_default' \
+'-s[Skip invalid records that can'\''t be decoded]' \
+'--skip-invalid[Skip invalid records that can'\''t be decoded]' \
+'-p[If set, show a progress bar]' \
+'--progress[If set, show a progress bar]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+'*::path:_files' \
+&& ret=0
+;;
 (filter)
 _arguments "${_arguments_options[@]}" : \
 '--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
@@ -311,6 +328,7 @@ _marc21_commands() {
 'cat:Concatenate records from multiple inputs' \
 'count:Prints the number of records in the input data' \
 'cnt:Prints the number of records in the input data' \
+'dedup:Remove duplicate records from the input' \
 'filter:Filter records that fulfill a specified condition' \
 'frequency:Compute a frequency table of values' \
 'freq:Compute a frequency table of values' \
@@ -345,6 +363,11 @@ _marc21__subcmd__concat_commands() {
 _marc21__subcmd__count_commands() {
     local commands; commands=()
     _describe -t commands 'marc21 count commands' commands "$@"
+}
+(( $+functions[_marc21__subcmd__dedup_commands] )) ||
+_marc21__subcmd__dedup_commands() {
+    local commands; commands=()
+    _describe -t commands 'marc21 dedup commands' commands "$@"
 }
 (( $+functions[_marc21__subcmd__filter_commands] )) ||
 _marc21__subcmd__filter_commands() {
