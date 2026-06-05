@@ -4,6 +4,7 @@ mod build_completion;
 mod build_man;
 mod concat;
 mod count;
+mod dedup;
 mod filter;
 mod frequency;
 mod hash;

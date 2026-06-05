@@ -16,6 +16,7 @@ pub(crate) struct Args {
 pub(crate) enum Command {
     Concat(Box<Concat>),
     Count(Box<Count>),
+    Dedup(Box<Dedup>),
     Filter(Box<Filter>),
     Frequency(Box<Frequency>),
     Hash(Box<Hash>),

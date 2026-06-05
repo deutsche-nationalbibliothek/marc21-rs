@@ -20,6 +20,7 @@ fn main() -> ExitCode {
     let result = match *args.cmd {
         Command::Concat(cmd) => cmd.execute(),
         Command::Count(cmd) => cmd.execute(),
+        Command::Dedup(cmd) => cmd.execute(),
         Command::Filter(cmd) => cmd.execute(),
         Command::Frequency(cmd) => cmd.execute(),
         Command::Hash(cmd) => cmd.execute(),
