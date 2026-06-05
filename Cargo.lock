@@ -637,7 +637,7 @@ checksum = "953f07c43838f8e6f9758cab68bf5bed85465e7587ebe0b823f1bcd81978ad3a"
 
 [[package]]
 name = "marc21"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "aho-corasick",
  "bstr",
@@ -653,7 +653,7 @@ dependencies = [
 
 [[package]]
 name = "marc21-cli"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "assert_cmd",
