@@ -113,6 +113,48 @@ _arguments "${_arguments_options[@]}" : \
 '*::path:_files' \
 && ret=0
 ;;
+(frequency)
+_arguments "${_arguments_options[@]}" : \
+'-H+[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
+'--header=[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
+'-o+[Write output to <path> instead of stdout]:path:_files' \
+'--output=[Write output to <path> instead of stdout]:path:_files' \
+'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--where=[An expression for filtering records]:predicate:_default' \
+'-c+[Specify compression level]:n:_default' \
+'--compression=[Specify compression level]:n:_default' \
+'--tsv[Write output tab-separated (TSV)]' \
+'-s[Skip invalid records that can'\''t be decoded]' \
+'--skip-invalid[Skip invalid records that can'\''t be decoded]' \
+'-p[If set, show a progress bar]' \
+'--progress[If set, show a progress bar]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':query -- A query expression:_default' \
+'*::path:_files' \
+&& ret=0
+;;
+(freq)
+_arguments "${_arguments_options[@]}" : \
+'-H+[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
+'--header=[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
+'-o+[Write output to <path> instead of stdout]:path:_files' \
+'--output=[Write output to <path> instead of stdout]:path:_files' \
+'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--where=[An expression for filtering records]:predicate:_default' \
+'-c+[Specify compression level]:n:_default' \
+'--compression=[Specify compression level]:n:_default' \
+'--tsv[Write output tab-separated (TSV)]' \
+'-s[Skip invalid records that can'\''t be decoded]' \
+'--skip-invalid[Skip invalid records that can'\''t be decoded]' \
+'-p[If set, show a progress bar]' \
+'--progress[If set, show a progress bar]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
+':query -- A query expression:_default' \
+'*::path:_files' \
+&& ret=0
+;;
 (hash)
 _arguments "${_arguments_options[@]}" : \
 '-o+[Write output to FILENAME instead of stdout]:FILENAME:_files' \
@@ -270,6 +312,8 @@ _marc21_commands() {
 'count:Prints the number of records in the input data' \
 'cnt:Prints the number of records in the input data' \
 'filter:Filter records that fulfill a specified condition' \
+'frequency:Compute a frequency table of values' \
+'freq:Compute a frequency table of values' \
 'hash:Compute SHA-256 checksum of records' \
 'invalid:Output invalid records that cannot be decoded' \
 'partition:Partition records by values' \
@@ -306,6 +350,11 @@ _marc21__subcmd__count_commands() {
 _marc21__subcmd__filter_commands() {
     local commands; commands=()
     _describe -t commands 'marc21 filter commands' commands "$@"
+}
+(( $+functions[_marc21__subcmd__frequency_commands] )) ||
+_marc21__subcmd__frequency_commands() {
+    local commands; commands=()
+    _describe -t commands 'marc21 frequency commands' commands "$@"
 }
 (( $+functions[_marc21__subcmd__hash_commands] )) ||
 _marc21__subcmd__hash_commands() {

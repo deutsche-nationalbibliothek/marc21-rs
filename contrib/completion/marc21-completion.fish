@@ -31,6 +31,8 @@ complete -c marc21 -n "__fish_marc21_needs_command" -f -a "cat" -d 'Concatenate 
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "count" -d 'Prints the number of records in the input data'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "cnt" -d 'Prints the number of records in the input data'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "filter" -d 'Filter records that fulfill a specified condition'
+complete -c marc21 -n "__fish_marc21_needs_command" -f -a "frequency" -d 'Compute a frequency table of values'
+complete -c marc21 -n "__fish_marc21_needs_command" -f -a "freq" -d 'Compute a frequency table of values'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "hash" -d 'Compute SHA-256 checksum of records'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "invalid" -d 'Output invalid records that cannot be decoded'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "partition" -d 'Partition records by values'
@@ -74,6 +76,24 @@ complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s c -l compressio
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s H -l header -d 'Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s o -l output -d 'Write output to <path> instead of stdout' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l strsim-threshold -d 'The minimum score for string similarity comparisons (0 <= score <= 100)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s c -l compression -d 'Specify compression level' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l tsv -d 'Write output tab-separated (TSV)'
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s p -l progress -d 'If set, show a progress bar'
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s H -l header -d 'Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s o -l output -d 'Write output to <path> instead of stdout' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l strsim-threshold -d 'The minimum score for string similarity comparisons (0 <= score <= 100)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s c -l compression -d 'Specify compression level' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l tsv -d 'Write output tab-separated (TSV)'
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s p -l progress -d 'If set, show a progress bar'
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand hash" -s o -l output -d 'Write output to FILENAME instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand hash" -l strsim-threshold -d 'The minimum score for string similarity comparisons (0 <= score <= 100)' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand hash" -l where -d 'An expression for filtering records' -r

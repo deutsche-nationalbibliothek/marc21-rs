@@ -5,6 +5,7 @@ mod build_man;
 mod concat;
 mod count;
 mod filter;
+mod frequency;
 mod hash;
 mod invalid;
 mod partition;
