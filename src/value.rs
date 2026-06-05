@@ -14,6 +14,11 @@ impl<'a> Value<'a> {
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
     }
+
+    #[inline(always)]
+    pub fn to_vec(&self) -> Vec<u8> {
+        self.0.to_vec()
+    }
 }
 
 impl AsRef<[u8]> for Value<'_> {

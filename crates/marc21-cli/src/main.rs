@@ -21,6 +21,7 @@ fn main() -> ExitCode {
         Command::Concat(cmd) => cmd.execute(),
         Command::Count(cmd) => cmd.execute(),
         Command::Filter(cmd) => cmd.execute(),
+        Command::Frequency(cmd) => cmd.execute(),
         Command::Hash(cmd) => cmd.execute(),
         Command::Invalid(cmd) => cmd.execute(),
         Command::Partition(cmd) => cmd.execute(),

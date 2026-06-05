@@ -31,6 +31,7 @@ The `marc21` tool provides the following commands:
 - [concat] — Concatenate records from multiple inputs (alias `cat`)
 - [count] — Print the number of records in the input data (alias `cnt`)
 - [filter] — Filter records that fulfill a specified condition
+- [frequency] — Compute a frequency table of values (alias `freq`)
 - [hash] — Compute SHA-256 checksum of records
 - [invalid] — Output invalid records that cannot be decoded
 - [partition] — Partition records by values
@@ -64,6 +65,7 @@ This project is licensed under the [European Union Public License 1.2].
 [concat]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-concat.html
 [count]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-count.html
 [filter]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-filter.html
+[frequency]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-frequency.html
 [hash]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-hash.html
 [invalid]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-invalid.html
 [partition]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-partition.html
