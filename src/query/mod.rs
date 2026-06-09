@@ -332,7 +332,15 @@ fn project_data_field_path<'a>(
     }
 
     if result.is_empty() {
-        result.push(vec![Value::from(&EMPTY_BYTE_STRING)]);
+        // If no field was found that could produce a row, an empty cell
+        // must be created for each column. Otherwise, the number of
+        // columns generated might vary.
+        result.push(
+            (0..path.codes.len())
+                .into_iter()
+                .map(|_| Value::from(&EMPTY_BYTE_STRING))
+                .collect(),
+        );
     }
 
     result
