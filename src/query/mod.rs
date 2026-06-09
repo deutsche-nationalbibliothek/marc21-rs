@@ -142,6 +142,13 @@ impl Query {
             })
             .unwrap_or_default()
     }
+
+    pub fn arity(&self) -> usize {
+        self.constituents
+            .iter()
+            .map(|constituent| constituent.arity())
+            .sum()
+    }
 }
 
 impl Display for Query {
@@ -183,6 +190,12 @@ impl Constituent {
     ) -> Vec<Vec<Value<'a>>> {
         match self {
             Self::Path(path) => project_path(path, record, options),
+        }
+    }
+
+    pub fn arity(&self) -> usize {
+        match self {
+            Self::Path(path) => path.arity(),
         }
     }
 }

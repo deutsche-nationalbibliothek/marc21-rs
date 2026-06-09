@@ -12,7 +12,7 @@ edition = "2024"
 
 [workspace]
 default-members = ["crates/marc21-cli"]
-members = ["crates/marc21-cli"]
+members = ["crates/marc21-cli", "python/polars-marc21"]
 
 [features]
 default = ["performant"]
