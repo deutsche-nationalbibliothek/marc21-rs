@@ -1,8 +1,10 @@
 from pathlib import Path
-from polars_marc21._core import scan_marc21_impl
+from polars_marc21._core import LazyReader
 import polars as pl
 from typing import Iterator
 from polars.io.plugins import register_io_source
+from glob import glob
+import os
 
 
 def normalize_path(path: Path) -> Path:
@@ -10,17 +12,28 @@ def normalize_path(path: Path) -> Path:
 
 
 def scan_marc21(
-    source: str | Path,
-    header: str | list[str],
+    sources: str | Path | list[str] | list[Path],
     query: str,
+    header: str | list[str] | None = None,
 ) -> pl.LazyFrame:
-    if isinstance(source, str):
-        source = Path(source)
+    if isinstance(sources, str):
+        temp = os.path.expanduser(sources)
+        paths = list(map(lambda x: Path(x), glob(temp)))
+    elif isinstance(sources, list):
+        temp = map(lambda x: os.path.expanduser(x), sources)
+        paths = list(map(lambda x: Path(x), temp))
+    else:
+        paths = [Path(sources)]
+    paths = list(map(normalize_path, paths))
+    reader = LazyReader(paths, query)
 
-    source = normalize_path(source)
-
-    if isinstance(header, str):
+    if not header:
+        header = [f"col_{i}" for i in range(0, reader.arity())]
+    elif isinstance(header, str):
         header = list(map(str.strip, header.split(",")))
+
+    assert len(header) == reader.arity()
+
     schema = pl.Schema({k: pl.String for k in header})
 
     def source_generator(
@@ -33,8 +46,6 @@ def scan_marc21(
         if batch_size is None:
             batch_size = 100
 
-        reader = scan_marc21_impl(source, query)
-
         while n_rows is None or n_rows > 0:
             if n_rows is not None:
                 batch_size = min(batch_size, n_rows)
@@ -46,6 +57,9 @@ def scan_marc21(
                     row = next(reader)
                 except StopIteration:
                     n_rows = 0
+                    break
+                except Exception as e:
+                    print(e)
                     break
                 rows.append(row)
 
@@ -65,13 +79,9 @@ def scan_marc21(
 
 
 def main() -> None:
+    sources = "../tests/data/DUMP.mrc.gz"
+    query = "001, 075{ b | 2 == 'gndgen' }"
+    header = ["ppn", "gndgen"]
 
-    path = "~/tmp/marc/authorities-gnd-sachbegriff_dnbmarc.mrc"
-    query = "001, 075{ b | 2 == 'gndgen' }, 150{ a, g }"
-    header = ["cn", "gndgen", "label", "suffix"]
-    df = (
-        scan_marc21(path, header, query)
-        .filter((pl.col("label") == "Python") | (pl.col("cn") == "1078438080"))
-        .collect()
-    )
+    df = scan_marc21(sources, query, header).collect()
     print(df)

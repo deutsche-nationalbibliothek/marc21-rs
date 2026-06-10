@@ -28,5 +28,8 @@ build-backend = "maturin"
 
 [dependency-groups]
 dev = [
+    "pytest>=9.0.3",
     "ruff>=0.15.16",
+    "ruff-lsp>=0.0.62",
+    "ty>=0.0.46",
 ]
