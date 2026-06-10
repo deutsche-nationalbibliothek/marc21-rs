@@ -1,0 +1,15 @@
+[package]
+name = "polars-marc21"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.93"
+license = "EUPL-1.2"
+
+[lib]
+name = "_core"
+crate-type = ["cdylib"]
+
+[dependencies]
+bstr = { version = "1.12" }
+pyo3 = { version = "0.28.2", features = ["extension-module", "abi3-py39"] }
+marc21 = { path = "../", version = "0.3" }

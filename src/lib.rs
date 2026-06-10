@@ -17,7 +17,7 @@ pub use error::Error;
 pub use field::{ControlField, DataField, Field};
 pub use leader::Leader;
 pub use path::Path;
-pub use query::Query;
+pub use query::{ParseQueryError, Query};
 pub use record::{ByteRecord, StringRecord};
 pub use subfield::Subfield;
 pub use tag::Tag;

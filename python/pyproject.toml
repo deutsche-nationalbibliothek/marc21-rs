@@ -1,0 +1,32 @@
+[project]
+name = "polars-marc21"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Nico Wagner", email = "n.wagner@dnb.de" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "polars>=1.41.2",
+]
+
+[tool.maturin]
+module-name = "polars_marc21._core"
+python-packages = ["polars_marc21"]
+python-source = "src"
+
+[tool.uv]
+cache-keys = [{ file = "pyproject.toml" }, { file = "src/**/*.rs" }, { file = "Cargo.toml" }, { file = "Cargo.lock" }]
+
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "ruff>=0.15.16",
+    "ruff-lsp>=0.0.62",
+    "ty>=0.0.46",
+]

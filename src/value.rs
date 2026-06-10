@@ -19,6 +19,11 @@ impl<'a> Value<'a> {
     pub fn to_vec(&self) -> Vec<u8> {
         self.0.to_vec()
     }
+
+    #[inline(always)]
+    pub fn to_str_unchecked(&self) -> &str {
+        unsafe { self.0.to_str_unchecked() }
+    }
 }
 
 impl AsRef<[u8]> for Value<'_> {
