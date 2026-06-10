@@ -2,6 +2,8 @@
 name = "polars-marc21"
 version = "0.1.0"
 edition = "2024"
+rust-version = "1.93"
+license = "EUPL-1.2"
 
 [lib]
 name = "_core"
