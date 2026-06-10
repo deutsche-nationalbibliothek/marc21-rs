@@ -150,3 +150,15 @@ fn query_data_field() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn query_missing_field() -> TestResult {
+    let record = ByteRecord::from_bytes(&ADA_LOVELACE)?;
+    let options = MatchOptions::default();
+
+    let query = Query::new("001,101/1#{ a, b }")?;
+    let values = record.query(&query, &options);
+    assert_eq!(values, vec![vec!["119232022", "", ""]]);
+
+    Ok(())
+}
