@@ -76,12 +76,3 @@ def scan_marc21(
             yield df
 
     return register_io_source(io_source=source_generator, schema=schema)
-
-
-def main() -> None:
-    sources = "../tests/data/DUMP.mrc.gz"
-    query = "001, 075{ b | 2 == 'gndgen' }"
-    header = ["ppn", "gndgen"]
-
-    df = scan_marc21(sources, query, header).collect()
-    print(df)
