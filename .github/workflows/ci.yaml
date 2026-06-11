@@ -47,11 +47,24 @@ jobs:
           cargo nextest run --target ${{ matrix.target.triple }} --workspace --all-features --no-fail-fast
           cargo test --target ${{ matrix.target.triple }} --doc --workspace --all-features --no-fail-fast
 
-  test-py:
-    runs-on: ubuntu-latest
+  test-python:
+    runs-on: ${{ matrix.target.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - {os: ubuntu-latest, python-version: "3.11"}
+          - {os: ubuntu-latest, python-version: "3.12"}
+          - {os: ubuntu-latest, python-version: "3.13"}
+          - {os: ubuntu-latest, python-version: "3.14"}
+          - {os: ubuntu-latest, python-version: "3.15"}
+          - {os: windows-latest, python-version: "3.15"}
+          - {os: macos-latest, python-version: "3.15"}
     steps:
       - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+        with:
+            python-version: ${{ matrix.target.python-version }}
       - run: cd python && uv sync --locked --all-extras --dev
       - run: cd python && uv run pytest tests
 
@@ -202,6 +215,8 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     needs:
+      - test-rust
+      - test-python
       - careful
       - clippy
       - completions
@@ -212,8 +227,6 @@ jobs:
       - miri
       - outdated
       - rustfmt
-      - test-rust
-      - test-py
       - typos
       - udeps
     steps:
