@@ -6,7 +6,6 @@ from polars.io.plugins import register_io_source
 from glob import glob
 import os
 
-
 def normalize_path(path: Path) -> Path:
     return path.expanduser().absolute()
 
@@ -59,7 +58,7 @@ def scan_marc21(
                     n_rows = 0
                     break
                 except Exception as e:
-                    print(e)
+                    print(e) # FIXME
                     break
                 rows.append(row)
 
