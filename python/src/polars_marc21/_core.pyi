@@ -1,6 +1,5 @@
-from typing import Iterator
+from collections.abc import Iterator
 from pathlib import Path
-
 
 class LazyReader(Iterator[list[str]]):
     def __init__(self, paths: list[Path], query: str) -> None: ...
