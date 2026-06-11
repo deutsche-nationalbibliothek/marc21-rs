@@ -11,14 +11,6 @@ dependencies = [
     "polars>=1.41.2",
 ]
 
-[tool.maturin]
-module-name = "polars_marc21._core"
-python-packages = ["polars_marc21"]
-python-source = "src"
-
-[tool.uv]
-cache-keys = [{ file = "pyproject.toml" }, { file = "src/**/*.rs" }, { file = "Cargo.toml" }, { file = "Cargo.lock" }]
-
 [build-system]
 requires = ["maturin>=1.0,<2.0"]
 build-backend = "maturin"
@@ -31,3 +23,20 @@ dev = [
     "ruff-lsp>=0.0.62",
     "ty>=0.0.46",
 ]
+
+[tool.maturin]
+module-name = "polars_marc21._core"
+python-packages = ["polars_marc21"]
+python-source = "src"
+
+[tool.uv]
+cache-keys = [
+    { file = "pyproject.toml" },
+    { file = "src/**/*.rs" },
+    { file = "Cargo.toml" },
+    { file = "Cargo.lock" }
+]
+
+[tool.ruff]
+line-length = 72
+lint.select = ["ALL"]

@@ -1,10 +1,13 @@
-from pathlib import Path
-from polars_marc21._core import LazyReader
-import polars as pl
-from typing import Iterator
-from polars.io.plugins import register_io_source
-from glob import glob
 import os
+from glob import glob
+from pathlib import Path
+from typing import Iterator
+
+import polars as pl
+from polars.io.plugins import register_io_source
+
+from polars_marc21._core import LazyReader
+
 
 def normalize_path(path: Path) -> Path:
     return path.expanduser().absolute()
