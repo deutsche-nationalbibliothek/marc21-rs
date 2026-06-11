@@ -8,7 +8,6 @@ from polars.io.plugins import register_io_source
 
 from polars_marc21._core import LazyReader
 
-
 def normalize_path(path: Path) -> Path:
     return path.expanduser().absolute()
 
