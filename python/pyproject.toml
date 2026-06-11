@@ -40,3 +40,7 @@ cache-keys = [
 [tool.ruff]
 line-length = 72
 lint.select = ["ALL"]
+lint.ignore = [
+    "D203", # incorrect-blank-line-before-class
+    "D212", # multi-line-summary-first-line
+]
