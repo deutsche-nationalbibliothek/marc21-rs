@@ -229,10 +229,22 @@ jobs:
       - run: cd python && uv sync --locked --all-extras --dev
       - run: cd python && uv run ty check --output-format=github .
 
+  audit:
+    runs-on: ubuntu-latest
+    needs: test-python
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+      - run: cd python && uv sync --locked --all-extras --dev
+      - env:
+          UV_MALWARE_CHECK: "1"
+        run: cd python && uv --preview-features audit-command audit
+
   ci:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     needs:
+      - audit
       - careful
       - clippy
       - completions
