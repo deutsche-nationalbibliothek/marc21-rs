@@ -140,7 +140,7 @@ def test_query_data_field(data_dir: Path) -> None:
     assert_frame_equal(actual, expected)
 
 
-def test_query_cartesian_prodcut1(data_dir: Path) -> None:
+def test_query_cartesian_product1(data_dir: Path) -> None:
     path = data_dir.joinpath("ada.mrc")
 
     # catesian product of:
@@ -204,7 +204,7 @@ def test_query_cartesian_prodcut1(data_dir: Path) -> None:
     assert_frame_equal(actual, expected)
 
 
-def test_query_cartesian_prodcut2(data_dir: Path) -> None:
+def test_query_cartesian_product2(data_dir: Path) -> None:
     path = data_dir.joinpath("ada.mrc")
 
     # catesian product of:
@@ -253,7 +253,7 @@ def test_query_cartesian_prodcut2(data_dir: Path) -> None:
     assert_frame_equal(actual, expected)
 
 
-def test_query_cartesian_prodcut3(data_dir: Path) -> None:
+def test_query_cartesian_product3(data_dir: Path) -> None:
     path = data_dir.joinpath("ada.mrc")
 
     # catesian product of:
