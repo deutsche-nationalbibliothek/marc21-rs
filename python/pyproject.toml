@@ -10,6 +10,7 @@ requires-python = ">=3.11"
 dependencies = [
     "polars>=1.41.2",
 ]
+
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
     "Environment :: Console",
@@ -29,6 +30,11 @@ classifiers = [
     "Topic :: Software Development :: Libraries",
     "Typing :: Typed",    
 ]
+
+[project.urls]
+Documentation = "https://deutsche-nationalbibliothek.github.io/marc21-rs/"
+Repository = "https://github.com/deutsche-nationalbibliothek/marc21-rs"
+Issues = "https://github.com/deutsche-nationalbibliothek/marc21-rs/issues"
 
 [build-system]
 requires = ["maturin>=1.0,<2.0"]
