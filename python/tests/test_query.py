@@ -134,7 +134,7 @@ def test_query_data_field(data_dir: Path) -> None:
 
     expected = pl.DataFrame({"column_1": ["piz"]})
     actual = scan_marc21(
-        path, "075{ b | 2 == 'gndspec' && b =^ 'p' }"
+        path, "075{ b | 2 == 'gndspec' && b =^ 'p' }",
     ).collect()
     assert isinstance(actual, pl.DataFrame)
     assert_frame_equal(actual, expected)
@@ -151,7 +151,7 @@ def test_query_cartesian_prodcut1(data_dir: Path) -> None:
         {
             "column_1": "119232022",
             "column_2": "gnd1",
-        }
+        },
     )
 
     actual = scan_marc21(path, "001,042.a").collect()
@@ -166,7 +166,7 @@ def test_query_cartesian_prodcut1(data_dir: Path) -> None:
         {
             "column_1": ["gnd1"] * 3,
             "column_2": list("fsz"),
-        }
+        },
     )
 
     actual = scan_marc21(path, "042.a,079.q").collect()
@@ -181,7 +181,7 @@ def test_query_cartesian_prodcut1(data_dir: Path) -> None:
         {
             "column_1": ["gnd1"] * 2,
             "column_2": ["p", "piz"],
-        }
+        },
     )
 
     actual = scan_marc21(path, "042.a,075.b").collect()
@@ -196,7 +196,7 @@ def test_query_cartesian_prodcut1(data_dir: Path) -> None:
         {
             "column_1": ["p", "p", "p", "piz", "piz", "piz"],
             "column_2": list("wkv") * 2,
-        }
+        },
     )
 
     actual = scan_marc21(path, "075.b,079.u").collect()
@@ -215,7 +215,7 @@ def test_query_cartesian_prodcut2(data_dir: Path) -> None:
         {
             "column_1": ["g"] * 3,
             "column_2": list("fsz"),
-        }
+        },
     )
 
     actual = scan_marc21(path, "079{ a, q }").collect()
@@ -230,7 +230,7 @@ def test_query_cartesian_prodcut2(data_dir: Path) -> None:
         {
             "column_1": list("fffssszzz"),
             "column_2": list("wkvwkvwkv"),
-        }
+        },
     )
 
     actual = scan_marc21(path, "079{ q, u }").collect()
@@ -245,7 +245,7 @@ def test_query_cartesian_prodcut2(data_dir: Path) -> None:
         {
             "column_1": list("fsz"),
             "column_2": [""] * 3,
-        }
+        },
     )
 
     actual = scan_marc21(path, "079{ q, z }").collect()
@@ -265,7 +265,7 @@ def test_query_cartesian_prodcut3(data_dir: Path) -> None:
             "column_1": ["119232022"] * 3,
             "column_2": ["g"] * 3,
             "column_3": list("fsz"),
-        }
+        },
     )
 
     actual = scan_marc21(path, "001,079{ a, q }").collect()
