@@ -19,6 +19,7 @@ build-backend = "maturin"
 dev = [
     "mypy>=2.1.0",
     "pytest>=9.0.3",
+    "pytest-cov>=7.1.0",
     "ruff>=0.15.16",
     "ruff-lsp>=0.0.62",
     "ty>=0.0.46",
@@ -44,3 +45,7 @@ lint.ignore = [
     "D203", # incorrect-blank-line-before-class
     "D212", # multi-line-summary-first-line
 ]
+
+[tool.pytest.ini_options]
+addopts = "-ra -s -v --cov=src/polars_marc21"
+testpaths = ["tests"]
