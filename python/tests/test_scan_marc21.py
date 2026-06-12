@@ -2,9 +2,10 @@
 from pathlib import Path
 
 import polars as pl
+import pytest
 from polars.testing import assert_frame_equal
 
-from polars_marc21 import scan_marc21
+from polars_marc21 import HeaderLengthError, scan_marc21
 
 __all__ = []
 
@@ -34,8 +35,8 @@ shape: (7, 2)
     """)
     assert isinstance(rhs, pl.DataFrame)
 
-
     assert_frame_equal(lhs, rhs)
+
 
 def test_scan_marc21_sources_str(data_dir: Path) -> None:
     path = str(data_dir.joinpath("DUMP.mrc.gz"))
@@ -90,3 +91,89 @@ def test_scan_marc21_sources_list_path(data_dir: Path) -> None:
     df = scan_marc21(paths, "001").collect()
     assert isinstance(df, pl.DataFrame)
     assert df.height == 8
+
+
+def test_scan_marc21_header(data_dir: Path) -> None:
+    """Check the correct usage of the `header` parameter."""
+    path = data_dir.joinpath("DUMP.mrc.gz")
+    query = "001, 075{ b | 2 == 'gndgen' }"
+
+    # First, the check is made to see if the default column labels
+    # are used when no `header` parameter is specified.
+    lhs = scan_marc21(path, query).collect()
+    rhs = pl.from_repr("""
+shape: (7, 2)
+┌───────────┬──────────┐
+│ column_1  ┆ column_2 │
+│ ---       ┆ ---      │
+│ str       ┆ str      │
+╞═══════════╪══════════╡
+│ 118540238 ┆ p        │
+│ 118572121 ┆ p        │
+│ 118607626 ┆ p        │
+│ 118632477 ┆ p        │
+│ 040992020 ┆ u        │
+│ 040992918 ┆ u        │
+│ 040993396 ┆ u        │
+└───────────┴──────────┘
+    """)
+
+    assert isinstance(lhs, pl.DataFrame)
+    assert isinstance(rhs, pl.DataFrame)
+    assert_frame_equal(lhs, rhs)
+
+    # The second case checks the processing of a comma-separated
+    # list.
+    lhs = scan_marc21(path, query, header="ppn, gndgen").collect()
+    rhs = pl.from_repr("""
+shape: (7, 2)
+┌───────────┬──────────┐
+│ ppn       ┆ gndgen   │
+│ ---       ┆ ---      │
+│ str       ┆ str      │
+╞═══════════╪══════════╡
+│ 118540238 ┆ p        │
+│ 118572121 ┆ p        │
+│ 118607626 ┆ p        │
+│ 118632477 ┆ p        │
+│ 040992020 ┆ u        │
+│ 040992918 ┆ u        │
+│ 040993396 ┆ u        │
+└───────────┴──────────┘
+    """)
+
+    assert isinstance(lhs, pl.DataFrame)
+    assert isinstance(rhs, pl.DataFrame)
+    assert_frame_equal(lhs, rhs)
+
+    # The last case checks whether the column names are specified as
+    #  a list.
+    lhs = scan_marc21(path, query, header=["ppn", "gndgen"]).collect()
+    rhs = pl.from_repr("""
+shape: (7, 2)
+┌───────────┬──────────┐
+│ ppn       ┆ gndgen   │
+│ ---       ┆ ---      │
+│ str       ┆ str      │
+╞═══════════╪══════════╡
+│ 118540238 ┆ p        │
+│ 118572121 ┆ p        │
+│ 118607626 ┆ p        │
+│ 118632477 ┆ p        │
+│ 040992020 ┆ u        │
+│ 040992918 ┆ u        │
+│ 040993396 ┆ u        │
+└───────────┴──────────┘
+    """)
+
+    assert isinstance(lhs, pl.DataFrame)
+    assert isinstance(rhs, pl.DataFrame)
+    assert_frame_equal(lhs, rhs)
+
+    # Check if `HeaderLengthError` is raised when the header length did
+    # not match the query width.
+    with pytest.raises(HeaderLengthError):
+        scan_marc21(path, query, header=["A", "B", "C"])
+
+    with pytest.raises(HeaderLengthError):
+        scan_marc21(path, query, header="A")
