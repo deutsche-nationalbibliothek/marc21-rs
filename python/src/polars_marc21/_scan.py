@@ -14,7 +14,8 @@ class HeaderLengthError(ValueError):
 
 def normalize_filepath(path: str | Path) -> list[Path]:
     if isinstance(path, str):
-        return [Path(p).expanduser() for p in glob(path)]  # noqa: PTH207
+        path = str(Path(path).expanduser())
+        return [Path(p) for p in glob(path)]  # noqa: PTH207
     return [Path(path).expanduser().absolute()]
 
 

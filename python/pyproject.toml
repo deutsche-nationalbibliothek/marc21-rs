@@ -46,6 +46,10 @@ lint.ignore = [
     "D212", # multi-line-summary-first-line
 ]
 
+[tool.ruff.lint.extend-per-file-ignores]
+"tests/*.py" = ["S101", "PLR2004"]
+
 [tool.pytest.ini_options]
 addopts = "-ra -s -v --cov=src/polars_marc21"
-testpaths = ["tests"]
+testpaths = ["./tests"]
+strict = true
