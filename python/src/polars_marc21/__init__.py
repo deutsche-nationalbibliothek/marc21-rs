@@ -10,5 +10,5 @@ from polars_marc21._scan import HeaderLengthError, scan_marc21
 
 __all__ = (
     "HeaderLengthError",
-    "scan_marc21"
+    "scan_marc21",
 )
