@@ -15,7 +15,7 @@ jobs:
       version: ${{ env.VERSION }}
       tag: ${{ env.TAG}}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Get release version from Git tag
         run: |
           tag=${{ github.ref_name }}
@@ -33,14 +33,14 @@ jobs:
     strategy:
       matrix:
         target:
-          - {os: ubuntu-latest, toolchain: stable, triple: x86_64-unknown-linux-gnu}
-          - {os: ubuntu-latest, toolchain: stable, triple: x86_64-unknown-linux-musl}
-          - {os: windows-latest, toolchain: stable, triple: x86_64-pc-windows-msvc}
-          - {os: macos-latest, toolchain: stable, triple: x86_64-apple-darwin}
+          - { os: ubuntu-latest, toolchain: stable, triple: x86_64-unknown-linux-gnu }
+          - { os: ubuntu-latest, toolchain: stable, triple: x86_64-unknown-linux-musl }
+          - { os: windows-latest, toolchain: stable, triple: x86_64-pc-windows-msvc }
+          - { os: macos-latest, toolchain: stable, triple: x86_64-apple-darwin }
     runs-on: ${{ matrix.target.os }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: dtolnay/rust-toolchain@master
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # master
         with:
           toolchain: ${{ matrix.target.toolchain }}
           targets: ${{ matrix.target.triple }}
