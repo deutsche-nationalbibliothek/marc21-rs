@@ -21,21 +21,23 @@ jobs:
       fail-fast: false
       matrix:
         target:
-          - {os: ubuntu-latest, toolchain: stable, triple: x86_64-unknown-linux-gnu}
-          - {os: ubuntu-latest, toolchain: stable, triple: x86_64-unknown-linux-musl}
-          - {os: ubuntu-latest, toolchain: beta, triple: x86_64-unknown-linux-gnu}
-          - {os: ubuntu-latest, toolchain: nightly, triple: x86_64-unknown-linux-gnu}
-          - {os: ubuntu-latest, toolchain: "1.93", triple: x86_64-unknown-linux-gnu}
-          - {os: windows-latest, toolchain: stable, triple: x86_64-pc-windows-msvc}
-          - {os: windows-latest, toolchain: stable, triple: i686-pc-windows-msvc}
-          - {os: macos-latest, toolchain: stable, triple: x86_64-apple-darwin}
+          - { os: ubuntu-latest, toolchain: stable, triple: x86_64-unknown-linux-gnu }
+          - { os: ubuntu-latest, toolchain: stable, triple: x86_64-unknown-linux-musl }
+          - { os: ubuntu-latest, toolchain: beta, triple: x86_64-unknown-linux-gnu }
+          - { os: ubuntu-latest, toolchain: nightly, triple: x86_64-unknown-linux-gnu }
+          - { os: ubuntu-latest, toolchain: "1.93", triple: x86_64-unknown-linux-gnu }
+          - { os: windows-latest, toolchain: stable, triple: x86_64-pc-windows-msvc }
+          - { os: windows-latest, toolchain: stable, triple: i686-pc-windows-msvc }
+          - { os: macos-latest, toolchain: stable, triple: x86_64-apple-darwin }
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # master
         with:
           toolchain: ${{ matrix.target.toolchain }}
           targets: ${{ matrix.target.triple }}
-      - uses: taiki-e/install-action@nextest
+      - uses: taiki-e/install-action@7a79fe8c3a13344501c80d99cae481c1c9085912 # v2.81.10
+        with:
+          tool: nextest
       - name: Run tests
         if: ${{ matrix.target.toolchain != 'nightly' }}
         run: |
@@ -53,16 +55,16 @@ jobs:
       fail-fast: false
       matrix:
         target:
-          - {os: ubuntu-latest, python-version: "3.11"}
-          - {os: ubuntu-latest, python-version: "3.12"}
-          - {os: ubuntu-latest, python-version: "3.13"}
-          - {os: ubuntu-latest, python-version: "3.14"}
-          - {os: ubuntu-latest, python-version: "3.15"}
-          - {os: windows-latest, python-version: "3.15"}
-          - {os: macos-latest, python-version: "3.15"}
+          - { os: ubuntu-latest, python-version: "3.11" }
+          - { os: ubuntu-latest, python-version: "3.12" }
+          - { os: ubuntu-latest, python-version: "3.13" }
+          - { os: ubuntu-latest, python-version: "3.14" }
+          - { os: ubuntu-latest, python-version: "3.15" }
+          - { os: windows-latest, python-version: "3.15" }
+          - { os: macos-latest, python-version: "3.15" }
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+      - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
         with:
             python-version: ${{ matrix.target.python-version }}
       - run: cd python && uv sync --locked --all-extras --dev
@@ -122,7 +124,9 @@ jobs:
       - uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # master
         with:
           toolchain: nightly
-      - uses: taiki-e/install-action@cargo-hack
+      - uses: taiki-e/install-action@7a79fe8c3a13344501c80d99cae481c1c9085912 # v2.81.10
+        with:
+          tool: cargo-hack
       - name: "Check Powerset"
         run: |
           cargo hack check --workspace --features performant,nightly --no-dev-deps --ignore-unknown-features
@@ -141,7 +145,7 @@ jobs:
     continue-on-error: ${{ matrix.checks == 'advisories' }}
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      - uses: EmbarkStudios/cargo-deny-action@v2
+      - uses: EmbarkStudios/cargo-deny-action@a3d691fe892f1237c88667adf1c9a649ac4122ef # v0.19.8
         with:
           command: check ${{ matrix.checks }}
           arguments: --workspace --all-features
@@ -157,10 +161,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # master
         with:
           toolchain: nightly
-      - uses: dtolnay/install@cargo-outdated
-      - run: cargo update
+      - uses: dtolnay/install@97c306b4fb754e1dbe18619415cf4a90ae0aa6a2 # master
+        with:
+          crate: cargo-outdated
       - run: |
-          cargo outdated --workspace --root-deps-only --exit-code 1
+          cargo update && cargo outdated --workspace --root-deps-only --exit-code 1
 
   miri:
     runs-on: ubuntu-latest
@@ -171,7 +176,9 @@ jobs:
         with:
           toolchain: nightly
           components: miri
-      - uses: taiki-e/install-action@nextest
+      - uses: taiki-e/install-action@7a79fe8c3a13344501c80d99cae481c1c9085912 # v2.81.10
+        with:
+          tool: nextest
       - run: |
           cargo miri nextest run --workspace --all-features --lib
           # cargo miri test -p marc21 --all-features --doc
@@ -184,7 +191,9 @@ jobs:
       - uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # master
         with:
           toolchain: nightly
-      - uses: taiki-e/install-action@nextest
+      - uses: taiki-e/install-action@7a79fe8c3a13344501c80d99cae481c1c9085912 # v2.81.10
+        with:
+          tool: nextest
       - run: cargo install cargo-careful
       - run: |
           cargo careful test --workspace --all-features --doc
@@ -222,7 +231,7 @@ jobs:
     needs: test-rust
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      - uses: crate-ci/typos@v1.42.1
+      - uses: crate-ci/typos@v7b04f660f4ee4f048d18fd341887cf28dfbedfe2 # v1.46.3
         with:
           config: .typos.toml
 
@@ -231,7 +240,7 @@ jobs:
     needs: test-python
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+      - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
       - run: cd python && uv sync --locked --all-extras --dev
       - run: cd python && uv run ruff check --output-format=github .
 
@@ -240,7 +249,7 @@ jobs:
     needs: test-python
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+      - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
       - run: cd python && uv sync --locked --all-extras --dev
       - run: cd python && uv run ty check --output-format=github .
 
@@ -249,7 +258,7 @@ jobs:
     needs: test-python
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+      - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
       - run: cd python && uv sync --locked --all-extras --dev
       - env:
           UV_MALWARE_CHECK: "1"
