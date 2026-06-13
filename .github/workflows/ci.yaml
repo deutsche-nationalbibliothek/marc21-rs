@@ -62,7 +62,7 @@ jobs:
           - {os: macos-latest, python-version: "3.15"}
     steps:
       - uses: actions/checkout@v6
-      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+      - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39
         with:
             python-version: ${{ matrix.target.python-version }}
       - run: cd python && uv sync --locked --all-extras --dev
@@ -216,7 +216,7 @@ jobs:
     needs: test-python
     steps:
       - uses: actions/checkout@v6
-      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+      - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39
       - run: cd python && uv sync --locked --all-extras --dev
       - run: cd python && uv run ruff check --output-format=github .
 
@@ -225,7 +225,7 @@ jobs:
     needs: test-python
     steps:
       - uses: actions/checkout@v6
-      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+      - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39
       - run: cd python && uv sync --locked --all-extras --dev
       - run: cd python && uv run ty check --output-format=github .
 
@@ -234,7 +234,7 @@ jobs:
     needs: test-python
     steps:
       - uses: actions/checkout@v6
-      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+      - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39
       - run: cd python && uv sync --locked --all-extras --dev
       - env:
           UV_MALWARE_CHECK: "1"
