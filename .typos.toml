@@ -5,5 +5,5 @@ nam = "nam"
 extend-exclude = [
   "**/*.mrc",
   "**/*.mrc.gz",
-  "tests/data/*",
+  "tests/*",
 ]
