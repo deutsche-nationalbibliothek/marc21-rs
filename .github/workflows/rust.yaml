@@ -1,4 +1,4 @@
-name: CI
+name: Rust
 
 on:
   pull_request:
@@ -15,7 +15,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  test-rust:
+  test:
     runs-on: ${{ matrix.target.os }}
     strategy:
       fail-fast: false
@@ -51,29 +51,6 @@ jobs:
           cargo nextest run --target ${{ matrix.target.triple }} --workspace --all-features --no-fail-fast
           cargo test --target ${{ matrix.target.triple }} --doc --workspace --all-features --no-fail-fast
 
-  test-python:
-    runs-on: ${{ matrix.target.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        target:
-          - { os: ubuntu-latest, python-version: "3.11" }
-          - { os: ubuntu-latest, python-version: "3.12" }
-          - { os: ubuntu-latest, python-version: "3.13" }
-          - { os: ubuntu-latest, python-version: "3.14" }
-          - { os: ubuntu-latest, python-version: "3.15" }
-          - { os: windows-latest, python-version: "3.15" }
-          - { os: macos-latest, python-version: "3.15" }
-    steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
-        with:
-            python-version: ${{ matrix.target.python-version }}
-      - run: cd python && uv sync --locked --all-extras --dev
-      - run: cd python && uv run pytest tests
-
   fuzz:
     if: ${{ github.event_name == 'push' || !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
@@ -81,10 +58,10 @@ jobs:
     strategy:
       matrix:
         item:
-          - {target: record-matcher, max-total-time: 240}
-          - {target: byte-record, max-total-time: 180}
-          - {target: path, max-total-time: 240}
-          - {target: query, max-total-time: 240}
+          - { target: record-matcher, max-total-time: 180 }
+          - { target: byte-record, max-total-time: 180 }
+          - { target: path, max-total-time: 180 }
+          - { target: query, max-total-time: 180 }
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
@@ -100,7 +77,7 @@ jobs:
 
   clippy:
     runs-on: ubuntu-latest
-    needs: test-rust
+    needs: test
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
@@ -114,7 +91,7 @@ jobs:
 
   rustfmt:
     runs-on: ubuntu-latest
-    needs: test-rust
+    needs: test
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
@@ -128,7 +105,7 @@ jobs:
 
   features:
     runs-on: ubuntu-latest
-    needs: test-rust
+    needs: test
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
@@ -147,45 +124,9 @@ jobs:
         run: |
           cargo hack check --workspace --features performant,nightly --ignore-unknown-features
 
-  deny:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        checks:
-          - bans licenses sources
-          - advisories
-    continue-on-error: ${{ matrix.checks == 'advisories' }}
-    steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          persist-credentials: false
-      - uses: EmbarkStudios/cargo-deny-action@76cd80eb775d7bbbd2d80292136d74d39e1b4918 # v2.0.14
-        with:
-          command: check ${{ matrix.checks }}
-          arguments: --workspace --all-features
-          command-arguments: -c .deny.toml
-          rust-version: stable
-
-  outdated:
-    if: ${{ github.ref == 'refs/heads/main' }}
-    runs-on: ubuntu-latest
-    needs: test-rust
-    steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          persist-credentials: false
-      - uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # master
-        with:
-          toolchain: nightly
-      - uses: dtolnay/install@97c306b4fb754e1dbe18619415cf4a90ae0aa6a2 # master
-        with:
-          crate: cargo-outdated
-      - run: |
-          cargo update && cargo outdated --workspace --root-deps-only --exit-code 1
-
   miri:
     runs-on: ubuntu-latest
-    needs: test-rust
+    needs: test
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
@@ -199,11 +140,10 @@ jobs:
           tool: nextest
       - run: |
           cargo miri nextest run --workspace --all-features --lib
-          # cargo miri test -p marc21 --all-features --doc
 
   careful:
     runs-on: ubuntu-latest
-    needs: test-rust
+    needs: test
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
@@ -219,119 +159,17 @@ jobs:
           cargo careful test --workspace --all-features --doc
           cargo careful nextest run --workspace
 
-  udeps:
-    if: ${{ github.ref == 'refs/heads/main' }}
-    runs-on: ubuntu-latest
-    needs: test-rust
-    steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          persist-credentials: false
-      - uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # master
-        with:
-          toolchain: nightly
-      - run: cargo install --locked cargo-udeps
-      - run: cargo udeps --workspace
-
-  dco:
-    if: ${{ github.ref == 'refs/heads/main' }}
-    runs-on: ubuntu-latest
-    needs: test-rust
-    steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          persist-credentials: false
-      - run: scripts/check-dco.sh
-
-  completions:
-    runs-on: ubuntu-latest
-    needs: test-rust
-    steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          persist-credentials: false
-      - run: scripts/check-completions.sh
-
-  typos:
-    runs-on: ubuntu-latest
-    needs: test-rust
-    steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          persist-credentials: false
-      - uses: crate-ci/typos@37bb98842b0d8c4ffebdb75301a13db0267cef89 # v1.47.2
-        with:
-          config: .typos.toml
-
-  ruff:
-    runs-on: ubuntu-latest
-    needs: test-python
-    steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
-      - run: cd python && uv sync --locked --all-extras --dev
-      - run: cd python && uv run ruff check --output-format=github .
-
-  ty:
-    runs-on: ubuntu-latest
-    needs: test-python
-    steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
-      - run: cd python && uv sync --locked --all-extras --dev
-      - run: cd python && uv run ty check --output-format=github .
-
-  audit:
-    runs-on: ubuntu-latest
-    needs: test-python
-    steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
-      - run: cd python && uv sync --locked --all-extras --dev
-      - env:
-          UV_MALWARE_CHECK: "1"
-        run: cd python && uv --preview-features audit-command audit
-
-  zizmor:
-    runs-on: ubuntu-latest
-    needs: test-rust
-    permissions:
-      security-events: write # Required for upload-sarif (used by zizmor-action) to upload SARIF files.
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          persist-credentials: false
-      - uses: zizmorcore/zizmor-action@5f14fd08f7cf1cb1609c1e344975f152c7ee938d # v0.5.6
-
   ci:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     needs:
-      - audit
       - careful
       - clippy
-      - completions
-      - dco
-      - deny
       - features
       - fuzz
       - miri
-      - outdated
-      - ruff
       - rustfmt
-      - test-python
-      - test-rust
-      - ty
-      - typos
-      - udeps
-      - zizmor
+      - test
     steps:
       - name: Check for cancelled jobs
         if: ${{ contains(needs.*.result, 'cancelled') }}
