@@ -19,6 +19,21 @@ updates:
         patterns:
           - '*'
 
+  # Rust
+  - package-ecosystem: cargo
+    directory: '/'
+    schedule:
+      interval: monthly
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-patch']
+    commit-message:
+      prefix: deps
+    groups:
+      rust:
+        patterns:
+          - '*'
+
   # Python
   - package-ecosystem: "uv"
     directory: "/python"
@@ -27,7 +42,7 @@ updates:
     cooldown:
       default-days: 7
     commit-message:
-      prefix: ci
+      prefix: deps
     groups:
       python:
         patterns:
