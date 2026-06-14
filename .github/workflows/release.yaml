@@ -5,20 +5,29 @@ on:
     tags:
       - 'v*'
 
-permissions:
-  contents: write
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   prepare:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     outputs:
       version: ${{ env.VERSION }}
       tag: ${{ env.TAG}}
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
       - name: Get release version from Git tag
+        env:
+          TAG: ${{ github.ref_name }}
         run: |
-          tag=${{ github.ref_name }}
+          tag="${TAG}"
           version=${tag#v}
           echo "VERSION=$version" >> $GITHUB_ENV
           echo "TAG=$tag" >> $GITHUB_ENV
@@ -29,6 +38,8 @@ jobs:
           gh release create "$TAG" --verify-tag --draft --generate-notes --title "$TAG"
 
   releases:
+    permissions:
+      contents: write
     needs: prepare
     strategy:
       matrix:
@@ -40,6 +51,8 @@ jobs:
     runs-on: ${{ matrix.target.os }}
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
       - uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # master
         with:
           toolchain: ${{ matrix.target.toolchain }}
@@ -71,9 +84,12 @@ jobs:
         run: strip "$BINARY"
       - name: Prepare archive
         shell: bash
+        env:
+          VERSION: ${{ needs.prepare.outputs.version }}
+          TRIPLE: ${{ matrix.target.triple }}
         run: |
-          version="${{ needs.prepare.outputs.version }}"
-          triple="${{ matrix.target.triple }}"
+          version="${VERSION}"
+          triple="${TRIPLE}"
           ARCHIVE="marc21-$version-$triple"
           echo "ARCHIVE=$ARCHIVE" >> $GITHUB_ENV
           cargo run -F build -- build-man -o "$ARCHIVE/doc"
@@ -95,6 +111,7 @@ jobs:
       - name: Upload assets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.prepare.outputs.tag }}
         shell: bash
         run: |
-          gh release upload "${{ needs.prepare.outputs.tag }}" ${{ env.ASSET }}
+          gh release upload "${TAG}" "${ASSET}"
