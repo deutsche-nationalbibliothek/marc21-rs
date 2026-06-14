@@ -74,9 +74,10 @@ def scan_marc21(
         A filter expression used to filter records in advance. This
         prevents unnecessary memory allocations and thereby improves
         significantly the performance of the query execution.
+
     """
     sources = prepare_sources(sources)
-    reader = LazyReader(sources, query, predicate=where,)
+    reader = LazyReader(sources, query, predicate=where)
 
     header = prepare_header(header, reader.arity())
     schema = pl.Schema(dict.fromkeys(header, pl.String))
