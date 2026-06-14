@@ -37,7 +37,7 @@ Repository = "https://github.com/deutsche-nationalbibliothek/marc21-rs"
 Issues = "https://github.com/deutsche-nationalbibliothek/marc21-rs/issues"
 
 [build-system]
-requires = ["maturin>=1.0,<2.0"]
+requires = ["maturin>=1.13.3,<2.0"]
 build-backend = "maturin"
 
 [dependency-groups]
