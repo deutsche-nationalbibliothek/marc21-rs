@@ -31,6 +31,8 @@ updates:
         update-types: ['version-update:semver-patch']
     commit-message:
       prefix: deps
+    labels:
+      - "maintenance"
     groups:
       rust:
         patterns:
@@ -45,6 +47,8 @@ updates:
       default-days: 7
     commit-message:
       prefix: deps
+    labels:
+      - "maintenance"
     groups:
       python:
         patterns:
