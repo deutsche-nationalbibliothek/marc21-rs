@@ -18,3 +18,18 @@ updates:
       ci:
         patterns:
           - '*'
+
+  # Python
+  - package-ecosystem: "uv"
+    directory: "/python"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: ci
+    groups:
+      python:
+        patterns:
+          - '*'
+
