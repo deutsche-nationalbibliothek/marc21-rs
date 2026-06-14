@@ -177,3 +177,26 @@ shape: (7, 2)
 
     with pytest.raises(HeaderLengthError):
         scan_marc21(path, query, header="A")
+
+def test_scan_marc21_where(data_dir: Path) -> None:
+    """Check the correct usage of the `header` parameter."""
+    path = data_dir.joinpath("DUMP.mrc.gz")
+    query = "001, 075{ b | 2 == 'gndgen' }"
+    predicate = '001 in ["118540238", "040993396"]'
+
+    lhs = scan_marc21(path, query, where=predicate).collect()
+    rhs = pl.from_repr("""
+shape: (2, 2)
+┌───────────┬──────────┐
+│ column_1  ┆ column_2 │
+│ ---       ┆ ---      │
+│ str       ┆ str      │
+╞═══════════╪══════════╡
+│ 118540238 ┆ p        │
+│ 040993396 ┆ u        │
+└───────────┴──────────┘
+    """)
+
+    assert isinstance(lhs, pl.DataFrame)
+    assert isinstance(rhs, pl.DataFrame)
+    assert_frame_equal(lhs, rhs)
