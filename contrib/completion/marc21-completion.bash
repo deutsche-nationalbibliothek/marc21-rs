@@ -545,12 +545,16 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__print)
-            opts="-o -s -l -p -c -h --output --skip-invalid --limit --strsim-threshold --where --progress --compression --help [PATH]..."
+            opts="-o -s -l -p -c -h --translit --output --skip-invalid --limit --strsim-threshold --where --progress --compression --help [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
+                --translit)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
                 --output)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0

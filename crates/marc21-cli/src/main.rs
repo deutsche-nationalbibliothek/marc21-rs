@@ -12,6 +12,7 @@ mod commands;
 mod error;
 pub(crate) mod prelude;
 mod progress;
+mod unicode;
 mod utils;
 
 fn main() -> ExitCode {
