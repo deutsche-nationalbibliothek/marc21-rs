@@ -1,5 +1,5 @@
 <p align="center">
-    <img width="250" height="325" src="docs/book/src/img/marc21_white_bg.png" />
+    <img width="250" height="325" src="https://raw.githubusercontent.com/deutsche-nationalbibliothek/marc21-rs/refs/heads/main/docs/book/src/img/marc21_white_bg.png" />
 </p>
 
 <div align="center" markdown="1">
