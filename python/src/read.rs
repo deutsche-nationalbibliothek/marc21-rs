@@ -54,7 +54,8 @@ impl LazyReader {
 
     fn __next__(mut slf: PyRefMut<'_, Self>) -> Option<Vec<String>> {
         let iter = slf.rows.get_mut().unwrap();
-        let x = match iter.next() {
+
+        match iter.next() {
             Some(row) => Some(row),
             None => match slf.sources.get_mut().unwrap().next() {
                 Some(path) => {
@@ -100,8 +101,6 @@ impl LazyReader {
                 }
                 None => None,
             },
-        };
-
-        x
+        }
     }
 }

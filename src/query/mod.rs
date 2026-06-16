@@ -350,7 +350,6 @@ fn project_data_field_path<'a>(
         // columns generated might vary.
         result.push(
             (0..path.codes.len())
-                .into_iter()
                 .map(|_| Value::from(&EMPTY_BYTE_STRING))
                 .collect(),
         );
