@@ -2,6 +2,7 @@ use std::error::Error;
 use std::fmt::{self, Display};
 
 use marc21::io::ReadMarcError;
+use marc21::matcher::ParseMatcherError;
 
 pub(crate) type CliResult = Result<(), CliError>;
 
@@ -49,6 +50,12 @@ impl From<std::io::Error> for CliError {
 impl From<csv::Error> for CliError {
     fn from(e: csv::Error) -> Self {
         Self::Csv(e)
+    }
+}
+
+impl From<ParseMatcherError> for CliError {
+    fn from(e: ParseMatcherError) -> Self {
+        Self::Parse(format!("invalid matcher {e}"))
     }
 }
 
