@@ -16,6 +16,11 @@ a single file or output (`stdout`).
 
 ## OPTIONS
 
+`-a`, `--append`
+: Append to the given file, do not overwrite. This option is not
+supported when writing to Gzip compressed output. When writing to
+`stdout` this flag is ignored.
+
 ### FILTER OPTIONS
 
 {{ #include filter-opts.md }}

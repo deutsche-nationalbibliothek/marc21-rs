@@ -1,13 +1,16 @@
-use std::fs::File;
+use std::fs::{File, OpenOptions};
 use std::io::{self, BufWriter, Write, stdout};
 use std::path::PathBuf;
 
 use flate2::Compression;
 use flate2::write::GzEncoder;
 
+use crate::error::CliError;
+
 #[derive(Default)]
 pub(crate) struct WriterBuilder {
     compression: Compression,
+    append: bool,
 }
 
 impl WriterBuilder {
@@ -16,10 +19,15 @@ impl WriterBuilder {
         self
     }
 
+    pub fn append(mut self, yes: bool) -> Self {
+        self.append = yes;
+        self
+    }
+
     pub fn try_from_path_or_stdout(
         self,
         path: Option<PathBuf>,
-    ) -> io::Result<Writer> {
+    ) -> Result<Writer, CliError> {
         let Some(path) = path else {
             return Ok(Writer::Stdout(BufWriter::new(Box::new(
                 stdout().lock(),
@@ -27,10 +35,21 @@ impl WriterBuilder {
         };
 
         if path.extension().unwrap_or_default() != "gz" {
-            Ok(Writer::File(BufWriter::new(Box::new(File::create(
-                path,
-            )?))))
+            let file = OpenOptions::new()
+                .write(true)
+                .create(true)
+                .truncate(!self.append)
+                .append(self.append)
+                .open(path)?;
+
+            Ok(Writer::File(BufWriter::new(Box::new(file))))
         } else {
+            if self.append {
+                return Err(CliError::AdHoc(
+                    "Appending to Gzip compressed output is not supported.".into(),
+                ));
+            }
+
             Ok(Writer::Gzip(GzEncoder::new(
                 Box::new(File::create(path)?),
                 self.compression,
