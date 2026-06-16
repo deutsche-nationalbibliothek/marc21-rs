@@ -21,6 +21,12 @@ a single file or output (`stdout`).
 supported when writing to Gzip compressed output. When writing to
 `stdout` this flag is ignored.
 
+`--tee <path>`
+: Write to the output and the file `<path>` at the same time. This
+option can be particularly useful when the output is written to `stdout`
+for further processing in a pipeline, but the output is also needed for
+following processing step.
+
 ### FILTER OPTIONS
 
 {{ #include filter-opts.md }}

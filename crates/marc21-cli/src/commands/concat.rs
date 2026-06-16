@@ -13,6 +13,14 @@ pub(crate) struct Concat {
     #[arg(long, short)]
     append: bool,
 
+    /// Write to another output file at the same time.
+    ///
+    /// This option can be particularly useful when the output is
+    /// written to `stdout` for further processing in a pipeline, but
+    /// the output is also needed for another processing step.
+    #[arg(long, value_name = "path")]
+    tee: Option<PathBuf>,
+
     #[arg(default_value = "-", hide_default_value = true)]
     path: Vec<PathBuf>,
 
@@ -36,6 +44,16 @@ impl Concat {
             .with_compression(self.common.compression)
             .append(self.append)
             .try_from_path_or_stdout(self.output)?;
+
+        let mut tee_writer = if let Some(path) = self.tee {
+            Some(
+                WriterBuilder::default()
+                    .with_compression(self.common.compression)
+                    .try_from_path_or_stdout(Some(path))?,
+            )
+        } else {
+            None
+        };
 
         let mut count = 0;
         let mut line = 0;
@@ -68,6 +86,10 @@ impl Concat {
 
                         record.write_to(&mut output)?;
 
+                        if let Some(ref mut wtr) = tee_writer {
+                            record.write_to(wtr)?;
+                        }
+
                         count += 1;
                         if self.filter_opts.limit == count {
                             break 'outer;
@@ -75,6 +97,10 @@ impl Concat {
                     }
                 }
             }
+        }
+
+        if let Some(wtr) = tee_writer {
+            wtr.finish()?;
         }
 
         progress.finish();
