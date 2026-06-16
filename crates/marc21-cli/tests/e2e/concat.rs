@@ -283,3 +283,36 @@ fn concat_append() -> TestResult {
     temp_dir.close()?;
     Ok(())
 }
+
+#[test]
+fn concat_tee() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let temp_dir = TempDir::new()?;
+    let output = temp_dir.child("tee.mrc");
+
+    let assert = cmd
+        .args(["concat", "-s"])
+        .args(["--tee", output.to_str().unwrap()])
+        .arg(data_dir().join("invalid.mrc"))
+        .arg(data_dir().join("ada.mrc"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(fs::read(
+            data_dir().join("ada.mrc"),
+        )?))
+        .stderr(predicates::str::is_empty());
+
+    let actual = fs::read(output.path())?;
+
+    let ada = fs::read(data_dir().join("ada.mrc"))?;
+    let mut expected = Vec::with_capacity(ada.len());
+    expected.extend_from_slice(&ada);
+
+    assert_eq!(actual, expected);
+
+    temp_dir.close()?;
+    Ok(())
+}

@@ -44,6 +44,7 @@ complete -c marc21 -n "__fish_marc21_needs_command" -f -a "select" -d 'Transform
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "split" -d 'Splits a list of records into chunks'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "build-completion" -d 'Generate shell completions (e.g. Bash or ZSH)'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "build-man"
+complete -c marc21 -n "__fish_marc21_using_subcommand concat" -l tee -d 'Write to another output file at the same time' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s o -l output -d 'Write output to <filename> instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -l strsim-threshold -d 'The minimum score for string similarity comparisons (0 <= score <= 100)' -r
@@ -53,6 +54,7 @@ complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s a -l append -d 
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c marc21 -n "__fish_marc21_using_subcommand cat" -l tee -d 'Write to another output file at the same time' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand cat" -s o -l output -d 'Write output to <filename> instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand cat" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand cat" -l strsim-threshold -d 'The minimum score for string similarity comparisons (0 <= score <= 100)' -r

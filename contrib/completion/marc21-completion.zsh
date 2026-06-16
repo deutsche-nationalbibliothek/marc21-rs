@@ -30,6 +30,7 @@ _marc21() {
         case $line[1] in
             (concat)
 _arguments "${_arguments_options[@]}" : \
+'--tee=[Write to another output file at the same time]:path:_files' \
 '-o+[Write output to <filename> instead of stdout]:filename:_files' \
 '--output=[Write output to <filename> instead of stdout]:filename:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
@@ -51,6 +52,7 @@ _arguments "${_arguments_options[@]}" : \
 ;;
 (cat)
 _arguments "${_arguments_options[@]}" : \
+'--tee=[Write to another output file at the same time]:path:_files' \
 '-o+[Write output to <filename> instead of stdout]:filename:_files' \
 '--output=[Write output to <filename> instead of stdout]:filename:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
