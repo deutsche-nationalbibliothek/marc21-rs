@@ -219,3 +219,67 @@ fn concat_limit() -> TestResult {
     temp_dir.close()?;
     Ok(())
 }
+
+#[test]
+fn concat_append() -> TestResult {
+    let temp_dir = TempDir::new()?;
+    let output = temp_dir.child("out.mrc");
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["concat", "-s"])
+        .arg(data_dir().join("ada.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["concat", "-s"])
+        .arg(data_dir().join("ada.mrc"))
+        .arg(data_dir().join("invalid.mrc"))
+        .args(["--append", "-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let actual = fs::read(output.path())?;
+
+    let ada = fs::read(data_dir().join("ada.mrc"))?;
+    let mut expected = Vec::with_capacity(ada.len() * 2);
+    expected.extend_from_slice(&ada);
+    expected.extend_from_slice(&ada);
+
+    assert_eq!(actual, expected);
+
+    // append to gzip is not supported
+    let temp_dir = TempDir::new()?;
+    let output = temp_dir.child("out.mrc.gz");
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["concat", "-s"])
+        .arg(data_dir().join("ada.mrc.gz"))
+        .args(["--append", "-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .failure()
+        .code(1)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::starts_with(
+            "error: Appending to Gzip compressed output is not supported."
+        ));
+
+    temp_dir.close()?;
+    Ok(())
+}

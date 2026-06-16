@@ -6,6 +6,13 @@ use crate::prelude::*;
 #[derive(Debug, clap::Parser)]
 #[clap(visible_alias = "cat")]
 pub(crate) struct Concat {
+    /// Append to the given file, do not overwrite.
+    ///
+    /// This option is not supported when writing to Gzip compressed
+    /// output. When writing to `stdout` this flag is ignored.
+    #[arg(long, short)]
+    append: bool,
+
     #[arg(default_value = "-", hide_default_value = true)]
     path: Vec<PathBuf>,
 
@@ -27,6 +34,7 @@ impl Concat {
 
         let mut output = WriterBuilder::default()
             .with_compression(self.common.compression)
+            .append(self.append)
             .try_from_path_or_stdout(self.output)?;
 
         let mut count = 0;

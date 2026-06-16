@@ -49,17 +49,19 @@ complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s l -l limit -d '
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -l strsim-threshold -d 'The minimum score for string similarity comparisons (0 <= score <= 100)' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -l where -d 'An expression for filtering records' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s c -l compression -d 'Specify compression level' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s a -l append -d 'Append to the given file, do not overwrite'
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s p -l progress -d 'If set, show a progress bar'
-complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand cat" -s o -l output -d 'Write output to <filename> instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand cat" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand cat" -l strsim-threshold -d 'The minimum score for string similarity comparisons (0 <= score <= 100)' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand cat" -l where -d 'An expression for filtering records' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand cat" -s c -l compression -d 'Specify compression level' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand cat" -s a -l append -d 'Append to the given file, do not overwrite'
 complete -c marc21 -n "__fish_marc21_using_subcommand cat" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand cat" -s p -l progress -d 'If set, show a progress bar'
-complete -c marc21 -n "__fish_marc21_using_subcommand cat" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand cat" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand count" -s o -l output -d 'Write output to FILENAME instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand count" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand count" -l strsim-threshold -d 'The minimum score for string similarity comparisons (0 <= score <= 100)' -r

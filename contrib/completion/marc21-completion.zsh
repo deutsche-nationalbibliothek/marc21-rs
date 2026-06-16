@@ -38,12 +38,14 @@ _arguments "${_arguments_options[@]}" : \
 '--where=[An expression for filtering records]:predicate:_default' \
 '-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
+'-a[Append to the given file, do not overwrite]' \
+'--append[Append to the given file, do not overwrite]' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
 '-p[If set, show a progress bar]' \
 '--progress[If set, show a progress bar]' \
-'-h[Print help]' \
-'--help[Print help]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
 '*::path:_files' \
 && ret=0
 ;;
@@ -57,12 +59,14 @@ _arguments "${_arguments_options[@]}" : \
 '--where=[An expression for filtering records]:predicate:_default' \
 '-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
+'-a[Append to the given file, do not overwrite]' \
+'--append[Append to the given file, do not overwrite]' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
 '-p[If set, show a progress bar]' \
 '--progress[If set, show a progress bar]' \
-'-h[Print help]' \
-'--help[Print help]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
 '*::path:_files' \
 && ret=0
 ;;

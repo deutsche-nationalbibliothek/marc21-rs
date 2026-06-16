@@ -1,6 +1,6 @@
+use std::fs;
 use std::io::Write;
 use std::path::PathBuf;
-use std::{fs, io};
 
 use clap::value_parser;
 
@@ -42,7 +42,7 @@ pub(crate) struct Split {
     pub(crate) common: CommonOpts,
 }
 
-fn create_writer(chunk: u32, opts: &Split) -> io::Result<Writer> {
+fn create_writer(chunk: u32, opts: &Split) -> Result<Writer, CliError> {
     WriterBuilder::default()
         .with_compression(opts.common.compression)
         .try_from_path_or_stdout(Some(

@@ -7,9 +7,10 @@ pub(crate) type CliResult = Result<(), CliError>;
 
 #[derive(Debug)]
 pub(crate) enum CliError {
-    Parse(String),
-    IO(std::io::Error),
+    AdHoc(String),
     Csv(csv::Error),
+    IO(std::io::Error),
+    Parse(String),
 }
 
 impl CliError {
@@ -31,6 +32,7 @@ impl CliError {
 impl Display for CliError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
+            Self::AdHoc(e) => writeln!(f, "{e}"),
             Self::Parse(e) => writeln!(f, "{e}"),
             Self::IO(e) => writeln!(f, "{e}"),
             Self::Csv(e) => writeln!(f, "{e}"),
