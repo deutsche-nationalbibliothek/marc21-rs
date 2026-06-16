@@ -28,14 +28,14 @@ impl Dedup {
     pub(crate) fn execute(self) -> CliResult {
         let mut progress = Progress::new(self.common.progress);
         let options = MatchOptions::from(&self.filter_opts);
+        let filter = self.filter_opts.filter()?;
+        let mut seen = HashSet::new();
+        let mut count = 0;
+        let mut line = 0;
 
         let mut output = WriterBuilder::default()
             .with_compression(self.common.compression)
             .try_from_path_or_stdout(self.output)?;
-
-        let mut seen = HashSet::new();
-        let mut count = 0;
-        let mut line = 0;
 
         'outer: for path in self.path.iter() {
             let mut reader = MarcReadOptions::default()
@@ -57,7 +57,7 @@ impl Dedup {
                     Ok(ref record) => {
                         progress.update(false);
 
-                        if let Some(ref m) = self.filter_opts.filter
+                        if let Some(ref m) = filter
                             && !m.is_match(record, &options)
                         {
                             continue;

@@ -194,9 +194,9 @@ fn filter_invalid_filter() -> TestResult {
 
     assert
         .failure()
-        .code(2)
+        .code(1)
         .stdout(predicates::str::is_empty())
-        .stderr(predicates::str::starts_with("error: invalid value"));
+        .stderr(predicates::str::starts_with("error: invalid matcher"));
 
     Ok(())
 }
@@ -224,6 +224,126 @@ fn filter_limit() -> TestResult {
     let minna = fs::read(data_dir().join("minna.mrc"))?;
     let mut expected = Vec::with_capacity(minna.len() * 2);
     expected.extend_from_slice(&minna);
+    expected.extend_from_slice(&minna);
+
+    let actual = fs::read(output.path())?;
+    assert_eq!(actual, expected);
+
+    Ok(())
+}
+
+#[test]
+fn filter_normalization_nfc() -> TestResult {
+    let temp_dir = TempDir::new()?;
+    let output = temp_dir.child("out.mrc");
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .arg("filter")
+        .args(["--filter-normalization", "nfc"])
+        .arg("100/1#.t == 'Minna von Barnhelm'")
+        .arg(data_dir().join("minna.mrc"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let minna = fs::read(data_dir().join("minna.mrc"))?;
+    let mut expected = Vec::with_capacity(minna.len());
+    expected.extend_from_slice(&minna);
+
+    let actual = fs::read(output.path())?;
+    assert_eq!(actual, expected);
+
+    Ok(())
+}
+
+#[test]
+fn filter_normalization_nfkc() -> TestResult {
+    let temp_dir = TempDir::new()?;
+    let output = temp_dir.child("out.mrc");
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .arg("filter")
+        .args(["--filter-normalization", "nfkc"])
+        .arg("100/1#.t == 'Minna von Barnhelm'")
+        .arg(data_dir().join("minna.mrc"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let minna = fs::read(data_dir().join("minna.mrc"))?;
+    let mut expected = Vec::with_capacity(minna.len());
+    expected.extend_from_slice(&minna);
+
+    let actual = fs::read(output.path())?;
+    assert_eq!(actual, expected);
+
+    Ok(())
+}
+
+#[test]
+fn filter_normalization_nfd() -> TestResult {
+    let temp_dir = TempDir::new()?;
+    let output = temp_dir.child("out.mrc");
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .arg("filter")
+        .args(["--filter-normalization", "nfd"])
+        .arg("678.b == 'Epoche: Aufklärung'")
+        .arg(data_dir().join("minna.mrc"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let minna = fs::read(data_dir().join("minna.mrc"))?;
+    let mut expected = Vec::with_capacity(minna.len());
+    expected.extend_from_slice(&minna);
+
+    let actual = fs::read(output.path())?;
+    assert_eq!(actual, expected);
+
+    Ok(())
+}
+
+#[test]
+fn filter_normalization_nfkd() -> TestResult {
+    let temp_dir = TempDir::new()?;
+    let output = temp_dir.child("out.mrc");
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .arg("filter")
+        .args(["--filter-normalization", "nfkd"])
+        .arg("678.b == 'Epoche: Aufklärung'")
+        .arg(data_dir().join("minna.mrc"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let minna = fs::read(data_dir().join("minna.mrc"))?;
+    let mut expected = Vec::with_capacity(minna.len());
     expected.extend_from_slice(&minna);
 
     let actual = fs::read(output.path())?;

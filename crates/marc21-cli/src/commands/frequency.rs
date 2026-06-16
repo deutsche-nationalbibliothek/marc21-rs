@@ -50,9 +50,11 @@ impl Frequency {
     pub(crate) fn execute(self) -> CliResult {
         let mut progress = Progress::new(self.common.progress);
         let options = MatchOptions::from(&self.filter_opts);
-        let mut ftable: HashMap<Vec<Vec<u8>>, u64> = HashMap::new();
+        let filter = self.filter_opts.filter()?;
         let mut count = 0;
         let mut line = 0;
+
+        let mut ftable: HashMap<Vec<Vec<u8>>, u64> = HashMap::new();
 
         let output = WriterBuilder::default()
             .with_compression(self.common.compression)
@@ -101,7 +103,7 @@ impl Frequency {
                     Ok(ref record) => {
                         progress.update(false);
 
-                        if let Some(ref m) = self.filter_opts.filter
+                        if let Some(ref m) = filter
                             && !m.is_match(record, &options)
                         {
                             continue;

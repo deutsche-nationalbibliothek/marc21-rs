@@ -1,7 +1,9 @@
 use clap::{Parser, Subcommand, value_parser};
-use marc21::matcher::{MatchOptions, RecordMatcher};
+use marc21::matcher::{MatchOptions, ParseMatcherError, RecordMatcher};
+use unicode_normalization::UnicodeNormalization;
 
 use crate::commands::*;
+use crate::unicode::NormalizationForm;
 
 #[derive(Debug, Parser)]
 #[command(name = "marc21", version, about, long_about = None)]
@@ -74,7 +76,38 @@ pub(crate) struct FilterOpts {
 
     /// An expression for filtering records
     #[arg(long = "where", value_name = "predicate")]
-    pub(crate) filter: Option<RecordMatcher>,
+    filter: Option<String>,
+
+    /// Transliterate the given filter or query expression into the
+    /// specified Unicode normal form.
+    #[arg(
+        long,
+        env = "MARC21_FILTER_NORMALIZATION",
+        value_name = "form"
+    )]
+    pub(crate) filter_normalization: Option<NormalizationForm>,
+}
+
+impl FilterOpts {
+    pub fn filter(
+        &self,
+    ) -> Result<Option<RecordMatcher>, ParseMatcherError> {
+        use NormalizationForm::*;
+
+        let Some(ref matcher_str) = self.filter else {
+            return Ok(None);
+        };
+
+        let matcher_str = match self.filter_normalization {
+            Some(Nfc) => matcher_str.nfc().collect(),
+            Some(Nfkc) => matcher_str.nfkc().collect(),
+            Some(Nfd) => matcher_str.nfd().collect(),
+            Some(Nfkd) => matcher_str.nfkd().collect(),
+            None => matcher_str.to_string(),
+        };
+
+        Ok(Some(RecordMatcher::new(matcher_str)?))
+    }
 }
 
 impl From<&FilterOpts> for MatchOptions {

@@ -2,8 +2,10 @@ use std::path::PathBuf;
 
 use clap::value_parser;
 use marc21::matcher::RecordMatcher;
+use unicode_normalization::UnicodeNormalization;
 
 use crate::prelude::*;
+use crate::unicode::NormalizationForm;
 
 /// Filter records that fulfill a specified condition
 #[derive(Debug, clap::Parser)]
@@ -26,9 +28,18 @@ pub(crate) struct Filter {
     )]
     strsim_threshold: u8,
 
+    /// Transliterate the given filter expression into the specified
+    /// Unicode normal form.
+    #[arg(
+        long,
+        env = "MARC21_FILTER_NORMALIZATION",
+        value_name = "form"
+    )]
+    filter_normalization: Option<NormalizationForm>,
+
     /// An expression for filtering records
     #[arg(value_name = "filter")]
-    filter: RecordMatcher,
+    filter: String,
 
     #[arg(default_value = "-", hide_default_value = true)]
     path: Vec<PathBuf>,
@@ -43,6 +54,8 @@ pub(crate) struct Filter {
 
 impl Filter {
     pub(crate) fn execute(self) -> CliResult {
+        use NormalizationForm::*;
+
         let mut progress = Progress::new(self.common.progress);
         let mut output = WriterBuilder::default()
             .with_compression(self.common.compression)
@@ -51,7 +64,17 @@ impl Filter {
         let options = MatchOptions::default()
             .strsim_threshold(self.strsim_threshold as f64 / 100f64);
 
-        let matcher = self.filter;
+        let matcher =
+            RecordMatcher::new(match self.filter_normalization {
+                Some(Nfc) => self.filter.nfc().collect(),
+                Some(Nfkc) => self.filter.nfkc().collect(),
+                Some(Nfd) => self.filter.nfd().collect(),
+                Some(Nfkd) => self.filter.nfkd().collect(),
+                None => self.filter.to_string(),
+            })?;
+
+        // eprintln!("matcher = {matcher:?}");
+
         let mut count = 0;
         let mut line = 0;
 

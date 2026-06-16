@@ -176,3 +176,105 @@ fn count_limit() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn count_filter_normalization_nfc() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .args(["--filter-normalization", "nfc"])
+        .arg(data_dir().join("minna.mrc"))
+        .args(["--where", "100/1#.t == 'Minna von Barnhelm'"])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("1\n"))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
+
+#[test]
+fn count_filter_normalization_nfkc() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .args(["--filter-normalization", "nfkc"])
+        .arg(data_dir().join("minna.mrc"))
+        .args(["--where", "100/1#.t == 'Minna von Barnhelm'"])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("1\n"))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
+
+#[test]
+fn count_filter_normalization_nfd() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .args(["--filter-normalization", "nfd"])
+        .arg(data_dir().join("minna.mrc"))
+        .args(["--where", "678.b == 'Epoche: Aufklärung'"])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("1\n"))
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(data_dir().join("minna.mrc"))
+        .args(["--where", "678.b == 'Epoche: Aufklärung'"])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("0\n"))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
+
+#[test]
+fn count_filter_normalization_nfkd() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .args(["--filter-normalization", "nfkd"])
+        .arg(data_dir().join("minna.mrc"))
+        .args(["--where", "678.b == 'Epoche: Aufklärung'"])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("1\n"))
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(data_dir().join("minna.mrc"))
+        .args(["--where", "678.b == 'Epoche: Aufklärung'"])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("0\n"))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
