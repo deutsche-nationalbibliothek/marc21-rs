@@ -135,12 +135,16 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__concat)
-            opts="-a -o -s -l -p -c -h --append --output --skip-invalid --limit --strsim-threshold --where --progress --compression --help [PATH]..."
+            opts="-a -o -s -l -p -c -h --append --tee --output --skip-invalid --limit --strsim-threshold --where --progress --compression --help [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
+                --tee)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 --output)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
