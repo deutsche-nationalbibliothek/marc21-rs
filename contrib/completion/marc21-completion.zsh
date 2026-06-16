@@ -265,8 +265,9 @@ _arguments "${_arguments_options[@]}" : \
 ;;
 (print)
 _arguments "${_arguments_options[@]}" : \
-'-o+[Write output to FILENAME instead of stdout]:FILENAME:_files' \
-'--output=[Write output to FILENAME instead of stdout]:FILENAME:_files' \
+'--translit=[Transliterate the output into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'-o+[Write output to <path> instead of stdout]:path:_files' \
+'--output=[Write output to <path> instead of stdout]:path:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \

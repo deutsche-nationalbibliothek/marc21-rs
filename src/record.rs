@@ -3,6 +3,7 @@ use std::io::{self, Write};
 use std::ops::Deref;
 use std::str::Utf8Error;
 use std::sync::LazyLock;
+use std::vec::IntoIter;
 
 use winnow::combinator::{empty, repeat, seq, terminated};
 use winnow::prelude::*;
@@ -241,6 +242,16 @@ impl Display for ByteRecord<'_> {
             writeln!(f, "{}", field)?;
         }
         Ok(())
+    }
+}
+
+impl<'a> IntoIterator for ByteRecord<'a> {
+    type Item = char;
+    type IntoIter = IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        let chars: Vec<_> = self.to_string().chars().collect();
+        chars.into_iter()
     }
 }
 

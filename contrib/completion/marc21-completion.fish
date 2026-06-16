@@ -142,7 +142,11 @@ complete -c marc21 -n "__fish_marc21_using_subcommand partition" -s c -l compres
 complete -c marc21 -n "__fish_marc21_using_subcommand partition" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand partition" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand partition" -s h -l help -d 'Print help (see more with \'--help\')'
-complete -c marc21 -n "__fish_marc21_using_subcommand print" -s o -l output -d 'Write output to FILENAME instead of stdout' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand print" -l translit -d 'Transliterate the output into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand print" -s o -l output -d 'Write output to <path> instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand print" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand print" -l strsim-threshold -d 'The minimum score for string similarity comparisons (0 <= score <= 100)' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand print" -l where -d 'An expression for filtering records' -r

@@ -182,3 +182,91 @@ fn print_limit() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn print_translit_nfc() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["print", "--translit", "nfc"])
+        .arg(data_dir().join("minna.mrc"))
+        .assert();
+
+    let mut output = read_to_string(data_dir().join("minna-nfc.txt"))?;
+    if cfg!(windows) {
+        output = output.replace('\r', "");
+    }
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(output))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
+
+#[test]
+fn print_translit_nfkc() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["print", "--translit", "nfkc"])
+        .arg(data_dir().join("minna.mrc"))
+        .assert();
+
+    let mut output = read_to_string(data_dir().join("minna-nfkc.txt"))?;
+    if cfg!(windows) {
+        output = output.replace('\r', "");
+    }
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(output))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
+
+#[test]
+fn print_translit_nfd() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["print", "--translit", "nfd"])
+        .arg(data_dir().join("minna.mrc"))
+        .assert();
+
+    let mut output = read_to_string(data_dir().join("minna-nfd.txt"))?;
+    if cfg!(windows) {
+        output = output.replace('\r', "");
+    }
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(output))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
+
+#[test]
+fn print_translit_nfkd() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["print", "--translit", "nfkd"])
+        .arg(data_dir().join("minna.mrc"))
+        .assert();
+
+    let mut output = read_to_string(data_dir().join("minna-nfkd.txt"))?;
+    if cfg!(windows) {
+        output = output.replace('\r', "");
+    }
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(output))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
