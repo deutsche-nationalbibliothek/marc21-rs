@@ -10,3 +10,9 @@ limit)
 
 `--where`
 : An expression for filtering records
+
+`--filter-normalization <form>`
+: Transliterate the given filter or query expression into the specified
+Unicode normal form. Possible values: `nfd`, `nfkd`, `nfc`, `nfkc`.
+This option can also be specified by setting the environment variable
+`MARC21_FILTER_NORMALIZATION`.

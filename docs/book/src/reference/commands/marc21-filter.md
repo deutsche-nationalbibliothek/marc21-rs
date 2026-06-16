@@ -14,6 +14,12 @@ _tba_
 
 ## OPTIONS
 
+`--filter-normalization <form>`
+: Transliterate the given filter expression into the specified Unicode
+normal form. Possible values: `nfd`, `nfkd`, `nfc`, `nfkc`. This
+option can also be specified by setting the environment variable
+`MARC21_FILTER_NORMALIZATION`.
+
 ### COMMON OPTIONS
 
 {{ #include common-opts.md }}
