@@ -6,7 +6,6 @@ repository = "https://github.com/deutsche-nationalbibliothek/marc21-rs"
 description = "A command-line tool for processing MARC-21 records."
 categories = ["command-line-utilities"]
 keywords = ["marc21", "cli", "code4lib"]
-readme = "../../README.md"
 license = "EUPL-1.2"
 rust-version = "1.93"
 edition = "2024"
