@@ -1,4 +1,4 @@
-"""Smoke test for `pyton-polars` wheen and sdist."""
+"""Smoke test for `python-polars` wheel and sdist."""
 
 import sys
 
