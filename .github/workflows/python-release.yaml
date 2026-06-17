@@ -82,7 +82,8 @@ jobs:
           uv python install 3.13
       - name: Build Python package
         run: |
-          cd python && uv build
+          cd python
+          uv run maturin build --strip --sdist --release --compatibility pypi -o dist
       - name: Smoke Tests
         run: |
           cd python
@@ -100,5 +101,7 @@ jobs:
           gh release upload "${TAG}" dist/*.whl
       - name: Publish to PyPI
         run: |
-          cd python && uv publish
+          cd python
+          uv publish
+          
     
