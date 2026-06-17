@@ -8,3 +8,6 @@ __pycache__/
 
 # pytest-cov
 .coverage
+
+# build artifacts
+dist/
