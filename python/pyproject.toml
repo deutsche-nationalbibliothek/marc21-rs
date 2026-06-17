@@ -3,6 +3,8 @@ name = "polars-marc21"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
+license = "EUPL-1.2"
+license-files = ["LICENSE"]
 authors = [
     { name = "Nico Wagner", email = "n.wagner@dnb.de" }
 ]
