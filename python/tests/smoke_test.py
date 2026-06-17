@@ -27,6 +27,7 @@ try:
         "001",
     ).collect()
 
+    assert hasattr(df, "height")
     assert df.height == 1
 
     success("call `scan_marc21`")
