@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2024"
 rust-version = "1.93"
 license = "EUPL-1.2"
+description = "Rust bindings for polars-marc21"
+repository = "https://github.com/deutsche-nationalbibliothek/marc21-rs/"
+documentation = "https://deutsche-nationalbibliothek.github.io/marc21-rs/"
+
 
 [lib]
 name = "_core"

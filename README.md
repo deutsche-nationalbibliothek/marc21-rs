@@ -21,7 +21,9 @@ to exchange bibliographic data between libraries. In particular, the
 command line tool `marc21` allows efficient filtering of records and
 extraction of data into a rectangular schema. Since the extracted data
 is in tabular form, it can be processed with popular frameworks such as
-[Polars] or [Tidyverse].
+[Polars] or [Tidyverse]. In addition, the Python package [polars-marc21]
+provides a [Polars] extension that allows you to use the query syntax to
+create a [DataFrame], without using the command line.
 
 `marc21-rs` is developed by the Metadata Department of the [German
 National Library] (DNB). It is used for data analysis and for automating
@@ -43,6 +45,34 @@ The `marc21` tool provides the following commands:
 - [sample] — Select a random permutation of records
 - [split] — Split the input into chunks of a given size
 
+The [polars-marc21] package uses the query engine to transform MARC21
+records directly into a [DataFrame]:
+
+```python
+>>> from polars_marc21 import scan_marc21
+>>>
+>>> filename = "DUMP.mrc.gz"
+>>> query = "001, 075{ b | 2 == 'gndgen' }"
+>>> header = "ppn,gndgen"
+>>>
+>>> df = scan_marc21(filename, query, header).collect()
+>>> print(df)
+shape: (7, 2)
+┌───────────┬────────┐
+│ ppn       ┆ gndgen │
+│ ---       ┆ ---    │
+│ str       ┆ str    │
+╞═══════════╪════════╡
+│ 118540238 ┆ p      │
+│ 118572121 ┆ p      │
+│ 118607626 ┆ p      │
+│ 118632477 ┆ p      │
+│ 040992020 ┆ u      │
+│ 040992918 ┆ u      │
+│ 040993396 ┆ u      │
+└───────────┴────────┘
+```
+
 Check out the [documentation] to learn more about installing and using
 the tool.
 
@@ -62,11 +92,13 @@ are welcome to communicate in your native language.
 This project is licensed under the [European Union Public License 1.2].
 
 [Bash]: https://www.gnu.org/software/bash/
+[DataFrame]: https://docs.pola.rs/user-guide/concepts/data-types-and-structures/#dataframe
 [DCO]: https://developercertificate.org
 [European Union Public License 1.2]: ./LICENSE
 [German National Library]: https://dnb.de/
 [MARC 21]: https://www.loc.gov/marc
 [Polars]: https://pola.rs
+[polars-marc21]: https://pypi.org/project/polars-marc21/
 [Tidyverse]: https://tidyverse.org
 [ZSH]: https://www.zsh.org
 
