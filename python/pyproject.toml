@@ -73,6 +73,7 @@ lint.ignore = [
 
 [tool.ruff.lint.extend-per-file-ignores]
 "tests/*.py" = ["S101", "PLR2004"]
+"tests/smoke_test.py" = ["T201", "D103"]
 
 [tool.pytest.ini_options]
 addopts = "-ra -s -v --cov=src/polars_marc21"
