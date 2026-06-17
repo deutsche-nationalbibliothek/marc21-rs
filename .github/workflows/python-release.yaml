@@ -92,9 +92,10 @@ jobs:
           TAG: ${{ needs.prepare.outputs.tag }}
         shell: bash
         run: |
-          gh release upload "${TAG}" python/dist/*.tar.gz
-          gh release upload "${TAG}" python/dist/*.whl
+          cd python
+          gh release upload "${TAG}" dist/*.tar.gz
+          gh release upload "${TAG}" dist/*.whl
       - name: Publish to PyPI
         run: |
-          uv publish
+          cd python && uv publish
     
