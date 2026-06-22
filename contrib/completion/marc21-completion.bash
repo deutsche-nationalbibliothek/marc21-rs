@@ -388,7 +388,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__frequency)
-            opts="-H -o -s -l -p -c -h --tsv --header --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help <QUERY> [PATH]..."
+            opts="-r -H -o -s -l -p -c -h --reverse --tsv --header --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help <QUERY> [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0

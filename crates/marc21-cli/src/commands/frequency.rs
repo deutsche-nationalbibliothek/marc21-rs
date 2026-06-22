@@ -19,6 +19,10 @@ use crate::prelude::*;
 #[derive(Debug, clap::Parser)]
 #[clap(visible_alias = "freq")]
 pub(crate) struct Frequency {
+    /// Sort results in reverse order.
+    #[arg(long, short)]
+    reverse: bool,
+
     /// Write output tab-separated (TSV)
     #[arg(long)]
     tsv: bool,
@@ -128,10 +132,17 @@ impl Frequency {
         let mut ftable_sorted: Vec<(&Vec<Vec<u8>>, &u64)> =
             ftable.iter().collect();
 
-        ftable_sorted.sort_by(|a, b| match b.1.cmp(a.1) {
-            Ordering::Equal => a.0.cmp(b.0),
-            ordering => ordering,
-        });
+        if self.reverse {
+            ftable_sorted.sort_by(|lhs, rhs| match lhs.1.cmp(rhs.1) {
+                Ordering::Equal => lhs.0.cmp(rhs.0),
+                ordering => ordering,
+            });
+        } else {
+            ftable_sorted.sort_by(|lhs, rhs| match rhs.1.cmp(lhs.1) {
+                Ordering::Equal => lhs.0.cmp(rhs.0),
+                ordering => ordering,
+            });
+        }
 
         for (values, frequency) in ftable_sorted.iter() {
             let mut record = values

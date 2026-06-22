@@ -26,6 +26,9 @@ result of a record, can be restricted by an optional predicate.
 
 ## OPTIONS
 
+`-r`, `--reverse`
+:  Sort results in reverse order
+
 `-H`, `--header <header>`
 : Insert a header row before the data. The header should be entered as
 a comma-separated list. Leading and trailing spaces in each column are
