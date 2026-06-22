@@ -139,6 +139,14 @@ fn query_data_field() -> TestResult {
     let values = record.query(&query, &options);
     assert_eq!(values, vec![vec!["28p", "sswd"], vec!["9.5p", "sswd"]]);
 
+    // wildcard
+    let query = Query::new("065.*")?;
+    let values = record.query(&query, &options);
+    assert_eq!(
+        values,
+        vec![vec!["28p"], vec!["sswd"], vec!["9.5p"], vec!["sswd"]]
+    );
+
     // empty query
     let query = Query::new("100{ _ | 2 == 'gndspec'  }")?;
     let values = record.query(&query, &options);

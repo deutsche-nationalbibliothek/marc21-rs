@@ -64,6 +64,12 @@ pub(crate) fn parse_codes(i: &mut &[u8]) -> ModalResult<Vec<u8>> {
                 codes
             },
         ),
+        b'*'.value(
+            (b'0'..=b'9')
+                .chain(b'a'..=b'z')
+                .chain(b'A'..=b'Z')
+                .collect::<Vec<u8>>(),
+        ),
     ))
     .parse_next(i)
 }
@@ -84,4 +90,35 @@ pub(crate) fn parse_range(
         ']',
     )
     .parse_next(i)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::common::TestResult;
+
+    #[test]
+    fn test_parse_codes() -> TestResult {
+        macro_rules! parse_success {
+            ($i:expr, $o:expr) => {
+                assert_eq!(
+                    parse_codes.parse($i.as_bytes()).unwrap(),
+                    $o
+                );
+            };
+        }
+
+        parse_success!("a", vec![b'a']);
+        parse_success!("[ab]", vec![b'a', b'b']);
+        parse_success!("[aba]", vec![b'a', b'b']);
+        parse_success!(
+            "*",
+            (b'0'..=b'9')
+                .chain(b'a'..=b'z')
+                .chain(b'A'..=b'Z')
+                .collect::<Vec<_>>()
+        );
+
+        Ok(())
+    }
 }

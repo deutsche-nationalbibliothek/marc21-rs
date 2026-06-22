@@ -651,21 +651,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "marc21"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "edbaac1ddb448f31eb8881ef25fbd184e0b3e9ff0dcfedcc407d4ae30b704edf"
-dependencies = [
- "aho-corasick",
- "bstr",
- "flate2",
- "regex",
- "smallvec",
- "strsim",
- "winnow",
-]
-
-[[package]]
 name = "marc21-cli"
 version = "0.4.0"
 dependencies = [
@@ -679,7 +664,7 @@ dependencies = [
  "csv",
  "flate2",
  "indicatif",
- "marc21 0.4.0",
+ "marc21",
  "predicates",
  "rand",
  "sha2",
@@ -750,7 +735,7 @@ name = "polars-marc21"
 version = "0.1.0"
 dependencies = [
  "bstr",
- "marc21 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "marc21",
  "pyo3",
 ]
 
