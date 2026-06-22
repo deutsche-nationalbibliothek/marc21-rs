@@ -223,6 +223,29 @@ _arguments "${_arguments_options[@]}" : \
 '*::path:_files' \
 && ret=0
 ;;
+(glimpse)
+_arguments "${_arguments_options[@]}" : \
+'-n+[Maximum number of values to show per subfield]:n:_default' \
+'--max-values=[Maximum number of values to show per subfield]:n:_default' \
+'-o+[Write output to FILENAME instead of stdout]:FILENAME:_files' \
+'--output=[Write output to FILENAME instead of stdout]:FILENAME:_files' \
+'-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--where=[An expression for filtering records]:predicate:_default' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'-c+[Specify compression level]:n:_default' \
+'--compression=[Specify compression level]:n:_default' \
+'-s[Skip invalid records that can'\''t be decoded]' \
+'--skip-invalid[Skip invalid records that can'\''t be decoded]' \
+'-p[If set, show a progress bar]' \
+'--progress[If set, show a progress bar]' \
+'-h[Print help]' \
+'--help[Print help]' \
+':path -- A path expression:_default' \
+'*::input:_files' \
+&& ret=0
+;;
 (hash)
 _arguments "${_arguments_options[@]}" : \
 '-o+[Write output to FILENAME instead of stdout]:FILENAME:_files' \
@@ -403,6 +426,7 @@ _marc21_commands() {
 'filter:Filter records that fulfill a specified condition' \
 'frequency:Compute a frequency table of values' \
 'freq:Compute a frequency table of values' \
+'glimpse:Print a dense preview of a data field' \
 'hash:Compute SHA-256 checksum of records' \
 'invalid:Output invalid records that cannot be decoded' \
 'partition:Partition records by values' \
@@ -454,6 +478,11 @@ _marc21__subcmd__filter_commands() {
 _marc21__subcmd__frequency_commands() {
     local commands; commands=()
     _describe -t commands 'marc21 frequency commands' commands "$@"
+}
+(( $+functions[_marc21__subcmd__glimpse_commands] )) ||
+_marc21__subcmd__glimpse_commands() {
+    local commands; commands=()
+    _describe -t commands 'marc21 glimpse commands' commands "$@"
 }
 (( $+functions[_marc21__subcmd__hash_commands] )) ||
 _marc21__subcmd__hash_commands() {

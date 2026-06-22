@@ -25,6 +25,7 @@ fn main() -> ExitCode {
         Command::Describe(cmd) => cmd.execute(),
         Command::Filter(cmd) => cmd.execute(),
         Command::Frequency(cmd) => cmd.execute(),
+        Command::Glimpse(cmd) => cmd.execute(),
         Command::Hash(cmd) => cmd.execute(),
         Command::Invalid(cmd) => cmd.execute(),
         Command::Partition(cmd) => cmd.execute(),
