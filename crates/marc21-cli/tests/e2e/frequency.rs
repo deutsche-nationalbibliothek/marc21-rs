@@ -309,3 +309,31 @@ fn frequency_limit() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn frequency_reverse() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["frequency", "-s", "-r"])
+        .arg("065{ a | 2 == 'sswd' }")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    let expected = r#"13.4p,1
+15.1p,1
+16.1p,1
+16.5p,1
+18p,1
+4.7p,1
+7.14p,1
+12.2p,7
+"#;
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(expected))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
