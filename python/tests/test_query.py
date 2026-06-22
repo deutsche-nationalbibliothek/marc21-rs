@@ -140,12 +140,11 @@ def test_query_data_field(data_dir: Path) -> None:
 
     expected = pl.DataFrame({"column_1": ["piz"]})
     actual = scan_marc21(
-        path, "075{ b | 2 == 'gndspec' && b =^ 'p' }",
+        path,
+        "075{ b | 2 == 'gndspec' && b =^ 'p' }",
     ).collect()
     assert isinstance(actual, pl.DataFrame)
     assert_frame_equal(actual, expected)
-
-    
 
 
 def test_query_cartesian_product1(data_dir: Path) -> None:
