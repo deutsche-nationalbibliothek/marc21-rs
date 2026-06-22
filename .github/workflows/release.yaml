@@ -35,7 +35,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "$TAG" --verify-tag --draft --generate-notes --title "$TAG"
+          gh release create "$TAG" --verify-tag --draft --generate-notes --title "marc21 $TAG"
 
   releases:
     permissions:
