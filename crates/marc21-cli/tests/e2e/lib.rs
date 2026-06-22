@@ -8,6 +8,7 @@ mod dedup;
 mod describe;
 mod filter;
 mod frequency;
+mod glimpse;
 mod hash;
 mod invalid;
 mod partition;

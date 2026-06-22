@@ -174,6 +174,38 @@ impl Path {
             Empty(_) => vec![],
         }
     }
+
+    /// Checks whether the given field matches the field spec.
+    pub fn is_match(&self, field: &Field<'_>) -> bool {
+        use PathKind::*;
+
+        match self.kind {
+            ControlField(ref path) => {
+                field.is_control_field()
+                    && path.tag_matcher.is_match(field.tag())
+            }
+            DataField(ref path) => {
+                field.is_data_field()
+                    && path.tag_matcher.is_match(field.tag())
+                    && path.indicator_matcher.is_match(field)
+            }
+            Empty(ref path) => {
+                field.is_data_field()
+                    && path.tag_matcher.is_match(field.tag())
+                    && path.indicator_matcher.is_match(field)
+            }
+            Leader(_) => false,
+        }
+    }
+
+    pub fn codes(&self) -> Vec<Vec<u8>> {
+        use PathKind::*;
+
+        match self.kind {
+            DataField(ref path) => path.codes.clone(),
+            _ => vec![],
+        }
+    }
 }
 
 impl Display for Path {

@@ -22,6 +22,7 @@ pub(crate) enum Command {
     Describe(Box<Describe>),
     Filter(Box<Filter>),
     Frequency(Box<Frequency>),
+    Glimpse(Box<Glimpse>),
     Hash(Box<Hash>),
     Invalid(Box<Invalid>),
     Partition(Box<Partition>),
