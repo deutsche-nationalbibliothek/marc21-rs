@@ -143,6 +143,7 @@ nfkd\t''
 nfc\t''
 nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s c -l compression -d 'Specify compression level' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s r -l reverse -d 'Sort results in reverse order'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l tsv -d 'Write output tab-separated (TSV)'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s p -l progress -d 'If set, show a progress bar'
@@ -157,6 +158,7 @@ nfkd\t''
 nfc\t''
 nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s c -l compression -d 'Specify compression level' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s r -l reverse -d 'Sort results in reverse order'
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l tsv -d 'Write output tab-separated (TSV)'
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s p -l progress -d 'If set, show a progress bar'
