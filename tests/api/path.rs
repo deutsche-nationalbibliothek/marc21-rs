@@ -106,6 +106,15 @@ fn path_data_field() -> TestResult {
     let values = record.path(&path, &options);
     assert_eq!(values, vec!["28p", "sswd", "9.5p", "sswd"]);
 
+    // wildcard
+    let path = Path::new("065.*")?;
+    let values = record.path(&path, &options);
+    assert_eq!(values, vec!["28p", "sswd", "9.5p", "sswd"]);
+
+    let path = Path::new("065{ * }")?;
+    let values = record.path(&path, &options);
+    assert_eq!(values, vec!["28p", "sswd", "9.5p", "sswd"]);
+
     // empty path
     let path = Path::new("100{ _ | 2 == 'gndspec'  }")?;
     let values = record.path(&path, &options);

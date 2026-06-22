@@ -126,6 +126,12 @@ def test_query_data_field(data_dir: Path) -> None:
     assert isinstance(actual, pl.DataFrame)
     assert_frame_equal(actual, expected)
 
+    # wildcard
+    expected = pl.DataFrame({"column_1": list("gfszwkv")})
+    actual = scan_marc21(path, "079.*").collect()
+    assert isinstance(actual, pl.DataFrame)
+    assert_frame_equal(actual, expected)
+
     # predicate
     expected = pl.DataFrame({"column_1": ["p"]})
     actual = scan_marc21(path, "075{ b | 2 == 'gndgen' }").collect()
@@ -138,6 +144,8 @@ def test_query_data_field(data_dir: Path) -> None:
     ).collect()
     assert isinstance(actual, pl.DataFrame)
     assert_frame_equal(actual, expected)
+
+    
 
 
 def test_query_cartesian_product1(data_dir: Path) -> None:
