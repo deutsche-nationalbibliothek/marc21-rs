@@ -1,6 +1,6 @@
 [project]
 name = "polars-marc21"
-version = "0.1.0"
+version = "0.2.0"
 description = "A polars io plugin for reading MARC21 files"
 readme = "README.md"
 license = "EUPL-1.2"
