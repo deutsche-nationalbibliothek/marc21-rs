@@ -131,6 +131,7 @@ nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s o -l output -d 'Write output to FILENAME instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s c -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
+complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s v -l invert-match -d 'Inverts the specified filter criterion, which means that only records that do not match the criterion are returned'
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s h -l help -d 'Print help'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s H -l header -d 'Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed' -r

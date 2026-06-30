@@ -167,6 +167,8 @@ _arguments "${_arguments_options[@]}" : \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
+'-v[Inverts the specified filter criterion, which means that only records that do not match the criterion are returned]' \
+'--invert-match[Inverts the specified filter criterion, which means that only records that do not match the criterion are returned]' \
 '-p[If set, show a progress bar]' \
 '--progress[If set, show a progress bar]' \
 '-h[Print help]' \

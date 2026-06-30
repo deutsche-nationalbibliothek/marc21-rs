@@ -14,6 +14,10 @@ _tba_
 
 ## OPTIONS
 
+`-v`, `--invert_match`
+: Inverts the specified filter criterion, which means that only records
+that do not match the criterion are returned.
+
 `--filter-normalization <form>`
 : Transliterate the given filter expression into the specified Unicode
 normal form. Possible values: `nfd`, `nfkd`, `nfc`, `nfkc`. This
