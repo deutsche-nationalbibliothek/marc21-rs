@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::HashMap;
+use std::collections::{BTreeSet, HashMap};
 use std::path::PathBuf;
 
 use bstr::ByteSlice;
@@ -19,6 +19,11 @@ use crate::prelude::*;
 #[derive(Debug, clap::Parser)]
 #[clap(visible_alias = "freq")]
 pub(crate) struct Frequency {
+    /// This flag ensures that all values generated for a record are
+    /// counted only once in the frequency table.
+    #[arg(long, short)]
+    unique: bool,
+
     /// Sort results in reverse order.
     #[arg(long, short)]
     reverse: bool,
@@ -59,6 +64,7 @@ impl Frequency {
         let mut line = 0;
 
         let mut ftable: HashMap<Vec<Vec<u8>>, u64> = HashMap::new();
+        let mut seen: BTreeSet<Vec<Vec<u8>>> = BTreeSet::new();
 
         let output = WriterBuilder::default()
             .with_compression(self.common.compression)
@@ -114,9 +120,17 @@ impl Frequency {
                         }
 
                         let rows = record.query(&self.query, &options);
+                        seen.clear();
+
                         for row in rows.iter() {
-                            let key =
+                            let key: Vec<Vec<u8>> =
                                 row.iter().map(Value::to_vec).collect();
+
+                            if self.unique && seen.contains(&key) {
+                                continue;
+                            }
+
+                            seen.insert(key.clone());
                             *ftable.entry(key).or_insert(0) += 1;
                         }
 

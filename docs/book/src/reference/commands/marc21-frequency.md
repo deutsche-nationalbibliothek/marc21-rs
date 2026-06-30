@@ -26,6 +26,10 @@ result of a record, can be restricted by an optional predicate.
 
 ## OPTIONS
 
+`-u`, `--unique`
+: This flag ensures that all values generated for a record are counted
+only once in the frequency table.
+
 `-r`, `--reverse`
 :  Sort results in reverse order
 
