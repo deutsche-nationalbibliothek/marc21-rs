@@ -14,6 +14,11 @@ pub(crate) struct Filter {
     #[arg(short, long)]
     skip_invalid: bool,
 
+    /// Inverts the specified filter criterion, which means that only
+    /// records that do not match the criterion are returned.
+    #[arg(long, short = 'v')]
+    invert_match: bool,
+
     /// Limit the result to first <n> records (a limit value `0` means
     /// no limit).
     #[arg(long, short, value_name = "n", default_value = "0")]
@@ -73,8 +78,6 @@ impl Filter {
                 None => self.filter.to_string(),
             })?;
 
-        // eprintln!("matcher = {matcher:?}");
-
         let mut count = 0;
         let mut line = 0;
 
@@ -97,7 +100,14 @@ impl Filter {
                         progress.update(false);
                         line += 1;
 
-                        if !matcher.is_match(record, &options) {
+                        let mut result =
+                            matcher.is_match(record, &options);
+
+                        if self.invert_match {
+                            result = !result;
+                        }
+
+                        if !result {
                             continue;
                         }
 

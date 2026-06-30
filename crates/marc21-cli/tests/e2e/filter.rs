@@ -351,3 +351,36 @@ fn filter_normalization_nfkd() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn filter_invert_match() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-v"])
+        .arg("001 != '040992918'")
+        .arg(data_dir().join("minna.mrc"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(fs::read(
+            data_dir().join("minna.mrc"),
+        )?))
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter"])
+        .arg("001 != '040992918'")
+        .arg(data_dir().join("minna.mrc"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
