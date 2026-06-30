@@ -144,6 +144,7 @@ nfkd\t''
 nfc\t''
 nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s c -l compression -d 'Specify compression level' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s u -l unique -d 'This flag ensures that all values generated for a record are counted only once in the frequency table'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s r -l reverse -d 'Sort results in reverse order'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l tsv -d 'Write output tab-separated (TSV)'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
@@ -159,6 +160,7 @@ nfkd\t''
 nfc\t''
 nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s c -l compression -d 'Specify compression level' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s u -l unique -d 'This flag ensures that all values generated for a record are counted only once in the frequency table'
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s r -l reverse -d 'Sort results in reverse order'
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l tsv -d 'Write output tab-separated (TSV)'
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'

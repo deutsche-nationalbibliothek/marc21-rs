@@ -190,6 +190,8 @@ _arguments "${_arguments_options[@]}" : \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
+'-u[This flag ensures that all values generated for a record are counted only once in the frequency table]' \
+'--unique[This flag ensures that all values generated for a record are counted only once in the frequency table]' \
 '-r[Sort results in reverse order]' \
 '--reverse[Sort results in reverse order]' \
 '--tsv[Write output tab-separated (TSV)]' \
@@ -216,6 +218,8 @@ _arguments "${_arguments_options[@]}" : \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
+'-u[This flag ensures that all values generated for a record are counted only once in the frequency table]' \
+'--unique[This flag ensures that all values generated for a record are counted only once in the frequency table]' \
 '-r[Sort results in reverse order]' \
 '--reverse[Sort results in reverse order]' \
 '--tsv[Write output tab-separated (TSV)]' \

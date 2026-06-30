@@ -337,3 +337,33 @@ fn frequency_reverse() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn frequency_unique() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["frequency", "-u", "065.2"])
+        .arg(data_dir().join("ada.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("sswd,1\n"))
+        .stderr(predicates::str::is_empty());
+
+    // cross-check without unique flag
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["frequency", "065.2"])
+        .arg(data_dir().join("ada.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("sswd,2\n"))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
