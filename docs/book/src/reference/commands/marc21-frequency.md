@@ -33,6 +33,9 @@ only once in the frequency table.
 `-r`, `--reverse`
 :  Sort results in reverse order
 
+`-t <n>`, `--threshold <n>`
+: Ignore rows with a frequency less than `<n>`.
+
 `-H`, `--header <header>`
 : Insert a header row before the data. The header should be entered as
 a comma-separated list. Leading and trailing spaces in each column are

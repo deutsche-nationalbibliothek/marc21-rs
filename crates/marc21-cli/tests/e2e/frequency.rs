@@ -367,3 +367,34 @@ fn frequency_unique() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn frequency_threshold() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["frequency", "-s", "065{ a | 2 == 'sswd' }"])
+        .args(["--threshold", "7"])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("12.2p,7\n"))
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["frequency", "-s", "065{ a | 2 == 'sswd' }"])
+        .args(["--threshold", "8"])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
