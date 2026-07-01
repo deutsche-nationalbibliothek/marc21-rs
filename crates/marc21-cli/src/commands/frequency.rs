@@ -28,6 +28,16 @@ pub(crate) struct Frequency {
     #[arg(long, short)]
     reverse: bool,
 
+    /// Ignore rows with a frequency less than <n>.
+    #[arg(
+        long,
+        short,
+        value_name = "n",
+        default_value = "0",
+        hide_default_value = true
+    )]
+    threshold: u64,
+
     /// Write output tab-separated (TSV)
     #[arg(long)]
     tsv: bool,
@@ -159,6 +169,10 @@ impl Frequency {
         }
 
         for (values, frequency) in ftable_sorted.iter() {
+            if **frequency < self.threshold {
+                break;
+            }
+
             let mut record = values
                 .iter()
                 .map(|value| value.as_bstr())

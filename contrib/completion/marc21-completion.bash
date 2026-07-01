@@ -388,12 +388,20 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__frequency)
-            opts="-u -r -H -o -s -l -p -c -h --unique --reverse --tsv --header --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help <QUERY> [PATH]..."
+            opts="-u -r -t -H -o -s -l -p -c -h --unique --reverse --threshold --tsv --header --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help <QUERY> [PATH]..."
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
+                --threshold)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -t)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
                 --header)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
