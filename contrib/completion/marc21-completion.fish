@@ -135,6 +135,7 @@ complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s v -l invert-mat
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s h -l help -d 'Print help'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s t -l threshold -d 'Ignore rows with a frequency less than <n>' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s n -l num -d 'Limit result to the <n> most frequent subfield values' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s H -l header -d 'Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s o -l output -d 'Write output to <path> instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
@@ -152,6 +153,7 @@ complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s s -l skip-in
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s t -l threshold -d 'Ignore rows with a frequency less than <n>' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s n -l num -d 'Limit result to the <n> most frequent subfield values' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s H -l header -d 'Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s o -l output -d 'Write output to <path> instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r

@@ -36,6 +36,10 @@ only once in the frequency table.
 `-t <n>`, `--threshold <n>`
 : Ignore rows with a frequency less than `<n>`.
 
+`-n <n>`, `--num <n>`
+: Limit result to the `<n>` most frequent subfield values. The value 0
+means no restriction.
+
 `-H`, `--header <header>`
 : Insert a header row before the data. The header should be entered as
 a comma-separated list. Leading and trailing spaces in each column are

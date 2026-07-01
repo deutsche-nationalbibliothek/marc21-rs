@@ -38,6 +38,16 @@ pub(crate) struct Frequency {
     )]
     threshold: u64,
 
+    /// Limit result to the <n> most frequent subfield values.
+    #[arg(
+        long,
+        short,
+        value_name = "n",
+        hide_default_value = true,
+        default_value = "0"
+    )]
+    num: usize,
+
     /// Write output tab-separated (TSV)
     #[arg(long)]
     tsv: bool,
@@ -168,8 +178,12 @@ impl Frequency {
             });
         }
 
-        for (values, frequency) in ftable_sorted.iter() {
-            if **frequency < self.threshold {
+        for (i, (values, freq)) in ftable_sorted.iter().enumerate() {
+            if self.num > 0 && i >= self.num {
+                break;
+            }
+
+            if **freq < self.threshold {
                 break;
             }
 
@@ -178,7 +192,7 @@ impl Frequency {
                 .map(|value| value.as_bstr())
                 .collect::<Vec<_>>();
 
-            let f = frequency.to_string();
+            let f = freq.to_string();
             record.push(f.as_bytes().as_bstr());
             wtr.write_record(record)?;
         }
