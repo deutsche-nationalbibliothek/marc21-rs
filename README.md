@@ -56,7 +56,7 @@ records directly into a [DataFrame]:
 >>> query = "001, 075{ b | 2 == 'gndgen' }"
 >>> header = "ppn,gndgen"
 >>>
->>> df = scan_marc21(filename, query, header).collect()
+>>> df = scan_marc21(filename, query, header=header).collect()
 >>> print(df)
 shape: (7, 2)
 ┌───────────┬────────┐
