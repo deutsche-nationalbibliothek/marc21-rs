@@ -398,3 +398,34 @@ fn frequency_threshold() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn frequency_num() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["frequency", "-s", "065{ a | 2 == 'sswd' }"])
+        .args(["--num", "3"])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("12.2p,7\n13.4p,1\n15.1p,1\n"))
+        .stderr(predicates::str::is_empty());
+
+    // -n0 means no restriction
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["frequency", "-n", "0", "065.2"])
+        .arg(data_dir().join("ada.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("sswd,2\n"))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
