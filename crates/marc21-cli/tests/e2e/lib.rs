@@ -9,6 +9,7 @@ mod describe;
 mod filter;
 mod frequency;
 mod glimpse;
+mod grep;
 mod hash;
 mod invalid;
 mod partition;

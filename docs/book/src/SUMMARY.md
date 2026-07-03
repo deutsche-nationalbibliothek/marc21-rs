@@ -15,6 +15,7 @@
     * [filter](reference/commands/marc21-filter.md)
     * [frequency](reference/commands/marc21-frequency.md)
     * [glimpse](reference/commands/marc21-glimpse.md)
+    * [grep](reference/commands/marc21-grep.md)
     * [hash](reference/commands/marc21-hash.md)
     * [invalid](reference/commands/marc21-invalid.md)
     * [partition](reference/commands/marc21-partition.md)

@@ -636,6 +636,7 @@ dependencies = [
  "marc21",
  "predicates",
  "rand",
+ "regex",
  "sha2",
  "unicode-normalization",
 ]
