@@ -266,7 +266,7 @@ _arguments "${_arguments_options[@]}" : \
 ;;
 (grep)
 _arguments "${_arguments_options[@]}" : \
-'*--or=[Search for multiple, possibly overlapping, regexes in a single search. The regular expression constist of the main pattern and all other pattern passed by this option. The regex matches if a subfield is found that matches against at least one pattern]:pattern:_default' \
+'*--or=[Search for multiple, possibly overlapping, regexes in a single search. The regular expression consists of the main pattern and all other pattern passed by this option. The regex matches if a subfield is found that matches against at least one pattern]:pattern:_default' \
 '-o+[Write output to <filename> instead of stdout]:filename:_files' \
 '--output=[Write output to <filename> instead of stdout]:filename:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
@@ -276,8 +276,8 @@ _arguments "${_arguments_options[@]}" : \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
-'-i[If this flag is set, matching will be perfomed case insensitive]' \
-'--ignore-case[If this flag is set, matching will be perfomed case insensitive]' \
+'-i[If this flag is set, matching will be performed case insensitive]' \
+'--ignore-case[If this flag is set, matching will be performed case insensitive]' \
 '-v[Inverts the specified regular expression, which means that only records that do not match the criterion are returned]' \
 '--invert-match[Inverts the specified regular expression, which means that only records that do not match the criterion are returned]' \
 '-s[Skip invalid records that can'\''t be decoded]' \

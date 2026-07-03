@@ -12,13 +12,13 @@ pub(crate) struct Grep {
     pattern: String,
 
     /// Search for multiple, possibly overlapping, regexes in a single
-    /// search. The regular expression constist of the main pattern and
+    /// search. The regular expression consists of the main pattern and
     /// all other pattern passed by this option. The regex matches if
     /// a subfield is found that matches against at least one pattern.
     #[arg(long = "or", value_name = "pattern")]
     patterns: Vec<String>,
 
-    /// If this flag is set, matching will be perfomed case
+    /// If this flag is set, matching will be performed case
     /// insensitive.
     ///
     /// This setting applies to all specified patterns. If you want to

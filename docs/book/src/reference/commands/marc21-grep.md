@@ -23,12 +23,12 @@ data fields are searched.
 
 `--or <pattern>`
 : Search for multiple, possibly overlapping, regexes in a single search.
-The regular expression constist of the main pattern and all other
+The regular expression consists of the main pattern and all other
 pattern passed by this option. The regex matches if a subfield is found
 that matches against at least one pattern.
 
 `-i`, `--ignore-case`
-:  If this flag is set, matching will be perfomed case insensitive.
+:  If this flag is set, matching will be performed case insensitive.
 This setting applies to all specified patterns. If you want to match
 only a single pattern in a case-insensitive mode, you can do so
 using the inline flag `i`. For example, `(?i:foo)` matches `foo` case
