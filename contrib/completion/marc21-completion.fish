@@ -36,6 +36,7 @@ complete -c marc21 -n "__fish_marc21_needs_command" -f -a "filter" -d 'Filter re
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "frequency" -d 'Compute a frequency table of values'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "freq" -d 'Compute a frequency table of values'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "glimpse" -d 'Print a dense preview of a data field'
+complete -c marc21 -n "__fish_marc21_needs_command" -f -a "grep" -d 'Search for records whose values match a pattern'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "hash" -d 'Compute SHA-256 checksum of records'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "invalid" -d 'Output invalid records that cannot be decoded'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "partition" -d 'Partition records by values'
@@ -183,6 +184,21 @@ complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -s c -l compressi
 complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -l or -d 'Search for multiple, possibly overlapping, regexes in a single search. The regular expression constist of the main pattern and all other pattern passed by this option. The regex matches if a subfield is found that matches against at least one pattern' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -s o -l output -d 'Write output to <filename> instead of stdout' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -l strsim-threshold -d 'The minimum score for string similarity comparisons (0 <= score <= 100)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -s c -l compression -d 'Specify compression level' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -s i -l ignore-case -d 'If this flag is set, matching will be perfomed case insensitive'
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -s v -l invert-match -d 'Inverts the specified regular expression, which means that only records that do not match the criterion are returned'
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -s p -l progress -d 'If set, show a progress bar'
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand hash" -s o -l output -d 'Write output to FILENAME instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand hash" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand hash" -l strsim-threshold -d 'The minimum score for string similarity comparisons (0 <= score <= 100)' -r

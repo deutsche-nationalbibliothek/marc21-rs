@@ -39,6 +39,7 @@ The `marc21` tool provides the following commands:
 - [filter] — Filter records that fulfill a specified condition
 - [frequency] — Compute a frequency table of values (alias `freq`)
 - [glimpse] — Print a dense preview of a data field
+- [grep] — Search for records whose values match a pattern
 - [hash] — Compute SHA-256 checksum of records
 - [invalid] — Output invalid records that cannot be decoded
 - [partition] — Partition records by values
@@ -111,6 +112,7 @@ This project is licensed under the [European Union Public License 1.2].
 [filter]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-filter.html
 [frequency]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-frequency.html
 [glimpse]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-glimpse.html
+[grep]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-grep.html
 [hash]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-hash.html
 [invalid]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-invalid.html
 [partition]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-partition.html

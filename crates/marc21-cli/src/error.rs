@@ -12,6 +12,7 @@ pub(crate) enum CliError {
     Csv(csv::Error),
     IO(std::io::Error),
     Parse(String),
+    Regex(regex::Error),
 }
 
 impl CliError {
@@ -34,9 +35,10 @@ impl Display for CliError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::AdHoc(e) => writeln!(f, "{e}"),
-            Self::Parse(e) => writeln!(f, "{e}"),
-            Self::IO(e) => writeln!(f, "{e}"),
             Self::Csv(e) => writeln!(f, "{e}"),
+            Self::IO(e) => writeln!(f, "{e}"),
+            Self::Parse(e) => writeln!(f, "{e}"),
+            Self::Regex(e) => writeln!(f, "{e}"),
         }
     }
 }
@@ -56,6 +58,12 @@ impl From<csv::Error> for CliError {
 impl From<ParseMatcherError> for CliError {
     fn from(e: ParseMatcherError) -> Self {
         Self::Parse(format!("invalid matcher {e}"))
+    }
+}
+
+impl From<regex::Error> for CliError {
+    fn from(e: regex::Error) -> Self {
+        Self::Regex(e)
     }
 }
 
