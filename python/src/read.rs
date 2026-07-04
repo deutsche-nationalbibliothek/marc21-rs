@@ -14,7 +14,7 @@ pub(crate) struct LazyReader {
     query: Query,
     options: MatchOptions,
     matcher: Option<RecordMatcher>,
-    arity: usize,
+    width: usize,
 }
 
 #[pymethods]
@@ -37,15 +37,15 @@ impl LazyReader {
         Ok(Self {
             sources: Mutex::new(Box::new(sources.into_iter())),
             rows: Mutex::new(Box::new(vec![].into_iter())),
-            arity: query.arity(),
+            width: query.width(),
             options,
             matcher,
             query,
         })
     }
 
-    fn arity(slf: PyRef<'_, Self>) -> usize {
-        slf.arity
+    fn width(slf: PyRef<'_, Self>) -> usize {
+        slf.width
     }
 
     fn __iter__(slf: PyRef<'_, Self>) -> PyRef<'_, Self> {

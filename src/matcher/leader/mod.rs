@@ -7,7 +7,7 @@ use crate::matcher::{MatchOptions, ParseMatcherError};
 
 pub(crate) mod parse;
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub(crate) enum LeaderField {
     BaseAddr,
     Encoding,
