@@ -1,29 +1,30 @@
-use std::fmt::{self, Display};
 use std::str::FromStr;
 
-use bstr::ByteSlice;
-use parse::parse_query;
+pub use dtype::DataType;
+pub use error::ParseQueryError;
 use winnow::Parser;
 
 use crate::matcher::MatchOptions;
-use crate::matcher::leader::LeaderField;
-use crate::path::{
-    ControlFieldPath, DataFieldPath, LeaderPath, PathKind,
-};
-use crate::{ByteRecord, ControlField, Field, Path, Value};
+use crate::query::control_field::ControlFieldExpr;
+use crate::query::data_field::DataFieldExpr;
+use crate::query::leader::LeaderExpr;
+use crate::query::parse::parse_query;
+use crate::{ByteRecord, Value};
 
+mod control_field;
+mod data_field;
+mod dtype;
 mod error;
+mod leader;
 mod parse;
 
-pub use error::ParseQueryError;
+pub(crate) const EMPTY_BYTE_STRING: [u8; 0] = [];
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Query {
     constituents: Vec<Constituent>,
     input: Vec<u8>,
 }
-
-const EMPTY_BYTE_STRING: [u8; 0] = [];
 
 impl Query {
     /// Creates a new query from a string slice.
@@ -41,8 +42,8 @@ impl Query {
     /// let _query = Query::new("ldr.length")?;
     /// let _query = Query::new("001")?;
     /// let _query = Query::new("005[0:4]")?;
-    /// let _query = Query::new("075{ _ | 2 == 'gndspec' }")?;
     /// let _query = Query::new("075{ b | 2 == 'gndspec' }")?;
+    /// let _query = Query::new("075{ _ | 2 == 'gndspec' }")?;
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
@@ -67,8 +68,8 @@ impl Query {
     /// let _query = Query::new("ldr.length")?;
     /// let _query = Query::new("001")?;
     /// let _query = Query::new("005[0:4]")?;
-    /// let _query = Query::new("075{ _ | 2 == 'gndspec' }")?;
     /// let _query = Query::new("075{ b | 2 == 'gndspec' }")?;
+    /// let _query = Query::new("075{ _ | 2 == 'gndspec' }")?;
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
@@ -81,37 +82,7 @@ impl Query {
             .map_err(ParseQueryError::from_parse)
     }
 
-    /// # Example
-    ///
-    /// ```rust
-    /// use marc21::prelude::*;
-    ///
-    /// let data = include_bytes!("../../tests/data/ada.mrc");
-    /// let record = ByteRecord::from_bytes(data)?;
-    ///
-    /// let query = Query::new("ldr.length, ldr.encoding")?;
-    /// assert_eq!(
-    ///     query.project(&record, &Default::default()),
-    ///     vec![vec!["3612", "a"]]
-    /// );
-    ///
-    /// let query = Query::new("001,005[0:4]")?;
-    /// assert_eq!(
-    ///     query.project(&record, &Default::default()),
-    ///     vec![vec!["119232022", "2025"]]
-    /// );
-    ///
-    /// let query = Query::new("075{ b, 2, x | 2 =^ 'gnd' }")?;
-    /// assert_eq!(
-    ///     query.project(&record, &Default::default()),
-    ///     vec![vec!["p", "gndgen", ""], vec!["piz", "gndspec", ""]]
-    /// );
-    ///
-    /// let query = Query::new("100/1#{ _ | d == '1815-1852' }")?;
-    /// assert!(query.project(&record, &Default::default()).is_empty());
-    ///
-    /// # Ok::<(), Box<dyn std::error::Error>>(())
-    /// ```
+    /// Performs the query projection on the given record.
     pub fn project<'a>(
         &self,
         record: &ByteRecord<'a>,
@@ -135,6 +106,7 @@ impl Query {
             })
             .map(|rows| {
                 rows.into_iter()
+                    // Remove rows that consist only of empty cells.
                     .filter(|values| {
                         values.iter().any(|value| !value.is_empty())
                     })
@@ -143,17 +115,42 @@ impl Query {
             .unwrap_or_default()
     }
 
-    pub fn arity(&self) -> usize {
+    /// Returns the width (number of columns) of the query.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21::Query;
+    ///
+    /// let query = Query::new("ldr.length")?;
+    /// assert_eq!(query.width(), 1);
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn width(&self) -> usize {
         self.constituents
             .iter()
-            .map(|constituent| constituent.arity())
+            .map(|constituent| constituent.width())
             .sum()
     }
-}
 
-impl Display for Query {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.input.to_str_lossy())
+    /// Returns the data type of the columns.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21::{DataType, Query};
+    ///
+    /// let query = Query::new("ldr.length")?;
+    /// assert_eq!(query.dtypes(), vec![DataType::UInt32]);
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn dtypes(&self) -> Vec<DataType> {
+        self.constituents
+            .iter()
+            .flat_map(|constituent| constituent.dtypes())
+            .collect()
     }
 }
 
@@ -178,234 +175,88 @@ impl FromStr for Query {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-enum Constituent {
-    Path(Box<Path>),
+struct Constituent {
+    kind: Kind,
 }
 
 impl Constituent {
-    pub fn project<'a>(
+    /// Returns the width (number of columns) generated by this
+    /// expression.
+    pub(crate) fn width(&self) -> usize {
+        match self.kind {
+            // A control field or leader expression always generates
+            // only one column.
+            Kind::ControlField(_) | Kind::Leader(_) => 1,
+            Kind::DataField(ref cf) => cf.width(),
+        }
+    }
+
+    /// Returns the data types of columns generated by this expression.
+    pub(crate) fn dtypes(&self) -> Vec<DataType> {
+        match self.kind {
+            Kind::ControlField(ref cf) => cf.dtypes(),
+            Kind::DataField(ref df) => df.dtypes(),
+            Kind::Leader(ref ldr) => ldr.dtypes(),
+        }
+    }
+
+    /// Performs the projection on the given record.
+    pub(crate) fn project<'a>(
         &self,
         record: &ByteRecord<'a>,
         options: &MatchOptions,
     ) -> Vec<Vec<Value<'a>>> {
-        match self {
-            Self::Path(path) => project_path(path, record, options),
-        }
-    }
-
-    pub fn arity(&self) -> usize {
-        match self {
-            Self::Path(path) => path.arity(),
+        match self.kind {
+            Kind::ControlField(ref cf) => cf.project(record, options),
+            Kind::DataField(ref df) => df.project(record, options),
+            Kind::Leader(ref ldr) => ldr.project(record, options),
         }
     }
 }
 
-fn project_path<'a>(
-    path: &Path,
-    record: &ByteRecord<'a>,
-    options: &MatchOptions,
-) -> Vec<Vec<Value<'a>>> {
-    match path.kind {
-        PathKind::Leader(ref path) => {
-            project_leader_path(path, record, options)
-        }
-        PathKind::ControlField(ref path) => {
-            project_control_field_path(path, record, options)
-        }
-        PathKind::DataField(ref path) => {
-            project_data_field_path(path, record, options)
-        }
-        PathKind::Empty(_) => {
-            vec![vec![Value::from(&EMPTY_BYTE_STRING)]]
-        }
-    }
-}
-
-fn project_leader_path<'a>(
-    path: &LeaderPath,
-    record: &ByteRecord<'a>,
-    _options: &MatchOptions,
-) -> Vec<Vec<Value<'a>>> {
-    let ldr = record.leader();
-    let value = match path.field {
-        LeaderField::BaseAddr => ldr.base_addr().to_string(),
-        LeaderField::Encoding => char::from(ldr.encoding()).to_string(),
-        LeaderField::Length => ldr.length().to_string(),
-        LeaderField::Status => char::from(ldr.status()).to_string(),
-        LeaderField::Type => char::from(ldr.r#type()).to_string(),
-    };
-
-    vec![vec![value.into()]]
-}
-
-fn project_control_field_path<'a>(
-    path: &ControlFieldPath,
-    record: &ByteRecord<'a>,
-    _options: &MatchOptions,
-) -> Vec<Vec<Value<'a>>> {
-    let mut iter = record.fields();
-    let mut rows = vec![];
-
-    while let Some(Field::Control(ControlField { tag, value })) =
-        iter.next()
-    {
-        if !path.tag_matcher.is_match(tag) {
-            continue;
-        }
-
-        let value: &[u8] = if let Some(range) = path.range {
-            match range {
-                (Some(start), Some(end)) => {
-                    value.get(start..end).unwrap_or_default()
-                }
-                (Some(start), None) => {
-                    value.get(start..value.len()).unwrap_or_default()
-                }
-                (None, Some(end)) => {
-                    value.get(0..end).unwrap_or_default()
-                }
-                _ => unreachable!(),
-            }
-        } else {
-            value
-        };
-
-        rows.push(vec![value.into()]);
-    }
-
-    if rows.is_empty() {
-        rows.push(vec![Value::from(&EMPTY_BYTE_STRING)]);
-    }
-
-    rows
-}
-
-fn project_data_field_path<'a>(
-    path: &DataFieldPath,
-    record: &ByteRecord<'a>,
-    options: &MatchOptions,
-) -> Vec<Vec<Value<'a>>> {
-    let mut result: Vec<Vec<Value<'a>>> = vec![];
-
-    let fields = record
-        .fields()
-        .filter(|field| path.tag_matcher.is_match(field.tag()))
-        .filter(|field| path.indicator_matcher.is_match(field))
-        .filter_map(|field| match field {
-            Field::Data(df) => Some(df),
-            _ => None,
-        })
-        .filter(|field| {
-            if let Some(ref matcher) = path.subfield_matcher {
-                matcher.is_match(field.subfields(), options)
-            } else {
-                true
-            }
-        });
-
-    for field in fields {
-        let mut rows: Vec<Vec<Value<'a>>> = vec![];
-
-        for codes in path.codes.iter() {
-            let mut values: Vec<Value<'a>> = field
-                .subfields
-                .iter()
-                .filter_map(|subfield| {
-                    if codes.contains(subfield.code()) {
-                        Some(subfield.value.into())
-                    } else {
-                        None
-                    }
-                })
-                .collect();
-
-            if values.is_empty() {
-                values.push(Value::from(&EMPTY_BYTE_STRING));
-            }
-
-            if rows.is_empty() {
-                for value in values {
-                    rows.push(vec![value]);
-                }
-            } else {
-                let temp = rows.clone();
-                rows.clear();
-
-                for old_row in temp.iter() {
-                    for value in values.iter() {
-                        let mut new_row = old_row.clone();
-                        new_row.push(value.clone());
-                        rows.push(new_row);
-                    }
-                }
-            }
-        }
-
-        result.extend(rows);
-    }
-
-    if result.is_empty() {
-        // If no field was found that could produce a row, an empty cell
-        // must be created for each column. Otherwise, the number of
-        // columns generated might vary.
-        result.push(
-            (0..path.codes.len())
-                .map(|_| Value::from(&EMPTY_BYTE_STRING))
-                .collect(),
-        );
-    }
-
-    result
-}
-
-#[cfg(feature = "serde")]
-impl serde::Serialize for Query {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(&self.to_string())
-    }
-}
-
-#[cfg(feature = "serde")]
-impl<'de> serde::Deserialize<'de> for Query {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        Self::new(&s).map_err(serde::de::Error::custom)
-    }
+#[derive(Debug, Clone, PartialEq)]
+enum Kind {
+    ControlField(ControlFieldExpr),
+    DataField(DataFieldExpr),
+    Leader(LeaderExpr),
 }
 
 #[cfg(test)]
 mod tests {
-
-    use serde_test::{Token, assert_tokens};
-
     use super::*;
     use crate::common::TestResult;
 
     #[test]
-    #[cfg(feature = "serde")]
-    fn test_query_serde() -> TestResult {
-        assert_tokens(&Query::new("001")?, &[Token::Str("001")]);
-        assert_tokens(
-            &Query::new("ldr.length")?,
-            &[Token::Str("ldr.length")],
+    fn test_query_width() -> TestResult {
+        assert_eq!(Query::new("001")?.width(), 1);
+        assert_eq!(Query::new("ldr.length")?.width(), 1);
+        assert_eq!(Query::new("042.a")?.width(), 1);
+        assert_eq!(Query::new("065{ a, 2 }")?.width(), 2);
+        assert_eq!(Query::new("065{ a, _ }")?.width(), 1);
+        assert_eq!(Query::new("065{ _ }")?.width(), 0);
+        assert_eq!(Query::new("065{ _, _ }")?.width(), 0);
+        assert_eq!(Query::new("065{ [abc] }")?.width(), 1);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_query_dtypes() -> TestResult {
+        assert_eq!(Query::new("001")?.dtypes(), vec![DataType::String]);
+
+        assert_eq!(
+            Query::new("ldr.length")?.dtypes(),
+            vec![DataType::UInt32]
         );
-        assert_tokens(
-            &Query::new("005[0:4]")?,
-            &[Token::Str("005[0:4]")],
+
+        assert_eq!(
+            Query::new("ldr.base_address")?.dtypes(),
+            vec![DataType::UInt32]
         );
-        assert_tokens(
-            &Query::new("075{ _ | 2 == 'gndspec' }")?,
-            &[Token::Str("075{ _ | 2 == 'gndspec' }")],
-        );
-        assert_tokens(
-            &Query::new("075{ b | 2 == 'gndspec' }")?,
-            &[Token::Str("075{ b | 2 == 'gndspec' }")],
+
+        assert_eq!(
+            Query::new("ldr.status, 001")?.dtypes(),
+            vec![DataType::Char, DataType::String]
         );
 
         Ok(())
