@@ -44,6 +44,8 @@ impl Query {
     /// let _query = Query::new("005[0:4]")?;
     /// let _query = Query::new("075{ b | 2 == 'gndspec' }")?;
     /// let _query = Query::new("075{ _ | 2 == 'gndspec' }")?;
+    /// let _query = Query::new("075{ b, 'gndspec' | 2 == 'gndspec' }")?;
+    /// let _query = Query::new("'foo'")?;
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
@@ -184,10 +186,9 @@ impl Constituent {
     /// expression.
     pub(crate) fn width(&self) -> usize {
         match self.kind {
-            // A control field or leader expression always generates
-            // only one column.
-            Kind::ControlField(_) | Kind::Leader(_) => 1,
             Kind::DataField(ref cf) => cf.width(),
+            // All other expressions always generates only one column.
+            _ => 1,
         }
     }
 
@@ -197,6 +198,7 @@ impl Constituent {
             Kind::ControlField(ref cf) => cf.dtypes(),
             Kind::DataField(ref df) => df.dtypes(),
             Kind::Leader(ref ldr) => ldr.dtypes(),
+            Kind::Literal(_) => vec![DataType::String],
         }
     }
 
@@ -210,6 +212,9 @@ impl Constituent {
             Kind::ControlField(ref cf) => cf.project(record, options),
             Kind::DataField(ref df) => df.project(record, options),
             Kind::Leader(ref ldr) => ldr.project(record, options),
+            Kind::Literal(ref lit) => {
+                vec![vec![Value::from(lit.clone())]]
+            }
         }
     }
 }
@@ -219,6 +224,7 @@ enum Kind {
     ControlField(ControlFieldExpr),
     DataField(DataFieldExpr),
     Leader(LeaderExpr),
+    Literal(String),
 }
 
 #[cfg(test)]

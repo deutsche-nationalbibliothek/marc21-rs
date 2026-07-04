@@ -170,3 +170,52 @@ fn query_missing_field() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn query_string_literal() -> TestResult {
+    let record = ByteRecord::from_bytes(&ADA_LOVELACE)?;
+    let options = MatchOptions::default();
+
+    // string literal (single quotes)
+    let query = Query::new("'foo'")?;
+    let values = record.query(&query, &options);
+    assert_eq!(values, vec![vec!["foo"]]);
+
+    // string literal (double quotes)
+    let query = Query::new("\"foo\"")?;
+    let values = record.query(&query, &options);
+    assert_eq!(values, vec![vec!["foo"]]);
+
+    let query = Query::new("001, 'foo'")?;
+    let values = record.query(&query, &options);
+    assert_eq!(values, vec![vec!["119232022", "foo"]]);
+
+    let query = Query::new("001, 075{ b, 'foo' }")?;
+    assert_eq!(
+        record.query(&query, &options),
+        vec![
+            vec!["119232022", "p", "foo"],
+            vec!["119232022", "piz", "foo"],
+        ]
+    );
+
+    let query = Query::new("001, 075{ b, 'foo', 2 }")?;
+    assert_eq!(
+        record.query(&query, &options),
+        vec![
+            vec!["119232022", "p", "foo", "gndgen"],
+            vec!["119232022", "piz", "foo", "gndspec"],
+        ]
+    );
+
+    let query = Query::new("001, 075{ b, 'foo' }, 'bar'")?;
+    assert_eq!(
+        record.query(&query, &options),
+        vec![
+            vec!["119232022", "p", "foo", "bar"],
+            vec!["119232022", "piz", "foo", "bar"],
+        ]
+    );
+
+    Ok(())
+}
