@@ -1,7 +1,7 @@
 use winnow::combinator::{alt, separated, seq};
 use winnow::prelude::*;
 
-use crate::matcher::shared::ws0;
+use crate::matcher::shared::{parse_string, ws0};
 use crate::query::control_field::parse_control_field_expr;
 use crate::query::data_field::parse_data_field_expr;
 use crate::query::leader::parse_leader_expr;
@@ -34,6 +34,7 @@ fn parse_constituent_kind(i: &mut &[u8]) -> ModalResult<Kind> {
         parse_data_field_expr.map(Kind::DataField),
         parse_control_field_expr.map(Kind::ControlField),
         parse_leader_expr.map(Kind::Leader),
+        parse_string.map(Kind::Literal),
     ))
     .parse_next(i)
 }

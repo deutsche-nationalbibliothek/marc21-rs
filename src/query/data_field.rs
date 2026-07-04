@@ -5,7 +5,7 @@ use winnow::combinator::{
 use winnow::prelude::*;
 
 use crate::matcher::indicator::parse::parse_indicator_matcher_opt;
-use crate::matcher::shared::{parse_codes, ws0};
+use crate::matcher::shared::{parse_codes, parse_string, ws0};
 use crate::matcher::subfield::parse::parse_subfield_matcher;
 use crate::matcher::tag::parse::parse_tag_matcher;
 use crate::matcher::{
@@ -18,17 +18,29 @@ use crate::{ByteRecord, DataType, Field, Value};
 pub(crate) struct DataFieldExpr {
     pub(crate) tag_matcher: TagMatcher,
     pub(crate) indicator_matcher: IndicatorMatcher,
-    pub(crate) codes: Vec<Vec<u8>>,
+    pub(crate) columns: Vec<Column>,
     pub(crate) subfield_matcher: Option<SubfieldMatcher>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub(crate) enum Column {
+    Codes(Vec<u8>),
+    Literal(String),
 }
 
 impl DataFieldExpr {
     pub(crate) fn width(&self) -> usize {
-        self.codes.iter().filter(|codes| !codes.is_empty()).count()
+        self.columns
+            .iter()
+            .map(|column| match column {
+                Column::Codes(codes) if codes.is_empty() => 0,
+                _ => 1,
+            })
+            .sum()
     }
 
     pub(crate) fn dtypes(&self) -> Vec<DataType> {
-        let mut dtypes = Vec::with_capacity(self.codes.len());
+        let mut dtypes = Vec::with_capacity(self.columns.len());
         for _ in 0..self.width() {
             dtypes.push(DataType::String);
         }
@@ -64,25 +76,35 @@ impl DataFieldExpr {
         for field in fields {
             let mut rows: Vec<Vec<Value<'a>>> = vec![];
 
-            for codes in self.codes.iter() {
-                if codes.is_empty() {
-                    continue;
-                }
+            for column in self.columns.iter() {
+                let mut values: Vec<Value<'a>> = Vec::new();
 
-                let mut values: Vec<Value<'a>> = field
-                    .subfields
-                    .iter()
-                    .filter_map(|subfield| {
-                        if codes.contains(subfield.code()) {
-                            Some(subfield.value.into())
-                        } else {
-                            None
+                match column {
+                    Column::Literal(lit) => {
+                        values.push(lit.clone().into())
+                    }
+                    Column::Codes(codes) => {
+                        if codes.is_empty() {
+                            continue;
                         }
-                    })
-                    .collect();
 
-                if values.is_empty() {
-                    values.push(Value::from(&EMPTY_BYTE_STRING));
+                        values.extend(
+                            field.subfields.iter().filter_map(
+                                |subfield| {
+                                    if codes.contains(subfield.code()) {
+                                        Some(subfield.value.into())
+                                    } else {
+                                        None
+                                    }
+                                },
+                            ),
+                        );
+
+                        if values.is_empty() {
+                            values
+                                .push(Value::from(&EMPTY_BYTE_STRING));
+                        }
+                    }
                 }
 
                 if rows.is_empty() {
@@ -111,7 +133,7 @@ impl DataFieldExpr {
             // cell must be created for each column. Otherwise, the
             // number of columns generated might vary.
             result.push(
-                (0..self.codes.len())
+                (0..self.columns.len())
                     .map(|_| Value::from(&EMPTY_BYTE_STRING))
                     .collect(),
             );
@@ -136,7 +158,7 @@ fn parse_data_field_expr_short(
         tag_matcher: parse_tag_matcher,
         indicator_matcher: parse_indicator_matcher_opt,
         _: '.',
-        codes: parse_codes.map(|codes| vec![codes]),
+        columns: parse_codes.map(|codes| vec![Column::Codes(codes)]),
         subfield_matcher: empty.value(None),
     }}
     .parse_next(i)
@@ -149,9 +171,18 @@ fn parse_data_field_expr_long(
         tag_matcher: parse_tag_matcher,
         indicator_matcher: parse_indicator_matcher_opt,
         _: terminated('{', multispace1),
-        codes: separated(1.., alt((parse_codes, b'_'.value(vec![]))), ws0(',')),
+        columns: separated(1.., parse_column, ws0(',')),
         subfield_matcher: opt(preceded(ws0('|'), parse_subfield_matcher)),
         _: preceded(multispace0, '}'),
     }}
+    .parse_next(i)
+}
+
+fn parse_column(i: &mut &[u8]) -> ModalResult<Column> {
+    alt((
+        parse_codes.map(Column::Codes),
+        b'_'.value(Column::Codes(vec![])),
+        parse_string.map(Column::Literal),
+    ))
     .parse_next(i)
 }
