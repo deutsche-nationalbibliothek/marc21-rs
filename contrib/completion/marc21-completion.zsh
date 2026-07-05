@@ -35,10 +35,9 @@ _arguments "${_arguments_options[@]}" : \
 '--output=[Write output to <filename> instead of stdout]:filename:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
-'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
-'-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-a[Append to the given file, do not overwrite]' \
 '--append[Append to the given file, do not overwrite]' \
@@ -58,10 +57,9 @@ _arguments "${_arguments_options[@]}" : \
 '--output=[Write output to <filename> instead of stdout]:filename:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
-'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
-'-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-a[Append to the given file, do not overwrite]' \
 '--append[Append to the given file, do not overwrite]' \
@@ -80,10 +78,9 @@ _arguments "${_arguments_options[@]}" : \
 '--output=[Write output to FILENAME instead of stdout]:FILENAME:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
-'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
-'-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
@@ -100,10 +97,9 @@ _arguments "${_arguments_options[@]}" : \
 '--output=[Write output to FILENAME instead of stdout]:FILENAME:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
-'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
-'-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
@@ -120,10 +116,9 @@ _arguments "${_arguments_options[@]}" : \
 '--output=[Write output to FILENAME instead of stdout]:path:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
-'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
-'-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
@@ -140,10 +135,9 @@ _arguments "${_arguments_options[@]}" : \
 '--output=[Write output to <path> instead of stdout]:path:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
-'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
-'-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '--tsv[Write output tab-separated (TSV)]' \
 '-s[Skip invalid records that can'\''t be decoded]' \
@@ -163,7 +157,6 @@ _arguments "${_arguments_options[@]}" : \
 '--filter-normalization=[Transliterate the given filter expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-o+[Write output to FILENAME instead of stdout]:FILENAME:_files' \
 '--output=[Write output to FILENAME instead of stdout]:FILENAME:_files' \
-'-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
@@ -189,10 +182,9 @@ _arguments "${_arguments_options[@]}" : \
 '--output=[Write output to <path> instead of stdout]:path:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
-'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
-'-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-u[This flag ensures that all values generated for a record are counted only once in the frequency table]' \
 '--unique[This flag ensures that all values generated for a record are counted only once in the frequency table]' \
@@ -221,10 +213,9 @@ _arguments "${_arguments_options[@]}" : \
 '--output=[Write output to <path> instead of stdout]:path:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
-'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
-'-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-u[This flag ensures that all values generated for a record are counted only once in the frequency table]' \
 '--unique[This flag ensures that all values generated for a record are counted only once in the frequency table]' \
@@ -249,10 +240,9 @@ _arguments "${_arguments_options[@]}" : \
 '--output=[Write output to FILENAME instead of stdout]:FILENAME:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
-'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
-'-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
@@ -271,10 +261,9 @@ _arguments "${_arguments_options[@]}" : \
 '--output=[Write output to <filename> instead of stdout]:filename:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
-'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
-'-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-i[If this flag is set, matching will be performed case insensitive]' \
 '--ignore-case[If this flag is set, matching will be performed case insensitive]' \
@@ -296,10 +285,9 @@ _arguments "${_arguments_options[@]}" : \
 '--output=[Write output to FILENAME instead of stdout]:FILENAME:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
-'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
-'-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '--tsv[Write output tab-separated (TSV)]' \
 '-s[Skip invalid records that can'\''t be decoded]' \
@@ -315,7 +303,6 @@ _arguments "${_arguments_options[@]}" : \
 _arguments "${_arguments_options[@]}" : \
 '-o+[Write output to FILENAME instead of stdout]:FILENAME:_files' \
 '--output=[Write output to FILENAME instead of stdout]:FILENAME:_files' \
-'-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-p[If set, show a progress bar]' \
 '--progress[If set, show a progress bar]' \
@@ -332,10 +319,9 @@ _arguments "${_arguments_options[@]}" : \
 '--output=[Write output to <path>; by default all partitions are written to the current working directory]:path:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
-'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
-'-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
@@ -354,10 +340,9 @@ _arguments "${_arguments_options[@]}" : \
 '--output=[Write output to <path> instead of stdout]:path:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
-'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
-'-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
@@ -375,10 +360,9 @@ _arguments "${_arguments_options[@]}" : \
 '--output=[Write output to FILENAME instead of stdout]:filename:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
-'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
-'-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
@@ -398,10 +382,9 @@ _arguments "${_arguments_options[@]}" : \
 '--output=[Write output to <path> instead of stdout]:path:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
-'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
-'-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '--tsv[Write output tab-separated (TSV)]' \
 '-s[Skip invalid records that can'\''t be decoded]' \
@@ -414,6 +397,27 @@ _arguments "${_arguments_options[@]}" : \
 '*::filenames:_files' \
 && ret=0
 ;;
+(skosify)
+_arguments "${_arguments_options[@]}" : \
+'-c+[]:CONFIG:_files' \
+'--config=[]:CONFIG:_files' \
+'-o+[Write output to <filename> instead of stdout]:filename:_files' \
+'--output=[Write output to <filename> instead of stdout]:filename:_files' \
+'-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
+'--where=[An expression for filtering records]:predicate:_default' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--compression=[Specify compression level]:n:_default' \
+'-s[Skip invalid records that can'\''t be decoded]' \
+'--skip-invalid[Skip invalid records that can'\''t be decoded]' \
+'-p[If set, show a progress bar]' \
+'--progress[If set, show a progress bar]' \
+'-h[Print help]' \
+'--help[Print help]' \
+'*::input -- MARC21 files to be processed as input. If no file is specified, or if the filename is `-`, the data is read from standard input (`stdin`) by default:_files' \
+&& ret=0
+;;
 (split)
 _arguments "${_arguments_options[@]}" : \
 '--filename=[Filename template ("{}" is replaced by the chunk number)]:template:_default' \
@@ -421,10 +425,9 @@ _arguments "${_arguments_options[@]}" : \
 '--outdir=[Write partitions into <path>]:path:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
-'--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
-'-c+[Specify compression level]:n:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
@@ -478,6 +481,7 @@ _marc21_commands() {
 'print:Print records in human readable format' \
 'sample:Select a random permutation of records' \
 'select:Transforms records into CSV or TSV format' \
+'skosify:' \
 'split:Splits a list of records into chunks' \
 'build-completion:Generate shell completions (e.g. Bash or ZSH)' \
 'build-man:' \
@@ -563,6 +567,11 @@ _marc21__subcmd__sample_commands() {
 _marc21__subcmd__select_commands() {
     local commands; commands=()
     _describe -t commands 'marc21 select commands' commands "$@"
+}
+(( $+functions[_marc21__subcmd__skosify_commands] )) ||
+_marc21__subcmd__skosify_commands() {
+    local commands; commands=()
+    _describe -t commands 'marc21 skosify commands' commands "$@"
 }
 (( $+functions[_marc21__subcmd__split_commands] )) ||
 _marc21__subcmd__split_commands() {

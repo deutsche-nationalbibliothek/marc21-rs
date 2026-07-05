@@ -33,6 +33,7 @@ fn main() -> ExitCode {
         Command::Print(cmd) => cmd.execute(),
         Command::Sample(cmd) => cmd.execute(),
         Command::Select(cmd) => cmd.execute(),
+        Command::Skosify(cmd) => cmd.execute(),
         Command::Split(cmd) => cmd.execute(),
 
         #[cfg(feature = "build")]

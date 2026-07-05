@@ -45,6 +45,8 @@ The `marc21` tool provides the following commands:
 - [partition] — Partition records by values
 - [print] — Print records in human readable format
 - [sample] — Select a random permutation of records
+- [select] — Transforms records into CSV or TSV format
+- [skosify] — Convert (authority) records to SKOS/RDF
 - [split] — Split the input into chunks of a given size
 
 The [polars-marc21] package uses the query engine to transform MARC21
@@ -118,5 +120,7 @@ This project is licensed under the [European Union Public License 1.2].
 [partition]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-partition.html
 [print]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-print.html
 [sample]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-sample.html
+[select]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-select.html
+[skosify]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-skosify.html
 [split]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-split.html
 

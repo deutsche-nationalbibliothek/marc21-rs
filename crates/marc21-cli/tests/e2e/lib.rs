@@ -16,6 +16,7 @@ mod partition;
 mod print;
 mod sample;
 mod select;
+mod skosify;
 mod split;
 
 pub(crate) mod prelude {

@@ -13,6 +13,8 @@ pub(crate) enum CliError {
     IO(std::io::Error),
     Parse(String),
     Regex(regex::Error),
+    Toml(toml::de::Error),
+    Utf8(std::str::Utf8Error),
 }
 
 impl CliError {
@@ -39,6 +41,8 @@ impl Display for CliError {
             Self::IO(e) => writeln!(f, "{e}"),
             Self::Parse(e) => writeln!(f, "{e}"),
             Self::Regex(e) => writeln!(f, "{e}"),
+            Self::Toml(e) => writeln!(f, "{e}"),
+            Self::Utf8(e) => writeln!(f, "{e}"),
         }
     }
 }
@@ -64,6 +68,18 @@ impl From<ParseMatcherError> for CliError {
 impl From<regex::Error> for CliError {
     fn from(e: regex::Error) -> Self {
         Self::Regex(e)
+    }
+}
+
+impl From<toml::de::Error> for CliError {
+    fn from(e: toml::de::Error) -> Self {
+        Self::Toml(e)
+    }
+}
+
+impl From<std::str::Utf8Error> for CliError {
+    fn from(e: std::str::Utf8Error) -> Self {
+        Self::Utf8(e)
     }
 }
 

@@ -116,6 +116,17 @@ impl FromStr for RecordMatcher {
     }
 }
 
+#[cfg(feature = "serde")]
+impl<'de> serde::Deserialize<'de> for RecordMatcher {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        Self::new(&s).map_err(serde::de::Error::custom)
+    }
+}
+
 #[derive(Debug, PartialEq, Clone)]
 pub(crate) enum MatcherKind {
     Leader(LeaderMatcher),
