@@ -1,5 +1,7 @@
+use std::fmt::{self, Display};
 use std::str::FromStr;
 
+use bstr::ByteSlice;
 pub use dtype::DataType;
 pub use error::ParseQueryError;
 use winnow::Parser;
@@ -12,17 +14,17 @@ use crate::query::parse::parse_query;
 use crate::{ByteRecord, Value};
 
 mod control_field;
-mod data_field;
+pub(crate) mod data_field;
 mod dtype;
 mod error;
 mod leader;
-mod parse;
+pub(crate) mod parse;
 
 pub(crate) const EMPTY_BYTE_STRING: [u8; 0] = [];
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Query {
-    constituents: Vec<Constituent>,
+    pub(crate) constituents: Vec<Constituent>,
     input: Vec<u8>,
 }
 
@@ -176,9 +178,15 @@ impl FromStr for Query {
     }
 }
 
+impl Display for Query {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.input.to_str_lossy())
+    }
+}
+
 #[derive(Debug, Clone, PartialEq)]
-struct Constituent {
-    kind: Kind,
+pub(crate) struct Constituent {
+    pub(crate) kind: Kind,
 }
 
 impl Constituent {
@@ -220,7 +228,7 @@ impl Constituent {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-enum Kind {
+pub(crate) enum Kind {
     ControlField(ControlFieldExpr),
     DataField(DataFieldExpr),
     Leader(LeaderExpr),

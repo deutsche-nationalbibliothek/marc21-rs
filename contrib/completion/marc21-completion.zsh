@@ -343,7 +343,7 @@ _arguments "${_arguments_options[@]}" : \
 '--progress[If set, show a progress bar]' \
 '-h[Print help (see more with '\''--help'\'')]' \
 '--help[Print help (see more with '\''--help'\'')]' \
-':path -- A MARC-21 Path expression:_default' \
+':path -- A path expression:_default' \
 '*::filenames:_files' \
 && ret=0
 ;;

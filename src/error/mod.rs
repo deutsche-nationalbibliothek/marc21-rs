@@ -1,13 +1,12 @@
 use std::fmt::{self, Display};
 
 pub use matcher::ParseMatcherError;
-pub use path::ParsePathError;
 pub use record::ParseRecordError;
 
+use crate::ParsePathError;
 use crate::query::ParseQueryError;
 
 mod matcher;
-mod path;
 mod record;
 
 /// An error that can occur in this crate.
@@ -22,8 +21,8 @@ pub struct Error<'a> {
 pub(crate) enum ErrorKind<'a> {
     Record(ParseRecordError<'a>),
     Matcher(ParseMatcherError),
-    Path(ParsePathError),
     Query(ParseQueryError),
+    Path(ParsePathError),
 }
 
 impl Display for Error<'_> {
@@ -31,8 +30,8 @@ impl Display for Error<'_> {
         match self.kind {
             ErrorKind::Record(ref err) => err.fmt(f),
             ErrorKind::Matcher(ref err) => err.fmt(f),
-            ErrorKind::Path(ref err) => err.fmt(f),
             ErrorKind::Query(ref err) => err.fmt(f),
+            ErrorKind::Path(ref err) => err.fmt(f),
         }
     }
 }

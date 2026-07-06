@@ -5,7 +5,7 @@ use assert_fs::TempDir;
 use crate::prelude::*;
 
 #[test]
-fn partition_path_arity0() -> TestResult {
+fn partition_query_arity0() -> TestResult {
     let outdir = TempDir::new()?;
     let mut cmd = marc21_cmd();
 
@@ -56,9 +56,9 @@ fn partition_by_065a() -> TestResult {
     counts.insert("4.7p.mrc", "1\n".to_string());
     counts.insert("16.1p.mrc", "1\n".to_string());
 
-    for (path, count) in counts.iter() {
+    for (query, count) in counts.iter() {
         let mut cmd = marc21_cmd();
-        let assert = cmd.arg("count").arg(outdir.join(path)).assert();
+        let assert = cmd.arg("count").arg(outdir.join(query)).assert();
         assert
             .success()
             .code(0)
@@ -100,9 +100,9 @@ fn partition_by_065a_gzip() -> TestResult {
     counts.insert("4.7p.mrc.gz", "1\n".to_string());
     counts.insert("16.1p.mrc.gz", "1\n".to_string());
 
-    for (path, count) in counts.iter() {
+    for (query, count) in counts.iter() {
         let mut cmd = marc21_cmd();
-        let assert = cmd.arg("count").arg(outdir.join(path)).assert();
+        let assert = cmd.arg("count").arg(outdir.join(query)).assert();
         assert
             .success()
             .code(0)
@@ -144,9 +144,9 @@ fn partition_by_065a_template() -> TestResult {
     counts.insert("065a-4.7p.mrc", "1\n".to_string());
     counts.insert("065a-16.1p.mrc", "1\n".to_string());
 
-    for (path, count) in counts.iter() {
+    for (query, count) in counts.iter() {
         let mut cmd = marc21_cmd();
-        let assert = cmd.arg("count").arg(outdir.join(path)).assert();
+        let assert = cmd.arg("count").arg(outdir.join(query)).assert();
         assert
             .success()
             .code(0)
@@ -223,9 +223,9 @@ fn partition_by_065a_where() -> TestResult {
     counts.insert("4.7p.mrc", "1\n".to_string());
     counts.insert("12.2p.mrc", "1\n".to_string());
 
-    for (path, count) in counts.iter() {
+    for (query, count) in counts.iter() {
         let mut cmd = marc21_cmd();
-        let assert = cmd.arg("count").arg(outdir.join(path)).assert();
+        let assert = cmd.arg("count").arg(outdir.join(query)).assert();
         assert
             .success()
             .code(0)
@@ -264,9 +264,9 @@ fn partition_limit() -> TestResult {
     counts.insert("7.14p.mrc", "1\n".to_string());
     counts.insert("18p.mrc", "1\n".to_string());
 
-    for (path, count) in counts.iter() {
+    for (query, count) in counts.iter() {
         let mut cmd = marc21_cmd();
-        let assert = cmd.arg("count").arg(outdir.join(path)).assert();
+        let assert = cmd.arg("count").arg(outdir.join(query)).assert();
         assert
             .success()
             .code(0)
