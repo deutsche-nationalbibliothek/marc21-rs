@@ -16,7 +16,7 @@ pub use directory::{Directory, Entry};
 pub use error::Error;
 pub use field::{ControlField, DataField, Field};
 pub use leader::Leader;
-pub use path::Path;
+pub use path::{ParsePathError, Path};
 pub use query::{DataType, ParseQueryError, Query};
 pub use record::{ByteRecord, StringRecord};
 pub use subfield::Subfield;

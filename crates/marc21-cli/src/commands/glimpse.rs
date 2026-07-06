@@ -51,8 +51,7 @@ impl Glimpse {
             .try_from_path_or_stdout(self.output)?;
 
         let mut summary: BTreeMap<u8, Vec<String>> = BTreeMap::new();
-        let codes: Vec<u8> =
-            self.path.codes().into_iter().flatten().collect();
+        let codes = self.path.codes();
 
         'outer: for path in self.input.iter() {
             let mut reader = MarcReadOptions::default()
@@ -84,8 +83,8 @@ impl Glimpse {
                             .fields()
                             .filter(|field| self.path.is_match(field))
                             .filter_map(|field| match field {
-                                Field::Control(_) => None,
                                 Field::Data(df) => Some(df),
+                                Field::Control(_) => None,
                             })
                             .for_each(|df| {
                                 for subfield in df.subfields() {

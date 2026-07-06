@@ -3,8 +3,6 @@ use std::collections::btree_map::Entry;
 use std::fs;
 use std::path::PathBuf;
 
-use marc21::Path;
-
 use crate::prelude::*;
 use crate::utils::Writer;
 
@@ -40,7 +38,7 @@ pub(crate) struct Partition {
     )]
     output: PathBuf,
 
-    /// A MARC-21 Path expression.
+    /// A path expression.
     path: Path,
 
     #[arg(default_value = "-", hide_default_value = true)]
@@ -61,8 +59,8 @@ impl Partition {
         let mut count = 0;
         let mut line = 0;
 
-        if self.path.arity() == 0 {
-            // If a path's arity is zero, it is impossible to produce a
+        if self.path.width() == 0 {
+            // If a path's width is zero, it is impossible to produce a
             // value. Therefore, processing can be terminated
             // prematurely at this point without having to read in
             // input.
@@ -102,8 +100,11 @@ impl Partition {
                             continue;
                         }
 
-                        let mut values: Vec<_> =
-                            record.path(&self.path, &options);
+                        let mut values: Vec<_> = record
+                            .path(&self.path, &options)
+                            .into_iter()
+                            .collect();
+
                         values.sort_unstable();
                         values.dedup();
 

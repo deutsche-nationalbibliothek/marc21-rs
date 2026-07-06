@@ -115,31 +115,8 @@ impl<'a> ByteRecord<'a> {
         self.path(&PATH, &Default::default()).into_iter().next()
     }
 
-    /// # Example
+    /// Performs the query projection on the given record.
     ///
-    /// ```rust
-    /// use marc21::prelude::*;
-    ///
-    /// let data = include_bytes!("../tests/data/ada.mrc");
-    /// let record = ByteRecord::from_bytes(data)?;
-    /// let path = Path::new("065{ a | 2 == 'sswd' }")?;
-    /// let values = record.path(&path, &Default::default());
-    ///
-    /// assert_eq!(values.len(), 2);
-    /// assert_eq!(values[0], "28p");
-    /// assert_eq!(values[1], "9.5p");
-    ///
-    /// # Ok::<(), Box<dyn std::error::Error>>(())
-    /// ```
-    #[inline(always)]
-    pub fn path(
-        &self,
-        path: &Path,
-        options: &MatchOptions,
-    ) -> Vec<Value<'a>> {
-        path.project(self, options)
-    }
-
     /// # Example
     ///
     /// ```rust
@@ -164,6 +141,32 @@ impl<'a> ByteRecord<'a> {
         options: &MatchOptions,
     ) -> Vec<Vec<Value<'a>>> {
         query.project(self, options)
+    }
+
+    /// Performs the path projection on the given record.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21::prelude::*;
+    ///
+    /// let data = include_bytes!("../tests/data/ada.mrc");
+    /// let record = ByteRecord::from_bytes(data)?;
+    /// let query = Path::new("065{ a | 2 == 'sswd' }")?;
+    /// let values = record.path(&query, &Default::default());
+    ///
+    /// assert_eq!(values.len(), 2);
+    /// assert_eq!(values, vec!["28p", "9.5p"]);
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    #[inline(always)]
+    pub fn path(
+        &self,
+        path: &Path,
+        options: &MatchOptions,
+    ) -> Vec<Value<'a>> {
+        path.project(self, options)
     }
 
     /// Returns the complete record as a byte slice.

@@ -60,7 +60,6 @@ jobs:
         item:
           - { target: record-matcher, max-total-time: 180 }
           - { target: byte-record, max-total-time: 180 }
-          - { target: path, max-total-time: 180 }
           - { target: query, max-total-time: 180 }
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0

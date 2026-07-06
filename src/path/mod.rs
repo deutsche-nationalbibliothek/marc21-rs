@@ -1,25 +1,20 @@
-pub(crate) mod parse;
-
 use std::fmt::{self, Display};
 use std::str::FromStr;
 
-use bstr::ByteSlice;
-use parse::parse_path;
+pub use error::ParsePathError;
 use winnow::Parser;
 
-use crate::error::ParsePathError;
-use crate::matcher::leader::LeaderField;
-use crate::matcher::{
-    IndicatorMatcher, MatchOptions, SubfieldMatcher, TagMatcher,
-};
-use crate::value::Value;
-use crate::{ByteRecord, ControlField, Field};
+use crate::matcher::MatchOptions;
+use crate::path::parse::parse_path;
+use crate::query::Kind;
+use crate::query::data_field::Column;
+use crate::{ByteRecord, Field, Query, Value};
+
+mod error;
+mod parse;
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Path {
-    pub(crate) kind: PathKind,
-    input: Vec<u8>,
-}
+pub struct Path(Query);
 
 impl Path {
     /// Creates a new path from a string slice.
@@ -77,7 +72,7 @@ impl Path {
             .map_err(ParsePathError::from_parse)
     }
 
-    /// Returns the arity of the path expression.
+    /// Returns the width (number of columns) of the path expression.
     ///
     /// # Example
     ///
@@ -85,34 +80,34 @@ impl Path {
     /// use marc21::Path;
     ///
     /// let path = Path::from_bytes("ldr.length")?;
-    /// assert_eq!(path.arity(), 1);
+    /// assert_eq!(path.width(), 1);
     ///
     /// let path = Path::from_bytes("005[0:8]")?;
-    /// assert_eq!(path.arity(), 1);
+    /// assert_eq!(path.width(), 1);
     ///
     /// let path = Path::from_bytes("075{ _ | 2 == 'gndspec' }")?;
-    /// assert_eq!(path.arity(), 0);
+    /// assert_eq!(path.width(), 0);
     ///
     /// let path = Path::from_bytes("075{ b | 2 == 'gndspec' }")?;
-    /// assert_eq!(path.arity(), 1);
+    /// assert_eq!(path.width(), 1);
     ///
-    /// let path = Path::from_bytes("400/1#{ a,c }")?;
-    /// assert_eq!(path.arity(), 2);
-    ///
-    /// let path = Path::from_bytes("400/1#{ [ab],c }")?;
-    /// assert_eq!(path.arity(), 2);
+    /// let path = Path::from_bytes("400/1#{ [ab] }")?;
+    /// assert_eq!(path.width(), 1);
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
-    pub fn arity(&self) -> usize {
-        match self.kind {
-            PathKind::Leader(_) => 1,
-            PathKind::ControlField(_) => 1,
-            PathKind::DataField(ref df) => df.codes.len(),
-            PathKind::Empty(_) => 0,
-        }
+    #[inline(always)]
+    pub fn width(&self) -> usize {
+        // By definition, a path expression can generate at most one
+        // column, and therefore the width must always be less than or
+        // equal to zero.
+        debug_assert!(self.0.width() <= 1);
+
+        self.0.width()
     }
 
+    /// Performs the path projection on the given record.
+    ///
     /// # Example
     ///
     /// ```rust
@@ -165,44 +160,69 @@ impl Path {
         record: &ByteRecord<'a>,
         options: &MatchOptions,
     ) -> Vec<Value<'a>> {
-        use PathKind::*;
-
-        match self.kind {
-            Leader(ref path) => path.project(record, options),
-            ControlField(ref path) => path.project(record, options),
-            DataField(ref path) => path.project(record, options),
-            Empty(_) => vec![],
-        }
+        self.0
+            .project(record, options)
+            .into_iter()
+            .flatten()
+            .collect()
     }
 
     /// Checks whether the given field matches the field spec.
     pub fn is_match(&self, field: &Field<'_>) -> bool {
-        use PathKind::*;
-
-        match self.kind {
-            ControlField(ref path) => {
+        match self.0.constituents[0].kind {
+            Kind::Leader(_) | Kind::Literal(_) => false,
+            Kind::ControlField(ref expr) => {
                 field.is_control_field()
-                    && path.tag_matcher.is_match(field.tag())
+                    && expr.tag_matcher.is_match(field.tag())
             }
-            DataField(ref path) => {
+            Kind::DataField(ref expr) => {
                 field.is_data_field()
-                    && path.tag_matcher.is_match(field.tag())
-                    && path.indicator_matcher.is_match(field)
+                    && expr.tag_matcher.is_match(field.tag())
+                    && expr.indicator_matcher.is_match(field)
             }
-            Empty(ref path) => {
-                field.is_data_field()
-                    && path.tag_matcher.is_match(field.tag())
-                    && path.indicator_matcher.is_match(field)
-            }
-            Leader(_) => false,
         }
     }
 
-    pub fn codes(&self) -> Vec<Vec<u8>> {
-        use PathKind::*;
+    /// Returns all subfield codes of the path expression
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21::Path;
+    /// use marc21::prelude::*;
+    ///
+    /// let data = include_bytes!("../../tests/data/ada.mrc");
+    /// let record = ByteRecord::from_bytes(data)?;
+    ///
+    /// let path = Path::from_bytes("ldr.length")?;
+    /// assert!(path.codes().is_empty());
+    ///
+    /// let path = Path::from_bytes("075{ _ | 2 == 'gndspec' }")?;
+    /// assert!(path.codes().is_empty());
+    ///
+    /// let path = Path::from_bytes("075{ b | 2 == 'gndspec' }")?;
+    /// assert_eq!(path.codes(), vec![b'b']);
+    ///
+    /// let path = Path::from_bytes("075{ [ab] | 2 == 'gndspec' }")?;
+    /// assert_eq!(path.codes(), vec![b'a', b'b']);
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn codes(&self) -> Vec<u8> {
+        match self.0.constituents[0].kind {
+            Kind::DataField(ref expr) => {
+                let mut result = vec![];
 
-        match self.kind {
-            DataField(ref path) => path.codes.clone(),
+                for column in expr.columns.iter() {
+                    match column {
+                        Column::Codes(codes) => result.extend(codes),
+                        _ => continue,
+                    }
+                }
+
+                result
+            }
+
             _ => vec![],
         }
     }
@@ -210,7 +230,7 @@ impl Path {
 
 impl Display for Path {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.input.to_str_lossy())
+        write!(f, "{}", self.0)
     }
 }
 
@@ -232,141 +252,6 @@ impl FromStr for Path {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Self::from_bytes(s.as_bytes())
     }
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub(crate) enum PathKind {
-    Leader(LeaderPath),
-    ControlField(ControlFieldPath),
-    DataField(DataFieldPath),
-    Empty(EmptyPath),
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub(crate) struct LeaderPath {
-    pub(crate) field: LeaderField,
-}
-
-impl LeaderPath {
-    pub fn project<'a>(
-        &self,
-        record: &ByteRecord<'a>,
-        _options: &MatchOptions,
-    ) -> Vec<Value<'a>> {
-        let ldr = record.leader();
-        let value = match self.field {
-            LeaderField::BaseAddr => ldr.base_addr().to_string(),
-            LeaderField::Encoding => {
-                char::from(ldr.encoding()).to_string()
-            }
-            LeaderField::Length => ldr.length().to_string(),
-            LeaderField::Status => char::from(ldr.status()).to_string(),
-            LeaderField::Type => char::from(ldr.r#type()).to_string(),
-        };
-
-        vec![value.into()]
-    }
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub(crate) struct ControlFieldPath {
-    pub(crate) tag_matcher: TagMatcher,
-    pub(crate) range: Option<(Option<usize>, Option<usize>)>,
-}
-
-impl ControlFieldPath {
-    pub fn project<'a>(
-        &self,
-        record: &ByteRecord<'a>,
-        _options: &MatchOptions,
-    ) -> Vec<Value<'a>> {
-        let mut iter = record.fields();
-        let mut values = vec![];
-
-        while let Some(Field::Control(ControlField { tag, value })) =
-            iter.next()
-        {
-            if !self.tag_matcher.is_match(tag) {
-                continue;
-            }
-
-            let value: &[u8] = if let Some(range) = self.range {
-                match range {
-                    (Some(start), Some(end)) => {
-                        value.get(start..end).unwrap_or_default()
-                    }
-                    (Some(start), None) => value
-                        .get(start..value.len())
-                        .unwrap_or_default(),
-                    (None, Some(end)) => {
-                        value.get(0..end).unwrap_or_default()
-                    }
-                    _ => unreachable!(),
-                }
-            } else {
-                value
-            };
-
-            values.push(value.into());
-        }
-
-        values
-    }
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub(crate) struct DataFieldPath {
-    pub(crate) tag_matcher: TagMatcher,
-    pub(crate) indicator_matcher: IndicatorMatcher,
-    pub(crate) codes: Vec<Vec<u8>>,
-    pub(crate) subfield_matcher: Option<SubfieldMatcher>,
-}
-
-impl DataFieldPath {
-    pub fn project<'a>(
-        &self,
-        record: &ByteRecord<'a>,
-        options: &MatchOptions,
-    ) -> Vec<Value<'a>> {
-        let mut values = vec![];
-
-        let fields = record
-            .fields()
-            .filter(|field| self.tag_matcher.is_match(field.tag()))
-            .filter(|field| self.indicator_matcher.is_match(field))
-            .filter_map(|field| match field {
-                Field::Data(df) => Some(df),
-                _ => None,
-            })
-            .filter(|field| {
-                if let Some(ref matcher) = self.subfield_matcher {
-                    matcher.is_match(field.subfields(), options)
-                } else {
-                    true
-                }
-            });
-
-        for field in fields {
-            for subfield in field.subfields() {
-                if self
-                    .codes
-                    .iter()
-                    .any(|codes| codes.contains(subfield.code()))
-                {
-                    values.push(subfield.value().into());
-                }
-            }
-        }
-
-        values
-    }
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub(crate) struct EmptyPath {
-    tag_matcher: TagMatcher,
-    indicator_matcher: IndicatorMatcher,
-    subfield_matcher: Option<SubfieldMatcher>,
 }
 
 #[cfg(feature = "serde")]

@@ -5,7 +5,7 @@ use winnow::error::{ContextError, ParseError};
 
 use crate::error::{Error, ErrorKind};
 
-/// An error that can occur when parsing MARC 21 records.
+/// An error that can occur when parsing a path.
 #[derive(Debug)]
 pub struct ParsePathError {
     #[allow(dead_code)]
