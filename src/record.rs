@@ -169,6 +169,32 @@ impl<'a> ByteRecord<'a> {
         path.project(self, options)
     }
 
+    /// Returns the first value of a path projection.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21::prelude::*;
+    ///
+    /// let data = include_bytes!("../tests/data/ada.mrc");
+    /// let record = ByteRecord::from_bytes(data)?;
+    /// let query = Path::new("065{ a | 2 == 'sswd' }")?;
+    /// assert_eq!(
+    ///     record.first(&query, &Default::default()).unwrap(),
+    ///     "28p"
+    /// );
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    #[inline(always)]
+    pub fn first(
+        &self,
+        path: &Path,
+        options: &MatchOptions,
+    ) -> Option<Value<'a>> {
+        path.project(self, options).into_iter().next()
+    }
+
     /// Returns the complete record as a byte slice.
     ///
     /// # Example

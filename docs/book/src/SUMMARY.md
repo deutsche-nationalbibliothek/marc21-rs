@@ -6,6 +6,11 @@
   * [Installation](getting-started/installation.md)
   * [First Steps](getting-started/first-steps.md)
 
+* [Concepts](concepts/index.md)
+  * [Filter](concepts/filter.md)
+  * [Query](concepts/query.md)
+  * [Path](concepts/path.md)
+
 * [Reference](reference/index.md)
   * [Commands](reference/commands/index.md)
     * [concat](reference/commands/marc21-concat.md)
@@ -22,4 +27,5 @@
     * [print](reference/commands/marc21-print.md)
     * [sample](reference/commands/marc21-sample.md)
     * [select](reference/commands/marc21-select.md)
+    * [skosify](reference/commands/marc21-skosify.md)
     * [split](reference/commands/marc21-split.md)

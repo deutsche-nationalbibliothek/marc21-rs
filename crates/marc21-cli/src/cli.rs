@@ -30,6 +30,7 @@ pub(crate) enum Command {
     Print(Box<Print>),
     Sample(Box<Sample>),
     Select(Box<Select>),
+    Skosify(Box<Skosify>),
     Split(Box<Split>),
 
     #[cfg(feature = "build")]
@@ -46,7 +47,6 @@ pub(crate) struct CommonOpts {
 
     /// Specify compression level
     #[arg(
-        short,
         long,
         value_parser = value_parser!(u32).range(0..=9),
         default_value_t = 3,
@@ -67,12 +67,12 @@ pub(crate) struct FilterOpts {
     #[arg(long, short, value_name = "n", default_value = "0")]
     pub(crate) limit: usize,
 
-    /// The minimum score for string similarity comparisons (0 <= score
-    /// <= 100).
+    /// The minimum score for string similarity comparisons. The value
+    /// must be between 0 and 100.
     #[arg(long,
         value_parser = value_parser!(u8).range(0..=100),
         default_value = "80",
-        value_name = "n"
+        value_name = "value"
     )]
     pub(crate) strsim_threshold: u8,
 

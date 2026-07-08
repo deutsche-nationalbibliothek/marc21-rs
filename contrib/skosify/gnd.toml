@@ -1,0 +1,11 @@
+scope = 'ldr.type == "z" && 042.a == "gnd1" && 079.q == "s"'
+uri = { base-uri = 'https://d-nb.info/', path = '001' }
+# uri = { path = '024/7#{ 0 | 2 == "gnd" }' }
+# pretty = false
+
+[group.subject-heading]
+scope = '075{ b == "s" && 2 == "gndgen" }'
+labels = [
+  { kind = 'preferred', path = '150.a' },
+  { kind = 'alternative', path = '450.a' },
+]
