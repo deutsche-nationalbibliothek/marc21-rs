@@ -1,6 +1,6 @@
 [package]
 name = "marc21-cli"
-version = "0.4.0"
+version = "0.5.0"
 authors = ["Nico Wagner <n.wagner@dnb.de>"]
 repository = "https://github.com/deutsche-nationalbibliothek/marc21-rs"
 description = "A command-line tool for processing MARC-21 records."
@@ -26,7 +26,7 @@ clap = { version = "4.6", features = ["derive", "env"] }
 csv = { version = "1.4" }
 flate2 = { version = "1.1" }
 indicatif = { version = "0.18" }
-marc21 = { path = "../../", version = "0.4", features = ["serde"] }
+marc21 = { path = "../../", version = "0.5", features = ["serde"] }
 rand = { version = "0.10.1" }
 regex = { version = "1.12" }
 serde = { version = "1.0", features = ["derive"] }
