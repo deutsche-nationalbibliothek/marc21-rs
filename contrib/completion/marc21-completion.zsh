@@ -481,7 +481,7 @@ _marc21_commands() {
 'print:Print records in human readable format' \
 'sample:Select a random permutation of records' \
 'select:Transforms records into CSV or TSV format' \
-'skosify:' \
+'skosify:Convert records to SKOS/RDF' \
 'split:Splits a list of records into chunks' \
 'build-completion:Generate shell completions (e.g. Bash or ZSH)' \
 'build-man:' \

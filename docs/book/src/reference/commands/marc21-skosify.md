@@ -2,7 +2,7 @@
 
 ## NAME
 
-*marc21-skosify* --- Convert (authority) records to SKOS/RDF
+*marc21-skosify* --- Convert records to SKOS/RDF
 
 ## SYNOPSIS
 
@@ -13,6 +13,10 @@
 This command converts a set of arbitrary MARC21 records into a [SKOS/RDF]
 graph. The specifications for how the conversion should be performed are
 defined in a configuration file.
+
+> [!NOTE]
+> If you're interested in converting MARC21 to [SKOS/RDF], you should take
+> a look at [mc2skos] as an alternative.
 
 ## CONFIGURATION
 
@@ -86,8 +90,6 @@ labels = [
   { kind = 'alternative', path = '450.a' },
 ]
 ```
-
-
 
 ### Miscellaneous
 
@@ -167,9 +169,10 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
                 "Buchkritik".
 ```
 
-[Rezension]: https://explore.gnd.network/gnd/4049712-4
 [001]: https://www.loc.gov/marc/authority/ad001.html
 [042 $a]: https://www.loc.gov/marc/authority/ad042.html
+[mc2skos]: https://pypi.org/project/mc2skos/
 [path]: ../../concepts/path.md
+[Rezension]: https://explore.gnd.network/gnd/4049712-4
 [SKOS/RDF]: https://www.w3.org/2004/02/skos/
 [TOML]: https://toml.io/en/

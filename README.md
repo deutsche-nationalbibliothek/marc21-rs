@@ -46,7 +46,7 @@ The `marc21` tool provides the following commands:
 - [print] — Print records in human readable format
 - [sample] — Select a random permutation of records
 - [select] — Transforms records into CSV or TSV format
-- [skosify] — Convert (authority) records to SKOS/RDF
+- [skosify] — Convert records to SKOS/RDF
 - [split] — Split the input into chunks of a given size
 
 The [polars-marc21] package uses the query engine to transform MARC21
