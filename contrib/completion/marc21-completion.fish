@@ -43,7 +43,7 @@ complete -c marc21 -n "__fish_marc21_needs_command" -f -a "partition" -d 'Partit
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "print" -d 'Print records in human readable format'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "sample" -d 'Select a random permutation of records'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "select" -d 'Transforms records into CSV or TSV format'
-complete -c marc21 -n "__fish_marc21_needs_command" -f -a "skosify"
+complete -c marc21 -n "__fish_marc21_needs_command" -f -a "skosify" -d 'Convert records to SKOS/RDF'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "split" -d 'Splits a list of records into chunks'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "build-completion" -d 'Generate shell completions (e.g. Bash or ZSH)'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "build-man"

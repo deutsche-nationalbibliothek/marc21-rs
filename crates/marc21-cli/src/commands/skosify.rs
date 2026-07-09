@@ -19,6 +19,7 @@ use sophia::turtle::serializer::turtle::{
 use crate::prelude::*;
 use crate::utils::Writer;
 
+/// Convert records to SKOS/RDF
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Skosify {
     #[arg(long, short, required = true)]
