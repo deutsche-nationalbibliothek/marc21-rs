@@ -15,8 +15,8 @@ graph. The specifications for how the conversion should be performed are
 defined in a configuration file.
 
 > [!NOTE]
-> If you're interested in converting MARC21 to [SKOS/RDF], you should take
-> a look at [mc2skos] as an alternative.
+> If you're interested in converting MARC21 to [SKOS/RDF], you should
+> also take a look at [mc2skos] as an alternative.
 
 ## CONFIGURATION
 
@@ -142,7 +142,7 @@ scope = '''
 
 uri = {
   base-uri = "https://explore.gnd.network/gnd/",
-  path = '024/7#{ a | 2 == "gnd" }'
+  path = '001'
 }
 
 [group.entity-type-saf]
@@ -162,7 +162,7 @@ $ marc21 skosify -c saf.toml authorities-gnd-sachbegriff_dnbmarc.mrc.gz \
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-<http://d-nb.info/gnd/4049712-4> a <http://www.w3.org/2004/02/skos/core#Concept>;
+<https://explore.gnd.network/gnd/040497127> a <http://www.w3.org/2004/02/skos/core#Concept>;
         <http://www.w3.org/2004/02/skos/core#prefLabel> "Rezension";
         <http://www.w3.org/2004/02/skos/core#altLabel> "Buchbesprechung",
                 "Buchrezension",
