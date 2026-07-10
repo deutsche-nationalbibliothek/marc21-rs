@@ -1,6 +1,7 @@
 mod comparison;
 mod connectives;
 mod contains;
+mod count;
 mod ends_with;
 mod exists;
 mod fixed_length;
