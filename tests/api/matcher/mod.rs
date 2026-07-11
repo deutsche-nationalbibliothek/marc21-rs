@@ -4,6 +4,7 @@ mod contains;
 mod ends_with;
 mod exists;
 mod fixed_length;
+mod group;
 mod r#in;
 mod regex;
 mod starts_with;
