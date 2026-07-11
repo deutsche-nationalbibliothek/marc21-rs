@@ -23,20 +23,24 @@ pub(crate) fn parse_subfield_matcher(
     i: &mut &[u8],
 ) -> ModalResult<SubfieldMatcher> {
     alt((
+        parse_group_matcher,
         parse_composite_matcher,
-        parse_exists_matcher(true),
-        parse_comparison_matcher(true),
-        parse_in_matcher(true),
-        parse_contains_matcher(true),
+        parse_not_matcher,
         alt((
+            parse_comparison_matcher(true),
+            parse_exists_matcher(true),
+            parse_in_matcher(true),
             parse_regex_matcher(true),
+            parse_contains_matcher(true),
             parse_starts_with_matcher(true),
             parse_ends_with_matcher(true),
             parse_strsim_matcher(true),
         )),
-        parse_group_matcher,
-        parse_not_matcher,
     ))
+    .map(|matcher| {
+        group_level_reset();
+        matcher
+    })
     .parse_next(i)
 }
 
@@ -102,23 +106,27 @@ fn group_level_decr() {
     GROUP_LEVEL.with(|level| *level.borrow_mut() -= 1);
 }
 
+fn group_level_reset() {
+    GROUP_LEVEL.with(|level| *level.borrow_mut() = 0);
+}
+
 fn parse_group_matcher(i: &mut &[u8]) -> ModalResult<SubfieldMatcher> {
     delimited(
         terminated(ws0('('), group_level_incr),
         alt((
+            parse_group_matcher,
             parse_composite_matcher,
+            parse_not_matcher,
             alt((
                 parse_exists_matcher(true),
                 parse_comparison_matcher(true),
                 parse_in_matcher(true),
-                parse_contains_matcher(true),
                 parse_regex_matcher(true),
+                parse_contains_matcher(true),
                 parse_starts_with_matcher(true),
                 parse_ends_with_matcher(true),
                 parse_strsim_matcher(true),
             )),
-            parse_group_matcher,
-            parse_not_matcher,
         )),
         ws0(')').map(|_| group_level_decr),
     )
@@ -144,17 +152,17 @@ fn parse_composite_and_matcher(
 ) -> ModalResult<SubfieldMatcher> {
     let atom = |i: &mut &[u8]| -> ModalResult<SubfieldMatcher> {
         ws0(alt((
-            parse_exists_matcher(true),
-            parse_comparison_matcher(true),
-            parse_in_matcher(true),
-            parse_contains_matcher(true),
+            parse_group_matcher,
+            parse_not_matcher,
             alt((
+                parse_exists_matcher(true),
+                parse_comparison_matcher(true),
+                parse_in_matcher(true),
+                parse_contains_matcher(true),
                 parse_regex_matcher(true),
                 parse_starts_with_matcher(true),
                 parse_ends_with_matcher(true),
                 parse_strsim_matcher(true),
-                parse_group_matcher,
-                parse_not_matcher,
             )),
         )))
         .parse_next(i)
@@ -172,19 +180,15 @@ fn parse_composite_or_matcher(
 ) -> ModalResult<SubfieldMatcher> {
     let atom = |i: &mut &[u8]| -> ModalResult<SubfieldMatcher> {
         ws0(alt((
-            parse_composite_and_matcher,
-            parse_exists_matcher(true),
-            alt((
-                parse_comparison_matcher(true),
-                parse_in_matcher(true),
-                parse_contains_matcher(true),
-                parse_regex_matcher(true),
-                parse_starts_with_matcher(true),
-                parse_ends_with_matcher(true),
-                parse_strsim_matcher(true),
-            )),
             parse_group_matcher,
-            parse_not_matcher,
+            parse_exists_matcher(true),
+            parse_comparison_matcher(false),
+            parse_in_matcher(false),
+            parse_contains_matcher(false),
+            parse_regex_matcher(false),
+            parse_starts_with_matcher(false),
+            parse_ends_with_matcher(false),
+            parse_strsim_matcher(false),
         )))
         .parse_next(i)
     };
