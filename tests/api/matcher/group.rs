@@ -47,11 +47,18 @@ fn subfield_matcher() -> TestResult {
     let matcher = RecordMatcher::new("079{ (a =~ '(?i)^[xyz]') }")?;
     assert!(!matcher.is_match(&record, &options));
 
-    // STRIM
+    // STRSIM
     let matcher = RecordMatcher::new("079{ (a =* 'g') }")?;
     assert!(matcher.is_match(&record, &options));
 
     let matcher = RecordMatcher::new("079{ (a =* 'x') }")?;
+    assert!(!matcher.is_match(&record, &options));
+
+    // COUNT
+    let matcher = RecordMatcher::new("079{ (#q == 3) }")?;
+    assert!(matcher.is_match(&record, &options));
+
+    let matcher = RecordMatcher::new("079{ (#a > 1) }")?;
     assert!(!matcher.is_match(&record, &options));
 
     // GROUP

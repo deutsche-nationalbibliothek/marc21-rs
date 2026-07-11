@@ -11,6 +11,7 @@ use crate::matcher::shared::{
     parse_quantifier_opt, parse_string_value, ws0, ws1,
 };
 use crate::matcher::subfield::contains::parse_contains_matcher;
+use crate::matcher::subfield::count::parse_count_matcher;
 use crate::matcher::subfield::ends_with::parse_ends_with_matcher;
 use crate::matcher::subfield::exists::parse_exists_matcher;
 use crate::matcher::subfield::r#in::parse_in_matcher;
@@ -26,6 +27,7 @@ pub(crate) fn parse_subfield_matcher(
         parse_group_matcher,
         parse_composite_matcher,
         parse_not_matcher,
+        parse_count_matcher,
         alt((
             parse_comparison_matcher(true),
             parse_exists_matcher(true),
@@ -117,6 +119,7 @@ fn parse_group_matcher(i: &mut &[u8]) -> ModalResult<SubfieldMatcher> {
             parse_group_matcher,
             parse_composite_matcher,
             parse_not_matcher,
+            parse_count_matcher,
             alt((
                 parse_exists_matcher(true),
                 parse_comparison_matcher(true),
@@ -154,6 +157,7 @@ fn parse_composite_and_matcher(
         ws0(alt((
             parse_group_matcher,
             parse_not_matcher,
+            parse_count_matcher,
             alt((
                 parse_exists_matcher(true),
                 parse_comparison_matcher(true),
@@ -181,14 +185,17 @@ fn parse_composite_or_matcher(
     let atom = |i: &mut &[u8]| -> ModalResult<SubfieldMatcher> {
         ws0(alt((
             parse_group_matcher,
-            parse_exists_matcher(true),
-            parse_comparison_matcher(false),
-            parse_in_matcher(false),
-            parse_contains_matcher(false),
-            parse_regex_matcher(false),
-            parse_starts_with_matcher(false),
-            parse_ends_with_matcher(false),
-            parse_strsim_matcher(false),
+            parse_count_matcher,
+            alt((
+                parse_exists_matcher(true),
+                parse_comparison_matcher(false),
+                parse_in_matcher(false),
+                parse_contains_matcher(false),
+                parse_regex_matcher(false),
+                parse_starts_with_matcher(false),
+                parse_ends_with_matcher(false),
+                parse_strsim_matcher(false),
+            )),
         )))
         .parse_next(i)
     };

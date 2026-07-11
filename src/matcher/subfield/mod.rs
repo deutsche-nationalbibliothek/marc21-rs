@@ -3,6 +3,7 @@ use std::ops::{BitAnd, BitOr};
 use winnow::Parser;
 
 mod contains;
+mod count;
 mod ends_with;
 pub(crate) mod exists;
 mod r#in;
@@ -15,6 +16,7 @@ use crate::matcher::shared::{
     BooleanOp, ComparisonOperator, Quantifier, Value,
 };
 use crate::matcher::subfield::contains::ContainsMatcher;
+use crate::matcher::subfield::count::CountMatcher;
 use crate::matcher::subfield::ends_with::EndsWithMatcher;
 use crate::matcher::subfield::exists::ExistsMatcher;
 use crate::matcher::subfield::r#in::InMatcher;
@@ -36,6 +38,7 @@ pub enum SubfieldMatcher {
     Regex(Box<RegexMatcher>),
     StartsWith(Box<StartsWithMatcher>),
     EndsWith(Box<EndsWithMatcher>),
+    Count(Box<CountMatcher>),
     Similarity(Box<SimilarityMatcher>),
     Group(Box<SubfieldMatcher>),
     Not(Box<SubfieldMatcher>),
@@ -83,6 +86,8 @@ impl SubfieldMatcher {
     /// let _matcher = SubfieldMatcher::new("a !* ['foo', 'bar']")?;
     /// let _matcher = SubfieldMatcher::new("a in ['foo', 'bar']")?;
     /// let _matcher = SubfieldMatcher::new("a not in ['foo', 'bar']")?;
+    /// let _matcher = SubfieldMatcher::new("#[ab] == 10")?;
+    /// let _matcher = SubfieldMatcher::new("#a > 1")?;
     ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
@@ -126,6 +131,7 @@ impl SubfieldMatcher {
             Self::Regex(m) => m.is_match(subfields, options),
             Self::StartsWith(m) => m.is_match(subfields, options),
             Self::EndsWith(m) => m.is_match(subfields, options),
+            Self::Count(m) => m.is_match(subfields, options),
             Self::Similarity(m) => m.is_match(subfields, options),
             Self::Group(m) => m.is_match(subfields, options),
             Self::Not(m) => !m.is_match(subfields, options),
