@@ -7,9 +7,8 @@
   * [First Steps](getting-started/first-steps.md)
 
 * [Concepts](concepts/index.md)
-  * [Filter](concepts/filter.md)
-  * [Query](concepts/query.md)
-  * [Path](concepts/path.md)
+  * [Record Matcher](concepts/record-matcher.md)
+  * [Query & Path](concepts/query-and-path.md)
 
 * [Reference](reference/index.md)
   * [Commands](reference/commands/index.md)
