@@ -115,11 +115,14 @@ is set to `0`. If the end value is omitted (e.g., `003[3:]`), the end is
 automatically set to the length of the corresponding value.
 
 The `in` operator can be used to check whether the value of a control
-field comes from a reference list:
+field comes from a reference list, or not (`not in`):
 
 
 ```console
 $ marc21 count tests/data/ada.mrc --where '003 in ["DE-101", "DE-1979"]'
+1
+
+$ marc21 count tests/data/ada.mrc --where '005[:4] not in ["2023", "2024"]'
 1
 
 ```

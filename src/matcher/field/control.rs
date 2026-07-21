@@ -98,6 +98,7 @@ impl ComparisonMatcher {
 #[derive(Debug, PartialEq, Clone)]
 pub struct InMatcher {
     pub(crate) tag_matcher: TagMatcher,
+    pub(crate) range: Option<(Option<usize>, Option<usize>)>,
     pub(crate) values: Vec<Vec<u8>>,
     pub(crate) negated: bool,
 }
@@ -121,6 +122,13 @@ impl InMatcher {
     ///     FieldMatcher::new("001 in ['118540238', '118572121']")?;
     /// assert!(!matcher.is_match(record.fields(), &options));
     ///
+    /// let matcher = FieldMatcher::new("005[0:5] in ['2024', '2025']")?;
+    /// assert!(!matcher.is_match(record.fields(), &options));
+    ///
+    /// let matcher =
+    ///     FieldMatcher::new("005[0:5] not in ['2001', '2002']")?;
+    /// assert!(matcher.is_match(record.fields(), &options));
+    ///
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
     pub fn is_match<'a, F: Iterator<Item = &'a Field<'a>>>(
@@ -137,10 +145,27 @@ impl InMatcher {
             iter.next()
         {
             if self.tag_matcher.is_match(tag) {
-                let result = if self.negated {
-                    !self.values.iter().any(|rhs| value == rhs)
+                let lhs = if let Some(range) = self.range {
+                    match range {
+                        (Some(start), Some(end)) => {
+                            value.get(start..end).unwrap_or_default()
+                        }
+                        (Some(start), None) => value
+                            .get(start..value.len())
+                            .unwrap_or_default(),
+                        (None, Some(end)) => {
+                            value.get(0..end).unwrap_or_default()
+                        }
+                        _ => unreachable!(),
+                    }
                 } else {
-                    self.values.iter().any(|rhs| value == rhs)
+                    value
+                };
+
+                let result = if self.negated {
+                    !self.values.iter().any(|rhs| lhs == rhs)
+                } else {
+                    self.values.iter().any(|rhs| lhs == rhs)
                 };
 
                 if result {

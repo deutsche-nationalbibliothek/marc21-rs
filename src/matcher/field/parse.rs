@@ -85,6 +85,7 @@ fn parse_control_field_in_matcher(
 ) -> ModalResult<control::InMatcher> {
     seq! { control::InMatcher{
         tag_matcher: parse_tag_matcher,
+        range: opt(parse_range),
         negated: alt((
             ws1("not in").value(true),
             ws1("in").value(false),
@@ -165,6 +166,7 @@ mod tests {
             "001 in ['A', 'B']",
             InMatcher {
                 tag_matcher: TagMatcher::new("001").unwrap(),
+                range: None,
                 values: vec![b"A".to_vec(), b"B".to_vec()],
                 negated: false,
             }
@@ -174,6 +176,7 @@ mod tests {
             "001 not in ['A', 'B']",
             InMatcher {
                 tag_matcher: TagMatcher::new("001").unwrap(),
+                range: None,
                 values: vec![b"A".to_vec(), b"B".to_vec()],
                 negated: true,
             }
@@ -183,6 +186,7 @@ mod tests {
             "001 in ['A']",
             InMatcher {
                 tag_matcher: TagMatcher::new("001").unwrap(),
+                range: None,
                 values: vec![b"A".to_vec()],
                 negated: false,
             }
@@ -192,6 +196,37 @@ mod tests {
             "001 in ['A', 'B', ]",
             InMatcher {
                 tag_matcher: TagMatcher::new("001").unwrap(),
+                range: None,
+                values: vec![b"A".to_vec(), b"B".to_vec()],
+                negated: false,
+            }
+        );
+
+        parse_success!(
+            "001[0:5] in ['A', 'B']",
+            InMatcher {
+                tag_matcher: TagMatcher::new("001").unwrap(),
+                range: Some((Some(0usize), Some(5usize))),
+                values: vec![b"A".to_vec(), b"B".to_vec()],
+                negated: false,
+            }
+        );
+
+        parse_success!(
+            "001[:5] in ['A', 'B']",
+            InMatcher {
+                tag_matcher: TagMatcher::new("001").unwrap(),
+                range: Some((None, Some(5usize))),
+                values: vec![b"A".to_vec(), b"B".to_vec()],
+                negated: false,
+            }
+        );
+
+        parse_success!(
+            "001[5:] in ['A', 'B']",
+            InMatcher {
+                tag_matcher: TagMatcher::new("001").unwrap(),
+                range: Some((Some(5usize), None)),
                 values: vec![b"A".to_vec(), b"B".to_vec()],
                 negated: false,
             }
