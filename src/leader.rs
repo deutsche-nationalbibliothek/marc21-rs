@@ -17,7 +17,7 @@ pub struct Leader {
     idef1: u8,
     idef2: u8,
     encoding: u8,
-    base_address: u32,
+    base_addr: u32,
     idef3: u8,
     idef4: u8,
     idef5: u8,
@@ -244,7 +244,7 @@ impl Leader {
     /// ```
     #[inline(always)]
     pub fn base_addr(&self) -> u32 {
-        self.base_address
+        self.base_addr
     }
 
     /// Write the leader into the given writer
@@ -275,7 +275,7 @@ impl Leader {
             self.idef1 as char,
             self.idef2 as char,
             self.encoding as char,
-            self.base_address,
+            self.base_addr,
             self.idef3 as char,
             self.idef4 as char,
             self.idef5 as char,
@@ -306,7 +306,7 @@ pub(crate) fn parse_leader(i: &mut &[u8]) -> ModalResult<Leader> {
         encoding: parse_space_or_ascii_graphic,
         _: '2', // indicator count
         _: '2', // subfield code length
-        base_address: parse_digits_u32,
+        base_addr: parse_digits_u32,
         idef3: parse_space_or_ascii_graphic,
         idef4: parse_space_or_ascii_graphic,
         idef5: parse_space_or_ascii_graphic,
@@ -332,7 +332,7 @@ mod tests {
                 idef1: b' ',
                 idef2: b' ',
                 encoding: b'a',
-                base_address: 589,
+                base_addr: 589,
                 idef3: b'n',
                 idef4: b'c',
                 idef5: b' ',
@@ -351,7 +351,7 @@ mod tests {
                 idef1: b' ',
                 idef2: b' ',
                 encoding: b'a',
-                base_address: 589,
+                base_addr: 589,
                 idef3: b'n',
                 idef4: b'c',
                 idef5: b' ',

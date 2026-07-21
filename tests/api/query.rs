@@ -48,8 +48,8 @@ fn query_leader_field() -> TestResult {
     let values = record.query(&query, &options);
     assert_eq!(values, vec![vec!["z"]]);
 
-    // base_address
-    let query = Query::new("ldr.base_address")?;
+    // base_addr
+    let query = Query::new("ldr.base_addr")?;
     let values = record.query(&query, &options);
     assert_eq!(values, vec![vec!["589"]]);
 
