@@ -75,10 +75,11 @@ lint.ignore = [
 ]
 
 [tool.ruff.lint.extend-per-file-ignores]
-"tests/*.py" = [
-    "S101",    # assert
-    "PLR2004", # magic-value-comparison
+"tests/**/*.py" = [
+    "INP001",  # implicit-namespace-package
     "PLR0915", # too-many-statements
+    "PLR2004", # magic-value-comparison
+    "S101",    # assert
 ]
 "tests/smoke_test.py" = [
     "D103", # undocumented-public-function
