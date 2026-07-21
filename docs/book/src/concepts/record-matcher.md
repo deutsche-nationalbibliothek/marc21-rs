@@ -62,91 +62,82 @@ $ marc21 count tests/data/ada.mrc --where 'ldr.type != "z"'
 
 ## Field Matcher
 
+The _field matcher_ allows you to define criteria that must apply to
+[variable fields]. There are four different types: The [control field
+matcher] operates on control fields, the [data field matcher] on data
+fields, the [exists matcher] checks whether a field exists, and the
+[count matcher] checks whether a specific number of fields are present.
 
-### Tag Matcher
 
-In MARC21, variable fields are uniquely identified by tags. A _tag
-matcher_ is an expression used to filter those fields that match a
-specific tag.
+### Control Field Matcher
 
-In its simplest form, only the three numerical digits of a tag are
-specified. A match with a tag only exists if these digits exactly match
-those of the tag:
+A _control field matcher_ consists of four components:
+
+- a [tag matcher] to select the fields
+- an optional range to check only substrings
+- an comparison operator (`==`, `!=`, `>=`, `>`, `<=`, `<`) or `in`-operator,
+- a value (comparison operator) or a list of values (`in`-operator)
+
+In the simplest case, control fields are compared by addressing
+the fields using a tag matcher, applying a comparison operator, and
+specifying a comparison value.
 
 ```console
 $ marc21 count tests/data/ada.mrc --where '001 == "119232022"'
 1
 
-$ marc21 count tests/data/ada.mrc --where '002 == "xyz"'
+$ marc21 count tests/data/ada.mrc --where '003 != "DE-101"'
 0
 
 ```
 
-In order to identify more than one field, a pattern-based comparison
-must be performed. Each numerical digit of a tag can be specified by one
-of the following variants.
+Some control fields contain fixed-length data elements. To access
+individual elements, you can optionally specify a range that defines
+the start (inclusive) and end (exclusive). If the value of the field
+contains this substring, it is compared to the reference value using the
+specified operator.
 
-First, a digit can be represented by the wildcard character `.` that
-accepts all possible values from `0` to `9`. For example, the following
-tag matcher accepts all fields that contains at least one field that
-begins with `0` and ends with `8`. The middle position can contain any
-digit.
+In the following example, all authority records are filtered where the
+date of last transaction (field [005], first 8 characters) is earlier
+than January 1, 2025:
 
 ```console
-$ marc21 count tests/data/ada.mrc --where '0.8?'
+$ marc21 count tests/data/ada.mrc --where '001[0:8] < "20260101"'
+1
+
+$ marc21 count tests/data/ada.mrc --where '001[:8] < "20260101"'
 1
 
 ```
 
-Furthermore, a digit can also be represented by specifying a class of
-possible digits. In the following example, all fields that start with
-a zero, have either a two, three, or five in the second position, and
-end with a 5 are accepted.
+Note that, if the start value is omitted (e.g., `004[:4]`), the start
+is set to `0`. If the end value is omitted (e.g., `003[3:]`), the end is
+automatically set to the length of the corresponding value.
+
+The `in` operator can be used to check whether the value of a control
+field comes from a reference list:
+
 
 ```console
-$ marc21 count tests/data/ada.mrc --where '0[235]5?'
-1
-
-```
-
-Similar to the character classes of a regular expression, several
-consecutive digits within a class can be combined into a range. The
-range is inclusive, and the upper interval limit must be greater than
-the lower limit. Note that a class can consist of more than one range
-expression.
-
-```console
-$ marc21 count tests/data/ada.mrc --where '0[2-5]5?'
-1
-
-```
-
-A class can also be specified in negated form (`^`). In this case, the
-matcher checks that the digit in the corresponding position of the tag
-does not originate from the class digits:
-
-```console
-$ marc21 count tests/data/ada.mrc --where '04[^0-3]?'
-0
-
-```
-
-After all, every options can be used in all positions of a tag matcher.
-In the most extreme case, the expressions `...` and `[0-9][0-9][0-9]`
-accept every field, while the expression `[^0-9][^0-9][^0-9]` accepts no
-fields. In the following example, all fields that begin with any digit
-not followed by a `0`and end with a `1`, `2`, `3`, `5`, or `6` are taken
-into account.
-
-```console
-$ marc21 count tests/data/ada.mrc --where '.[^0][1-356].2 == "sswd"'
+$ marc21 count tests/data/ada.mrc --where '003 in ["DE-101", "DE-1979"]'
 1
 
 ```
 
 
+### Data Field Matcher
+
+_tba_
 
 
+### Exists Matcher
+
+_tba_
+
+
+### Count Matcher
+
+_tba_
 
 ## Boolean Connectives
 
@@ -158,11 +149,19 @@ _tba_
 _tba_
 
 
-[Boolean connectives]: #boolean-connectives
+[leader]: https://www.loc.gov/marc/specifications/specrecstruc.html#leader
+[polars-marc21]: https://pypi.org/project/polars-marc21/
+[variable fields]: https://www.loc.gov/marc/specifications/specrecstruc.html#varifields
+[005]: https://www.loc.gov/marc/authority/ad005.html
+
 [count]: ../reference/commands/marc21-count.md
+
+[Boolean connectives]: #boolean-connectives
+[control field matcher]: #control-field-matcher
+[count matcher]: #count-matcher
+[data field matcher]: #data-field-matcher
+[exists matcher]: #exists-matcher
 [field matcher]: #field-matcher
 [grouping]: #grouping
-[leader]: https://www.loc.gov/marc/specifications/specrecstruc.html#leader
 [leader matcher]: #leader-matcher
-[polars-marc21]: https://pypi.org/project/polars-marc21/
-
+[Tag Matcher]: ./tag-matcher.md
