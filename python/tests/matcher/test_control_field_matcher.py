@@ -74,3 +74,31 @@ def test_control_field_matcher(data_dir: Path) -> None:
     lhs = read_marc21(path, "001", where=predicate)
     assert isinstance(lhs, pl.DataFrame)
     assert_frame_equal(lhs, rhs)
+
+    # NOT IN
+    predicate = "001 not in ['118540238', '118572121']"
+    rhs = pl.DataFrame({"column_1": ["040992918"]})
+    lhs = read_marc21(path, "001", where=predicate)
+    assert isinstance(lhs, pl.DataFrame)
+    assert_frame_equal(lhs, rhs)
+
+    # IN RANGE (START:END)
+    predicate = '005[0:4] in ["2024", "2025"]'
+    rhs = pl.DataFrame({"column_1": ["040992918"]})
+    lhs = read_marc21(path, "001", where=predicate)
+    assert isinstance(lhs, pl.DataFrame)
+    assert_frame_equal(lhs, rhs)
+
+    # IN RANGE (START:)
+    predicate = '003[3:] not in ["101a", "101b"]'
+    rhs = pl.DataFrame({"column_1": ["040992918"]})
+    lhs = read_marc21(path, "001", where=predicate)
+    assert isinstance(lhs, pl.DataFrame)
+    assert_frame_equal(lhs, rhs)
+
+    # IN RANGE (:END)
+    predicate = '005[:4] not in ["2025", "2026"]'
+    rhs = pl.DataFrame({"column_1": ["040992918"]})
+    lhs = read_marc21(path, "001", where=predicate)
+    assert isinstance(lhs, pl.DataFrame)
+    assert_frame_equal(lhs, rhs)

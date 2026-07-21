@@ -21,6 +21,17 @@ fn control_field_in() -> TestResult {
         RecordMatcher::new("001 not in ['040992918', '119232023']")?;
     assert!(matcher.is_match(&record, &options));
 
+    // ranges
+    let matcher = RecordMatcher::new("005[0:4] in ['2024', '2025']")?;
+    assert!(matcher.is_match(&record, &options));
+
+    let matcher =
+        RecordMatcher::new("005[:4] not in ['2023', '2024']")?;
+    assert!(matcher.is_match(&record, &options));
+
+    let matcher = RecordMatcher::new("003[3:] in ['101', '1979']")?;
+    assert!(matcher.is_match(&record, &options));
+
     Ok(())
 }
 
