@@ -121,7 +121,6 @@ mod tests {
         assert!(parse_leader_matcher.parse(b"ldr.type=='z'").is_err());
         assert!(parse_leader_matcher.parse(b"ldr.type== 'z'").is_err());
         assert!(parse_leader_matcher.parse(b"ldr.type =='z'").is_err());
-
         assert!(
             parse_leader_matcher.parse(b"LDR.type == 'z'").is_err()
         );
