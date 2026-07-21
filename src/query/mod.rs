@@ -275,7 +275,7 @@ mod tests {
         );
 
         assert_eq!(
-            Query::new("ldr.base_address")?.dtypes(),
+            Query::new("ldr.base_addr")?.dtypes(),
             vec![DataType::UInt32]
         );
 

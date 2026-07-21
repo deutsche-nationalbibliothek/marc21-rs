@@ -74,9 +74,9 @@ def test_query_control_field(data_dir: Path) -> None:
 def test_query_leader(data_dir: Path) -> None:
     path = data_dir.joinpath("ada.mrc")
 
-    # base address
+    # base addr
     expected = pl.DataFrame({"column_1": ["589"]})
-    actual = scan_marc21(path, "ldr.base_address").collect()
+    actual = scan_marc21(path, "ldr.base_addr").collect()
     assert isinstance(actual, pl.DataFrame)
     assert_frame_equal(actual, expected)
 

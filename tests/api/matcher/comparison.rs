@@ -23,7 +23,7 @@ fn compare_leader_fields() -> TestResult {
     let matcher = RecordMatcher::new("ldr.length < 3613")?;
     assert!(matcher.is_match(&record, &options));
 
-    let matcher = RecordMatcher::new("ldr.base_address == 589")?;
+    let matcher = RecordMatcher::new("ldr.base_addr == 589")?;
     assert!(matcher.is_match(&record, &options));
 
     let matcher = RecordMatcher::new("ldr.status == 'n'")?;

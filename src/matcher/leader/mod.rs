@@ -21,7 +21,7 @@ pub(crate) enum LeaderField {
 /// The LeaderMatcher can be used to check the leader fields. The
 /// following fields can be checked:
 ///
-/// - Base Address `ldr.base_address`,
+/// - Base Address `ldr.base_addr`,
 /// - Encoding `ldr.encoding`,
 /// - Length `ldr.length`,
 /// - Status`ldr.status`,
@@ -42,7 +42,7 @@ pub(crate) enum LeaderField {
 /// let leader = Leader::new(b"00000nz  a2200000oc 4500")?;
 /// let options = MatchOptions::default();
 ///
-/// let matcher = LeaderMatcher::new("ldr.base_address == 0")?;
+/// let matcher = LeaderMatcher::new("ldr.base_addr == 0")?;
 /// assert!(matcher.is_match(&leader, &options));
 ///
 /// let matcher = LeaderMatcher::new("ldr.encoding == 'a'")?;

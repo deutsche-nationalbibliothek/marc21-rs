@@ -12,7 +12,7 @@ through [Boolean connectives] or [grouping].
 The leader matcher allows you to check the elements of the [leader]. The
 following fields can be checked:
 
-- `base_address` --- Base address of data (position 12-16)
+- `base_addr` --- Base address of data (position 12-16)
 - `encoding` --- Character coding scheme (position 09)
 - `length` --- Record length (position 00-04)
 - `status ` --- Record status (position 05)
@@ -42,7 +42,7 @@ the `--where` option. If the command returns the value `1`, the leader
 of this record meets the criterion; otherwise, it does not.
 
 ```console
-$ marc21 count tests/data/ada.mrc --where 'ldr.base_address > 500'
+$ marc21 count tests/data/ada.mrc --where 'ldr.base_addr > 500'
 1
 
 $ marc21 count tests/data/ada.mrc --where 'ldr.encoding != "a"'

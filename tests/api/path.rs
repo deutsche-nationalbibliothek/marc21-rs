@@ -25,8 +25,8 @@ fn path_leader_field() -> TestResult {
     let values = record.path(&path, &options);
     assert_eq!(values, vec!["z"]);
 
-    // base_address
-    let path = Path::new("ldr.base_address")?;
+    // base_addr
+    let path = Path::new("ldr.base_addr")?;
     let values = record.path(&path, &options);
     assert_eq!(values, vec!["589"]);
 

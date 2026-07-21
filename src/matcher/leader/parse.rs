@@ -30,7 +30,7 @@ pub(crate) fn parse_leader_field(
     i: &mut &[u8],
 ) -> ModalResult<LeaderField> {
     alt((
-        "base_address".value(LeaderField::BaseAddr),
+        "base_addr".value(LeaderField::BaseAddr),
         "encoding".value(LeaderField::Encoding),
         "length".value(LeaderField::Length),
         "status".value(LeaderField::Status),
@@ -55,7 +55,7 @@ mod tests {
             };
         }
 
-        parse_success!("base_address", LeaderField::BaseAddr);
+        parse_success!("base_addr", LeaderField::BaseAddr);
         parse_success!("encoding", LeaderField::Encoding);
         parse_success!("length", LeaderField::Length);
         parse_success!("status", LeaderField::Status);
@@ -83,7 +83,7 @@ mod tests {
         );
 
         parse_success!(
-            "ldr.base_address == 32",
+            "ldr.base_addr == 32",
             LeaderMatcher {
                 field: LeaderField::BaseAddr,
                 operator: ComparisonOperator::Eq,
