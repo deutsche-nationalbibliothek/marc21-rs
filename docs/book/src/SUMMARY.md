@@ -10,6 +10,7 @@
   * [Record Matcher](concepts/record-matcher.md)
   * [Query & Path](concepts/query-and-path.md)
   * [Tag Matcher](concepts/tag-matcher.md)
+  * [Indicator Matcher](concepts/indicator-matcher.md)
 
 * [Reference](reference/index.md)
   * [Commands](reference/commands/index.md)
