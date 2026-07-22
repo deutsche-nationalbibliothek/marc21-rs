@@ -38,7 +38,7 @@ impl ContainsMatcher {
         let r#fn = |subfield: &Subfield| -> bool {
             match self.negated {
                 false => self.ac.is_match(subfield.value()),
-                true => self.ac.is_match(subfield.value()),
+                true => !self.ac.is_match(subfield.value()),
             }
         };
 
