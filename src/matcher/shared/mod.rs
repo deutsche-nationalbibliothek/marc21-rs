@@ -8,7 +8,7 @@ use winnow::combinator::{
 use winnow::error::ParserError;
 use winnow::prelude::*;
 use winnow::stream::{AsChar, Stream, StreamIsPartial};
-use winnow::token::{one_of, take_while};
+use winnow::token::one_of;
 
 mod operator;
 mod quantifier;
@@ -53,17 +53,54 @@ pub(crate) fn parse_usize(i: &mut &[u8]) -> ModalResult<usize> {
         .parse_next(i)
 }
 
+fn parse_code_class_range(i: &mut &[u8]) -> ModalResult<Vec<u8>> {
+    alt((
+        separated_pair(
+            one_of(|b: u8| b.is_ascii_digit()),
+            b'-',
+            one_of(|b: u8| b.is_ascii_digit()),
+        ),
+        separated_pair(
+            one_of(|b: u8| b.is_ascii_lowercase()),
+            b'-',
+            one_of(|b: u8| b.is_ascii_lowercase()),
+        ),
+        separated_pair(
+            one_of(|b: u8| b.is_ascii_uppercase()),
+            b'-',
+            one_of(|b: u8| b.is_ascii_uppercase()),
+        ),
+    ))
+    .verify(|(min, max)| min < max)
+    .map(|(min, max)| (min..=max).collect())
+    .parse_next(i)
+}
+
+fn parse_code_class(i: &mut &[u8]) -> ModalResult<Vec<u8>> {
+    delimited(
+        '[',
+        repeat(
+            1..,
+            alt((
+                parse_code_class_range,
+                one_of(AsChar::is_alphanum).map(|code: u8| vec![code]),
+            )),
+        ),
+        ']',
+    )
+    .map(|codes: Vec<_>| {
+        let mut codes: Vec<u8> = codes.into_iter().flatten().collect();
+        codes.sort_unstable();
+        codes.dedup();
+        codes
+    })
+    .parse_next(i)
+}
+
 pub(crate) fn parse_codes(i: &mut &[u8]) -> ModalResult<Vec<u8>> {
     alt((
         one_of(AsChar::is_alphanum).map(|code| vec![code]),
-        delimited('[', take_while(1.., AsChar::is_alphanum), ']').map(
-            |codes: &[u8]| {
-                let mut codes = codes.to_vec();
-                codes.sort_unstable();
-                codes.dedup();
-                codes
-            },
-        ),
+        parse_code_class,
         b'*'.value(
             (b'0'..=b'9')
                 .chain(b'a'..=b'z')
@@ -116,6 +153,18 @@ mod tests {
             (b'0'..=b'9')
                 .chain(b'a'..=b'z')
                 .chain(b'A'..=b'Z')
+                .collect::<Vec<_>>()
+        );
+
+        parse_success!("[a-c]", vec![b'a', b'b', b'c']);
+        parse_success!("[A-C]", vec![b'A', b'B', b'C']);
+        parse_success!("[3-5]", vec![b'3', b'4', b'5']);
+        parse_success!("[0a-c]", vec![b'0', b'a', b'b', b'c']);
+        parse_success!(
+            "[a-cA-C4-8]",
+            (b'4'..=b'8')
+                .chain(b'A'..=b'C')
+                .chain(b'a'..=b'c')
                 .collect::<Vec<_>>()
         );
 
