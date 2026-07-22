@@ -277,10 +277,12 @@ impl<'de> serde::Deserialize<'de> for Path {
 
 #[cfg(test)]
 mod tests {
-
+    #[cfg(feature = "serde")]
     use serde_test::{Token, assert_tokens};
 
+    #[cfg(feature = "serde")]
     use super::*;
+    #[cfg(feature = "serde")]
     use crate::common::TestResult;
 
     #[test]
