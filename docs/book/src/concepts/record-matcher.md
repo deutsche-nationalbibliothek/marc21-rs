@@ -1,11 +1,11 @@
 # Record Matcher
 
-A matcher is the most important component of both the command-line tool
-`marc21` and the Python extension [polars-marc21]. It allows for the
-efficient filtering of records (or their components) based on various
-criteria. A _record matcher_ consists of either a [leader matcher] or
-a [field matcher], which can be combined into more complex statements
-through [Boolean connectives] or [grouping].
+The _record matcher_ is the most important component of both the
+command-line tool `marc21` and the Python extension [polars-marc21].
+It allows for the efficient filtering of records (or their components)
+based on various criteria. A record matcher consists of either a [leader
+matcher] or a [field matcher], which can be combined into more complex
+statements through [Boolean connectives] or [grouping].
 
 ## Leader Matcher
 

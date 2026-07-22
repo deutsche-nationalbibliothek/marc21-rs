@@ -7,10 +7,11 @@
   * [First Steps](getting-started/first-steps.md)
 
 * [Concepts](concepts/index.md)
-  * [Record Matcher](concepts/record-matcher.md)
-  * [Query & Path](concepts/query-and-path.md)
   * [Tag Matcher](concepts/tag-matcher.md)
   * [Indicator Matcher](concepts/indicator-matcher.md)
+  * [Subfield Matcher](concepts/subfield-matcher.md)
+  * [Record Matcher](concepts/record-matcher.md)
+  * [Query & Path](concepts/query-and-path.md)
 
 * [Reference](reference/index.md)
   * [Commands](reference/commands/index.md)
