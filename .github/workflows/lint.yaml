@@ -29,9 +29,8 @@ jobs:
           persist-credentials: false
       - uses: EmbarkStudios/cargo-deny-action@3c6349835b2b7b196a839186cb8b78e02f7b5f25 # v2.1.1
         with:
-          command: check ${{ matrix.checks }}
-          arguments: --workspace --all-features
-          command-arguments: -c .deny.toml
+          command-arguments: ${{ matrix.checks }}
+          arguments: --config .deny.toml --workspace --all-features
           rust-version: stable
 
   udeps:
