@@ -61,3 +61,5 @@ performant = ["marc21/performant"]
 # change at any time.
 unstable = ["marc21/unstable"]
 
+# This features enables debug output of the marc21 crate.
+# debug = ["marc21/debug"]

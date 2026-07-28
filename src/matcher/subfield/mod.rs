@@ -2,28 +2,28 @@ use std::ops::{BitAnd, BitOr};
 
 use winnow::Parser;
 
-mod contains;
+mod comparison;
 mod count;
-mod ends_with;
 pub(crate) mod exists;
-mod r#in;
+mod member;
+mod prefix;
 mod regex;
-mod starts_with;
 mod strsim;
+mod substr;
+mod suffix;
 
 use crate::Subfield;
-use crate::matcher::shared::{
-    BooleanOp, ComparisonOperator, Quantifier, Value,
-};
-use crate::matcher::subfield::contains::ContainsMatcher;
+use crate::matcher::shared::BooleanOp;
+use crate::matcher::subfield::comparison::ComparisonMatcher;
 use crate::matcher::subfield::count::CountMatcher;
-use crate::matcher::subfield::ends_with::EndsWithMatcher;
 use crate::matcher::subfield::exists::ExistsMatcher;
-use crate::matcher::subfield::r#in::InMatcher;
-use crate::matcher::subfield::parse::parse_subfield_matcher;
+use crate::matcher::subfield::member::MemberMatcher;
+use crate::matcher::subfield::parse::parse_subfield_matcher_long;
+use crate::matcher::subfield::prefix::PrefixMatcher;
 use crate::matcher::subfield::regex::RegexMatcher;
-use crate::matcher::subfield::starts_with::StartsWithMatcher;
 use crate::matcher::subfield::strsim::SimilarityMatcher;
+use crate::matcher::subfield::substr::SubstrMatcher;
+use crate::matcher::subfield::suffix::SuffixMatcher;
 use crate::matcher::{MatchOptions, ParseMatcherError};
 
 pub(crate) mod parse;
@@ -32,13 +32,13 @@ pub(crate) mod parse;
 #[derive(Debug, PartialEq, Clone)]
 pub enum SubfieldMatcher {
     Exists(Box<ExistsMatcher>),
-    Comparison(Box<ComparisonMatcher>),
-    Contains(Box<ContainsMatcher>),
-    In(Box<InMatcher>),
-    Regex(Box<RegexMatcher>),
-    StartsWith(Box<StartsWithMatcher>),
-    EndsWith(Box<EndsWithMatcher>),
     Count(Box<CountMatcher>),
+    Comparison(Box<ComparisonMatcher>),
+    Prefix(Box<PrefixMatcher>),
+    Suffix(Box<SuffixMatcher>),
+    Substr(Box<SubstrMatcher>),
+    Member(Box<MemberMatcher>),
+    Regex(Box<RegexMatcher>),
     Similarity(Box<SimilarityMatcher>),
     Group(Box<SubfieldMatcher>),
     Not(Box<SubfieldMatcher>),
@@ -94,7 +94,7 @@ impl SubfieldMatcher {
     pub fn new<B: AsRef<[u8]>>(
         bytes: B,
     ) -> Result<Self, ParseMatcherError> {
-        parse_subfield_matcher
+        parse_subfield_matcher_long
             .parse(bytes.as_ref())
             .map_err(ParseMatcherError::from_parse)
     }
@@ -126,11 +126,11 @@ impl SubfieldMatcher {
         match self {
             Self::Exists(m) => m.is_match(subfields, options),
             Self::Comparison(m) => m.is_match(subfields, options),
-            Self::Contains(m) => m.is_match(subfields, options),
-            Self::In(m) => m.is_match(subfields, options),
+            Self::Substr(m) => m.is_match(subfields, options),
+            Self::Member(m) => m.is_match(subfields, options),
             Self::Regex(m) => m.is_match(subfields, options),
-            Self::StartsWith(m) => m.is_match(subfields, options),
-            Self::EndsWith(m) => m.is_match(subfields, options),
+            Self::Prefix(m) => m.is_match(subfields, options),
+            Self::Suffix(m) => m.is_match(subfields, options),
             Self::Count(m) => m.is_match(subfields, options),
             Self::Similarity(m) => m.is_match(subfields, options),
             Self::Group(m) => m.is_match(subfields, options),
@@ -179,43 +179,6 @@ impl BitOr for SubfieldMatcher {
             lhs: Box::new(self),
             op: BooleanOp::Or,
             rhs: Box::new(rhs),
-        }
-    }
-}
-
-#[derive(Debug, PartialEq, Clone)]
-pub struct ComparisonMatcher {
-    quantifier: Quantifier,
-    codes: Vec<u8>,
-    operator: ComparisonOperator,
-    value: Value,
-}
-
-impl ComparisonMatcher {
-    pub fn is_match<'a, S: IntoIterator<Item = &'a Subfield<'a>>>(
-        &self,
-        subfields: S,
-        _options: &MatchOptions,
-    ) -> bool {
-        let mut subfields = subfields
-            .into_iter()
-            .filter(|subfield| self.codes.contains(subfield.code()));
-
-        let r#fn = |subfield: &Subfield| -> bool {
-            let value = subfield.value();
-            match self.operator {
-                ComparisonOperator::Eq => value == self.value,
-                ComparisonOperator::Ne => value != self.value,
-                ComparisonOperator::Ge => value >= self.value,
-                ComparisonOperator::Gt => value > self.value,
-                ComparisonOperator::Le => value <= self.value,
-                ComparisonOperator::Lt => value < self.value,
-            }
-        };
-
-        match self.quantifier {
-            Quantifier::Any => subfields.any(r#fn),
-            Quantifier::All => subfields.all(r#fn),
         }
     }
 }

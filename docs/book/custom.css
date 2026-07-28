@@ -14,5 +14,19 @@ h2 {
 }
 
 .content main {
-  max-width: 780px;
+  max-width: 85%;
+}
+
+table{
+   width:100%;
+   /* table-layout: fixed; */
+   /* overflow-wrap: break-word; */
+}
+
+table thead {
+  background: #efefef;
+}
+
+table thead th {
+  text-align: left;
 }

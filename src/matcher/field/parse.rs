@@ -14,7 +14,7 @@ use crate::matcher::shared::{
     parse_range, parse_string_value, parse_usize, ws0, ws1,
 };
 use crate::matcher::subfield::parse::{
-    parse_subfield_matcher, parse_subfield_matcher_short,
+    parse_subfield_matcher_long, parse_subfield_matcher_short,
 };
 use crate::matcher::tag::parse::parse_tag_matcher;
 
@@ -36,7 +36,7 @@ fn parse_exists_matcher(i: &mut &[u8]) -> ModalResult<ExistsMatcher> {
         tag_matcher: parse_tag_matcher,
         indicator_matcher:  parse_indicator_matcher_opt,
         subfield_matcher: alt((
-            preceded('.', crate::matcher::subfield::exists::parse_exists_matcher(false))
+            preceded('.', crate::matcher::subfield::exists::parse_exists_matcher_short)
                 .map(Some),
             '?'.value(None)
         )),
@@ -135,7 +135,7 @@ fn parse_data_field_matcher_long(
         indicator_matcher: parse_indicator_matcher_opt,
         matcher: delimited(
             terminated('{', multispace0),
-            parse_subfield_matcher,
+            parse_subfield_matcher_long,
             preceded(multispace0, '}')
         )
     }}

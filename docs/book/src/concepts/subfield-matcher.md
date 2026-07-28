@@ -5,17 +5,22 @@ subfields (of a data field) and checks whether that list meets the
 specified criteria. The matcher is primarily used as part of a [field
 matcher] and as a constraint in [query] or [path] expressions.
 
-The following elementary variants are distinguished:
+The following elementary matcher variants are distinguished:
 
-- The [exists matcher] `?` checks whether a specific subfield is present
-- The [count matcher] `#` checks the number of occurrences a subfield
-- The [comparison matcher] compares the value of a subfield against a reference value
-- The [contains matcher] `=?` checks whether a subfield contains a specific phrase
-- The [in matcher] `in` checks whether the value of a subfield comes from a reference list
-- The [starts-with matcher] `=^` checks whether the value of a subfield begins with a prefix
-- The [ends-with matcher] `=$` checks whether the value of a subfield ends with a suffix
-- The [similarity matcher] `=*` checks whether the value of a subfield is similar to a reference value
-- The [regex matcher] `=~` checks whether the value of a subfield matches a regular expression
+| Matcher                           | Operator       | Description                                                                  |
+|-----------------------------------|----------------|------------------------------------------------------------------------------|
+| [Exists](#exists-matcher)         | `?`            | checks whether a specific subfield is present                                |
+| [Count](#count-matcher)           | `#`            | checks the number of occurrences of a subfield                               |
+| [Comparison](#comparison-matcher) | `==`, `!=`, `>=`, `>`, `<=`, `<` | compares the value of a subfield against a reference value |
+| [Substring](#substring-matcher)   | `=?`, `!?`     | checks whether a subfield contains a specific phrase                         |
+| [Member](#member-matcher)         | `in`, `not in` | checks whether the value of a subfield comes from a reference list           |
+| [Prefix](#prefix-matcher)         | `=^`, `!^`     | checks whether the value of a subfield begins with a prefix                  |
+| [Suffix](#suffix)                 | `=$`, `!$`     | checks whether the value of a subfield ends with a suffix                    |
+| [Similarity](#similarity-matcher) | `=*`. `!*`     | checks whether the value of a subfield is similar to a reference             |
+| [Regex](#regex-matcher)           | `=~`, `!~`     | checks whether the value of a subfield matches a regular expression          |
+
+Using the [Boolean connectives] _AND_ `&&` and _OR_ `||`, the elementary
+matcher variants can be combined to more complex statements.
 
 ## Exists Matcher
 
@@ -103,9 +108,9 @@ $ marc21 count tests/data/ada.mrc --where '079{ ANY u != "k" }'
 
 ```
 
-## Contains Matcher
+## Substring Matcher
 
-The _contains matcher_ checks whether the specified substring is
+The _substr matcher_ checks whether the specified substring is
 contained in the specified subfield. Internally, the matcher uses the
 [Aho–Corasick algorithm] (with [SIMD] acceleration in some cases) to
 enable efficient substring searches.
@@ -148,9 +153,9 @@ $ marc21 count tests/data/ada.mrc --where '035{ ALL [az] =? "DE-" }'
 
 ```
 
-## In Matcher
+## Member Matcher
 
-The `in` matcher checks whether the value of a subfield comes from a
+The _member matcher_ checks whether the value of a subfield comes from a
 reference list. The values are specified as a non-empty, comma-separated
 list enclosed in square brackets. If you want to check whether the
 value of a field *does not* come from a list, use the `not in` operator
@@ -178,12 +183,12 @@ $ marc21 count tests/data/ada.mrc --where '079{ ALL u in ["w", "k", "v"] }'
 
 ```
 
-## Starts-With Matcher
+## Prefix Matcher
 
-The _starts-with matcher_ checks whether the value of a subfield
-begins with a prefix. If the matcher is to search for multiple possible
-prefixes, the values are specified as a list. To check whether the value
-does *not* begin with a prefix, the `!^` operator is used.
+The _prefix matcher_ checks whether the value of a subfield begins with
+a prefix. If the matcher is to search for multiple possible prefixes,
+the values are specified as a list. To check whether the value does
+*not* begin with a prefix, the `!^` operator is used.
 
 ```console
 $ marc21 count tests/data/ada.mrc --where '400/1#{ a =^ "Love" }'
@@ -210,12 +215,12 @@ $ marc21 count tests/data/ada.mrc --where '400/1#{ ALL d =^ "1815" }'
 
 ```
 
-## Ends-With Matcher
+## Suffix Matcher
 
-The _ends-with matcher_ checks whether the value of a subfield
-ends with a suffix. If the matcher is to search for multiple possible
-suffixes, the values are specified as a list. To check whether the value
-does *not* end with a suffix, the `!$` operator is used.
+The _suffix matcher_ checks whether the value of a subfield ends with a
+suffix. If the matcher is to search for multiple possible suffixes, the
+values are specified as a list. To check whether the value does *not*
+end with a suffix, the `!$` operator is used.
 
 ```console
 $ marc21 count tests/data/ada.mrc --where '400/1#{ a =$ "Ada" }'
@@ -319,21 +324,51 @@ $ marc21 count tests/data/ada.mrc --where '079{ ALL u =~ "^[a-z]$" }'
 > The [Rustexp] website offers a regular expression editor and tester.
 
 
+## Boolean Connectives
+
+More complex statements can be formed using the two Boolean operators
+AND `&&` and OR `||`. Since the connected sub-statements always refer to
+a single field, Boolean operators can only be used in the long form of a
+[field matcher].
+
+In the following example, the data record must contain a field `075` for
+which the following is true: There exists a subfield `b` with the value
+`p` **and**, within the same field, there exists a subfield `2` with the
+value `gndgen`.
+
+```console
+$ marc21 count tests/data/ada.mrc --where '075{ b == "p" && 2 == "gndgen" }'
+1
+
+$ marc21 count tests/data/ada.mrc --where '075{ b == "p" && 2 == "gndspec" }'
+0
+
+```
+
+The `&&` operator has higher precedence than the `||` operator, which
+means that the expression `A || B && C` is equivalent to `A || (B &&
+C)`. It follows that parentheses may be necessary:
+
+```console
+$ marc21 count tests/data/ada.mrc --where '075{ (((b == "p") || b == "p") && 2 == "gndgen")  }'
+1
+
+```
 
 
-
+[boolean connectives]: #boolean-connectives
 [comparison matcher]: #comparison-matcher
-[contains matcher]: #contains-matcher
 [count matcher]: #count-matcher
-[ends-with matcher]: #ends-with-matcher
 [exists matcher]: #exists-matcher
 [field matcher]: ./record-matcher.md#field-matcher
-[in matcher]: #in-matcher
+[member matcher]: #member-matcher
 [path]: ./query-and-path.md#path
+[prefix matcher]: #prefix-matcher
 [query]: ./query-and-path.md#query
-[starts-with matcher]: #starts-with-matcher
-[similarity matcher]: #similarity-matcher
 [regex matcher]: #regex-matcher
+[similarity matcher]: #similarity-matcher
+[substring matcher]: #substring-matcher
+[suffix matcher]: #suffix-matcher
 
 [Aho–Corasick algorithm]: https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
 [Levenshtein distance]: https://en.wikipedia.org/wiki/Levenshtein_distance
