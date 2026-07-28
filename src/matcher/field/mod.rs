@@ -47,7 +47,6 @@ impl FieldMatcher {
     ///
     /// # Example
     ///
-    ///
     /// ```rust
     /// use marc21::matcher::FieldMatcher;
     /// use marc21::prelude::*;

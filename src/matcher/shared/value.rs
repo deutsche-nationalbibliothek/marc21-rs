@@ -3,12 +3,15 @@ use std::cmp::Ordering;
 use bstr::{BString, ByteSlice};
 use winnow::ascii::multispace1;
 use winnow::combinator::{
-    alt, delimited, dispatch, fail, preceded, repeat, terminated,
+    alt, delimited, dispatch, fail, opt, preceded, repeat, separated,
+    terminated,
 };
 use winnow::error::ParserError;
 use winnow::prelude::*;
 use winnow::stream::{AsChar, Compare, Stream, StreamIsPartial};
 use winnow::token::{one_of, take, take_till};
+
+use crate::matcher::shared::ws0;
 
 #[derive(Debug, PartialEq, PartialOrd, Clone)]
 pub(crate) enum Value {
@@ -28,6 +31,13 @@ impl From<u8> for Value {
     #[inline(always)]
     fn from(value: u8) -> Self {
         Self::Char(value)
+    }
+}
+
+impl From<&str> for Value {
+    #[inline(always)]
+    fn from(value: &str) -> Self {
+        Self::String(BString::from(value))
     }
 }
 
@@ -221,6 +231,23 @@ where
             v.value(v),
         )),
     )
+}
+
+pub(crate) fn parse_byte_string_list(
+    i: &mut &[u8],
+) -> ModalResult<Vec<Vec<u8>>> {
+    alt((
+        parse_byte_string.map(|pattern| vec![pattern]),
+        delimited(
+            ws0('['),
+            terminated(
+                separated(1.., parse_byte_string, ws0(',')),
+                opt(ws0(',')),
+            ),
+            ws0(']'),
+        ),
+    ))
+    .parse_next(i)
 }
 
 #[cfg(test)]

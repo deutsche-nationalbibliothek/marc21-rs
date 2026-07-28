@@ -1,13 +1,14 @@
 use bstr::ByteSlice;
 use regex::bytes::RegexSet;
-use winnow::combinator::{alt, delimited, opt, separated, terminated};
-use winnow::error::{ContextError, ErrMode, ParserError};
+use smallvec::SmallVec;
+use winnow::combinator::alt;
+use winnow::error::ParserError;
 use winnow::prelude::*;
 
 use crate::Subfield;
 use crate::matcher::shared::{
-    Quantifier, parse_byte_string, parse_codes, parse_quantifier_opt,
-    ws0, ws1,
+    Quantifier, parse_byte_string_list, parse_codes,
+    parse_quantifier_opt, ws1,
 };
 use crate::matcher::{MatchOptions, SubfieldMatcher};
 
@@ -15,7 +16,7 @@ use crate::matcher::{MatchOptions, SubfieldMatcher};
 pub struct RegexMatcher {
     pub(crate) quantifier: Quantifier,
     pub(crate) negated: bool,
-    pub(crate) codes: Vec<u8>,
+    pub(crate) codes: SmallVec<[u8; 4]>,
     pub(crate) patterns: Vec<Vec<u8>>,
     pub(crate) matcher: RegexSet,
 }
@@ -53,48 +54,128 @@ impl RegexMatcher {
     }
 }
 
-pub(crate) fn parse_regex_matcher<'a, E>(
-    quantified: bool,
-) -> impl Parser<&'a [u8], SubfieldMatcher, E>
-where
-    E: ParserError<&'a [u8]> + From<ErrMode<ContextError>>,
-{
-    move |i: &mut &'a [u8]| {
-        let quantifier = if quantified {
-            parse_quantifier_opt.parse_next(i)?
-        } else {
-            Quantifier::Any
-        };
-
-        let codes = parse_codes.parse_next(i)?;
-        let negated = ws1(alt(("=~".value(false), "!~".value(true))))
-            .parse_next(i)?;
-
-        let patterns: Vec<Vec<u8>> = alt((
-            parse_byte_string.map(|pattern| vec![pattern]),
-            delimited(
-                ws0('['),
-                terminated(
-                    separated(1.., parse_byte_string, ws0(',')),
-                    opt(ws0(',')),
-                ),
-                ws0(']'),
-            ),
-        ))
+pub(crate) fn parse_regex_matcher_short(
+    i: &mut &[u8],
+) -> ModalResult<SubfieldMatcher> {
+    let codes = parse_codes.map(SmallVec::from).parse_next(i)?;
+    let negated = ws1(alt(("=~".value(false), "!~".value(true))))
         .parse_next(i)?;
+    let patterns = parse_byte_string_list.parse_next(i)?;
 
-        if let Ok(matcher) =
-            RegexSet::new(patterns.iter().map(|s| s.to_str().unwrap()))
-        {
-            Ok(SubfieldMatcher::Regex(Box::new(RegexMatcher {
-                quantifier,
-                negated,
-                codes,
-                patterns,
-                matcher,
-            })))
-        } else {
-            Err(ParserError::from_input(i))
+    if let Ok(matcher) =
+        RegexSet::new(patterns.iter().map(|s| s.to_str().unwrap()))
+    {
+        Ok(SubfieldMatcher::Regex(Box::new(RegexMatcher {
+            quantifier: Quantifier::Any,
+            negated,
+            codes,
+            patterns,
+            matcher,
+        })))
+    } else {
+        Err(ParserError::from_input(i))
+    }
+}
+
+pub(crate) fn parse_regex_matcher_long(
+    i: &mut &[u8],
+) -> ModalResult<SubfieldMatcher> {
+    let quantifier = parse_quantifier_opt.parse_next(i)?;
+    let codes = parse_codes.map(SmallVec::from).parse_next(i)?;
+    let negated = ws1(alt(("=~".value(false), "!~".value(true))))
+        .parse_next(i)?;
+    let patterns = parse_byte_string_list.parse_next(i)?;
+
+    if let Ok(matcher) =
+        RegexSet::new(patterns.iter().map(|s| s.to_str().unwrap()))
+    {
+        Ok(SubfieldMatcher::Regex(Box::new(RegexMatcher {
+            quantifier,
+            negated,
+            codes,
+            patterns,
+            matcher,
+        })))
+    } else {
+        Err(ParserError::from_input(i))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    #[rustfmt::skip]
+    fn test_parse_regex_matcher_short() {
+        macro_rules! parse_success {
+            ($i:expr, $codes:expr, $negated:expr, $patterns:expr) => {
+                let patterns = $patterns
+                    .into_iter()
+                    .map(Into::into)
+                    .collect::<Vec<Vec<u8>>>();
+
+                assert_eq!(
+                    parse_regex_matcher_short
+                        .parse($i.as_bytes())
+                        .unwrap(),
+                    SubfieldMatcher::Regex(Box::new(RegexMatcher {
+                        quantifier: Quantifier::Any,
+                        codes: SmallVec::from($codes),
+                        negated: $negated,
+                        matcher: RegexSet::new($patterns).unwrap(),
+                        patterns,
+                    }))
+                );
+            };
         }
+
+        parse_success!("a =~ '^foo'", vec![b'a'], false, vec!["^foo"]);
+        parse_success!("a !~ '^foo'", vec![b'a'], true, vec!["^foo"]);
+        parse_success!("a =~ ['^foo', 'bar$']", vec![b'a'], false, vec!["^foo", "bar$"]);
+        parse_success!("a =~ ['^foo', 'bar$', ]", vec![b'a'], false, vec!["^foo", "bar$"]);
+    }
+
+    #[test]
+    #[rustfmt::skip]
+    fn test_parse_regex_matcher_long() {
+        use Quantifier::*;
+        
+        macro_rules! parse_success {
+            ($i:expr, $quantifier:expr, $codes:expr, $negated:expr, $patterns:expr) => {
+                let patterns = $patterns
+                    .into_iter()
+                    .map(Into::into)
+                    .collect::<Vec<Vec<u8>>>();
+
+                assert_eq!(
+                    parse_regex_matcher_long
+                        .parse($i.as_bytes())
+                        .unwrap(),
+                    SubfieldMatcher::Regex(Box::new(RegexMatcher {
+                        quantifier: $quantifier,
+                        codes: SmallVec::from($codes),
+                        negated: $negated,
+                        matcher: RegexSet::new($patterns).unwrap(),
+                        patterns,
+                    }))
+                );
+            };
+        }
+
+        parse_success!("a =~ '^foo'", Any, vec![b'a'], false, vec!["^foo"]);
+        parse_success!("a !~ '^foo'", Any, vec![b'a'], true, vec!["^foo"]);
+        parse_success!("a =~ ['^foo', 'bar$']", Any, vec![b'a'], false, vec!["^foo", "bar$"]);
+        parse_success!("a =~ ['^foo', 'bar$', ]", Any, vec![b'a'], false, vec!["^foo", "bar$"]);
+
+        parse_success!("ANY a =~ '^foo'", Any, vec![b'a'], false, vec!["^foo"]);
+        parse_success!("ANY a !~ '^foo'", Any, vec![b'a'], true, vec!["^foo"]);
+        parse_success!("ANY a =~ ['^foo', 'bar$']", Any, vec![b'a'], false, vec!["^foo", "bar$"]);
+        parse_success!("ANY a =~ ['^foo', 'bar$', ]", Any, vec![b'a'], false, vec!["^foo", "bar$"]);
+
+        parse_success!("ALL a =~ '^foo'", All, vec![b'a'], false, vec!["^foo"]);
+        parse_success!("ALL a !~ '^foo'", All, vec![b'a'], true, vec!["^foo"]);
+        parse_success!("ALL a =~ ['^foo', 'bar$']", All, vec![b'a'], false, vec!["^foo", "bar$"]);
+        parse_success!("ALL a =~ ['^foo', 'bar$', ]", All, vec![b'a'], false, vec!["^foo", "bar$"]);
     }
 }

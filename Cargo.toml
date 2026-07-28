@@ -16,15 +16,19 @@ members = ["crates/marc21-cli", "python"]
 resolver = "3"
 
 [features]
+# debug = ["winnow/debug"]
 default = ["performant"]
+perf-inline = []
 performant = ["winnow/simd", "perf-inline"]
 serde = ["dep:serde"]
-perf-inline = []
 unstable = []
 
 [dependencies]
 aho-corasick = { version = "1.1" }
-bstr = { version = "1.12", features = ["std", "alloc"], default-features = false }
+bstr = { version = "1.12", features = [
+  "std",
+  "alloc",
+], default-features = false }
 flate2 = { version = "1.1", features = ["zlib-rs"], default-features = false }
 regex = { version = "1.12" }
 serde = { version = "1.0", optional = true }

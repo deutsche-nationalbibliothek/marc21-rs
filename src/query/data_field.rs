@@ -6,7 +6,7 @@ use winnow::prelude::*;
 
 use crate::matcher::indicator::parse::parse_indicator_matcher_opt;
 use crate::matcher::shared::{parse_codes, parse_string, ws0};
-use crate::matcher::subfield::parse::parse_subfield_matcher;
+use crate::matcher::subfield::parse::parse_subfield_matcher_long;
 use crate::matcher::tag::parse::parse_tag_matcher;
 use crate::matcher::{
     IndicatorMatcher, MatchOptions, SubfieldMatcher, TagMatcher,
@@ -172,7 +172,7 @@ fn parse_data_field_expr_long(
         indicator_matcher: parse_indicator_matcher_opt,
         _: terminated('{', multispace1),
         columns: separated(1.., parse_column, ws0(',')),
-        subfield_matcher: opt(preceded(ws0('|'), parse_subfield_matcher)),
+        subfield_matcher: opt(preceded(ws0('|'), parse_subfield_matcher_long)),
         _: preceded(multispace0, '}'),
     }}
     .parse_next(i)

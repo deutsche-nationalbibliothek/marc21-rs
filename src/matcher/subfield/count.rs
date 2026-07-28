@@ -1,4 +1,5 @@
-use winnow::combinator::preceded;
+use smallvec::SmallVec;
+use winnow::combinator::seq;
 use winnow::prelude::*;
 
 use crate::Subfield;
@@ -7,12 +8,29 @@ use crate::matcher::{MatchOptions, SubfieldMatcher};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct CountMatcher {
-    pub(crate) codes: Vec<u8>,
+    pub(crate) codes: SmallVec<[u8; 4]>,
     pub(crate) operator: ComparisonOperator,
     pub(crate) value: usize,
 }
 
 impl CountMatcher {
+    /// Checks the number of occurrences of a subfield
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21::matcher::{FieldMatcher, MatchOptions};
+    /// use marc21::prelude::*;
+    ///
+    /// # let data = include_bytes!("../../../tests/data/ada.mrc");
+    /// let record = ByteRecord::from_bytes(data)?;
+    /// let options = MatchOptions::default();
+    ///
+    /// let matcher = FieldMatcher::new("079{ #a == 1 }")?;
+    /// assert!(matcher.is_match(record.fields(), &options));
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
     pub fn is_match<'a, S: IntoIterator<Item = &'a Subfield<'a>>>(
         &self,
         subfields: S,
@@ -34,18 +52,16 @@ impl CountMatcher {
     }
 }
 
-pub(crate) fn parse_count_matcher(
+pub(crate) fn parse_count_matcher_long(
     i: &mut &[u8],
 ) -> ModalResult<SubfieldMatcher> {
-    preceded(
-        '#',
-        (parse_codes, ws1(parse_comparison_operator), parse_usize),
-    )
-    .map(|(codes, operator, value)| CountMatcher {
-        codes,
-        operator,
-        value,
-    })
+    seq! { CountMatcher {
+        _: '#',
+        codes: parse_codes.map(SmallVec::from),
+        operator: ws1(parse_comparison_operator),
+        value: parse_usize,
+
+    }}
     .map(|matcher| SubfieldMatcher::Count(Box::new(matcher)))
     .parse_next(i)
 }
@@ -53,17 +69,58 @@ pub(crate) fn parse_count_matcher(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::ByteRecord;
+    use crate::common::TestResult;
+    use crate::matcher::RecordMatcher;
 
     #[test]
-    fn test_parse_count_matcher() {
+    fn test_count_matcher_long() -> TestResult {
+        let data = include_bytes!("../../../tests/data/ada.mrc");
+        let record = ByteRecord::from_bytes(data)?;
+        let options = MatchOptions::default();
+
+        let matcher = RecordMatcher::new("079{ #a == 1 }")?;
+        assert!(matcher.is_match(&record, &options));
+
+        let matcher = RecordMatcher::new("079{ #q > 2 }")?;
+        assert!(matcher.is_match(&record, &options));
+
+        let matcher = RecordMatcher::new("079{ #q >= 3 }")?;
+        assert!(matcher.is_match(&record, &options));
+
+        let matcher = RecordMatcher::new("079{ #q < 4 }")?;
+        assert!(matcher.is_match(&record, &options));
+
+        let matcher = RecordMatcher::new("079{ #u <= 3 }")?;
+        assert!(matcher.is_match(&record, &options));
+
+        let matcher = RecordMatcher::new("079{ #u < 4 }")?;
+        assert!(matcher.is_match(&record, &options));
+
+        let matcher = RecordMatcher::new("079{ #x == 0 }")?;
+        assert!(matcher.is_match(&record, &options));
+
+        let matcher = RecordMatcher::new("079{ #[xa] == 1 }")?;
+        assert!(matcher.is_match(&record, &options));
+
+        let matcher = RecordMatcher::new("079{ #* == 7 }")?;
+        assert!(matcher.is_match(&record, &options));
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_parse_count_matcher_long() {
         use ComparisonOperator::*;
 
         macro_rules! parse_success {
             ($i:expr, $codes:expr, $op:expr, $value:expr) => {
                 assert_eq!(
-                    parse_count_matcher.parse($i.as_bytes()).unwrap(),
+                    parse_count_matcher_long
+                        .parse($i.as_bytes())
+                        .unwrap(),
                     SubfieldMatcher::Count(Box::new(CountMatcher {
-                        codes: $codes,
+                        codes: SmallVec::from($codes),
                         operator: $op,
                         value: $value,
                     })),
