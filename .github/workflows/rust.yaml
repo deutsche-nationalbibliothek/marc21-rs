@@ -68,7 +68,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@2c7215f132e9ebf062739d9130488b56d53c060c # master
         with:
           toolchain: nightly
-      - uses: dtolnay/install@97c306b4fb754e1dbe18619415cf4a90ae0aa6a2 # master
+      - uses: dtolnay/install@4e8cf95628be9366636a2a784ad2d4d21cb8b559 # master
         with:
           crate: cargo-fuzz
       - run: |
