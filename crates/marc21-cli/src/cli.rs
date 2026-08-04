@@ -6,9 +6,14 @@ use crate::commands::*;
 use crate::unicode::NormalizationForm;
 
 #[derive(Debug, Parser)]
-#[command(name = "marc21", version, about, long_about = None)]
-#[command(disable_help_subcommand = true)]
-#[command(max_term_width = 72)]
+#[clap(version, author, infer_subcommands = true, max_term_width = 72)]
+#[command(
+    name = "marc21", 
+    disable_help_subcommand = true,
+    long_about = None,
+    version,
+    about,
+)]
 pub(crate) struct Args {
     #[command(subcommand)]
     pub(crate) cmd: Box<Command>,
@@ -16,6 +21,7 @@ pub(crate) struct Args {
 
 #[derive(Debug, Subcommand)]
 pub(crate) enum Command {
+    Check(Box<Check>),
     Concat(Box<Concat>),
     Count(Box<Count>),
     Dedup(Box<Dedup>),

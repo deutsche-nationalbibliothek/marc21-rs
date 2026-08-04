@@ -28,7 +28,28 @@ _marc21() {
         (( CURRENT += 1 ))
         curcontext="${curcontext%:*:*}:marc21-command-$line[1]:"
         case $line[1] in
-            (concat)
+            (check)
+_arguments "${_arguments_options[@]}" : \
+'*-R+[A set of rules to be checked]:rule-set:_files' \
+'*--rule-set=[A set of rules to be checked]:rule-set:_files' \
+'-o+[Write output to <filename> instead of stdout]:filename:_files' \
+'--output=[Write output to <filename> instead of stdout]:filename:_files' \
+'-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
+'--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
+'--where=[An expression for filtering records]:predicate:_default' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--compression=[Specify compression level]:n:_default' \
+'-s[Skip invalid records that can'\''t be decoded]' \
+'--skip-invalid[Skip invalid records that can'\''t be decoded]' \
+'-p[If set, show a progress bar]' \
+'--progress[If set, show a progress bar]' \
+'-h[Print help]' \
+'--help[Print help]' \
+'*::input -- MARC21 files to be processed as input. If no file is specified, or if the filename is `-`, the data is read from standard input (`stdin`) by default:_files' \
+&& ret=0
+;;
+(concat)
 _arguments "${_arguments_options[@]}" : \
 '--tee=[Write to another output file at the same time]:path:_files' \
 '-o+[Write output to <filename> instead of stdout]:filename:_files' \
@@ -464,6 +485,7 @@ esac
 (( $+functions[_marc21_commands] )) ||
 _marc21_commands() {
     local commands; commands=(
+'check:Validate records against rule sets' \
 'concat:Concatenate records from multiple inputs' \
 'cat:Concatenate records from multiple inputs' \
 'count:Prints the number of records in the input data' \
@@ -497,6 +519,11 @@ _marc21__subcmd__build-completion_commands() {
 _marc21__subcmd__build-man_commands() {
     local commands; commands=()
     _describe -t commands 'marc21 build-man commands' commands "$@"
+}
+(( $+functions[_marc21__subcmd__check_commands] )) ||
+_marc21__subcmd__check_commands() {
+    local commands; commands=()
+    _describe -t commands 'marc21 check commands' commands "$@"
 }
 (( $+functions[_marc21__subcmd__concat_commands] )) ||
 _marc21__subcmd__concat_commands() {
