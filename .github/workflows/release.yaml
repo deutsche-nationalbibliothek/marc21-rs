@@ -41,9 +41,12 @@ jobs:
           gh release create "$TAG" --verify-tag --draft --generate-notes --title "marc21-cli $TAG"
 
   releases:
+    needs: prepare
     permissions:
       contents: write
-    needs: prepare
+      attestations: write
+      artifact-metadata: write
+      id-token: write
     strategy:
       matrix:
         target:
@@ -121,6 +124,11 @@ jobs:
         run: |
           tar czf "$ARCHIVE.tar.gz" "$ARCHIVE"
           echo "ASSET=$ARCHIVE.tar.gz" >> $GITHUB_ENV
+
+      - name: Generate artifact attestations
+        uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d # v4.2.1
+        with:
+          subject-path: '${{ github.workspace }}/${{ env.ASSET }}'
 
       - name: Upload assets
         env:
