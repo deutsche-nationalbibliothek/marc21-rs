@@ -40,7 +40,7 @@ pub(crate) mod prelude {
         static DATA_DIR: LazyLock<PathBuf> = LazyLock::new(|| {
             current_dir()
                 .unwrap()
-                .join("../../tests/data")
+                .join("../marc21/tests/data")
                 .canonicalize()
                 .unwrap()
                 .to_path_buf()
