@@ -23,7 +23,7 @@ except ImportError as e:
 # check scan_marc21
 try:
     df = polars_marc21.scan_marc21(
-        "../tests/data/ada.mrc",
+        "../crates/marc21/tests/data/ada.mrc",
         "001",
     ).collect()
 

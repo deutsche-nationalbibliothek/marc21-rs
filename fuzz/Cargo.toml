@@ -12,7 +12,7 @@ cargo-fuzz = true
 
 [dependencies]
 libfuzzer-sys = "0.4"
-marc21 = { path = "../" }
+marc21 = { path = "../crates/marc21" }
 
 [[bin]]
 name = "byte-record"

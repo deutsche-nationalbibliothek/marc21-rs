@@ -1,0 +1,50 @@
+[package]
+name = "marc21"
+
+# don't forget to update workspace dependency
+version = "0.5.0"
+
+authors.workspace = true
+repository.workspace = true
+description = "A toolkit for processing MARC-21 records."
+categories = ["parser-implementations"]
+keywords = ["marc21", "code4lib"]
+license.workspace = true
+rust-version.workspace = true
+edition.workspace = true
+
+[features]
+default = ["performant"]
+perf-inline = []
+performant = ["winnow/simd", "perf-inline"]
+serde = ["dep:serde"]
+unstable = []
+
+[dependencies]
+aho-corasick = { workspace = true }
+bstr = { workspace = true, features = [
+  "std",
+  "alloc",
+], default-features = false }
+flate2 = { workspace = true, features = ["zlib-rs"], default-features = false }
+regex = { workspace = true }
+serde = { workspace = true, optional = true }
+strsim = { workspace = true }
+smallvec = { workspace = true }
+winnow = { workspace = true }
+
+[dev-dependencies]
+serde_test = { workspace = true }
+trycmd = { workspace = true }
+
+[[test]]
+path = "tests/fuzz/lib.rs"
+name = "fuzz-regressions"
+
+[[test]]
+path = "tests/api/lib.rs"
+name = "api"
+
+[[test]]
+path = "tests/book/lib.rs"
+name = "book"

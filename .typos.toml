@@ -2,8 +2,4 @@
 nam = "nam"
 
 [files]
-extend-exclude = [
-  "**/*.mrc",
-  "**/*.mrc.gz",
-  "tests/*",
-]
+extend-exclude = ["**/*.mrc", "**/*.mrc.gz", "**/tests/*"]

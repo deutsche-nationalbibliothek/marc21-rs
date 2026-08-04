@@ -1,14 +1,14 @@
 [package]
 name = "marc21-cli"
 version = "0.5.0"
-authors = ["Nico Wagner <n.wagner@dnb.de>"]
-repository = "https://github.com/deutsche-nationalbibliothek/marc21-rs"
+authors.workspace = true
+repository.workspace = true
 description = "A command-line tool for processing MARC-21 records."
 categories = ["command-line-utilities"]
 keywords = ["marc21", "cli", "code4lib"]
-license = "EUPL-1.2"
-rust-version = "1.93"
-edition = "2024"
+license.workspace = true
+rust-version.workspace = true
+edition.workspace = true
 
 [[bin]]
 name = "marc21"
@@ -19,28 +19,28 @@ path = "tests/e2e/lib.rs"
 name = "e2e"
 
 [dependencies]
-bstr = { version = "1.12", features = ["std"], default-features = false }
-clap_complete = { version = "4.6", optional = true }
-clap_mangen = { version = "0.3", optional = true }
-clap = { version = "4.6", features = ["derive", "env", "wrap_help"] }
-csv = { version = "1.4" }
-dvrf = { version = "0.1.0" }
-flate2 = { version = "1.1" }
-indicatif = { version = "0.18" }
-marc21 = { path = "../../", version = "0.5", features = ["serde"] }
-rand = { version = "0.10.1" }
-regex = { version = "1.12" }
-serde = { version = "1.0", features = ["derive"] }
-sha2 = { version = "0.11" }
-sophia = { version = "0.10" }
-toml = { version = "1.1", features = ["preserve_order"] }
-unicode-normalization = { version = "0.1" }
+bstr = { workspace = true, features = ["std"], default-features = false }
+clap_complete = { workspace = true, optional = true }
+clap_mangen = { workspace = true, optional = true }
+clap = { workspace = true, features = ["derive", "env", "wrap_help"] }
+csv = { workspace = true }
+dvrf = { workspace = true }
+flate2 = { workspace = true }
+indicatif = { workspace = true }
+marc21 = { workspace = true, features = ["serde"] }
+rand = { workspace = true }
+regex = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+sha2 = { workspace = true }
+sophia = { workspace = true }
+toml = { workspace = true, features = ["preserve_order"] }
+unicode-normalization = { workspace = true }
 
 [dev-dependencies]
-anyhow = { version = "1.0.103" }
-assert_cmd = { version = "2.2" }
-assert_fs = { version = "1.1" }
-predicates = { version = "3.1" }
+anyhow = { workspace = true }
+assert_cmd = { workspace = true }
+assert_fs = { workspace = true }
+predicates = { workspace = true }
 
 [features]
 default = ["performant"]

@@ -8,7 +8,7 @@ type TestResult = Result<(), Box<dyn std::error::Error>>;
 
 #[test]
 fn test_base_address_gt_length() -> TestResult {
-    let path = current_dir()?.join("fuzz/regressions").join(
+    let path = current_dir()?.join("../../fuzz/regressions").join(
         "minimized-from-aca4bcd701d603885d569470c2c5767f0b54515e",
     );
     assert!(ByteRecord::from_bytes(&fs::read(path)?).is_err());
@@ -17,7 +17,7 @@ fn test_base_address_gt_length() -> TestResult {
 
 #[test]
 fn test_entry_length_is_zero() -> TestResult {
-    let path = current_dir()?.join("fuzz/regressions").join(
+    let path = current_dir()?.join("../../fuzz/regressions").join(
         "minimized-from-684599ec8142d3de6a48dac85feefe9aa52e7ef9",
     );
     assert!(ByteRecord::from_bytes(&fs::read(path)?).is_err());
@@ -26,7 +26,7 @@ fn test_entry_length_is_zero() -> TestResult {
 
 #[test]
 fn test_field_count_matcher() -> TestResult {
-    let path = current_dir()?.join("fuzz/regressions").join(
+    let path = current_dir()?.join("../../fuzz/regressions").join(
         "minimized-from-aca4bcd701d603885d569470c2c5767f0b54515e",
     );
 
@@ -36,7 +36,7 @@ fn test_field_count_matcher() -> TestResult {
 
 #[test]
 fn test_invalid_byte_string() -> TestResult {
-    let path = current_dir()?.join("fuzz/regressions").join(
+    let path = current_dir()?.join("../../fuzz/regressions").join(
         "minimized-from-d76e011fc61ce3e87731b08b6d1183368e5a0237",
     );
 

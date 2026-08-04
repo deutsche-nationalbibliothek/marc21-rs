@@ -1,56 +1,47 @@
-[package]
-name = "marc21"
-version = "0.5.0"
+[workspace.package]
 authors = ["Nico Wagner <n.wagner@dnb.de>"]
 repository = "https://github.com/deutsche-nationalbibliothek/marc21-rs"
-description = "A toolkit for processing MARC-21 records."
-categories = ["parser-implementations"]
-keywords = ["marc21", "code4lib"]
+documentation = "https://deutsche-nationalbibliothek.github.io/marc21-rs/"
 license = "EUPL-1.2"
 rust-version = "1.93"
 edition = "2024"
 
 [workspace]
 default-members = ["crates/marc21-cli"]
-members = ["crates/marc21-cli", "python"]
+members = ["crates/marc21-cli", "crates/marc21", "python"]
 resolver = "3"
 
-[features]
-# debug = ["winnow/debug"]
-default = ["performant"]
-perf-inline = []
-performant = ["winnow/simd", "perf-inline"]
-serde = ["dep:serde"]
-unstable = []
-
-[dependencies]
+[workspace.dependencies]
 aho-corasick = { version = "1.1" }
+anyhow = { version = "1.0.103" }
+assert_cmd = { version = "2.2" }
+assert_fs = { version = "1.1" }
 bstr = { version = "1.12", features = [
   "std",
   "alloc",
 ], default-features = false }
+clap_complete = { version = "4.6" }
+clap_mangen = { version = "0.3" }
+clap = { version = "4.6", features = ["derive", "env", "wrap_help"] }
+csv = { version = "1.4" }
+dvrf = { version = "0.1.0" }
 flate2 = { version = "1.1", features = ["zlib-rs"], default-features = false }
+indicatif = { version = "0.18" }
+marc21 = { path = "crates/marc21", version = "0.5" }
+predicates = { version = "3.1" }
+pyo3 = { version = "0.29", features = ["extension-module", "abi3-py39"] }
+rand = { version = "0.10.1" }
 regex = { version = "1.12" }
-serde = { version = "1.0", optional = true }
-strsim = { version = "0.11" }
-smallvec = { version = "1.15" }
-winnow = { version = "1.0" }
-
-[dev-dependencies]
 serde_test = { version = "1.0" }
+serde = { version = "1.0" }
+sha2 = { version = "0.11" }
+smallvec = { version = "1.15" }
+sophia = { version = "0.10" }
+strsim = { version = "0.11" }
+toml = { version = "1.1", features = ["preserve_order"] }
 trycmd = { version = "1.2" }
-
-[[test]]
-path = "tests/fuzz/lib.rs"
-name = "fuzz-regressions"
-
-[[test]]
-path = "tests/api/lib.rs"
-name = "api"
-
-[[test]]
-path = "tests/book/lib.rs"
-name = "book"
+unicode-normalization = { version = "0.1" }
+winnow = { version = "1.0" }
 
 [profile.release]
 strip = true
