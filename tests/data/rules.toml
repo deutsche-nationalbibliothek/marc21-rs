@@ -1,0 +1,4 @@
+[rule.R001]
+message = "Rule R001 message"
+validator = "filter"
+matcher = "001?"
