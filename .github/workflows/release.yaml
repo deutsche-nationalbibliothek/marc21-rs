@@ -1,4 +1,4 @@
-name: Release
+name: release
 
 on:
   push:
@@ -20,9 +20,11 @@ jobs:
       version: ${{ env.VERSION }}
       tag: ${{ env.TAG}}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
+
       - name: Get release version from Git tag
         env:
           TAG: ${{ github.ref_name }}
@@ -31,11 +33,12 @@ jobs:
           version=${tag#v}
           echo "VERSION=$version" >> $GITHUB_ENV
           echo "TAG=$tag" >> $GITHUB_ENV
+
       - name: Create GitHub release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "$TAG" --verify-tag --draft --generate-notes --title "marc21 $TAG"
+          gh release create "$TAG" --verify-tag --draft --generate-notes --title "marc21-cli $TAG"
 
   releases:
     permissions:
@@ -50,13 +53,17 @@ jobs:
           - { os: macos-latest, toolchain: stable, triple: x86_64-apple-darwin }
     runs-on: ${{ matrix.target.os }}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
-      - uses: dtolnay/rust-toolchain@2c7215f132e9ebf062739d9130488b56d53c060c # master
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@2c7215f132e9ebf062739d9130488b56d53c060c # master
         with:
           toolchain: ${{ matrix.target.toolchain }}
           targets: ${{ matrix.target.triple }}
+
       - name: Build release binary
         if: ${{ matrix.target.triple != 'x86_64-unknown-linux-musl' }}
         shell: bash
@@ -67,6 +74,7 @@ jobs:
           else
             echo "BINARY=target/release/marc21" >> $GITHUB_ENV
           fi
+          
       - name: Build release binary (musl)
         if: ${{ matrix.target.triple == 'x86_64-unknown-linux-musl' }}
         shell: bash
@@ -74,14 +82,17 @@ jobs:
           sudo apt-get install -y musl-tools
           cargo build -p marc21-cli --target=x86_64-unknown-linux-musl --release
           echo "BINARY=target/x86_64-unknown-linux-musl/release/marc21" >> $GITHUB_ENV
+
       - name: Test workspace packages
         run: |
           cargo test -p marc21-cli --release
           cargo test -p marc21 --release
+
       - name: Strip release binary
         shell: bash
         if: matrix.target.os == 'macos-latest'
         run: strip "$BINARY"
+
       - name: Prepare archive
         shell: bash
         env:
@@ -96,18 +107,21 @@ jobs:
           cp "$BINARY" "$ARCHIVE"/
           cp "README.md" "$ARCHIVE"/
           cp "LICENSE" "$ARCHIVE"/
+
       - name: Build Archive (Windows)
         if: ${{ matrix.target.os == 'windows-latest' }}
         shell: bash
         run: |
           7z a "$ARCHIVE.zip" "$ARCHIVE"
           echo "ASSET=$ARCHIVE.zip" >> $GITHUB_ENV
+
       - name: Build Archive (Unix)
         if: ${{ matrix.target.os != 'windows-latest' }}
         shell: bash
         run: |
           tar czf "$ARCHIVE.tar.gz" "$ARCHIVE"
           echo "ASSET=$ARCHIVE.tar.gz" >> $GITHUB_ENV
+
       - name: Upload assets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
