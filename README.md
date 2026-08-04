@@ -32,6 +32,7 @@ indexing.
 
 The `marc21` tool provides the following commands:
 
+- [check] — Validate records against rule sets
 - [concat] — Concatenate records from multiple inputs (alias `cat`)
 - [count] — Print the number of records in the input data (alias `cnt`)
 - [dedup] — Remove duplicate records from the input

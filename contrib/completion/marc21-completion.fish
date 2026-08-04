@@ -26,6 +26,7 @@ end
 
 complete -c marc21 -n "__fish_marc21_needs_command" -s h -l help -d 'Print help'
 complete -c marc21 -n "__fish_marc21_needs_command" -s V -l version -d 'Print version'
+complete -c marc21 -n "__fish_marc21_needs_command" -f -a "check" -d 'Validate records against rule sets'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "concat" -d 'Concatenate records from multiple inputs'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "cat" -d 'Concatenate records from multiple inputs'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "count" -d 'Prints the number of records in the input data'
@@ -47,6 +48,19 @@ complete -c marc21 -n "__fish_marc21_needs_command" -f -a "skosify" -d 'Convert 
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "split" -d 'Splits a list of records into chunks'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "build-completion" -d 'Generate shell completions (e.g. Bash or ZSH)'
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "build-man"
+complete -c marc21 -n "__fish_marc21_using_subcommand check" -s R -l rule-set -d 'A set of rules to be checked' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand check" -s o -l output -d 'Write output to <filename> instead of stdout' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand check" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand check" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand check" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand check" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand check" -l compression -d 'Specify compression level' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand check" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
+complete -c marc21 -n "__fish_marc21_using_subcommand check" -s p -l progress -d 'If set, show a progress bar'
+complete -c marc21 -n "__fish_marc21_using_subcommand check" -s h -l help -d 'Print help'
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -l tee -d 'Write to another output file at the same time' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s o -l output -d 'Write output to <filename> instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r

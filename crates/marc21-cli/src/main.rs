@@ -19,6 +19,7 @@ fn main() -> ExitCode {
     let args = Args::parse();
 
     let result = match *args.cmd {
+        Command::Check(cmd) => cmd.execute(),
         Command::Concat(cmd) => cmd.execute(),
         Command::Count(cmd) => cmd.execute(),
         Command::Dedup(cmd) => cmd.execute(),

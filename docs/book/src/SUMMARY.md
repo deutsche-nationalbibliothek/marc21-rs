@@ -15,6 +15,7 @@
 
 * [Reference](reference/index.md)
   * [Commands](reference/commands/index.md)
+    * [check](reference/commands/marc21-check.md)
     * [concat](reference/commands/marc21-concat.md)
     * [count](reference/commands/marc21-count.md)
     * [dedup](reference/commands/marc21-dedup.md)

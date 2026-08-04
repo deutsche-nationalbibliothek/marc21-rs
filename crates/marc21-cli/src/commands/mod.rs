@@ -2,6 +2,7 @@
 pub(crate) use build_completion::BuildCompletion;
 #[cfg(feature = "build")]
 pub(crate) use build_man::BuildMan;
+pub(crate) use check::Check;
 pub(crate) use concat::Concat;
 pub(crate) use count::Count;
 pub(crate) use dedup::Dedup;
@@ -23,6 +24,7 @@ pub(crate) use split::Split;
 mod build_completion;
 #[cfg(feature = "build")]
 mod build_man;
+mod check;
 mod concat;
 mod count;
 mod dedup;
