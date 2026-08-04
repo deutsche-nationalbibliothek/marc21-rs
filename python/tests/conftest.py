@@ -8,4 +8,4 @@ import pytest
 @pytest.fixture(scope="module")
 def data_dir() -> Path:
     """Return the tests data directory."""
-    return Path().cwd().joinpath("../tests/data").resolve()
+    return Path().cwd().joinpath("../crates/marc21/tests/data").resolve()
