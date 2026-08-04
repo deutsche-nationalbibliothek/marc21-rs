@@ -66,13 +66,13 @@ cache-keys = [
 line-length = 72
 lint.select = ["ALL"]
 lint.ignore = [
-  "D203", # incorrect-blank-line-before-class
-  "D212", # multi-line-summary-first-line
+  "CPY001", # missing-copyright-notice
+  "D203",   # incorrect-blank-line-before-class
+  "D212",   # multi-line-summary-first-line
 ]
 
 [tool.ruff.lint.extend-per-file-ignores]
 "tests/**/*.py" = [
-  "CPY001",  # missing-copyright-notice
   "INP001",  # implicit-namespace-package
   "PLR0915", # too-many-statements
   "PLR2004", # magic-value-comparison
