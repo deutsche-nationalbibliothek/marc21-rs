@@ -25,6 +25,9 @@ _marc21() {
             marc21,cat)
                 cmd="marc21__subcmd__concat"
                 ;;
+            marc21,check)
+                cmd="marc21__subcmd__check"
+                ;;
             marc21,cnt)
                 cmd="marc21__subcmd__count"
                 ;;
@@ -86,7 +89,7 @@ _marc21() {
 
     case "${cmd}" in
         marc21)
-            opts="-h -V --help --version concat cat count cnt dedup describe filter frequency freq glimpse grep hash invalid partition print sample select skosify split build-completion build-man"
+            opts="-h -V --help --version check concat cat count cnt dedup describe filter frequency freq glimpse grep hash invalid partition print sample select skosify split build-completion build-man"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 1 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -133,6 +136,60 @@ _marc21() {
                     return 0
                     ;;
                 -o)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac
+            COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+            return 0
+            ;;
+        marc21__subcmd__check)
+            opts="-R -o -s -l -p -h --rule-set --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
+                COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+                return 0
+            fi
+            case "${prev}" in
+                --rule-set)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -R)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --output)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -o)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --limit)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -l)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --strsim-threshold)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --where)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
+                --compression)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
