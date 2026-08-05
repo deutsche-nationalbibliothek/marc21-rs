@@ -25,15 +25,15 @@ impl Concept {
     pub(crate) fn labels(
         &self,
         record: &StringRecord,
+        options: &MatchOptions,
         nf: &Option<NormalizationForm>,
     ) -> Result<Vec<(NsTerm<'_>, RcTerm)>, CliError> {
         use LabelKind::*;
 
-        let options = MatchOptions::default();
         let mut result = vec![];
 
         if let Some(ref matcher) = self.scope
-            && !matcher.is_match(&record, &options)
+            && !matcher.is_match(record, options)
         {
             return Ok(vec![]);
         }
@@ -46,7 +46,7 @@ impl Concept {
             }
             .unwrap();
 
-            for value in record.path(&label.path, &options) {
+            for value in record.path(&label.path, options) {
                 let value = translit(value.as_ref(), nf);
                 let literal = value.as_ref() * xsd::string;
                 let o = RcTerm::from_term(literal);

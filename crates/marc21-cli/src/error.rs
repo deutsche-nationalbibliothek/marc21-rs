@@ -15,6 +15,7 @@ pub(crate) enum CliError {
     Regex(regex::Error),
     Toml(toml::de::Error),
     Utf8(std::str::Utf8Error),
+    Iri(sophia::iri::InvalidIri),
     Dvrf(dvrf::Error),
 }
 
@@ -45,6 +46,7 @@ impl Display for CliError {
             Self::Toml(e) => writeln!(f, "{e}"),
             Self::Utf8(e) => writeln!(f, "{e}"),
             Self::Dvrf(e) => writeln!(f, "{e}"),
+            Self::Iri(e) => writeln!(f, "{e}"),
         }
     }
 }
@@ -82,6 +84,12 @@ impl From<toml::de::Error> for CliError {
 impl From<std::str::Utf8Error> for CliError {
     fn from(e: std::str::Utf8Error) -> Self {
         Self::Utf8(e)
+    }
+}
+
+impl From<sophia::iri::InvalidIri> for CliError {
+    fn from(e: sophia::iri::InvalidIri) -> Self {
+        Self::Iri(e)
     }
 }
 
