@@ -65,6 +65,19 @@ used). In the following example, the URI is formed from the base URI
 uri = { base-uri = 'https://d-nb.info/', path = '001' }
 ```
 
+### Unicode Normalization
+
+Using the `translit` option, the graph output can be transliterated into
+the specified Unicode normal form, if necessary. Possible values: `nfd`,
+`nfkd`, `nfc`, `nfkc`. By default, no transliteration is performed.
+
+```toml
+scope = 'ldr.type == "z" && 042.a == "gnd1" && 079.q == "s"'
+uri = { base-uri = 'https://d-nb.info/', path = '001' }
+translit = 'nfc'
+...
+```
+
 ### Groups
 
 The properties of a concept are specified within a group. The group

@@ -32,6 +32,12 @@ impl AsRef<[u8]> for Value<'_> {
     }
 }
 
+impl AsRef<str> for Value<'_> {
+    fn as_ref(&self) -> &str {
+        self.to_str_unchecked()
+    }
+}
+
 impl From<String> for Value<'_> {
     fn from(value: String) -> Self {
         Self(Cow::Owned(value.into_bytes()))

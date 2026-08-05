@@ -17,6 +17,7 @@ use sophia::turtle::serializer::turtle::{
 };
 
 use crate::prelude::*;
+use crate::unicode::{NormalizationForm, translit};
 use crate::utils::Writer;
 
 /// Convert records to SKOS/RDF
@@ -115,6 +116,8 @@ struct SkosGraph {
     #[serde(default)]
     pretty: bool,
 
+    translit: Option<NormalizationForm>,
+
     #[serde(default, rename = "group")]
     groups: BTreeMap<String, Concept>,
 
@@ -182,6 +185,7 @@ impl SkosGraph {
         record: ByteRecord,
     ) -> Result<(), CliError> {
         use LabelKind::*;
+
         let record = StringRecord::try_from(record)?;
         let options = MatchOptions::default();
 
@@ -231,8 +235,9 @@ impl SkosGraph {
                 .unwrap();
 
                 for value in record.path(&label.path, &options) {
-                    let literal =
-                        value.to_str_unchecked() * xsd::string;
+                    let value =
+                        translit(value.as_ref(), &self.translit);
+                    let literal = value.as_ref() * xsd::string;
                     let o = RcTerm::from_term(literal);
 
                     self.graph.insert(&s, p, o).unwrap();
