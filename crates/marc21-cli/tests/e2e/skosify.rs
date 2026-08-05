@@ -400,3 +400,153 @@ labels = [
     temp_dir.close()?;
     Ok(())
 }
+
+#[test]
+fn skosify_collections() -> TestResult {
+    let config_str = r#"
+scope = 'ldr.type == "z" && 042.a == "gnd1" && 079.q == "s"'
+uri = { path = '024/7#{ 0 | 2 == "gnd" }' }
+pretty = true
+
+[concept.person]
+scope = '075{ b == "p" && 2 == "gndgen" }'
+labels = [
+    { kind = 'preferred', path = '100/1#.a' },
+    { kind = 'alternative', path = '400/1#.a' },
+]
+
+[collections.gnd-subject-category]
+uri = {
+    base-uri = 'http://d-nb.info/standards/vocab/gnd/gnd-sc#',
+    path = '065{ a | 2 == "sswd" }'
+}
+"#;
+
+    let temp_dir = TempDir::new()?;
+    let config = temp_dir.child("config.toml");
+    config.write_str(config_str)?;
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["skosify", "-s"])
+        .args(["--config", config.to_str().unwrap()])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    let stdout = assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty().not())
+        .stderr(predicates::str::is_empty())
+        .get_output()
+        .stdout
+        .clone();
+
+    let expected =
+        read_to_string(data_dir().join("coll-min0-max0.ttl"))?;
+    let actual = String::from_utf8(stdout)?;
+
+    assert!(isomorphic_graphs(&expected, &actual));
+
+    temp_dir.close()?;
+    Ok(())
+}
+
+#[test]
+fn skosify_collections_min() -> TestResult {
+    let config_str = r#"
+scope = 'ldr.type == "z" && 042.a == "gnd1" && 079.q == "s"'
+uri = { path = '024/7#{ 0 | 2 == "gnd" }' }
+pretty = true
+
+[concept.person]
+scope = '075{ b == "p" && 2 == "gndgen" }'
+labels = [
+    { kind = 'preferred', path = '100/1#.a' },
+    { kind = 'alternative', path = '400/1#.a' },
+]
+
+[collections.gnd-subject-category]
+uri = { base-uri = 'http://d-nb.info/standards/vocab/gnd/gnd-sc#', path = '065{ a | 2 == "sswd" }' }
+min = 2
+"#;
+
+    let temp_dir = TempDir::new()?;
+    let config = temp_dir.child("config.toml");
+    config.write_str(config_str)?;
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["skosify", "-s"])
+        .args(["--config", config.to_str().unwrap()])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    let stdout = assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty().not())
+        .stderr(predicates::str::is_empty())
+        .get_output()
+        .stdout
+        .clone();
+
+    let expected =
+        read_to_string(data_dir().join("coll-min2-max0.ttl"))?;
+    let actual = String::from_utf8(stdout)?;
+
+    assert!(isomorphic_graphs(&expected, &actual));
+
+    temp_dir.close()?;
+    Ok(())
+}
+
+#[test]
+fn skosify_collections_max() -> TestResult {
+    let config_str = r#"
+scope = 'ldr.type == "z" && 042.a == "gnd1" && 079.q == "s"'
+uri = { path = '024/7#{ 0 | 2 == "gnd" }' }
+pretty = true
+
+[concept.person]
+scope = '075{ b == "p" && 2 == "gndgen" }'
+labels = [
+    { kind = 'preferred', path = '100/1#.a' },
+    { kind = 'alternative', path = '400/1#.a' },
+]
+
+[collections.gnd-subject-category]
+uri = { base-uri = 'http://d-nb.info/standards/vocab/gnd/gnd-sc#', path = '065{ a | 2 == "sswd" }' }
+min = 1
+max = 4
+"#;
+
+    let temp_dir = TempDir::new()?;
+    let config = temp_dir.child("config.toml");
+    config.write_str(config_str)?;
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["skosify", "-s"])
+        .args(["--config", config.to_str().unwrap()])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    let stdout = assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty().not())
+        .stderr(predicates::str::is_empty())
+        .get_output()
+        .stdout
+        .clone();
+
+    let expected =
+        read_to_string(data_dir().join("coll-min1-max4.ttl"))?;
+    let actual = String::from_utf8(stdout)?;
+
+    assert!(isomorphic_graphs(&expected, &actual));
+
+    temp_dir.close()?;
+    Ok(())
+}

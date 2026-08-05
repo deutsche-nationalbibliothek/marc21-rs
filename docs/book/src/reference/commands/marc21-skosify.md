@@ -65,20 +65,7 @@ used). In the following example, the URI is formed from the base URI
 uri = { base-uri = 'https://d-nb.info/', path = '001' }
 ```
 
-### Unicode Normalization
-
-Using the `translit` option, the graph output can be transliterated into
-the specified Unicode normal form, if necessary. Possible values: `nfd`,
-`nfkd`, `nfc`, `nfkc`. By default, no transliteration is performed.
-
-```toml
-scope = 'ldr.type == "z" && 042.a == "gnd1" && 079.q == "s"'
-uri = { base-uri = 'https://d-nb.info/', path = '001' }
-translit = 'nfc'
-...
-```
-
-### Groups
+### Concept Groups
 
 The properties of a concept are specified within a group. The group
 defines which SKOS property is derived from which MARC21 values. This
@@ -102,6 +89,29 @@ labels = [
 ]
 ```
 
+### Collections
+
+[SKOS collections] can be created based on the values of a [path]
+expression. The collection's URI is specified using the `uri` option.
+The `min` and `max` options can be used to set the minimum and maximum
+number of members in the collection, respectively. If a collection
+contains fewer or more members than specified, the collection is
+ignored.
+
+In the following example, a collection is created. The URL consists
+of the base URL `http://d-nb.info/standards/vocab/gnd/gnd-sc#` and the
+values from `065 $b`, if the subfield `$2` in the same field is set to
+`sswd`. Only collections with more than 100 members are written.
+
+```toml
+[collections.gnd-subject-category]
+uri = {
+  base-uri = 'http://d-nb.info/standards/vocab/gnd/gnd-sc#',
+  path = '065{ a | 2 == "sswd" }' 
+}
+min = 100
+```
+
 ### Miscellaneous
 
 `pretty = true | false`
@@ -111,6 +121,11 @@ labels = [
     resource-intensive. If the flag is not set (default), output occurs
     in streaming mode, meaning subject and predicate "factorization"
     will only occur based on the previous triple(s) in the stream.
+
+`translit = nfc | nfkc | nfd | nfkd`
+  : Using the `translit` option, the graph output can be transliterated
+    into the specified Unicode normal form, if necessary. By default, no
+    transliteration is performed.
 
 
 ## OPTIONS
@@ -183,7 +198,8 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 [001]: https://www.loc.gov/marc/authority/ad001.html
 [042 $a]: https://www.loc.gov/marc/authority/ad042.html
 [mc2skos]: https://pypi.org/project/mc2skos/
-[path]: ../../concepts/path.md
 [Rezension]: https://explore.gnd.network/gnd/4049712-4
 [SKOS/RDF]: https://www.w3.org/2004/02/skos/
 [TOML]: https://toml.io/en/
+[SKOS collections]: https://www.w3.org/TR/skos-reference/#collections
+[path]: ../../concepts/query-and-path.md

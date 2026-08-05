@@ -4,6 +4,7 @@ use std::path::PathBuf;
 use crate::commands::skosify::graph::SkosGraph;
 use crate::prelude::*;
 
+mod collection;
 mod concept;
 mod graph;
 mod uri;
@@ -72,7 +73,7 @@ impl Skosify {
                             continue;
                         }
 
-                        graph.process_record(record)?;
+                        graph.process_record(record, &options)?;
 
                         count += 1;
                         if self.filter_opts.limit == count {

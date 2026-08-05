@@ -12,6 +12,7 @@ use sophia::turtle::serializer::turtle::{
     TurtleConfig, TurtleSerializer,
 };
 
+use crate::commands::skosify::collection::Collections;
 use crate::commands::skosify::concept::Concept;
 use crate::commands::skosify::uri::Uri;
 use crate::commands::skosify::utils::{
@@ -35,6 +36,9 @@ pub(crate) struct SkosGraph {
 
     #[serde(default, rename = "concept")]
     groups: BTreeMap<String, Concept>,
+
+    #[serde(default)]
+    collections: BTreeMap<String, Collections>,
 
     #[serde(skip, default = "default_rdf_ns")]
     rdf_ns: Namespace<&'static str>,
@@ -62,22 +66,19 @@ impl SkosGraph {
     pub(crate) fn process_record(
         &mut self,
         record: ByteRecord,
+        options: &MatchOptions,
     ) -> Result<(), CliError> {
         let record = StringRecord::try_from(record)?;
-        let options = MatchOptions::default();
 
         if let Some(ref matcher) = self.scope
-            && !matcher.is_match(&record, &options)
+            && !matcher.is_match(&record, options)
         {
             return Ok(());
         }
 
-        let s = self
-            .uri
-            .get(&record)
-            .map_err(|e| CliError::AdHoc(e.to_string()))?;
-        let p = self.rdf_ns.get("type").unwrap();
-        let o = self.skos_ns.get("Concept").unwrap();
+        let s = self.uri.get(&record, options)?;
+        let p = self.rdf_ns.get("type")?;
+        let o = self.skos_ns.get("Concept")?;
 
         match self.graph.insert(&s, p, o) {
             Err(e) => return Err(CliError::AdHoc(e.to_string())),
@@ -95,18 +96,29 @@ impl SkosGraph {
         }
 
         for concept in self.groups.values() {
-            for (p, o) in concept.labels(&record, &self.translit)? {
+            for (p, o) in
+                concept.labels(&record, options, &self.translit)?
+            {
                 self.graph.insert(&s, p, o).unwrap();
             }
+        }
+
+        for collection in self.collections.values_mut() {
+            collection.process_record(&record, options, &s)?;
         }
 
         Ok(())
     }
 
     pub(crate) fn serialize_graph(
-        self,
+        mut self,
         writer: &mut Writer,
     ) -> Result<(), CliError> {
+        // finish collections
+        for collection in self.collections.values() {
+            collection.finish(&mut self.graph)?;
+        }
+
         let config = TurtleConfig::default().with_pretty(self.pretty);
         let mut ser = TurtleSerializer::new_with_config(writer, config);
         ser.serialize_graph(&self.graph)
