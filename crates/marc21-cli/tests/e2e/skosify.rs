@@ -224,3 +224,179 @@ fn skosify_where() -> TestResult {
     temp_dir.close()?;
     Ok(())
 }
+
+#[test]
+fn skosify_translit_nfc() -> TestResult {
+    let temp_dir = TempDir::new()?;
+    let output = temp_dir.child("goethe.ttl");
+    let config = temp_dir.child("config.toml");
+
+    let config_str = r#"
+scope = 'ldr.type == "z" && 042.a == "gnd1" && 079.q == "s"'
+uri = { path = '024/7#{ 0 | 2 == "gnd" }' }
+translit = 'nfc'
+
+[group.concepts]
+scope = '075{ b == "p" && 2 == "gndgen" }'
+labels = [
+    { kind = 'preferred', path = '100/1#.a' },
+    { kind = 'alternative', path = '400/1#.a' },
+]
+"#;
+
+    config.write_str(config_str)?;
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["skosify", "-s"])
+        .args(["-c", config.to_str().unwrap()])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["--where", "001 == '118540238'"])
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let expected = read_to_string(data_dir().join("goethe-nfc.ttl"))?;
+    let actual = read_to_string(output)?;
+    assert!(isomorphic_graphs(&expected, &actual));
+
+    temp_dir.close()?;
+    Ok(())
+}
+
+#[test]
+fn skosify_translit_nfkc() -> TestResult {
+    let temp_dir = TempDir::new()?;
+    let output = temp_dir.child("goethe.ttl");
+    let config = temp_dir.child("config.toml");
+
+    let config_str = r#"
+scope = 'ldr.type == "z" && 042.a == "gnd1" && 079.q == "s"'
+uri = { path = '024/7#{ 0 | 2 == "gnd" }' }
+translit = 'nfkc'
+
+[group.concepts]
+scope = '075{ b == "p" && 2 == "gndgen" }'
+labels = [
+    { kind = 'preferred', path = '100/1#.a' },
+    { kind = 'alternative', path = '400/1#.a' },
+]
+"#;
+
+    config.write_str(config_str)?;
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["skosify", "-s"])
+        .args(["-c", config.to_str().unwrap()])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["--where", "001 == '118540238'"])
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let expected = read_to_string(data_dir().join("goethe-nfkc.ttl"))?;
+    let actual = read_to_string(output)?;
+    assert!(isomorphic_graphs(&expected, &actual));
+
+    temp_dir.close()?;
+    Ok(())
+}
+
+#[test]
+fn skosify_translit_nfd() -> TestResult {
+    let temp_dir = TempDir::new()?;
+    let output = temp_dir.child("goethe.ttl");
+    let config = temp_dir.child("config.toml");
+
+    let config_str = r#"
+scope = 'ldr.type == "z" && 042.a == "gnd1" && 079.q == "s"'
+uri = { path = '024/7#{ 0 | 2 == "gnd" }' }
+translit = 'nfd'
+
+[group.concepts]
+scope = '075{ b == "p" && 2 == "gndgen" }'
+labels = [
+    { kind = 'preferred', path = '100/1#.a' },
+    { kind = 'alternative', path = '400/1#.a' },
+]
+"#;
+
+    config.write_str(config_str)?;
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["skosify", "-s"])
+        .args(["-c", config.to_str().unwrap()])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["--where", "001 == '118540238'"])
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let expected = read_to_string(data_dir().join("goethe-nfd.ttl"))?;
+    let actual = read_to_string(output)?;
+    assert!(isomorphic_graphs(&expected, &actual));
+
+    temp_dir.close()?;
+    Ok(())
+}
+
+#[test]
+fn skosify_translit_nfkd() -> TestResult {
+    let temp_dir = TempDir::new()?;
+    let output = temp_dir.child("goethe.ttl");
+    let config = temp_dir.child("config.toml");
+
+    let config_str = r#"
+scope = 'ldr.type == "z" && 042.a == "gnd1" && 079.q == "s"'
+uri = { path = '024/7#{ 0 | 2 == "gnd" }' }
+translit = 'nfkd'
+
+[group.concepts]
+scope = '075{ b == "p" && 2 == "gndgen" }'
+labels = [
+    { kind = 'preferred', path = '100/1#.a' },
+    { kind = 'alternative', path = '400/1#.a' },
+]
+"#;
+
+    config.write_str(config_str)?;
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["skosify", "-s"])
+        .args(["-c", config.to_str().unwrap()])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["--where", "001 == '118540238'"])
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let expected = read_to_string(data_dir().join("goethe-nfkd.ttl"))?;
+    let actual = read_to_string(output)?;
+    assert!(isomorphic_graphs(&expected, &actual));
+
+    temp_dir.close()?;
+    Ok(())
+}
