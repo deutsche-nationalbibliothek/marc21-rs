@@ -288,6 +288,8 @@ complete -c marc21 -n "__fish_marc21_using_subcommand select" -s s -l skip-inval
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -s c -l config -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -l format -r -f -a "turtle\t''
+nt\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -s o -l output -d 'Write output to <filename> instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r

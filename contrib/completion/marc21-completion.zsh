@@ -422,6 +422,7 @@ _arguments "${_arguments_options[@]}" : \
 _arguments "${_arguments_options[@]}" : \
 '-c+[]:CONFIG:_files' \
 '--config=[]:CONFIG:_files' \
+'--format=[]:FORMAT:(turtle nt)' \
 '-o+[Write output to <filename> instead of stdout]:filename:_files' \
 '--output=[Write output to <filename> instead of stdout]:filename:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
