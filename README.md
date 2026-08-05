@@ -108,6 +108,8 @@ This project is licensed under the [European Union Public License 1.2].
 [ZSH]: https://www.zsh.org
 
 [documentation]: https://deutsche-nationalbibliothek.github.io/marc21-rs/
+
+[check]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-check.html
 [concat]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-concat.html
 [count]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-count.html
 [dedup]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-dedup.html
@@ -124,4 +126,3 @@ This project is licensed under the [European Union Public License 1.2].
 [select]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-select.html
 [skosify]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-skosify.html
 [split]: https://deutsche-nationalbibliothek.github.io/marc21-rs/reference/commands/marc21-split.html
-
