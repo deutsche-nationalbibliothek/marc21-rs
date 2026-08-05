@@ -8,10 +8,14 @@ use sophia::api::graph::MutableGraph;
 use sophia::api::ns::Namespace;
 use sophia::api::serializer::TripleSerializer;
 use sophia::inmem::graph::LightGraph;
+use sophia::turtle::serializer::nt::{
+    NTriplesConfig, NTriplesSerializer,
+};
 use sophia::turtle::serializer::turtle::{
     TurtleConfig, TurtleSerializer,
 };
 
+use crate::commands::skosify::Format;
 use crate::commands::skosify::collection::Collections;
 use crate::commands::skosify::concept::Concept;
 use crate::commands::skosify::uri::Uri;
@@ -113,16 +117,31 @@ impl SkosGraph {
     pub(crate) fn serialize_graph(
         mut self,
         writer: &mut Writer,
+        format: &Format,
     ) -> Result<(), CliError> {
         // finish collections
         for collection in self.collections.values() {
             collection.finish(&mut self.graph)?;
         }
 
-        let config = TurtleConfig::default().with_pretty(self.pretty);
-        let mut ser = TurtleSerializer::new_with_config(writer, config);
-        ser.serialize_graph(&self.graph)
-            .map_err(|err| CliError::AdHoc(err.to_string()))?;
+        match format {
+            Format::Turtle => {
+                let config =
+                    TurtleConfig::default().with_pretty(self.pretty);
+                let mut ser =
+                    TurtleSerializer::new_with_config(writer, config);
+                ser.serialize_graph(&self.graph)
+                    .map_err(|err| CliError::AdHoc(err.to_string()))?;
+            }
+            Format::Nt => {
+                let config = NTriplesConfig::default();
+                let mut ser =
+                    NTriplesSerializer::new_with_config(writer, config);
+                ser.serialize_graph(&self.graph)
+                    .map_err(|err| CliError::AdHoc(err.to_string()))?;
+            }
+        }
+
         Ok(())
     }
 }
