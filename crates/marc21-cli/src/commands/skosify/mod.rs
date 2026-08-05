@@ -10,11 +10,40 @@ mod graph;
 mod uri;
 mod utils;
 
+#[derive(Debug, PartialEq, Default, Clone, clap::ValueEnum)]
+pub(crate) enum Format {
+    #[default]
+    Turtle,
+    Nt,
+}
+
+impl Format {
+    pub fn try_from_path<P: AsRef<std::path::Path>>(
+        path: Option<P>,
+    ) -> Option<Self> {
+        let path = path?;
+        let filename = path.as_ref().to_str().unwrap_or_default();
+
+        if filename.ends_with(".ttl") || filename.ends_with(".ttl.gz") {
+            Some(Self::Turtle)
+        } else if filename.ends_with(".nt")
+            || filename.ends_with(".nt.gz")
+        {
+            Some(Self::Nt)
+        } else {
+            None
+        }
+    }
+}
+
 /// Convert records to SKOS/RDF
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Skosify {
     #[arg(long, short, required = true)]
     config: PathBuf,
+
+    #[arg(long)]
+    format: Option<Format>,
 
     /// MARC21 files to be processed as input. If no file is specified,
     /// or if the filename is `-`, the data is read from standard input
@@ -40,6 +69,11 @@ impl Skosify {
         let filter = self.filter_opts.filter()?;
         let mut count = 0;
         let mut line = 0;
+
+        let format = self
+            .format
+            .or(Format::try_from_path(self.output.as_ref()))
+            .unwrap_or_default();
 
         let mut output = WriterBuilder::default()
             .with_compression(self.common.compression)
@@ -84,7 +118,7 @@ impl Skosify {
             }
         }
 
-        graph.serialize_graph(&mut output)?;
+        graph.serialize_graph(&mut output, &format)?;
         progress.finish();
         output.finish()?;
 

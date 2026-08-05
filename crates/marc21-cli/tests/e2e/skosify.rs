@@ -550,3 +550,114 @@ max = 4
     temp_dir.close()?;
     Ok(())
 }
+
+#[test]
+fn skosify_collections_nt() -> TestResult {
+    let temp_dir = TempDir::new()?;
+    let config = temp_dir.child("config.toml");
+    config.write_str(CONFIG)?;
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["skosify", "-s"])
+        .args(["--config", config.to_str().unwrap()])
+        .args(["--format", "nt"])
+        .arg(data_dir().join("ada.mrc.gz"))
+        .assert();
+
+    let stdout = assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty().not())
+        .stderr(predicates::str::is_empty())
+        .get_output()
+        .stdout
+        .clone();
+
+    let expected = read_to_string(data_dir().join("ada.nt"))?;
+    let actual = String::from_utf8(stdout)?;
+
+    assert!(isomorphic_graphs(&expected, &actual));
+
+    // derive format from filename
+    let temp_dir = TempDir::new()?;
+    let output = temp_dir.child("ada.nt");
+    let config = temp_dir.child("config.toml");
+    config.write_str(CONFIG)?;
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .arg("skosify")
+        .args(["-c", config.to_str().unwrap()])
+        .arg(data_dir().join("ada.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let expected = read_to_string(data_dir().join("ada.nt"))?;
+    let actual = read_to_string(output)?;
+    assert!(isomorphic_graphs(&expected, &actual));
+
+    temp_dir.close()?;
+    Ok(())
+}
+
+#[test]
+fn skosify_collections_ttl() -> TestResult {
+    let temp_dir = TempDir::new()?;
+    let config = temp_dir.child("config.toml");
+    config.write_str(CONFIG)?;
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["skosify", "-s"])
+        .args(["--config", config.to_str().unwrap()])
+        .args(["--format", "turtle"])
+        .arg(data_dir().join("ada.mrc.gz"))
+        .assert();
+
+    let stdout = assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty().not())
+        .stderr(predicates::str::is_empty())
+        .get_output()
+        .stdout
+        .clone();
+
+    let expected = read_to_string(data_dir().join("ada.ttl"))?;
+    let actual = String::from_utf8(stdout)?;
+    assert!(isomorphic_graphs(&expected, &actual));
+
+    // derive format from filename
+    let temp_dir = TempDir::new()?;
+    let output = temp_dir.child("ada.ttl");
+    let config = temp_dir.child("config.toml");
+    config.write_str(CONFIG)?;
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .arg("skosify")
+        .args(["-c", config.to_str().unwrap()])
+        .arg(data_dir().join("ada.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let expected = read_to_string(data_dir().join("ada.ttl"))?;
+    let actual = read_to_string(output)?;
+    assert!(isomorphic_graphs(&expected, &actual));
+
+    temp_dir.close()?;
+    Ok(())
+}
