@@ -12,7 +12,7 @@ const CONFIG: &str = r#"
 scope = 'ldr.type == "z" && 042.a == "gnd1" && 079.q == "s"'
 uri = { path = '024/7#{ 0 | 2 == "gnd" }' }
 
-[group.concepts]
+[concept.person]
 scope = '075{ b == "p" && 2 == "gndgen" }'
 labels = [
     { kind = 'preferred', path = '100/1#.a' },
@@ -236,7 +236,7 @@ scope = 'ldr.type == "z" && 042.a == "gnd1" && 079.q == "s"'
 uri = { path = '024/7#{ 0 | 2 == "gnd" }' }
 translit = 'nfc'
 
-[group.concepts]
+[concept.person]
 scope = '075{ b == "p" && 2 == "gndgen" }'
 labels = [
     { kind = 'preferred', path = '100/1#.a' },
@@ -280,7 +280,7 @@ scope = 'ldr.type == "z" && 042.a == "gnd1" && 079.q == "s"'
 uri = { path = '024/7#{ 0 | 2 == "gnd" }' }
 translit = 'nfkc'
 
-[group.concepts]
+[concept.person]
 scope = '075{ b == "p" && 2 == "gndgen" }'
 labels = [
     { kind = 'preferred', path = '100/1#.a' },
@@ -324,7 +324,7 @@ scope = 'ldr.type == "z" && 042.a == "gnd1" && 079.q == "s"'
 uri = { path = '024/7#{ 0 | 2 == "gnd" }' }
 translit = 'nfd'
 
-[group.concepts]
+[concept.person]
 scope = '075{ b == "p" && 2 == "gndgen" }'
 labels = [
     { kind = 'preferred', path = '100/1#.a' },
@@ -368,7 +368,7 @@ scope = 'ldr.type == "z" && 042.a == "gnd1" && 079.q == "s"'
 uri = { path = '024/7#{ 0 | 2 == "gnd" }' }
 translit = 'nfkd'
 
-[group.concepts]
+[concept.person]
 scope = '075{ b == "p" && 2 == "gndgen" }'
 labels = [
     { kind = 'preferred', path = '100/1#.a' },

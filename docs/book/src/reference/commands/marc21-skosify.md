@@ -85,18 +85,16 @@ defines which SKOS property is derived from which MARC21 values. This
 type of specification takes into account the fact that the values are
 often located in other fields, depending on a property of the record.
 A group can therefore (optionally) be restricted to a subset of records
-by specifying a `scope`. The groups are processed in order. Processing
-of the groups stops when at least one triple has been generated for
-a record.
+by specifying a `scope`. The groups are processed in order.
 
-In the following example, a `subject-heading` group is created
+In the following example, a `subject-heading` concept group is created
 that refers only to GND subject headings (`scope`). The `prefLabel`
 (`preferred`) is derived from field `150 $a`, and the `altLabel`
 (`alternative`) from field `450 $a`. No `hiddenLabel`s (`hidden`) are
 defined.
 
 ```toml
-[group.subject-heading]
+[concept.subject-heading]
 scope = '075{ b == "s" && 2 == "gndgen" }'
 labels = [
   { kind = 'preferred', path = '150.a' },
