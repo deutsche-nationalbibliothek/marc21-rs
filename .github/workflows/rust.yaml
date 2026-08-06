@@ -80,9 +80,7 @@ jobs:
           toolchain: nightly
 
       - name: Install cargo-fuzz
-        uses: dtolnay/install@4e8cf95628be9366636a2a784ad2d4d21cb8b559 # master
-        with:
-          crate: cargo-fuzz
+        uses: dtolnay/install@d0dc46e85ffd2c174b5ac0489e17f95dae84fa5a # cargo-fuzz
       - run: |
           cargo fuzz run --jobs 2 ${{ matrix.item.target }} -- -max_total_time=${{ matrix.item.max-total-time }}
 
