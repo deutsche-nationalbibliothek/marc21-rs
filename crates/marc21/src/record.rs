@@ -37,7 +37,7 @@ impl<'a> ByteRecord<'a> {
     /// ```rust
     /// use marc21::prelude::*;
     ///
-    /// let data = include_bytes!("../tests/data/ada.mrc");
+    /// let data = include_bytes!("../../../tests/data/ada.mrc");
     /// let result = ByteRecord::from_bytes(data);
     /// assert!(result.is_ok());
     ///
@@ -61,7 +61,7 @@ impl<'a> ByteRecord<'a> {
     /// ```rust
     /// use marc21::prelude::*;
     ///
-    /// let data = include_bytes!("../tests/data/ada.mrc");
+    /// let data = include_bytes!("../../../tests/data/ada.mrc");
     /// let record = ByteRecord::from_bytes(data)?;
     /// let leader = record.leader();
     ///
@@ -421,13 +421,13 @@ mod tests {
 
     #[test]
     fn test_parse_record() {
-        let bytes = include_bytes!("../tests/data/ada.mrc");
+        let bytes = include_bytes!("../../../tests/data/ada.mrc");
         assert!(ByteRecord::from_bytes(bytes).is_ok());
     }
 
     #[test]
     fn test_string_record_try_from() -> TestResult {
-        let bytes = include_bytes!("../tests/data/ada.mrc");
+        let bytes = include_bytes!("../../../tests/data/ada.mrc");
         let record = ByteRecord::from_bytes(bytes)?;
         let result = StringRecord::try_from(record);
         assert!(result.is_ok());
@@ -437,7 +437,7 @@ mod tests {
 
     #[test]
     fn test_string_record_deref() -> TestResult {
-        let bytes = include_bytes!("../tests/data/ada.mrc");
+        let bytes = include_bytes!("../../../tests/data/ada.mrc");
         let record = ByteRecord::from_bytes(bytes)?;
         let record = StringRecord::try_from(record)?;
         assert_eq!(record.fields().count(), 47);

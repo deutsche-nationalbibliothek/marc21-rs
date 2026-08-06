@@ -140,7 +140,23 @@ _tba_
 
 ### Count Matcher
 
-_tba_
+The _count matcher_ can be used to determine the count of one or more
+fields and compare it against a reference value. The expression begins
+with a `#` character and consists of a [tag matcher], an optional
+[indicator matcher], an optional [subfield matcher] using the `{}`-
+notation, a comparison operator (`==`, `!=`, `>=`, `>`, `<=`, or `<`),
+and the comparison value (unsigned integer).
+
+In the following example, the number of fields `400` is counted using
+the indicators `1` and `#`, for which a subfield `a` exists and a
+subfield `4` is set to the value `nafr`. The expression evaluates to
+true if this number is equal to `2`.
+
+```console
+$ marc21 count tests/data/ada.mrc --where '#400/1#{ a? && 4 == "nafr" } == 2'
+1
+
+```
 
 ## Boolean Connectives
 
@@ -168,3 +184,6 @@ _tba_
 [grouping]: #grouping
 [leader matcher]: #leader-matcher
 [Tag Matcher]: ./tag-matcher.md
+[Indicator Matcher]: ./indicator-matcher.md
+[Subfield Matcher]: ./subfield-matcher.md
+

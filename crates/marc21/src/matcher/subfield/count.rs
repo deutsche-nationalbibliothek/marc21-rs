@@ -75,7 +75,7 @@ mod tests {
 
     #[test]
     fn test_count_matcher_long() -> TestResult {
-        let data = include_bytes!("../../../tests/data/ada.mrc");
+        let data = include_bytes!("../../../../../tests/data/ada.mrc");
         let record = ByteRecord::from_bytes(data)?;
         let options = MatchOptions::default();
 

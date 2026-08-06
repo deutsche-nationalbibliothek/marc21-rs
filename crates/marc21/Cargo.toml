@@ -35,7 +35,6 @@ winnow = { workspace = true }
 
 [dev-dependencies]
 serde_test = { workspace = true }
-trycmd = { workspace = true }
 
 [[test]]
 path = "tests/fuzz/lib.rs"
@@ -44,7 +43,3 @@ name = "fuzz-regressions"
 [[test]]
 path = "tests/api/lib.rs"
 name = "api"
-
-[[test]]
-path = "tests/book/lib.rs"
-name = "book"
