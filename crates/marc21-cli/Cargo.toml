@@ -18,6 +18,10 @@ path = "src/main.rs"
 path = "tests/e2e/lib.rs"
 name = "e2e"
 
+[[test]]
+path = "tests/book/lib.rs"
+name = "book"
+
 [dependencies]
 bstr = { workspace = true, features = ["std"], default-features = false }
 clap_complete = { workspace = true, optional = true }
@@ -41,6 +45,7 @@ anyhow = { workspace = true }
 assert_cmd = { workspace = true }
 assert_fs = { workspace = true }
 predicates = { workspace = true }
+trycmd = { workspace = true }
 
 [features]
 default = ["performant"]

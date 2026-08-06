@@ -7,5 +7,5 @@ pub(crate) mod prelude {
     pub use marc21::{ByteRecord, Query};
 
     pub(crate) static ADA_LOVELACE: &[u8] =
-        include_bytes!("../data/ada.mrc");
+        include_bytes!("../../../../tests/data/ada.mrc");
 }

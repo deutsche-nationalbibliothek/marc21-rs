@@ -628,7 +628,6 @@ dependencies = [
  "serde_test",
  "smallvec",
  "strsim",
- "trycmd",
  "winnow",
 ]
 
@@ -655,6 +654,7 @@ dependencies = [
  "sha2",
  "sophia",
  "toml",
+ "trycmd",
  "unicode-normalization",
 ]
 
@@ -1053,9 +1053,9 @@ checksum = "3a219298ac11a56ea9a6d2120044824d6f01aeb034955e7af7bc16858527deea"
 
 [[package]]
 name = "similar"
-version = "3.1.1"
+version = "3.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e6505efef05804732ed8a3f2d4f279429eb485bd69d5b0cc6b19cc02005cda16"
+checksum = "85ee016af5d736b69fc89e19254540fa4b5f5492853fb5503920f084011c78b6"
 dependencies = [
  "bstr",
 ]

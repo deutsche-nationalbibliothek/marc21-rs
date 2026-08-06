@@ -5,13 +5,13 @@ use winnow::combinator::{
 use winnow::prelude::*;
 
 use crate::matcher::field::control::{self, ControlFieldMatcher};
-use crate::matcher::field::count::CountMatcher;
+use crate::matcher::field::count::parse_count_matcher;
 use crate::matcher::field::data::DataFieldMatcher;
 use crate::matcher::field::{ExistsMatcher, FieldMatcher};
 use crate::matcher::indicator::parse::parse_indicator_matcher_opt;
 use crate::matcher::shared::{
     parse_byte_string, parse_comparison_operator, parse_quantifier_opt,
-    parse_range, parse_string_value, parse_usize, ws0, ws1,
+    parse_range, parse_string_value, ws0, ws1,
 };
 use crate::matcher::subfield::parse::{
     parse_subfield_matcher_long, parse_subfield_matcher_short,
@@ -41,19 +41,6 @@ fn parse_exists_matcher(i: &mut &[u8]) -> ModalResult<ExistsMatcher> {
             '?'.value(None)
         )),
     }}
-    .parse_next(i)
-}
-
-fn parse_count_matcher(i: &mut &[u8]) -> ModalResult<CountMatcher> {
-    preceded(
-        '#',
-        seq! { CountMatcher {
-            tag_matcher: parse_tag_matcher,
-            indicator_matcher: parse_indicator_matcher_opt,
-            comparison_op: ws1(parse_comparison_operator),
-            count: parse_usize,
-        }},
-    )
     .parse_next(i)
 }
 
