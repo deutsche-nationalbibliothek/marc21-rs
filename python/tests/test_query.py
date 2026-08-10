@@ -75,7 +75,10 @@ def test_query_leader(data_dir: Path) -> None:
     path = data_dir.joinpath("ada.mrc")
 
     # base addr
-    expected = pl.DataFrame({"column_1": ["589"]})
+    expected = pl.DataFrame(
+        {"column_1": [589]},
+        schema_overrides={"column_1": pl.UInt32},
+    )
     actual = scan_marc21(path, "ldr.base_addr").collect()
     assert isinstance(actual, pl.DataFrame)
     assert_frame_equal(actual, expected)
@@ -87,7 +90,10 @@ def test_query_leader(data_dir: Path) -> None:
     assert_frame_equal(actual, expected)
 
     # length
-    expected = pl.DataFrame({"column_1": ["3612"]})
+    expected = pl.DataFrame(
+        {"column_1": [3612]},
+        schema_overrides={"column_1": pl.UInt32},
+    )
     actual = scan_marc21(path, "ldr.length").collect()
     assert isinstance(actual, pl.DataFrame)
     assert_frame_equal(actual, expected)

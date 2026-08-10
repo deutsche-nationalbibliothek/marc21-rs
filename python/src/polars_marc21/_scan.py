@@ -47,6 +47,19 @@ def prepare_header(
     return header
 
 
+def parse_schema(header: list[str], dtypes: list[str]) -> pl.Schema:
+    mapping = {}
+
+    for key, dtype in zip(header, dtypes, strict=True):
+        match dtype:
+            case "uint32":
+                mapping[key] = pl.UInt32
+            case "char" | "string" | _:
+                mapping[key] = pl.String
+
+    return pl.Schema(mapping)
+
+
 def scan_marc21(
     sources: str | Path | list[str] | list[Path],
     query: str,
@@ -78,9 +91,8 @@ def scan_marc21(
     """
     sources = prepare_sources(sources)
     reader = LazyReader(sources, query, predicate=where)
-
     header = prepare_header(header, reader.width())
-    schema = pl.Schema(dict.fromkeys(header, pl.String))
+    schema = parse_schema(header, reader.dtypes())
 
     def source_generator(
         with_columns: list[str] | None,
@@ -152,5 +164,8 @@ def read_marc21(
 
     """
     return scan_marc21(
-        sources, query, header=header, where=where,
+        sources,
+        query,
+        header=header,
+        where=where,
     ).collect()
