@@ -8,9 +8,12 @@ from ._scan import scan_marc21
 
 class QueryBuilder:
     _query: str  = ""
-    _sources: str | Path | list[str] | list[Path] = []
+    _sources: str | Path | list[str] | list[Path]
     _predicate: str | None = None
     _header: str | list[str] | None = None
+
+    def __init__(self) -> None:
+        self._sources = []
 
     def select(self, query: str) -> Self:
         self._query = query
