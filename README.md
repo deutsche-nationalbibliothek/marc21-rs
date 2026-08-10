@@ -30,6 +30,8 @@ National Library] (DNB). It is used for data analysis and for automating
 metadata workflows (data engineering) as part of automatic content
 indexing.
 
+## Command-Line Interface
+
 The `marc21` tool provides the following commands:
 
 - [check] — Validate records against rule sets
@@ -50,18 +52,30 @@ The `marc21` tool provides the following commands:
 - [skosify] — Convert records to SKOS/RDF
 - [split] — Split the input into chunks of a given size
 
+Check out the [documentation] to learn more about installing and using
+the tool.
+
+
+## Polars Integration
+
 The [polars-marc21] package uses the query engine to transform MARC21
 records directly into a [DataFrame]:
 
 ```python
->>> from polars_marc21 import scan_marc21
->>>
->>> filename = "DUMP.mrc.gz"
->>> query = "001, 075{ b | 2 == 'gndgen' }"
->>> header = "ppn,gndgen"
->>>
->>> df = scan_marc21(filename, query, header=header).collect()
->>> print(df)
+from polars_marc21 import marc21_select
+
+df = (
+    marc21_select("001, 075{ b | 2 == 'gndgen' }")
+    .header(["ppn", "gndgen"])
+    .from_("DUMP.mrc.gz")
+    .where("ldr.type == 'z'")
+    .collect()
+)
+
+print(df)
+```
+
+```default
 shape: (7, 2)
 ┌───────────┬────────┐
 │ ppn       ┆ gndgen │
@@ -77,9 +91,6 @@ shape: (7, 2)
 │ 040993396 ┆ u      │
 └───────────┴────────┘
 ```
-
-Check out the [documentation] to learn more about installing and using
-the tool.
 
 ## Contributing
 

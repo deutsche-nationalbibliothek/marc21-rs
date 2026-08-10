@@ -8,6 +8,11 @@ to be converted to the required data type afterward. In addition, the
 a LazyFrame.
 """
 
+from polars_marc21._builder import (
+    QueryBuilder,
+    marc21_query,
+    marc21_select,
+)
 from polars_marc21._scan import (
     HeaderLengthError,
     read_marc21,
@@ -16,6 +21,9 @@ from polars_marc21._scan import (
 
 __all__ = (
     "HeaderLengthError",
+    "QueryBuilder",
+    "marc21_query",
+    "marc21_select",
     "read_marc21",
     "scan_marc21",
 )
