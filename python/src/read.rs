@@ -48,6 +48,10 @@ impl LazyReader {
         slf.width
     }
 
+    fn dtypes(slf: PyRef<'_, Self>) -> Vec<String> {
+        slf.query.dtypes().iter().map(ToString::to_string).collect()
+    }
+
     fn __iter__(slf: PyRef<'_, Self>) -> PyRef<'_, Self> {
         slf
     }
