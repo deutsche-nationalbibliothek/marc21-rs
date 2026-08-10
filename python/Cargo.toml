@@ -1,6 +1,6 @@
 [package]
 name = "polars-marc21"
-version = "0.2.0"
+version = "0.3.0"
 description = "Rust bindings for polars-marc21"
 documentation.workspace = true
 repository.workspace = true
