@@ -7,8 +7,8 @@ from ._scan import scan_marc21
 
 
 class QueryBuilder:
-    _query: str | None = None
-    _sources: str | Path | list[str] | list[Path] | None = None
+    _query: str  = ""
+    _sources: str | Path | list[str] | list[Path] = []
     _predicate: str | None = None
     _header: str | list[str] | None = None
 
