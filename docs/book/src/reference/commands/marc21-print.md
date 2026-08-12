@@ -6,7 +6,7 @@
 
 ## SYNOPSIS
 
-`marc21 print` [_options_] [_path_]...
+`marc21 print` [_OPTIONS_] [_INPUT_]...
 
 ## DESCRIPTION
 
@@ -15,9 +15,16 @@ This command print records in human readable format.
 
 ## OPTIONS
 
+`--format <format>`
+  : Choose between the standard output format (`default`) and the
+    Mnemonic MARC Text File Format (`mnemonic`). If no explicit
+    selection is made, the `mnemonic` format is used for file extensions
+    `.mrk` and `.mrk.gz`; otherwise, the output is in the standard
+    format. Possible values: `default`, `mnemonic`.
+
 `--translit <form>`
-: Transliterate the output into the specified Unicode normal form.
-Possible values: `nfd`, `nfkd`, `nfc`, `nfkc`.
+  : Transliterate the output into the specified Unicode normal form.
+    Possible values: `nfd`, `nfkd`, `nfc`, `nfkc`.
 
 ### FILTER OPTIONS
 

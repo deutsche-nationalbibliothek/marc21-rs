@@ -248,6 +248,8 @@ complete -c marc21 -n "__fish_marc21_using_subcommand print" -l translit -d 'Tra
 nfkd\t''
 nfc\t''
 nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand print" -l format -d 'Choose between the standard output format (`default`) and the Mnemonic MARC Text File Format (`mnemonic`). If no explicit selection is made, the `mnemonic` format is used for file extensions `.mrk` and `.mrk.gz`; otherwise, the output is in the standard format' -r -f -a "mnemonic\t''
+default\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand print" -s o -l output -d 'Write output to <path> instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand print" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand print" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
