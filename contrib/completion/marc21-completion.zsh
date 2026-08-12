@@ -133,6 +133,7 @@ _arguments "${_arguments_options[@]}" : \
 ;;
 (dedup)
 _arguments "${_arguments_options[@]}" : \
+'--strategy=[Use the given strategy to determine duplicate records]:strategy:(cn hash)' \
 '-o+[Write output to FILENAME instead of stdout]:path:_files' \
 '--output=[Write output to FILENAME instead of stdout]:path:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
@@ -147,7 +148,7 @@ _arguments "${_arguments_options[@]}" : \
 '--progress[If set, show a progress bar]' \
 '-h[Print help (see more with '\''--help'\'')]' \
 '--help[Print help (see more with '\''--help'\'')]' \
-'*::path:_files' \
+'*::input -- MARC21 files to be processed as input. If no file is specified, or if the filename is `-`, the data is read from standard input (`stdin`) by default:_files' \
 && ret=0
 ;;
 (describe)

@@ -1,7 +1,17 @@
 use std::collections::HashSet;
 use std::path::PathBuf;
 
+use clap::ValueEnum;
+
 use crate::prelude::*;
+use crate::utils::sha256;
+
+#[derive(Clone, Debug, PartialEq, Default, ValueEnum)]
+pub(crate) enum Strategy {
+    #[default]
+    Cn,
+    Hash,
+}
 
 /// Remove duplicate records from the input
 ///
@@ -10,12 +20,33 @@ use crate::prelude::*;
 /// 001) of a record.
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Dedup {
-    #[arg(default_value = "-", hide_default_value = true)]
-    path: Vec<PathBuf>,
+    /// Use the given strategy to determine duplicate records.
+    ///
+    /// The `cn` strategy (default) is used to distinguish records by
+    /// the control number (field `001`) and `hash` compares the
+    /// SHA-256 checksums over all fields of a record.
+    ///
+    /// Note: If a record doesn't contain a control number and the `cn`
+    /// strategy  is selected, the record is ignored and won't be
+    /// written to OUTPUT.
+    #[arg(
+        long,
+        value_name = "strategy",
+        hide_possible_values = true,
+        hide_default_value = true,
+        default_value = "cn"
+    )]
+    strategy: Strategy,
 
     /// Write output to FILENAME instead of stdout.
     #[arg(short, long, value_name = "path")]
     output: Option<PathBuf>,
+
+    /// MARC21 files to be processed as input. If no file is specified,
+    /// or if the filename is `-`, the data is read from standard input
+    /// (`stdin`) by default.
+    #[arg(default_value = "-", hide_default_value = true)]
+    input: Vec<PathBuf>,
 
     #[command(flatten, next_help_heading = "Filter options")]
     pub(crate) filter_opts: FilterOpts,
@@ -37,7 +68,7 @@ impl Dedup {
             .with_compression(self.common.compression)
             .try_from_path_or_stdout(self.output)?;
 
-        'outer: for path in self.path.iter() {
+        'outer: for path in self.input.iter() {
             let mut reader = MarcReadOptions::default()
                 .try_into_reader_from_path(path)?;
 
@@ -63,9 +94,20 @@ impl Dedup {
                             continue;
                         }
 
-                        if let Some(cn) = record.control_number() {
-                            let key = cn.to_vec();
+                        let key = match self.strategy {
+                            Strategy::Hash => Some(sha256(record)?),
+                            Strategy::Cn => {
+                                if let Some(cn) =
+                                    record.control_number()
+                                {
+                                    Some(cn.to_vec())
+                                } else {
+                                    None
+                                }
+                            }
+                        };
 
+                        if let Some(key) = key {
                             if !seen.contains(&key) {
                                 record.write_to(&mut output)?;
                                 seen.insert(key);

@@ -6,7 +6,7 @@
 
 ## SYNOPSIS
 
-`marc21 count` [_OPTIONS_] [_PATH_]...
+`marc21 count` [_OPTIONS_] [_INPUT_]...
 
 ## DESCRIPTION
 
@@ -15,6 +15,14 @@ are identified by comparing the control number (field [001]) of a
 record.
 
 ## OPTIONS
+
+`--strategy <strategy>`
+  : Use the given strategy to determine duplicate records. The `cn`
+    strategy (default) is used to distinguish records by the control
+    number (field `001`) and `hash` compares the SHA-256 checksums over
+    all fields of a record. Note: If a record doesn't contain a control
+    number and the `cn` strategy  is selected, the record is ignored and
+    won't be written to OUTPUT.
 
 ### FILTER OPTIONS
 

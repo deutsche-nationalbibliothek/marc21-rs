@@ -1,10 +1,8 @@
 use std::fmt::Write as _;
-use std::io::Cursor;
 use std::path::PathBuf;
 
-use sha2::{Digest, Sha256};
-
 use crate::prelude::*;
+use crate::utils::sha256;
 
 /// Compute SHA-256 checksum of records.
 #[derive(Debug, clap::Parser)]
@@ -88,26 +86,13 @@ impl Hash {
                             continue;
                         }
 
-                        let mut hasher = Sha256::new();
-
-                        if let Some(data) = record.raw_data() {
-                            hasher.update(data);
-                        } else {
-                            let mut output =
-                                Cursor::new(Vec::<u8>::new());
-                            record.write_to(&mut output)?;
-                            let data = output.into_inner();
-                            hasher.update(data);
-                        }
-
-                        let hash = hasher
-                            .finalize()
-                            .to_vec()
-                            .iter()
-                            .fold(String::new(), |mut out, b| {
+                        let hash = sha256(record)?.iter().fold(
+                            String::new(),
+                            |mut out, b| {
                                 let _ = write!(out, "{b:02x}");
                                 out
-                            });
+                            },
+                        );
 
                         let cn = record
                             .control_number()

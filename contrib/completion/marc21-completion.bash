@@ -297,12 +297,16 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__dedup)
-            opts="-o -s -l -p -h --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-o -s -l -p -h --strategy --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
+                --strategy)
+                    COMPREPLY=($(compgen -W "cn hash" -- "${cur}"))
+                    return 0
+                    ;;
                 --output)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0

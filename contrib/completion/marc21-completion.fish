@@ -113,6 +113,8 @@ complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -l compression -d 'Sp
 complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -l strategy -d 'Use the given strategy to determine duplicate records' -r -f -a "cn\t''
+hash\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -s o -l output -d 'Write output to FILENAME instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
