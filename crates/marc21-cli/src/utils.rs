@@ -1,11 +1,29 @@
 use std::fs::{File, OpenOptions};
-use std::io::{self, BufWriter, Write, stdout};
+use std::io::{self, BufWriter, Cursor, Write, stdout};
 use std::path::PathBuf;
 
 use flate2::Compression;
 use flate2::write::GzEncoder;
+use marc21::ByteRecord;
+use sha2::{Digest, Sha256};
 
 use crate::error::CliError;
+
+pub(crate) fn sha256(record: &ByteRecord) -> io::Result<Vec<u8>> {
+    let mut hasher = Sha256::new();
+
+    if let Some(data) = record.raw_data() {
+        hasher.update(data);
+    } else {
+        let mut out = Cursor::new(Vec::<u8>::new());
+        record.write_to(&mut out)?;
+
+        let data = out.into_inner();
+        hasher.update(data);
+    }
+
+    Ok(hasher.finalize().to_vec())
+}
 
 #[derive(Default)]
 pub(crate) struct WriterBuilder {
