@@ -731,7 +731,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__print)
-            opts="-o -s -l -p -h --translit --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-o -s -l -p -h --translit --format --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -739,6 +739,10 @@ _marc21() {
             case "${prev}" in
                 --translit)
                     COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
+                --format)
+                    COMPREPLY=($(compgen -W "mnemonic default" -- "${cur}"))
                     return 0
                     ;;
                 --output)

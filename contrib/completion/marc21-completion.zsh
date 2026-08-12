@@ -357,6 +357,7 @@ _arguments "${_arguments_options[@]}" : \
 (print)
 _arguments "${_arguments_options[@]}" : \
 '--translit=[Transliterate the output into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--format=[Choose between the standard output format (\`default\`) and the Mnemonic MARC Text File Format (\`mnemonic\`). If no explicit selection is made, the \`mnemonic\` format is used for file extensions \`.mrk\` and \`.mrk.gz\`; otherwise, the output is in the standard format]:format:(mnemonic default)' \
 '-o+[Write output to <path> instead of stdout]:path:_files' \
 '--output=[Write output to <path> instead of stdout]:path:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
@@ -371,7 +372,7 @@ _arguments "${_arguments_options[@]}" : \
 '--progress[If set, show a progress bar]' \
 '-h[Print help]' \
 '--help[Print help]' \
-'*::path:_files' \
+'*::input -- MARC21 files to be processed as input. If no file is specified, or if the filename is `-`, the data is read from standard input (`stdin`) by default:_files' \
 && ret=0
 ;;
 (sample)
