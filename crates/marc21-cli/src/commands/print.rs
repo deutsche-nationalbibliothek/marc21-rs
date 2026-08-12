@@ -28,7 +28,7 @@ impl Format {
                 let mut ldr = Vec::<u8>::new();
                 record.leader().write_to(&mut ldr).unwrap();
 
-                // SAFTY: The formatted leader value is always a valid
+                // SAFETY: The formatted leader value is always a valid
                 // UTF8 string.
                 writeln!(&mut out, "=LDR  {}", unsafe {
                     ldr.to_str_unchecked()
