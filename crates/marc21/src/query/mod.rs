@@ -284,6 +284,11 @@ mod tests {
             vec![DataType::Char, DataType::String]
         );
 
+        assert_eq!(
+            Query::new("ldr.status, 012{ a, _ }, 001")?.dtypes(),
+            vec![DataType::Char, DataType::String, DataType::String]
+        );
+
         Ok(())
     }
 }
