@@ -71,7 +71,7 @@ impl Format {
                                     .unwrap();
                             }
 
-                            write!(&mut out, "\n").unwrap();
+                            writeln!(&mut out).unwrap();
                         }
                     }
                 }

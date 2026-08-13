@@ -100,7 +100,7 @@ jobs:
 
       - name: Run clippy
         run: |
-          cargo clippy --workspace --all-features
+          cargo clippy --workspace --all-features -- -D warnings
 
   rustfmt:
     runs-on: ubuntu-latest
