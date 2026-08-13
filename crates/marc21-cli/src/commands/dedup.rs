@@ -96,22 +96,16 @@ impl Dedup {
 
                         let key = match self.strategy {
                             Strategy::Hash => Some(sha256(record)?),
-                            Strategy::Cn => {
-                                if let Some(cn) =
-                                    record.control_number()
-                                {
-                                    Some(cn.to_vec())
-                                } else {
-                                    None
-                                }
-                            }
+                            Strategy::Cn => record
+                                .control_number()
+                                .map(|cn| cn.to_vec()),
                         };
 
-                        if let Some(key) = key {
-                            if !seen.contains(&key) {
-                                record.write_to(&mut output)?;
-                                seen.insert(key);
-                            }
+                        if let Some(key) = key
+                            && !seen.contains(&key)
+                        {
+                            record.write_to(&mut output)?;
+                            seen.insert(key);
                         }
 
                         count += 1;
