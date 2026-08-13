@@ -41,8 +41,13 @@ impl DataFieldExpr {
 
     pub(crate) fn dtypes(&self) -> Vec<DataType> {
         let mut dtypes = Vec::with_capacity(self.columns.len());
-        for _ in 0..self.width() {
-            dtypes.push(DataType::String);
+        for column in self.columns.iter() {
+            match column {
+                Column::Codes(codes) if codes.is_empty() => {
+                    continue;
+                }
+                _ => dtypes.push(DataType::String),
+            }
         }
 
         dtypes
