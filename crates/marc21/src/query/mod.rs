@@ -10,6 +10,7 @@ use crate::matcher::MatchOptions;
 use crate::query::control_field::ControlFieldExpr;
 use crate::query::data_field::DataFieldExpr;
 use crate::query::leader::LeaderExpr;
+use crate::query::literal::LiteralExpr;
 use crate::query::parse::parse_query;
 use crate::{ByteRecord, Value};
 
@@ -18,6 +19,7 @@ pub(crate) mod data_field;
 mod dtype;
 mod error;
 mod leader;
+mod literal;
 pub(crate) mod parse;
 
 pub(crate) const EMPTY_BYTE_STRING: [u8; 0] = [];
@@ -156,6 +158,32 @@ impl Query {
             .flat_map(|constituent| constituent.dtypes())
             .collect()
     }
+
+    /// Returns the data type of the columns.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21::{DataType, Query};
+    ///
+    /// let query = Query::new(
+    ///     "001 AS cn, ldr.type AS type, 072{ a AS code, 2 AS source }, 065.a",
+    /// )?;
+    /// assert_eq!(query.names(), vec!["cn", "type", "code", "source", "column_5"]);
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    pub fn names(&self) -> Vec<String> {
+        self.constituents
+            .iter()
+            .flat_map(|constituent| constituent.name())
+            .enumerate()
+            .map(|(i, name)| match name {
+                None => format!("column_{}", i + 1),
+                Some(name) => name.to_string(),
+            })
+            .collect()
+    }
 }
 
 impl FromStr for Query {
@@ -217,7 +245,16 @@ impl Constituent {
             Kind::ControlField(ref cf) => cf.dtypes(),
             Kind::DataField(ref df) => df.dtypes(),
             Kind::Leader(ref ldr) => ldr.dtypes(),
-            Kind::Literal(_) => vec![DataType::String],
+            Kind::Literal(ref lit) => lit.dtypes(),
+        }
+    }
+
+    pub(crate) fn name(&self) -> Vec<Option<&String>> {
+        match self.kind {
+            Kind::ControlField(ref cf) => cf.names(),
+            Kind::DataField(ref df) => df.names(),
+            Kind::Leader(ref ldr) => ldr.names(),
+            Kind::Literal(ref lit) => lit.names(),
         }
     }
 
@@ -231,9 +268,7 @@ impl Constituent {
             Kind::ControlField(ref cf) => cf.project(record, options),
             Kind::DataField(ref df) => df.project(record, options),
             Kind::Leader(ref ldr) => ldr.project(record, options),
-            Kind::Literal(ref lit) => {
-                vec![vec![Value::from(lit.clone())]]
-            }
+            Kind::Literal(ref lit) => lit.project(record, options),
         }
     }
 }
@@ -243,7 +278,7 @@ pub(crate) enum Kind {
     ControlField(ControlFieldExpr),
     DataField(DataFieldExpr),
     Leader(LeaderExpr),
-    Literal(String),
+    Literal(LiteralExpr),
 }
 
 #[cfg(test)]

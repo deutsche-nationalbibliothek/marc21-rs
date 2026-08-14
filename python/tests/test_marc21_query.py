@@ -221,6 +221,60 @@ shape: (7, 2)
     assert isinstance(rhs, pl.DataFrame)
     assert_frame_equal(lhs, rhs)
 
+    # Next, check that the column name can be set by an `AS` clause
+    query = "001 AS `cn`, 075{ b AS `gndgen` | 2 == 'gndgen' }"
+    lhs = marc21_query().select(query).from_(path).collect()
+    rhs = pl.from_repr("""
+shape: (7, 2)
+┌───────────┬──────────┐
+│ cn        ┆ gndgen   │
+│ ---       ┆ ---      │
+│ str       ┆ str      │
+╞═══════════╪══════════╡
+│ 118540238 ┆ p        │
+│ 118572121 ┆ p        │
+│ 118607626 ┆ p        │
+│ 118632477 ┆ p        │
+│ 040992020 ┆ u        │
+│ 040992918 ┆ u        │
+│ 040993396 ┆ u        │
+└───────────┴──────────┘
+    """)
+
+    assert isinstance(lhs, pl.DataFrame)
+    assert isinstance(rhs, pl.DataFrame)
+    assert_frame_equal(lhs, rhs)
+
+    # header parameter overrides `AS`-clauses
+    query = "001 AS `cn`, 075{ b AS `gndgen` | 2 == 'gndgen' }"
+    lhs = (
+        marc21_query()
+        .select(query)
+        .header("ppn,code")
+        .from_(path)
+        .collect()
+    )
+    rhs = pl.from_repr("""
+shape: (7, 2)
+┌───────────┬──────────┐
+│ ppn       ┆ code     │
+│ ---       ┆ ---      │
+│ str       ┆ str      │
+╞═══════════╪══════════╡
+│ 118540238 ┆ p        │
+│ 118572121 ┆ p        │
+│ 118607626 ┆ p        │
+│ 118632477 ┆ p        │
+│ 040992020 ┆ u        │
+│ 040992918 ┆ u        │
+│ 040993396 ┆ u        │
+└───────────┴──────────┘
+    """)
+
+    assert isinstance(lhs, pl.DataFrame)
+    assert isinstance(rhs, pl.DataFrame)
+    assert_frame_equal(lhs, rhs)
+
     # Check if `HeaderLengthError` is raised when the header length did
     # not match the query width.
     with pytest.raises(HeaderLengthError):
@@ -233,7 +287,7 @@ shape: (7, 2)
 
 
 def test_marc21_query_where(data_dir: Path) -> None:
-    """Check the correct usage of the `header` parameter."""
+    """Check the correct usage of the `where` parameter."""
     lhs = (
         marc21_query()
         .select("001, 075{ b | 2 == 'gndgen' }")

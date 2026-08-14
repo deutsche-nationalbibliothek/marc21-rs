@@ -34,14 +34,14 @@ def prepare_sources(
 
 def prepare_header(
     header: str | list[str] | None,
-    width: int,
+    reader: LazyReader,
 ) -> list[str]:
     if not header:
-        header = [f"column_{i + 1}" for i in range(width)]
+        header = reader.names()
     elif isinstance(header, str):
         header = list(map(str.strip, header.split(",")))
 
-    if len(header) != width:
+    if len(header) != reader.width():
         raise HeaderLengthError
 
     return header
@@ -91,7 +91,7 @@ def scan_marc21(
     """
     sources = prepare_sources(sources)
     reader = LazyReader(sources, query, predicate=where)
-    header = prepare_header(header, reader.width())
+    header = prepare_header(header, reader)
     schema = parse_schema(header, reader.dtypes())
 
     def source_generator(

@@ -5,7 +5,9 @@ use winnow::combinator::{
 use winnow::prelude::*;
 
 use crate::matcher::indicator::parse::parse_indicator_matcher_opt;
-use crate::matcher::shared::{parse_codes, parse_string, ws0};
+use crate::matcher::shared::{
+    parse_codes, parse_identifier, parse_string, ws0, ws1,
+};
 use crate::matcher::subfield::parse::parse_subfield_matcher_long;
 use crate::matcher::tag::parse::parse_tag_matcher;
 use crate::matcher::{
@@ -23,7 +25,13 @@ pub(crate) struct DataFieldExpr {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub(crate) enum Column {
+pub(crate) struct Column {
+    pub(crate) kind: ColumnKind,
+    pub(crate) name: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub(crate) enum ColumnKind {
     Codes(Vec<u8>),
     Literal(String),
 }
@@ -32,8 +40,8 @@ impl DataFieldExpr {
     pub(crate) fn width(&self) -> usize {
         self.columns
             .iter()
-            .map(|column| match column {
-                Column::Codes(codes) if codes.is_empty() => 0,
+            .map(|column| match column.kind {
+                ColumnKind::Codes(ref codes) if codes.is_empty() => 0,
                 _ => 1,
             })
             .sum()
@@ -41,9 +49,10 @@ impl DataFieldExpr {
 
     pub(crate) fn dtypes(&self) -> Vec<DataType> {
         let mut dtypes = Vec::with_capacity(self.columns.len());
+
         for column in self.columns.iter() {
-            match column {
-                Column::Codes(codes) if codes.is_empty() => {
+            match column.kind {
+                ColumnKind::Codes(ref codes) if codes.is_empty() => {
                     continue;
                 }
                 _ => dtypes.push(DataType::String),
@@ -51,6 +60,21 @@ impl DataFieldExpr {
         }
 
         dtypes
+    }
+
+    pub(crate) fn names(&self) -> Vec<Option<&String>> {
+        let mut names = vec![];
+
+        for column in self.columns.iter() {
+            match column.kind {
+                ColumnKind::Codes(ref codes) if codes.is_empty() => {
+                    continue;
+                }
+                _ => names.push(column.name.as_ref()),
+            }
+        }
+
+        names
     }
 
     /// Performs the projection on the given record and return a list of
@@ -84,11 +108,11 @@ impl DataFieldExpr {
             for column in self.columns.iter() {
                 let mut values: Vec<Value<'a>> = Vec::new();
 
-                match column {
-                    Column::Literal(lit) => {
+                match column.kind {
+                    ColumnKind::Literal(ref lit) => {
                         values.push(lit.clone().into())
                     }
-                    Column::Codes(codes) => {
+                    ColumnKind::Codes(ref codes) => {
                         if codes.is_empty() {
                             continue;
                         }
@@ -163,7 +187,7 @@ fn parse_data_field_expr_short(
         tag_matcher: parse_tag_matcher,
         indicator_matcher: parse_indicator_matcher_opt,
         _: '.',
-        columns: parse_codes.map(|codes| vec![Column::Codes(codes)]),
+        columns: parse_column_short.map(|column| vec![column]),
         subfield_matcher: empty.value(None),
     }}
     .parse_next(i)
@@ -184,10 +208,121 @@ fn parse_data_field_expr_long(
 }
 
 fn parse_column(i: &mut &[u8]) -> ModalResult<Column> {
+    seq! { Column {
+        kind: parse_column_kind,
+        name: opt(preceded(ws1("AS"), parse_identifier)),
+
+    }}
+    .parse_next(i)
+}
+
+fn parse_column_short(i: &mut &[u8]) -> ModalResult<Column> {
+    seq! { Column {
+        kind: parse_codes.map(ColumnKind::Codes),
+        name: opt(preceded(ws1("AS"), parse_identifier)),
+
+    }}
+    .parse_next(i)
+}
+
+fn parse_column_kind(i: &mut &[u8]) -> ModalResult<ColumnKind> {
     alt((
-        parse_codes.map(Column::Codes),
-        b'_'.value(Column::Codes(vec![])),
-        parse_string.map(Column::Literal),
+        parse_codes.map(ColumnKind::Codes),
+        b'_'.value(ColumnKind::Codes(vec![])),
+        parse_string.map(ColumnKind::Literal),
     ))
     .parse_next(i)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_column() {
+        macro_rules! parse_success {
+            ($i:expr, $kind:expr) => {
+                assert_eq!(
+                    parse_column.parse($i.as_bytes()).unwrap(),
+                    Column {
+                        kind: $kind,
+                        name: None,
+                    }
+                );
+            };
+
+            ($i:expr, $kind:expr, $name:expr) => {
+                assert_eq!(
+                    parse_column_short.parse($i.as_bytes()).unwrap(),
+                    Column {
+                        kind: $kind,
+                        name: Some($name.into()),
+                    }
+                );
+            };
+        }
+
+        parse_success!("'foo'", ColumnKind::Literal("foo".into()));
+        parse_success!("_", ColumnKind::Codes(vec![]));
+        parse_success!("a", ColumnKind::Codes(vec![b'a']));
+        parse_success!(
+            "a AS foo",
+            ColumnKind::Codes(vec![b'a']),
+            "foo"
+        );
+    }
+
+    #[test]
+    fn test_parse_column_short() {
+        macro_rules! parse_success {
+            ($i:expr, $kind:expr) => {
+                assert_eq!(
+                    parse_column_short.parse($i.as_bytes()).unwrap(),
+                    Column {
+                        kind: $kind,
+                        name: None,
+                    }
+                );
+            };
+
+            ($i:expr, $kind:expr, $name:expr) => {
+                assert_eq!(
+                    parse_column_short.parse($i.as_bytes()).unwrap(),
+                    Column {
+                        kind: $kind,
+                        name: Some($name.into()),
+                    }
+                );
+            };
+        }
+
+        parse_success!("a", ColumnKind::Codes(vec![b'a']));
+        parse_success!(
+            "a AS foo",
+            ColumnKind::Codes(vec![b'a']),
+            "foo"
+        );
+    }
+
+    #[test]
+    fn test_parse_column_kind() {
+        macro_rules! parse_success {
+            ($i:expr, $o:expr) => {
+                assert_eq!(
+                    parse_column_kind.parse($i.as_bytes()).unwrap(),
+                    $o
+                );
+            };
+        }
+
+        parse_success!("a", ColumnKind::Codes(vec![b'a']));
+        parse_success!("[ab]", ColumnKind::Codes(vec![b'a', b'b']));
+        parse_success!(
+            "[a-c]",
+            ColumnKind::Codes(vec![b'a', b'b', b'c'])
+        );
+
+        parse_success!("'foo'", ColumnKind::Literal("foo".into()));
+        parse_success!("_", ColumnKind::Codes(vec![]));
+    }
 }

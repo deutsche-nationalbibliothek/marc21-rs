@@ -14,9 +14,15 @@ pub(crate) struct Select {
 
     /// Insert a header row before the data. The header should be
     /// entered as a comma-separated list. Leading and trailing spaces
-    /// in each column are automatically removed.
+    /// in each column are automatically removed. Note that This option
+    /// takes precedence over column names specified using an `AS`
+    /// clause.
     #[arg(long, short = 'H', value_name = "header")]
     header: Option<String>,
+
+    /// If set, no header is included in the output.
+    #[arg(long)]
+    no_header: bool,
 
     /// A query expression
     query: Query,
@@ -66,8 +72,12 @@ impl Select {
             .delimiter(delimiter)
             .from_writer(output);
 
-        if let Some(ref header) = self.header {
-            wtr.write_record(header.split(',').map(str::trim))?;
+        if !self.no_header {
+            if let Some(ref header) = self.header {
+                wtr.write_record(header.split(',').map(str::trim))?;
+            } else {
+                wtr.write_record(self.query.names())?;
+            }
         }
 
         'outer: for path in self.filenames.iter() {

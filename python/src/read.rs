@@ -52,6 +52,10 @@ impl LazyReader {
         slf.query.dtypes().iter().map(ToString::to_string).collect()
     }
 
+    fn names(slf: PyRef<'_, Self>) -> Vec<String> {
+        slf.query.names()
+    }
+
     fn __iter__(slf: PyRef<'_, Self>) -> PyRef<'_, Self> {
         slf
     }

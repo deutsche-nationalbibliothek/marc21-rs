@@ -1,7 +1,7 @@
-use winnow::combinator::{opt, seq};
+use winnow::combinator::{opt, preceded, seq};
 use winnow::prelude::*;
 
-use crate::matcher::shared::parse_range;
+use crate::matcher::shared::{parse_identifier, parse_range, ws1};
 use crate::matcher::tag::parse::parse_tag_matcher;
 use crate::matcher::{MatchOptions, TagMatcher};
 use crate::query::EMPTY_BYTE_STRING;
@@ -11,6 +11,7 @@ use crate::{ByteRecord, ControlField, DataType, Field, Value};
 pub(crate) struct ControlFieldExpr {
     pub(crate) tag_matcher: TagMatcher,
     pub(crate) range: Option<(Option<usize>, Option<usize>)>,
+    pub(crate) name: Option<String>,
 }
 
 impl ControlFieldExpr {
@@ -19,6 +20,11 @@ impl ControlFieldExpr {
     #[inline]
     pub(crate) fn dtypes(&self) -> Vec<DataType> {
         vec![DataType::String]
+    }
+
+    #[inline]
+    pub(crate) fn names(&self) -> Vec<Option<&String>> {
+        vec![self.name.as_ref()]
     }
 
     /// Performs the projection on the given record and return a list of
@@ -76,6 +82,7 @@ pub(crate) fn parse_control_field_expr(
     seq! { ControlFieldExpr {
         tag_matcher: parse_tag_matcher,
         range: opt(parse_range),
+        name: opt(preceded(ws1("AS"), parse_identifier)),
     }}
     .parse_next(i)
 }

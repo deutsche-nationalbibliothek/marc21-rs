@@ -65,8 +65,7 @@ records directly into a [DataFrame]:
 from polars_marc21 import marc21_select
 
 df = (
-    marc21_select("001, 075{ b | 2 == 'gndgen' }")
-    .header(["ppn", "gndgen"])
+    marc21_select("001 AS `cn`, 075{ b AS `gndgen` | 2 == 'gndgen' }")
     .from_("DUMP.mrc.gz")
     .where("ldr.type == 'z'")
     .collect()
@@ -78,7 +77,7 @@ print(df)
 ```default
 shape: (7, 2)
 ┌───────────┬────────┐
-│ ppn       ┆ gndgen │
+│ cn        ┆ gndgen │
 │ ---       ┆ ---    │
 │ str       ┆ str    │
 ╞═══════════╪════════╡

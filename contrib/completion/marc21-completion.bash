@@ -839,7 +839,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__select)
-            opts="-H -o -s -l -p -h --tsv --header --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-H -o -s -l -p -h --tsv --header --no-header --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0

@@ -399,8 +399,8 @@ _arguments "${_arguments_options[@]}" : \
 ;;
 (select)
 _arguments "${_arguments_options[@]}" : \
-'-H+[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
-'--header=[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
+'-H+[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed. Note that This option takes precedence over column names specified using an \`AS\` clause]:header:_default' \
+'--header=[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed. Note that This option takes precedence over column names specified using an \`AS\` clause]:header:_default' \
 '-o+[Write output to <path> instead of stdout]:path:_files' \
 '--output=[Write output to <path> instead of stdout]:path:_files' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
@@ -410,6 +410,7 @@ _arguments "${_arguments_options[@]}" : \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '--compression=[Specify compression level]:n:_default' \
 '--tsv[Write output tab-separated (TSV)]' \
+'--no-header[If set, no header is included in the output]' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
 '-p[If set, show a progress bar]' \
