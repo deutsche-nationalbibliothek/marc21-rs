@@ -7,7 +7,7 @@ use winnow::Parser;
 use crate::matcher::MatchOptions;
 use crate::path::parse::parse_path;
 use crate::query::Kind;
-use crate::query::data_field::Column;
+use crate::query::data_field::ColumnKind;
 use crate::{ByteRecord, Field, Query, Value};
 
 mod error;
@@ -214,8 +214,10 @@ impl Path {
                 let mut result = vec![];
 
                 for column in expr.columns.iter() {
-                    match column {
-                        Column::Codes(codes) => result.extend(codes),
+                    match column.kind {
+                        ColumnKind::Codes(ref codes) => {
+                            result.extend(codes)
+                        }
                         _ => continue,
                     }
                 }

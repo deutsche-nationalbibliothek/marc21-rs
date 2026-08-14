@@ -3,7 +3,7 @@ pub(crate) use quantifier::*;
 pub(crate) use value::*;
 use winnow::ascii::{multispace0, multispace1};
 use winnow::combinator::{
-    alt, delimited, preceded, repeat, separated_pair, terminated,
+    alt, delimited, opt, preceded, repeat, separated_pair, terminated,
 };
 use winnow::error::ParserError;
 use winnow::prelude::*;
@@ -51,6 +51,19 @@ pub(crate) fn parse_usize(i: &mut &[u8]) -> ModalResult<usize> {
         .fold(|| 0u64, |acc, i| acc * 10 + ((i - b'0') as u64))
         .try_map(usize::try_from)
         .parse_next(i)
+}
+
+pub(crate) fn parse_identifier(i: &mut &[u8]) -> ModalResult<String> {
+    alt((
+        repeat(1.., one_of(|c: u8| c.is_alphanum() || c == b'_')),
+        delimited(
+            opt('`'),
+            repeat(1.., one_of(|c: u8| c.is_alphanum() || c == b'_')),
+            opt('`'),
+        ),
+    ))
+    .try_map(String::from_utf8)
+    .parse_next(i)
 }
 
 fn parse_code_class_range(i: &mut &[u8]) -> ModalResult<Vec<u8>> {

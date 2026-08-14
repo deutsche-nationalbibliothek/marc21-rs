@@ -277,7 +277,7 @@ complete -c marc21 -n "__fish_marc21_using_subcommand sample" -l compression -d 
 complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s h -l help -d 'Print help'
-complete -c marc21 -n "__fish_marc21_using_subcommand select" -s H -l header -d 'Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -s H -l header -d 'Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed. Note that This option takes precedence over column names specified using an `AS` clause' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -s o -l output -d 'Write output to <path> instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
@@ -288,6 +288,7 @@ nfc\t''
 nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -l tsv -d 'Write output tab-separated (TSV)'
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -l no-header -d 'If set, no header is included in the output'
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -s h -l help -d 'Print help (see more with \'--help\')'

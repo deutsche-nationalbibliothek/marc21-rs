@@ -21,17 +21,19 @@ rectangular table schema. By default, the output is in CSV format.
 ## OPTIONS
 
 `-H`, `--header <header>`
-: Insert a header row before the data. The header should be entered as
-a comma-separated list. Leading and trailing spaces in each column are
-automatically removed.
+  : Insert a header row before the data. The header should be entered as
+    a comma-separated list. Leading and trailing spaces in each column
+    are automatically removed. Note that This option takes precedence
+    over column names specified using an `AS` clause.
 
 `--tsv`
-: Write output tab-separated (TSV)
+  : Write output tab-separated (TSV)
 
 `-o`, `--output <path>`
-: Write output to `<path>` instead of `stdout`. If the filename ends in
-`.tsv` or `.tsv.gz`, the output is automatically saved in TSV format.
-The output is gzip-compressed when the filename ends with `.gz`.
+  : Write output to `<path>` instead of `stdout`. If the filename ends
+    in `.tsv` or `.tsv.gz`, the output is automatically saved in TSV
+    format. The output is gzip-compressed when the filename ends with
+    `.gz`.
 
 ### FILTER OPTIONS
 

@@ -13,7 +13,8 @@ fn select_simple() -> TestResult {
         .arg(data_dir().join("DUMP.mrc.gz"))
         .assert();
 
-    let expected = r#"118540238,p
+    let expected = r#"column_1,column_2
+118540238,p
 118572121,p
 118607626,p
 118632477,p
@@ -42,7 +43,9 @@ fn select_cartesian_product1() -> TestResult {
     assert
         .success()
         .code(0)
-        .stdout(predicates::ord::eq("119232022,p\n119232022,piz\n"))
+        .stdout(predicates::ord::eq(
+            "column_1,column_2\n119232022,p\n119232022,piz\n",
+        ))
         .stderr(predicates::str::is_empty());
 
     Ok(())
@@ -56,7 +59,8 @@ fn select_cartesian_product2() -> TestResult {
         .arg(data_dir().join("ada.mrc"))
         .assert();
 
-    let expected = r#"119232022,g,f
+    let expected = r#"column_1,column_2,column_3
+119232022,g,f
 119232022,g,s
 119232022,g,z
 "#;
@@ -93,7 +97,8 @@ fn select_write_csv() -> TestResult {
         actual = actual.replace('\r', "");
     }
 
-    let expected = r#"118540238,p
+    let expected = r#"column_1,column_2
+118540238,p
 118572121,p
 118607626,p
 118632477,p
@@ -134,7 +139,8 @@ fn select_write_csv_gz() -> TestResult {
         actual = actual.replace('\r', "");
     }
 
-    let expected = r#"118540238,p
+    let expected = r#"column_1,column_2
+118540238,p
 118572121,p
 118607626,p
 118632477,p
@@ -172,7 +178,7 @@ fn select_write_tsv() -> TestResult {
         actual = actual.replace('\r', "");
     }
 
-    assert_eq!(actual, "119232022\tp\n");
+    assert_eq!(actual, "column_1\tcolumn_2\n119232022\tp\n");
 
     temp_dir.close()?;
     Ok(())
@@ -204,7 +210,7 @@ fn select_write_tsv_gz() -> TestResult {
         actual = actual.replace('\r', "");
     }
 
-    assert_eq!(actual, "119232022\tp\n");
+    assert_eq!(actual, "column_1\tcolumn_2\n119232022\tp\n");
 
     temp_dir.close()?;
     Ok(())
@@ -222,7 +228,9 @@ fn select_where() -> TestResult {
     assert
         .success()
         .code(0)
-        .stdout(predicates::ord::eq("118540238,p\n040993396,u\n"))
+        .stdout(predicates::ord::eq(
+            "column_1,column_2\n118540238,p\n040993396,u\n",
+        ))
         .stderr(predicates::str::is_empty());
 
     Ok(())
@@ -232,7 +240,7 @@ fn select_where() -> TestResult {
 fn select_skip_invalid() -> TestResult {
     let mut cmd = marc21_cmd();
     let assert = cmd
-        .args(["select", "001"])
+        .args(["select", "--no-header", "001"])
         .arg(data_dir().join("invalid.mrc"))
         .assert();
 
@@ -246,7 +254,7 @@ fn select_skip_invalid() -> TestResult {
 
     let mut cmd = marc21_cmd();
     let assert = cmd
-        .args(["select", "-s", "001"])
+        .args(["select", "-s", "--no-header", "001"])
         .arg(data_dir().join("invalid.mrc"))
         .assert();
 
@@ -268,7 +276,94 @@ fn select_limit() -> TestResult {
         .arg(data_dir().join("DUMP.mrc.gz"))
         .assert();
 
+    let expected = r#"column_1,column_2
+118540238,p
+118572121,p
+118607626,p
+"#;
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(expected))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
+
+#[test]
+fn select_no_header() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "-s", "--no-header", "--limit", "3"])
+        .arg("001,075{ b | 2 == 'gndgen' }")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
     let expected = r#"118540238,p
+118572121,p
+118607626,p
+"#;
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(expected))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
+
+#[test]
+fn select_as_clauses() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "-s", "--limit", "3"])
+        .arg("001 AS `cn`, 075{ b AS `gndgen` | 2 == 'gndgen' }")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    let expected = r#"cn,gndgen
+118540238,p
+118572121,p
+118607626,p
+"#;
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(expected))
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "-s", "--limit", "3"])
+        .arg("001 AS `cn`, 075{ b | 2 == 'gndgen' }")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    let expected = r#"cn,column_2
+118540238,p
+118572121,p
+118607626,p
+"#;
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(expected))
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "-s", "--limit", "3"])
+        .arg("001 AS `cn`, 075{ b AS `gndgen` | 2 == 'gndgen' }")
+        .args(["--header", "ppn,code"])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    let expected = r#"ppn,code
+118540238,p
 118572121,p
 118607626,p
 "#;
