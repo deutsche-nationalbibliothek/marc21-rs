@@ -154,6 +154,10 @@ complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s p -l progress -
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s h -l help -d 'Print help'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s t -l threshold -d 'Ignore rows with a frequency less than <n>' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s n -l num -d 'Limit result to the <n> most frequent subfield values' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l quote-style -d 'The quoting style to use when writing CSV/TSV' -r -f -a "always\t''
+necessary\t''
+non-numeric\t''
+never\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s H -l header -d 'Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s o -l output -d 'Write output to <path> instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
@@ -172,6 +176,10 @@ complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s p -l progres
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s t -l threshold -d 'Ignore rows with a frequency less than <n>' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s n -l num -d 'Limit result to the <n> most frequent subfield values' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l quote-style -d 'The quoting style to use when writing CSV/TSV' -r -f -a "always\t''
+necessary\t''
+non-numeric\t''
+never\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s H -l header -d 'Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s o -l output -d 'Write output to <path> instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
@@ -277,6 +285,10 @@ complete -c marc21 -n "__fish_marc21_using_subcommand sample" -l compression -d 
 complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -l quote-style -d 'The quoting style to use when writing CSV/TSV' -r -f -a "always\t''
+necessary\t''
+non-numeric\t''
+never\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -s H -l header -d 'Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed. Note that This option takes precedence over column names specified using an `AS` clause' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -s o -l output -d 'Write output to <path> instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r

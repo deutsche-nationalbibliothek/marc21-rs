@@ -6,7 +6,7 @@
 
 ## SYNOPSIS
 
-`marc21 select` [_OPTIONS_] `<QUERY>` [_PATH_]...\
+`marc21 select` [_OPTIONS_] `<QUERY>` [_PATH_]...
 
 ## DESCRIPTION
 
@@ -16,18 +16,22 @@ rectangular table schema. By default, the output is in CSV format.
 ## ARGUMENTS
 
 `<QUERY>`
-: A MARC-21 query expression.
+  : A MARC-21 query expression.
 
 ## OPTIONS
 
 `-H`, `--header <header>`
   : Insert a header row before the data. The header should be entered as
     a comma-separated list. Leading and trailing spaces in each column
-    are automatically removed. Note that This option takes precedence
+    are automatically removed. Note that this option takes precedence
     over column names specified using an `AS` clause.
 
 `--tsv`
   : Write output tab-separated (TSV)
+
+`--quote-style <style>`
+  : The quoting style to use when writing CSV/TSV. Possible values
+    `necessary`, `non-numeric`, `always`, `never`.
 
 `-o`, `--output <path>`
   : Write output to `<path>` instead of `stdout`. If the filename ends

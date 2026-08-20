@@ -27,31 +27,36 @@ result of a record, can be restricted by an optional predicate.
 ## OPTIONS
 
 `-u`, `--unique`
-: This flag ensures that all values generated for a record are counted
-only once in the frequency table.
+  : This flag ensures that all values generated for a record are counted
+    only once in the frequency table.
 
 `-r`, `--reverse`
-:  Sort results in reverse order
+  :  Sort results in reverse order
 
 `-t <n>`, `--threshold <n>`
-: Ignore rows with a frequency less than `<n>`.
+  : Ignore rows with a frequency less than `<n>`.
 
 `-n <n>`, `--num <n>`
-: Limit result to the `<n>` most frequent subfield values. The value 0
-means no restriction.
+  : Limit result to the `<n>` most frequent subfield values. The value 0
+    means no restriction.
 
 `-H`, `--header <header>`
-: Insert a header row before the data. The header should be entered as
-a comma-separated list. Leading and trailing spaces in each column are
-automatically removed.
+  : Insert a header row before the data. The header should be entered as
+    a comma-separated list. Leading and trailing spaces in each column
+    are automatically removed.
 
 `--tsv`
-: Write output tab-separated (TSV)
+  : Write output tab-separated (TSV)
+
+`--quote-style <style>`
+  : The quoting style to use when writing CSV/TSV. Possible values
+    `necessary`, `non-numeric`, `always`, `never`.
 
 `-o`, `--output <path>`
-: Write output to `<path>` instead of `stdout`. If the filename ends in
-`.tsv` or `.tsv.gz`, the output is automatically saved in TSV format.
-The output is gzip-compressed when the filename ends with `.gz`.
+  : Write output to `<path>` instead of `stdout`. If the filename ends
+    in `.tsv` or `.tsv.gz`, the output is automatically saved in TSV
+    format. The output is gzip-compressed when the filename ends with
+    `.gz`.
 
 ### FILTER OPTIONS
 

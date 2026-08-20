@@ -5,6 +5,7 @@ use std::path::PathBuf;
 use bstr::ByteSlice;
 use marc21::Value;
 
+use crate::commands::select::QuoteStyle;
 use crate::prelude::*;
 
 /// Compute a frequency table of values
@@ -51,6 +52,10 @@ pub(crate) struct Frequency {
     /// Write output tab-separated (TSV)
     #[arg(long)]
     tsv: bool,
+
+    /// The quoting style to use when writing CSV/TSV.
+    #[arg(long, default_value = "necessary")]
+    quote_style: QuoteStyle,
 
     /// Insert a header row before the data. The header should be
     /// entered as a comma-separated list. Leading and trailing spaces
@@ -106,6 +111,7 @@ impl Frequency {
         };
 
         let mut wtr = csv::WriterBuilder::new()
+            .quote_style(self.quote_style.into())
             .delimiter(delimiter)
             .from_writer(output);
 

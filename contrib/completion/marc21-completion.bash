@@ -435,7 +435,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__frequency)
-            opts="-u -r -t -n -H -o -s -l -p -h --unique --reverse --threshold --num --tsv --header --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-u -r -t -n -H -o -s -l -p -h --unique --reverse --threshold --num --tsv --quote-style --header --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -455,6 +455,10 @@ _marc21() {
                     ;;
                 -n)
                     COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --quote-style)
+                    COMPREPLY=($(compgen -W "always necessary non-numeric never" -- "${cur}"))
                     return 0
                     ;;
                 --header)
@@ -839,12 +843,16 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__select)
-            opts="-H -o -s -l -p -h --tsv --header --no-header --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-H -o -s -l -p -h --tsv --quote-style --header --no-header --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
             fi
             case "${prev}" in
+                --quote-style)
+                    COMPREPLY=($(compgen -W "always necessary non-numeric never" -- "${cur}"))
+                    return 0
+                    ;;
                 --header)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
