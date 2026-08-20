@@ -1,6 +1,28 @@
 use std::path::PathBuf;
 
+use clap::ValueEnum;
+
 use crate::prelude::*;
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq, ValueEnum)]
+#[value(rename_all = "kebab-case")]
+pub(crate) enum QuoteStyle {
+    Always,
+    Necessary,
+    NonNumeric,
+    Never,
+}
+
+impl From<QuoteStyle> for csv::QuoteStyle {
+    fn from(style: QuoteStyle) -> Self {
+        match style {
+            QuoteStyle::Always => Self::Always,
+            QuoteStyle::Necessary => Self::Necessary,
+            QuoteStyle::NonNumeric => Self::NonNumeric,
+            QuoteStyle::Never => Self::Never,
+        }
+    }
+}
 
 /// Transforms records into CSV or TSV format
 ///
@@ -11,6 +33,14 @@ pub(crate) struct Select {
     /// Write output tab-separated (TSV)
     #[arg(long)]
     tsv: bool,
+
+    /// The quoting style to use when writing CSV/TSV.
+    #[arg(
+        long,
+        default_value = "necessary",
+        hide_default_value = true
+    )]
+    quote_style: QuoteStyle,
 
     /// Insert a header row before the data. The header should be
     /// entered as a comma-separated list. Leading and trailing spaces
@@ -69,6 +99,7 @@ impl Select {
         };
 
         let mut wtr = csv::WriterBuilder::new()
+            .quote_style(self.quote_style.into())
             .delimiter(delimiter)
             .from_writer(output);
 

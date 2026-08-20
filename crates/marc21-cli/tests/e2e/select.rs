@@ -376,3 +376,70 @@ fn select_as_clauses() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn select_quote_style() -> TestResult {
+    // quote-style necessary
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "--no-header"])
+        .args(["--quote-style", "necessary"])
+        .arg("001, 100/1#.a")
+        .arg(data_dir().join("ada.mrc"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("119232022,\"Lovelace, Ada\"\n"))
+        .stderr(predicates::str::is_empty());
+
+    // quote-style non-numeric
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "--no-header"])
+        .args(["--quote-style", "non-numeric"])
+        .arg("001, 100/1#.a")
+        .arg(data_dir().join("ada.mrc"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("119232022,\"Lovelace, Ada\"\n"))
+        .stderr(predicates::str::is_empty());
+
+    // quote-style always
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "--no-header"])
+        .args(["--quote-style", "always"])
+        .arg("001, 100/1#.a")
+        .arg(data_dir().join("ada.mrc"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(
+            "\"119232022\",\"Lovelace, Ada\"\n",
+        ))
+        .stderr(predicates::str::is_empty());
+
+    // quote-style never
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "--no-header"])
+        .args(["--quote-style", "never"])
+        .arg("001, 100/1#.a")
+        .arg(data_dir().join("ada.mrc"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("119232022,Lovelace, Ada\n"))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}

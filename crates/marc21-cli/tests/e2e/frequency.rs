@@ -429,3 +429,60 @@ fn frequency_num() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn frequency_quote_style() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["frequency", "-n", "0", "065.2"])
+        .args(["--quote-style", "necessary"])
+        .arg(data_dir().join("ada.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("sswd,2\n"))
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["frequency", "-n", "0", "065.2"])
+        .args(["--quote-style", "non-numeric"])
+        .arg(data_dir().join("ada.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("\"sswd\",2\n"))
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["frequency", "-n", "0", "065.2"])
+        .args(["--quote-style", "always"])
+        .arg(data_dir().join("ada.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("\"sswd\",\"2\"\n"))
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["frequency", "-n", "0", "065.2"])
+        .args(["--quote-style", "never"])
+        .arg(data_dir().join("ada.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("sswd,2\n"))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}

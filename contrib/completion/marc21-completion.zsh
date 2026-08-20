@@ -198,6 +198,7 @@ _arguments "${_arguments_options[@]}" : \
 '--threshold=[Ignore rows with a frequency less than <n>]:n:_default' \
 '-n+[Limit result to the <n> most frequent subfield values]:n:_default' \
 '--num=[Limit result to the <n> most frequent subfield values]:n:_default' \
+'--quote-style=[The quoting style to use when writing CSV/TSV]:QUOTE_STYLE:(always necessary non-numeric never)' \
 '-H+[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
 '--header=[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
 '-o+[Write output to <path> instead of stdout]:path:_files' \
@@ -229,6 +230,7 @@ _arguments "${_arguments_options[@]}" : \
 '--threshold=[Ignore rows with a frequency less than <n>]:n:_default' \
 '-n+[Limit result to the <n> most frequent subfield values]:n:_default' \
 '--num=[Limit result to the <n> most frequent subfield values]:n:_default' \
+'--quote-style=[The quoting style to use when writing CSV/TSV]:QUOTE_STYLE:(always necessary non-numeric never)' \
 '-H+[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
 '--header=[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
 '-o+[Write output to <path> instead of stdout]:path:_files' \
@@ -399,6 +401,7 @@ _arguments "${_arguments_options[@]}" : \
 ;;
 (select)
 _arguments "${_arguments_options[@]}" : \
+'--quote-style=[The quoting style to use when writing CSV/TSV]:QUOTE_STYLE:(always necessary non-numeric never)' \
 '-H+[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed. Note that This option takes precedence over column names specified using an \`AS\` clause]:header:_default' \
 '--header=[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed. Note that This option takes precedence over column names specified using an \`AS\` clause]:header:_default' \
 '-o+[Write output to <path> instead of stdout]:path:_files' \
