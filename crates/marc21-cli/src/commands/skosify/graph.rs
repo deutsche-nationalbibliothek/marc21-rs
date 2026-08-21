@@ -2,6 +2,7 @@ use std::collections::BTreeMap;
 use std::fmt::Debug;
 use std::fs::read_to_string;
 
+use marc21::QueryOptions;
 use marc21::matcher::RecordMatcher;
 use serde::Deserialize;
 use sophia::api::graph::MutableGraph;
@@ -70,12 +71,12 @@ impl SkosGraph {
     pub(crate) fn process_record(
         &mut self,
         record: ByteRecord,
-        options: &MatchOptions,
+        options: &QueryOptions,
     ) -> Result<(), CliError> {
         let record = StringRecord::try_from(record)?;
 
         if let Some(ref matcher) = self.scope
-            && !matcher.is_match(&record, options)
+            && !matcher.is_match(&record, options.match_options())
         {
             return Ok(());
         }

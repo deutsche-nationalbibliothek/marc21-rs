@@ -154,6 +154,7 @@ complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s p -l progress -
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s h -l help -d 'Print help'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s t -l threshold -d 'Ignore rows with a frequency less than <n>' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s n -l num -d 'Limit result to the <n> most frequent subfield values' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l separator -d 'Sets the separator used for squashing of repeated subfield values into a single value. Note that it\'s possible to use the empty string as a separator' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l quote-style -d 'The quoting style to use when writing CSV/TSV' -r -f -a "always\t''
 necessary\t''
 non-numeric\t''
@@ -170,12 +171,14 @@ nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s u -l unique -d 'This flag ensures that all values generated for a record are counted only once in the frequency table'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s r -l reverse -d 'Sort results in reverse order'
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l squash -d 'Whether to squash all values of a repeated subfield into a single value or not. The separator can be specified by the `--separator` option'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l tsv -d 'Write output tab-separated (TSV)'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s t -l threshold -d 'Ignore rows with a frequency less than <n>' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s n -l num -d 'Limit result to the <n> most frequent subfield values' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l separator -d 'Sets the separator used for squashing of repeated subfield values into a single value. Note that it\'s possible to use the empty string as a separator' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l quote-style -d 'The quoting style to use when writing CSV/TSV' -r -f -a "always\t''
 necessary\t''
 non-numeric\t''
@@ -192,6 +195,7 @@ nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s u -l unique -d 'This flag ensures that all values generated for a record are counted only once in the frequency table'
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s r -l reverse -d 'Sort results in reverse order'
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l squash -d 'Whether to squash all values of a repeated subfield into a single value or not. The separator can be specified by the `--separator` option'
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l tsv -d 'Write output tab-separated (TSV)'
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s p -l progress -d 'If set, show a progress bar'
@@ -285,6 +289,7 @@ complete -c marc21 -n "__fish_marc21_using_subcommand sample" -l compression -d 
 complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -l separator -d 'Sets the separator used for squashing of repeated subfield values into a single value. Note that it\'s possible to use the empty string as a separator' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -l quote-style -d 'The quoting style to use when writing CSV/TSV' -r -f -a "always\t''
 necessary\t''
 non-numeric\t''
@@ -299,6 +304,7 @@ nfkd\t''
 nfc\t''
 nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -l compression -d 'Specify compression level' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -l squash -d 'Whether to squash all values of a repeated subfield into a single value or not. The separator can be specified by the `--separator` option'
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -l tsv -d 'Write output tab-separated (TSV)'
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -l no-header -d 'If set, no header is included in the output'
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'

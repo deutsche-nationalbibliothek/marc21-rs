@@ -443,3 +443,82 @@ fn select_quote_style() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn select_squash() -> TestResult {
+    // single column
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "--no-header", "--squash"])
+        .arg("001, 079.q")
+        .arg(data_dir().join("ada.mrc"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("119232022,f|s|z\n"))
+        .stderr(predicates::str::is_empty());
+
+    // cross-check
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "--no-header"])
+        .arg("001, 079.q")
+        .arg(data_dir().join("ada.mrc"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(
+            "119232022,f\n119232022,s\n119232022,z\n",
+        ))
+        .stderr(predicates::str::is_empty());
+
+    // multiple columns
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "--no-header", "--squash"])
+        .arg("001, 079{ q, u }")
+        .arg(data_dir().join("ada.mrc"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("119232022,f|s|z,w|k|v\n"))
+        .stderr(predicates::str::is_empty());
+
+    // separator
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "--no-header", "--squash"])
+        .args(["--separator", "+++"])
+        .arg("001, 079.q")
+        .arg(data_dir().join("ada.mrc"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("119232022,f+++s+++z\n"))
+        .stderr(predicates::str::is_empty());
+
+    // empty separator
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "--no-header", "--squash"])
+        .args(["--separator", ""])
+        .arg("001, 079.q")
+        .arg(data_dir().join("ada.mrc"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("119232022,fsz\n"))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}

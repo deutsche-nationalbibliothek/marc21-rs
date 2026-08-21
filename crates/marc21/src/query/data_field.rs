@@ -10,11 +10,9 @@ use crate::matcher::shared::{
 };
 use crate::matcher::subfield::parse::parse_subfield_matcher_long;
 use crate::matcher::tag::parse::parse_tag_matcher;
-use crate::matcher::{
-    IndicatorMatcher, MatchOptions, SubfieldMatcher, TagMatcher,
-};
+use crate::matcher::{IndicatorMatcher, SubfieldMatcher, TagMatcher};
 use crate::query::EMPTY_BYTE_STRING;
-use crate::{ByteRecord, DataType, Field, Value};
+use crate::{ByteRecord, DataType, Field, QueryOptions, Value};
 
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) struct DataFieldExpr {
@@ -82,9 +80,10 @@ impl DataFieldExpr {
     pub(crate) fn project<'a>(
         &self,
         record: &ByteRecord<'a>,
-        options: &MatchOptions,
+        options: &QueryOptions,
     ) -> Vec<Vec<Value<'a>>> {
         let mut result: Vec<Vec<Value<'a>>> = vec![];
+        let match_options = options.match_options();
 
         let fields = record
             .fields()
@@ -96,7 +95,7 @@ impl DataFieldExpr {
             })
             .filter(|field| {
                 if let Some(ref matcher) = self.subfield_matcher {
-                    matcher.is_match(field.subfields(), options)
+                    matcher.is_match(field.subfields(), match_options)
                 } else {
                     true
                 }
@@ -128,6 +127,23 @@ impl DataFieldExpr {
                                 },
                             ),
                         );
+
+                        // If the `squash` flag is set, a single string
+                        // is generated from all the individual values
+                        // (rows) in the column. The value of the
+                        // `separator` option is inserted between the
+                        // individual values. This option results in the
+                        // allocation of a new string.
+                        if options.squash {
+                            values = vec![
+                                values
+                                    .iter()
+                                    .map(Value::to_str_unchecked)
+                                    .collect::<Vec<_>>()
+                                    .join(&options.separator)
+                                    .into(),
+                            ];
+                        }
 
                         if values.is_empty() {
                             values

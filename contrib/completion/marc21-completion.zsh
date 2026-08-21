@@ -198,6 +198,7 @@ _arguments "${_arguments_options[@]}" : \
 '--threshold=[Ignore rows with a frequency less than <n>]:n:_default' \
 '-n+[Limit result to the <n> most frequent subfield values]:n:_default' \
 '--num=[Limit result to the <n> most frequent subfield values]:n:_default' \
+'--separator=[Sets the separator used for squashing of repeated subfield values into a single value. Note that it'\''s possible to use the empty string as a separator]:SEPARATOR:_default' \
 '--quote-style=[The quoting style to use when writing CSV/TSV]:QUOTE_STYLE:(always necessary non-numeric never)' \
 '-H+[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
 '--header=[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
@@ -213,6 +214,7 @@ _arguments "${_arguments_options[@]}" : \
 '--unique[This flag ensures that all values generated for a record are counted only once in the frequency table]' \
 '-r[Sort results in reverse order]' \
 '--reverse[Sort results in reverse order]' \
+'--squash[Whether to squash all values of a repeated subfield into a single value or not. The separator can be specified by the \`--separator\` option]' \
 '--tsv[Write output tab-separated (TSV)]' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
@@ -230,6 +232,7 @@ _arguments "${_arguments_options[@]}" : \
 '--threshold=[Ignore rows with a frequency less than <n>]:n:_default' \
 '-n+[Limit result to the <n> most frequent subfield values]:n:_default' \
 '--num=[Limit result to the <n> most frequent subfield values]:n:_default' \
+'--separator=[Sets the separator used for squashing of repeated subfield values into a single value. Note that it'\''s possible to use the empty string as a separator]:SEPARATOR:_default' \
 '--quote-style=[The quoting style to use when writing CSV/TSV]:QUOTE_STYLE:(always necessary non-numeric never)' \
 '-H+[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
 '--header=[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
@@ -245,6 +248,7 @@ _arguments "${_arguments_options[@]}" : \
 '--unique[This flag ensures that all values generated for a record are counted only once in the frequency table]' \
 '-r[Sort results in reverse order]' \
 '--reverse[Sort results in reverse order]' \
+'--squash[Whether to squash all values of a repeated subfield into a single value or not. The separator can be specified by the \`--separator\` option]' \
 '--tsv[Write output tab-separated (TSV)]' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
@@ -401,6 +405,7 @@ _arguments "${_arguments_options[@]}" : \
 ;;
 (select)
 _arguments "${_arguments_options[@]}" : \
+'--separator=[Sets the separator used for squashing of repeated subfield values into a single value. Note that it'\''s possible to use the empty string as a separator]:SEPARATOR:_default' \
 '--quote-style=[The quoting style to use when writing CSV/TSV]:QUOTE_STYLE:(always necessary non-numeric never)' \
 '-H+[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed. Note that This option takes precedence over column names specified using an \`AS\` clause]:header:_default' \
 '--header=[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed. Note that This option takes precedence over column names specified using an \`AS\` clause]:header:_default' \
@@ -412,6 +417,7 @@ _arguments "${_arguments_options[@]}" : \
 '--where=[An expression for filtering records]:predicate:_default' \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '--compression=[Specify compression level]:n:_default' \
+'--squash[Whether to squash all values of a repeated subfield into a single value or not. The separator can be specified by the \`--separator\` option]' \
 '--tsv[Write output tab-separated (TSV)]' \
 '--no-header[If set, no header is included in the output]' \
 '-s[Skip invalid records that can'\''t be decoded]' \

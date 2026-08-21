@@ -1,6 +1,8 @@
 use std::fmt::Debug;
 use std::path::PathBuf;
 
+use marc21::QueryOptions;
+
 use crate::commands::skosify::graph::SkosGraph;
 use crate::prelude::*;
 
@@ -65,7 +67,8 @@ pub(crate) struct Skosify {
 impl Skosify {
     pub(crate) fn execute(self) -> CliResult {
         let mut progress = Progress::new(self.common.progress);
-        let options = MatchOptions::from(&self.filter_opts);
+        let options = QueryOptions::from(&self.filter_opts);
+        let match_options = options.match_options();
         let filter = self.filter_opts.filter()?;
         let mut count = 0;
         let mut line = 0;
@@ -102,7 +105,7 @@ impl Skosify {
                         progress.update(false);
 
                         if let Some(ref m) = filter
-                            && !m.is_match(&record, &options)
+                            && !m.is_match(&record, match_options)
                         {
                             continue;
                         }

@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
 use clap::ValueEnum;
+use marc21::QueryOptions;
 
 use crate::prelude::*;
 
@@ -30,6 +31,18 @@ impl From<QuoteStyle> for csv::QuoteStyle {
 /// rectangular table schema. By default, the output is in CSV format.
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Select {
+    /// Whether to squash all values of a repeated subfield into a
+    /// single value or not. The separator can be specified by the
+    /// `--separator` option.
+    #[arg(long)]
+    squash: bool,
+
+    /// Sets the separator used for squashing of repeated subfield
+    /// values into a single value. Note that it's possible to use the
+    /// empty string as a separator.
+    #[arg(long, default_value = "|")]
+    separator: String,
+
     /// Write output tab-separated (TSV)
     #[arg(long)]
     tsv: bool,
@@ -74,10 +87,15 @@ pub(crate) struct Select {
 impl Select {
     pub(crate) fn execute(&self) -> CliResult {
         let mut progress = Progress::new(self.common.progress);
-        let options = MatchOptions::from(&self.filter_opts);
         let filter = self.filter_opts.filter()?;
         let mut count = 0;
         let mut line = 0;
+
+        let options = QueryOptions::from(&self.filter_opts)
+            .with_separator(&self.separator)
+            .with_squash(self.squash);
+
+        let match_options = options.match_options();
 
         let filename = if let Some(ref path) = self.output {
             path.to_str().unwrap_or_default()
@@ -132,13 +150,13 @@ impl Select {
                         progress.update(false);
 
                         if let Some(ref m) = filter
-                            && !m.is_match(record, &options)
+                            && !m.is_match(record, match_options)
                         {
                             continue;
                         }
 
                         for row in record.query(&self.query, &options) {
-                            wtr.write_record(row)?;
+                            wtr.write_record(row)?
                         }
 
                         count += 1;

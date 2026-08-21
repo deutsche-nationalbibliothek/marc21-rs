@@ -3,7 +3,7 @@ use std::collections::{BTreeSet, HashMap};
 use std::path::PathBuf;
 
 use bstr::ByteSlice;
-use marc21::Value;
+use marc21::{QueryOptions, Value};
 
 use crate::commands::select::QuoteStyle;
 use crate::prelude::*;
@@ -49,6 +49,18 @@ pub(crate) struct Frequency {
     )]
     num: usize,
 
+    /// Whether to squash all values of a repeated subfield into a
+    /// single value or not. The separator can be specified by the
+    /// `--separator` option.
+    #[arg(long)]
+    squash: bool,
+
+    /// Sets the separator used for squashing of repeated subfield
+    /// values into a single value. Note that it's possible to use the
+    /// empty string as a separator.
+    #[arg(long, default_value = "|")]
+    separator: String,
+
     /// Write output tab-separated (TSV)
     #[arg(long)]
     tsv: bool,
@@ -83,10 +95,15 @@ pub(crate) struct Frequency {
 impl Frequency {
     pub(crate) fn execute(self) -> CliResult {
         let mut progress = Progress::new(self.common.progress);
-        let options = MatchOptions::from(&self.filter_opts);
         let filter = self.filter_opts.filter()?;
         let mut count = 0;
         let mut line = 0;
+
+        let options = QueryOptions::from(&self.filter_opts)
+            .with_separator(&self.separator)
+            .with_squash(self.squash);
+
+        let match_options = options.match_options();
 
         let mut ftable: HashMap<Vec<Vec<u8>>, u64> = HashMap::new();
         let mut seen: BTreeSet<Vec<Vec<u8>>> = BTreeSet::new();
@@ -140,7 +157,7 @@ impl Frequency {
                         progress.update(false);
 
                         if let Some(ref m) = filter
-                            && !m.is_match(record, &options)
+                            && !m.is_match(record, match_options)
                         {
                             continue;
                         }

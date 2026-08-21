@@ -1,7 +1,8 @@
 use std::path::PathBuf;
 use std::sync::Mutex;
 
-use marc21::matcher::{MatchOptions, RecordMatcher};
+use marc21::QueryOptions;
+use marc21::matcher::RecordMatcher;
 use marc21::prelude::*;
 use pyo3::prelude::*;
 
@@ -12,7 +13,7 @@ pub(crate) struct LazyReader {
     sources: Mutex<Box<dyn Iterator<Item = PathBuf> + Send>>,
     rows: Mutex<Box<dyn Iterator<Item = Vec<String>> + Send>>,
     query: Query,
-    options: MatchOptions,
+    options: QueryOptions,
     matcher: Option<RecordMatcher>,
     width: usize,
 }
@@ -26,7 +27,7 @@ impl LazyReader {
         predicate: Option<String>,
     ) -> Result<Self, Error> {
         let query = Query::new(&query)?;
-        let options = MatchOptions::default();
+        let options = QueryOptions::default();
 
         let matcher = if let Some(matcher) = predicate {
             Some(RecordMatcher::new(matcher)?)
@@ -78,7 +79,10 @@ impl LazyReader {
                         };
 
                         if let Some(ref matcher) = slf.matcher
-                            && !matcher.is_match(&record, &slf.options)
+                            && !matcher.is_match(
+                                &record,
+                                slf.options.match_options(),
+                            )
                         {
                             continue;
                         }

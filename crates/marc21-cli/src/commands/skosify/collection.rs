@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
-use marc21::StringRecord;
-use marc21::matcher::{MatchOptions, RecordMatcher};
+use marc21::matcher::RecordMatcher;
+use marc21::{QueryOptions, StringRecord};
 use serde::Deserialize;
 use sophia::api::graph::MutableGraph;
 use sophia::api::ns::Namespace;
@@ -37,11 +37,11 @@ impl Collections {
     pub(crate) fn process_record(
         &mut self,
         record: &StringRecord,
-        options: &MatchOptions,
+        options: &QueryOptions,
         subject: &IriRef<String>,
     ) -> Result<(), CliError> {
         if let Some(ref matcher) = self.scope
-            && matcher.is_match(record, options)
+            && matcher.is_match(record, options.match_options())
         {
             return Ok(());
         }
