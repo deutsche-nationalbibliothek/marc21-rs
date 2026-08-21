@@ -7,6 +7,7 @@ mod exists;
 mod fixed_length;
 mod group;
 mod r#in;
+mod not;
 mod regex;
 mod starts_with;
 mod strsim;

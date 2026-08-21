@@ -7,7 +7,9 @@ use winnow::combinator::{
 use winnow::prelude::*;
 
 use crate::matcher::RecordMatcher;
-use crate::matcher::field::parse::parse_field_matcher;
+use crate::matcher::field::parse::{
+    parse_field_matcher, parse_field_matcher_negatable,
+};
 use crate::matcher::leader::parse::parse_leader_matcher;
 use crate::matcher::record::MatcherKind;
 use crate::matcher::shared::ws0;
@@ -68,9 +70,15 @@ pub(crate) fn parse_group_matcher(
 pub(crate) fn parse_not_matcher(
     i: &mut &[u8],
 ) -> ModalResult<MatcherKind> {
-    preceded(ws0('!'), parse_group_matcher)
-        .map(|m| MatcherKind::Not(Box::new(m)))
-        .parse_next(i)
+    preceded(
+        ws0('!'),
+        alt((
+            parse_group_matcher,
+            parse_field_matcher_negatable.map(MatcherKind::Field),
+        )),
+    )
+    .map(|m| MatcherKind::Not(Box::new(m)))
+    .parse_next(i)
 }
 
 #[cfg_attr(feature = "perf-inline", inline(always))]
@@ -120,4 +128,55 @@ pub(crate) fn parse_composite_or_matcher(
             tail.into_iter().fold(head, |prev, next| prev | next)
         })
         .parse_next(i)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::common::TestResult;
+    use crate::matcher::field::data::DataFieldMatcher;
+    use crate::matcher::shared::Quantifier;
+    use crate::matcher::{
+        FieldMatcher, IndicatorMatcher, SubfieldMatcher, TagMatcher,
+    };
+
+    #[test]
+    fn test_parse_not_matcher() -> TestResult {
+        macro_rules! parse_success {
+            ($i:expr, $o:expr) => {
+                assert_eq!(
+                    parse_not_matcher.parse($i.as_bytes()).unwrap(),
+                    MatcherKind::Not(Box::new($o))
+                );
+            };
+        }
+
+        parse_success!(
+            "!075{ b == 'p' && 2 == 'gndgen' }",
+            MatcherKind::Field(FieldMatcher::Data(DataFieldMatcher {
+                quantifier: Quantifier::Any,
+                tag_matcher: TagMatcher::new("075")?,
+                indicator_matcher: IndicatorMatcher::None,
+                matcher: SubfieldMatcher::new(
+                    "b == 'p' && 2 == 'gndgen'"
+                )?
+            }))
+        );
+
+        parse_success!(
+            "!(075{ b == 'p' && 2 == 'gndgen' })",
+            MatcherKind::Group(Box::new(MatcherKind::Field(
+                FieldMatcher::Data(DataFieldMatcher {
+                    quantifier: Quantifier::Any,
+                    tag_matcher: TagMatcher::new("075")?,
+                    indicator_matcher: IndicatorMatcher::None,
+                    matcher: SubfieldMatcher::new(
+                        "b == 'p' && 2 == 'gndgen'"
+                    )?
+                })
+            )))
+        );
+
+        Ok(())
+    }
 }
