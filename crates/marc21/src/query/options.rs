@@ -6,6 +6,7 @@ pub struct QueryOptions {
     match_options: MatchOptions,
     pub(crate) separator: String,
     pub(crate) squash: bool,
+    pub(crate) merge: bool,
 }
 
 impl Default for QueryOptions {
@@ -14,6 +15,7 @@ impl Default for QueryOptions {
             match_options: MatchOptions::default(),
             separator: "|".into(),
             squash: false,
+            merge: false,
         }
     }
 }
@@ -37,6 +39,11 @@ impl QueryOptions {
 
     pub fn with_squash(mut self, yes: bool) -> Self {
         self.squash = yes;
+        self
+    }
+
+    pub fn with_merge(mut self, yes: bool) -> Self {
+        self.merge = yes;
         self
     }
 }

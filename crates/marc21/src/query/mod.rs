@@ -98,6 +98,30 @@ impl Query {
         self.constituents
             .iter()
             .map(|constituent| constituent.project(record, options))
+            .map(|rows: Vec<Vec<_>>| {
+                // If the `merge` option is set, all values in a column
+                // are merged. The value of the `separator` option is
+                // used as the separator. Note that, this function
+                // allocates a new string and must only be performed if
+                // there is more than one row (otherwise there is
+                // nothing to merge).
+                if options.merge && rows.len() > 1 {
+                    let mut columns = vec![];
+                    for i in 0..rows[0].len() {
+                        columns.push(
+                            rows.iter()
+                                .map(|row| row[i].to_str_unchecked())
+                                .collect::<Vec<_>>()
+                                .join(&options.separator)
+                                .into(),
+                        );
+                    }
+
+                    vec![columns]
+                } else {
+                    rows
+                }
+            })
             .reduce(|acc, e| {
                 let mut result = vec![];
 

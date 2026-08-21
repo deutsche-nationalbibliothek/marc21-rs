@@ -522,3 +522,80 @@ fn select_squash() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn select_merge() -> TestResult {
+    // single column
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "--no-header", "--merge"])
+        .arg("001, 075.b")
+        .arg(data_dir().join("ada.mrc"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("119232022,p|piz\n"))
+        .stderr(predicates::str::is_empty());
+
+    // cross-check
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "--no-header"])
+        .arg("001, 075.b")
+        .arg(data_dir().join("ada.mrc"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("119232022,p\n119232022,piz\n"))
+        .stderr(predicates::str::is_empty());
+
+    // multiple columns
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "--no-header", "--merge"])
+        .arg("001, 075{ b, 2 }")
+        .arg(data_dir().join("ada.mrc"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("119232022,p|piz,gndgen|gndspec\n"))
+        .stderr(predicates::str::is_empty());
+
+    // separator
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "--no-header", "--merge"])
+        .args(["--separator", "+"])
+        .arg("001, 075.b")
+        .arg(data_dir().join("ada.mrc"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("119232022,p+piz\n"))
+        .stderr(predicates::str::is_empty());
+
+    // empty separator
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "--no-header", "--merge"])
+        .args(["--separator", ""])
+        .arg("001, 075.b")
+        .arg(data_dir().join("ada.mrc"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("119232022,ppiz\n"))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}

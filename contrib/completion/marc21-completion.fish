@@ -172,6 +172,7 @@ complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l compression 
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s u -l unique -d 'This flag ensures that all values generated for a record are counted only once in the frequency table'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s r -l reverse -d 'Sort results in reverse order'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l squash -d 'Whether to squash all values of a repeated subfield into a single value or not. The separator can be specified by the `--separator` option'
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l merge -d 'If set, values of a column are merged into a single value. The separator can be specified by the `--separator`'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l tsv -d 'Write output tab-separated (TSV)'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s p -l progress -d 'If set, show a progress bar'
@@ -196,6 +197,7 @@ complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l compression -d 'S
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s u -l unique -d 'This flag ensures that all values generated for a record are counted only once in the frequency table'
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s r -l reverse -d 'Sort results in reverse order'
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l squash -d 'Whether to squash all values of a repeated subfield into a single value or not. The separator can be specified by the `--separator` option'
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l merge -d 'If set, values of a column are merged into a single value. The separator can be specified by the `--separator`'
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l tsv -d 'Write output tab-separated (TSV)'
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s p -l progress -d 'If set, show a progress bar'
@@ -305,6 +307,7 @@ nfc\t''
 nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -l squash -d 'Whether to squash all values of a repeated subfield into a single value or not. The separator can be specified by the `--separator` option'
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -l merge -d 'If set, all values of a column are merged into a single value. The separator can be specified by the `--separator`'
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -l tsv -d 'Write output tab-separated (TSV)'
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -l no-header -d 'If set, no header is included in the output'
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'

@@ -214,7 +214,8 @@ _arguments "${_arguments_options[@]}" : \
 '--unique[This flag ensures that all values generated for a record are counted only once in the frequency table]' \
 '-r[Sort results in reverse order]' \
 '--reverse[Sort results in reverse order]' \
-'--squash[Whether to squash all values of a repeated subfield into a single value or not. The separator can be specified by the \`--separator\` option]' \
+'(--merge)--squash[Whether to squash all values of a repeated subfield into a single value or not. The separator can be specified by the \`--separator\` option]' \
+'(--squash)--merge[If set, values of a column are merged into a single value. The separator can be specified by the \`--separator\`]' \
 '--tsv[Write output tab-separated (TSV)]' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
@@ -248,7 +249,8 @@ _arguments "${_arguments_options[@]}" : \
 '--unique[This flag ensures that all values generated for a record are counted only once in the frequency table]' \
 '-r[Sort results in reverse order]' \
 '--reverse[Sort results in reverse order]' \
-'--squash[Whether to squash all values of a repeated subfield into a single value or not. The separator can be specified by the \`--separator\` option]' \
+'(--merge)--squash[Whether to squash all values of a repeated subfield into a single value or not. The separator can be specified by the \`--separator\` option]' \
+'(--squash)--merge[If set, values of a column are merged into a single value. The separator can be specified by the \`--separator\`]' \
 '--tsv[Write output tab-separated (TSV)]' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
@@ -417,7 +419,8 @@ _arguments "${_arguments_options[@]}" : \
 '--where=[An expression for filtering records]:predicate:_default' \
 '--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '--compression=[Specify compression level]:n:_default' \
-'--squash[Whether to squash all values of a repeated subfield into a single value or not. The separator can be specified by the \`--separator\` option]' \
+'(--merge)--squash[Whether to squash all values of a repeated subfield into a single value or not. The separator can be specified by the \`--separator\` option]' \
+'(--squash)--merge[If set, all values of a column are merged into a single value. The separator can be specified by the \`--separator\`]' \
 '--tsv[Write output tab-separated (TSV)]' \
 '--no-header[If set, no header is included in the output]' \
 '-s[Skip invalid records that can'\''t be decoded]' \

@@ -25,6 +25,11 @@ rectangular table schema. By default, the output is in CSV format.
     value or not. The separator can be specified by the `--separator`
     option.
 
+`--merge`
+  : If set, all values of a column are merged into a single value. The
+    separator can be specified by the `--separator`. This option can't
+    be used with `--squash`.
+
 `--separator <sep>`
   : Sets the separator `<sep>` used for squashing of repeated subfield
     values into a single value. Note that it's possible to use the
