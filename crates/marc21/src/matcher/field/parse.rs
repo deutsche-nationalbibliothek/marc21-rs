@@ -30,6 +30,14 @@ pub(crate) fn parse_field_matcher(
     .parse_next(i)
 }
 
+pub(crate) fn parse_field_matcher_negatable(
+    i: &mut &[u8],
+) -> ModalResult<FieldMatcher> {
+    parse_data_field_matcher_long
+        .map(FieldMatcher::Data)
+        .parse_next(i)
+}
+
 fn parse_exists_matcher(i: &mut &[u8]) -> ModalResult<ExistsMatcher> {
     seq! { ExistsMatcher {
         negated:  opt('!').map(|value| value.is_some()),
