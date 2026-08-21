@@ -535,3 +535,21 @@ fn frequency_squash() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn frequency_merge() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["frequency", "-s", "--merge"])
+        .arg("075{ [b2] | 2 == 'gndspec' }")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("piz|gndspec,4\nwit|gndspec,3\n"))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}

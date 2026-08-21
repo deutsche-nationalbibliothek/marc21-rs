@@ -435,7 +435,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__frequency)
-            opts="-u -r -t -n -H -o -s -l -p -h --unique --reverse --threshold --num --squash --separator --tsv --quote-style --header --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-u -r -t -n -H -o -s -l -p -h --unique --reverse --threshold --num --squash --merge --separator --tsv --quote-style --header --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -847,7 +847,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__select)
-            opts="-H -o -s -l -p -h --squash --separator --tsv --quote-style --header --no-header --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-H -o -s -l -p -h --squash --merge --separator --tsv --quote-style --header --no-header --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0

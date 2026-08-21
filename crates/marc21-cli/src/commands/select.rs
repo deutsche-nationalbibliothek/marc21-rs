@@ -34,8 +34,13 @@ pub(crate) struct Select {
     /// Whether to squash all values of a repeated subfield into a
     /// single value or not. The separator can be specified by the
     /// `--separator` option.
-    #[arg(long)]
+    #[arg(long, conflicts_with = "merge")]
     squash: bool,
+
+    /// If set, all values of a column are merged into a single value.
+    /// The separator can be specified by the `--separator`.
+    #[arg(long, conflicts_with = "squash")]
+    merge: bool,
 
     /// Sets the separator used for squashing of repeated subfield
     /// values into a single value. Note that it's possible to use the
@@ -93,7 +98,8 @@ impl Select {
 
         let options = QueryOptions::from(&self.filter_opts)
             .with_separator(&self.separator)
-            .with_squash(self.squash);
+            .with_squash(self.squash)
+            .with_merge(self.merge);
 
         let match_options = options.match_options();
 
