@@ -1,5 +1,4 @@
-use marc21::matcher::MatchOptions;
-use marc21::{Path, StringRecord};
+use marc21::{Path, QueryOptions, StringRecord};
 use serde::Deserialize;
 use sophia::iri::{InvalidIri, IriRef};
 
@@ -22,7 +21,7 @@ impl Uri {
     pub(crate) fn get(
         &self,
         record: &StringRecord,
-        options: &MatchOptions,
+        options: &QueryOptions,
     ) -> Result<IriRef<String>, InvalidIri> {
         match self {
             Self::Path { path } => {
@@ -47,7 +46,7 @@ impl Uri {
     pub(crate) fn all(
         &self,
         record: &StringRecord,
-        options: &MatchOptions,
+        options: &QueryOptions,
     ) -> Vec<Result<IriRef<String>, InvalidIri>> {
         let mut result = vec![];
 

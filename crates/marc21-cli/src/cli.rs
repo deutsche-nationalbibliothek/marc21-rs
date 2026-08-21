@@ -1,4 +1,5 @@
 use clap::{Parser, Subcommand, value_parser};
+use marc21::QueryOptions;
 use marc21::matcher::{MatchOptions, ParseMatcherError, RecordMatcher};
 use unicode_normalization::UnicodeNormalization;
 
@@ -122,5 +123,12 @@ impl From<&FilterOpts> for MatchOptions {
     fn from(opts: &FilterOpts) -> Self {
         Self::default()
             .strsim_threshold(opts.strsim_threshold as f64 / 100f64)
+    }
+}
+
+impl From<&FilterOpts> for QueryOptions {
+    fn from(opts: &FilterOpts) -> Self {
+        let match_options = MatchOptions::from(opts);
+        Self::from(match_options)
     }
 }

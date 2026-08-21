@@ -1,9 +1,8 @@
 use winnow::combinator::{opt, preceded, seq};
 use winnow::prelude::*;
 
-use crate::matcher::MatchOptions;
 use crate::matcher::shared::{parse_identifier, parse_string, ws1};
-use crate::{ByteRecord, DataType, Value};
+use crate::{ByteRecord, DataType, QueryOptions, Value};
 
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) struct LiteralExpr {
@@ -29,7 +28,7 @@ impl LiteralExpr {
     pub(crate) fn project<'a>(
         &self,
         _record: &ByteRecord<'a>,
-        _options: &MatchOptions,
+        _options: &QueryOptions,
     ) -> Vec<Vec<Value<'a>>> {
         vec![vec![Value::from(self.value.clone())]]
     }

@@ -1,5 +1,5 @@
-use marc21::matcher::{MatchOptions, RecordMatcher};
-use marc21::{Path, StringRecord};
+use marc21::matcher::RecordMatcher;
+use marc21::{Path, QueryOptions, StringRecord};
 use serde::Deserialize;
 use sophia::api::ns::{Namespace, NsTerm, xsd};
 use sophia::api::term::FromTerm;
@@ -25,7 +25,7 @@ impl Concept {
     pub(crate) fn labels(
         &self,
         record: &StringRecord,
-        options: &MatchOptions,
+        options: &QueryOptions,
         nf: &Option<NormalizationForm>,
     ) -> Result<Vec<(NsTerm<'_>, RcTerm)>, CliError> {
         use LabelKind::*;
@@ -33,7 +33,7 @@ impl Concept {
         let mut result = vec![];
 
         if let Some(ref matcher) = self.scope
-            && !matcher.is_match(record, options)
+            && !matcher.is_match(record, options.match_options())
         {
             return Ok(vec![]);
         }

@@ -13,11 +13,10 @@ use crate::directory::parse_directory;
 use crate::error::ParseRecordError;
 use crate::field::DataField;
 use crate::leader::parse_leader;
-use crate::matcher::MatchOptions;
 use crate::subfield::parse_subfield;
 use crate::{
-    ControlField, Directory, Field, Leader, Path, Query, Subfield,
-    Value,
+    ControlField, Directory, Field, Leader, Path, Query, QueryOptions,
+    Subfield, Value,
 };
 
 /// A record, that may contain invalid UTF-8 data.
@@ -138,7 +137,7 @@ impl<'a> ByteRecord<'a> {
     pub fn query(
         &self,
         query: &Query,
-        options: &MatchOptions,
+        options: &QueryOptions,
     ) -> Vec<Vec<Value<'a>>> {
         query.project(self, options)
     }
@@ -164,7 +163,7 @@ impl<'a> ByteRecord<'a> {
     pub fn path(
         &self,
         path: &Path,
-        options: &MatchOptions,
+        options: &QueryOptions,
     ) -> Vec<Value<'a>> {
         path.project(self, options)
     }
@@ -190,7 +189,7 @@ impl<'a> ByteRecord<'a> {
     pub fn first(
         &self,
         path: &Path,
-        options: &MatchOptions,
+        options: &QueryOptions,
     ) -> Option<Value<'a>> {
         path.project(self, options).into_iter().next()
     }

@@ -1,5 +1,5 @@
 /// Options and flags which can be used to configure a matcher.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct MatchOptions {
     /// The threshold for string similarity comparisons.
     pub(crate) strsim_threshold: f64,

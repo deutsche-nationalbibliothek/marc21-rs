@@ -4,9 +4,9 @@ use std::str::FromStr;
 use bstr::ByteSlice;
 pub use dtype::DataType;
 pub use error::ParseQueryError;
+pub use options::QueryOptions;
 use winnow::Parser;
 
-use crate::matcher::MatchOptions;
 use crate::query::control_field::ControlFieldExpr;
 use crate::query::data_field::DataFieldExpr;
 use crate::query::leader::LeaderExpr;
@@ -20,6 +20,7 @@ mod dtype;
 mod error;
 mod leader;
 mod literal;
+mod options;
 pub(crate) mod parse;
 
 pub(crate) const EMPTY_BYTE_STRING: [u8; 0] = [];
@@ -92,7 +93,7 @@ impl Query {
     pub fn project<'a>(
         &self,
         record: &ByteRecord<'a>,
-        options: &MatchOptions,
+        options: &QueryOptions,
     ) -> Vec<Vec<Value<'a>>> {
         self.constituents
             .iter()
@@ -262,7 +263,7 @@ impl Constituent {
     pub(crate) fn project<'a>(
         &self,
         record: &ByteRecord<'a>,
-        options: &MatchOptions,
+        options: &QueryOptions,
     ) -> Vec<Vec<Value<'a>>> {
         match self.kind {
             Kind::ControlField(ref cf) => cf.project(record, options),

@@ -4,11 +4,10 @@ use std::str::FromStr;
 pub use error::ParsePathError;
 use winnow::Parser;
 
-use crate::matcher::MatchOptions;
 use crate::path::parse::parse_path;
 use crate::query::Kind;
 use crate::query::data_field::ColumnKind;
-use crate::{ByteRecord, Field, Query, Value};
+use crate::{ByteRecord, Field, Query, QueryOptions, Value};
 
 mod error;
 mod parse;
@@ -158,7 +157,7 @@ impl Path {
     pub fn project<'a>(
         &self,
         record: &ByteRecord<'a>,
-        options: &MatchOptions,
+        options: &QueryOptions,
     ) -> Vec<Value<'a>> {
         self.0
             .project(record, options)

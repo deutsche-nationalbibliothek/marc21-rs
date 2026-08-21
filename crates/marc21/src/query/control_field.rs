@@ -1,11 +1,13 @@
 use winnow::combinator::{opt, preceded, seq};
 use winnow::prelude::*;
 
+use crate::matcher::TagMatcher;
 use crate::matcher::shared::{parse_identifier, parse_range, ws1};
 use crate::matcher::tag::parse::parse_tag_matcher;
-use crate::matcher::{MatchOptions, TagMatcher};
 use crate::query::EMPTY_BYTE_STRING;
-use crate::{ByteRecord, ControlField, DataType, Field, Value};
+use crate::{
+    ByteRecord, ControlField, DataType, Field, QueryOptions, Value,
+};
 
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) struct ControlFieldExpr {
@@ -32,7 +34,7 @@ impl ControlFieldExpr {
     pub(crate) fn project<'a>(
         &self,
         record: &ByteRecord<'a>,
-        _options: &MatchOptions,
+        _options: &QueryOptions,
     ) -> Vec<Vec<Value<'a>>> {
         let mut iter = record.fields();
         let mut rows = vec![];

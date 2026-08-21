@@ -1,9 +1,11 @@
+use marc21::QueryOptions;
+
 use crate::prelude::*;
 
 #[test]
 fn query_multiple_constituents() -> TestResult {
     let record = ByteRecord::from_bytes(&ADA_LOVELACE)?;
-    let options = MatchOptions::default();
+    let options = QueryOptions::default();
 
     let query = Query::new("001,500/1#{ a, 9 | 4 == 'bezf' }")?;
     let values = record.query(&query, &options);
@@ -26,7 +28,7 @@ fn query_multiple_constituents() -> TestResult {
 #[test]
 fn query_leader_field() -> TestResult {
     let record = ByteRecord::from_bytes(&ADA_LOVELACE)?;
-    let options = MatchOptions::default();
+    let options = QueryOptions::default();
 
     // length
     let query = Query::new("ldr.length")?;
@@ -59,7 +61,7 @@ fn query_leader_field() -> TestResult {
 #[test]
 fn query_control_field() -> TestResult {
     let record = ByteRecord::from_bytes(&ADA_LOVELACE)?;
-    let options = MatchOptions::default();
+    let options = QueryOptions::default();
 
     // simple
     let query = Query::new("001")?;
@@ -86,7 +88,7 @@ fn query_control_field() -> TestResult {
 #[test]
 fn query_data_field() -> TestResult {
     let record = ByteRecord::from_bytes(&ADA_LOVELACE)?;
-    let options = MatchOptions::default();
+    let options = QueryOptions::default();
 
     // simple
     let query = Query::new("075.b")?;
@@ -162,7 +164,7 @@ fn query_data_field() -> TestResult {
 #[test]
 fn query_missing_field() -> TestResult {
     let record = ByteRecord::from_bytes(&ADA_LOVELACE)?;
-    let options = MatchOptions::default();
+    let options = QueryOptions::default();
 
     let query = Query::new("001,101/1#{ a, b }")?;
     let values = record.query(&query, &options);
@@ -174,7 +176,7 @@ fn query_missing_field() -> TestResult {
 #[test]
 fn query_string_literal() -> TestResult {
     let record = ByteRecord::from_bytes(&ADA_LOVELACE)?;
-    let options = MatchOptions::default();
+    let options = QueryOptions::default();
 
     // string literal (single quotes)
     let query = Query::new("'foo'")?;

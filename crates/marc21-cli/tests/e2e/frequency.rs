@@ -486,3 +486,52 @@ fn frequency_quote_style() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn frequency_squash() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["frequency", "-s", "--squash"])
+        .arg("075{ [b2] | 2 == 'gndspec' }")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("piz|gndspec,4\nwit|gndspec,3\n"))
+        .stderr(predicates::str::is_empty());
+
+    // counter test
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["frequency", "-s"])
+        .arg("075{ [b2] | 2 == 'gndspec' }")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("gndspec,7\npiz,4\nwit,3\n"))
+        .stderr(predicates::str::is_empty());
+
+    // separator
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["frequency", "-s", "--squash"])
+        .args(["--separator", "+++"])
+        .arg("075{ [b2] | 2 == 'gndspec' }")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(
+            "piz+++gndspec,4\nwit+++gndspec,3\n",
+        ))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}

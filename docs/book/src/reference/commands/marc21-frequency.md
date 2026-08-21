@@ -40,7 +40,18 @@ result of a record, can be restricted by an optional predicate.
   : Limit result to the `<n>` most frequent subfield values. The value 0
     means no restriction.
 
-`-H`, `--header <header>`
+`--squash`
+  : Whether to squash all values of a repeated subfield into a single
+    value or not. The separator can be specified by the `--separator`
+    option.
+
+`--separator <sep>`
+  : Sets the separator `<sep>` used for squashing of repeated subfield
+    values into a single value. Note that it's possible to use the
+    empty string as a separator. By default a vertical line `|` is used
+    as separator.
+
+`-H <header>`, `--header <header>`
   : Insert a header row before the data. The header should be entered as
     a comma-separated list. Leading and trailing spaces in each column
     are automatically removed.

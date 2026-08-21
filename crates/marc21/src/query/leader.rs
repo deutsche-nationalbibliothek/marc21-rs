@@ -1,12 +1,11 @@
 use winnow::combinator::{opt, preceded, seq};
 use winnow::prelude::*;
 
-use crate::matcher::MatchOptions;
 use crate::matcher::leader::LeaderField;
 use crate::matcher::leader::parse::parse_leader_field;
 use crate::matcher::shared::{parse_identifier, ws1};
 use crate::query::DataType;
-use crate::{ByteRecord, Value};
+use crate::{ByteRecord, QueryOptions, Value};
 
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) struct LeaderExpr {
@@ -37,7 +36,7 @@ impl LeaderExpr {
     pub(crate) fn project<'a>(
         &self,
         record: &ByteRecord<'a>,
-        _options: &MatchOptions,
+        _options: &QueryOptions,
     ) -> Vec<Vec<Value<'a>>> {
         use LeaderField::*;
 
