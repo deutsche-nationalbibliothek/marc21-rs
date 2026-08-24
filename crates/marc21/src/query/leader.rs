@@ -1,15 +1,18 @@
-use winnow::combinator::{opt, preceded, seq};
+use winnow::ascii::multispace1;
+use winnow::combinator::{opt, preceded, seq, terminated};
 use winnow::prelude::*;
 
 use crate::matcher::leader::LeaderField;
 use crate::matcher::leader::parse::parse_leader_field;
-use crate::matcher::shared::{parse_identifier, ws1};
+use crate::matcher::shared::{parse_identifier, parse_string, ws1};
 use crate::query::DataType;
 use crate::{ByteRecord, QueryOptions, Value};
 
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) struct LeaderExpr {
     field: LeaderField,
+    pub(crate) prefix: Option<String>,
+    pub(crate) suffix: Option<String>,
     name: Option<String>,
 }
 
@@ -42,13 +45,21 @@ impl LeaderExpr {
 
         let leader = record.leader();
 
-        let value = match self.field {
+        let mut value = match self.field {
             BaseAddr => leader.base_addr().to_string(),
             Encoding => char::from(leader.encoding()).to_string(),
             Length => leader.length().to_string(),
             Status => char::from(leader.status()).to_string(),
             Type => char::from(leader.r#type()).to_string(),
         };
+
+        if let Some(ref prefix) = self.prefix {
+            value.insert_str(0, prefix);
+        }
+
+        if let Some(ref suffix) = self.suffix {
+            value.push_str(suffix);
+        }
 
         vec![vec![value.into()]]
     }
@@ -58,8 +69,10 @@ pub(crate) fn parse_leader_expr(
     i: &mut &[u8],
 ) -> ModalResult<LeaderExpr> {
     seq! { LeaderExpr {
+        prefix: opt(terminated(parse_string, multispace1)),
         _: "ldr.",
         field: parse_leader_field,
+        suffix: opt(preceded(multispace1, parse_string)),
         name: opt(preceded(ws1("AS"), parse_identifier)),
     }}
     .parse_next(i)
@@ -80,6 +93,8 @@ mod tests {
                     LeaderExpr {
                         field: $field,
                         name: None,
+                        prefix: None,
+                        suffix: None,
                     }
                 );
             };
@@ -90,10 +105,42 @@ mod tests {
                     LeaderExpr {
                         field: $field,
                         name: Some($name.into()),
+                        prefix: None,
+                        suffix: None,
+                    }
+                );
+            };
+
+            ($i:expr, $field:expr, $name:expr, $prefix:expr, $suffix:expr) => {
+                let prefix = if $prefix.is_empty() {
+                    None
+                } else {
+                    Some($prefix.into())
+                };
+
+                let suffix = if $suffix.is_empty() {
+                    None
+                } else {
+                    Some($suffix.into())
+                };
+
+                assert_eq!(
+                    parse_leader_expr.parse($i.as_bytes()).unwrap(),
+                    LeaderExpr {
+                        field: $field,
+                        name: Some($name.into()),
+                        prefix,
+                        suffix
                     }
                 );
             };
         }
+
+        parse_success!("ldr.base_addr", BaseAddr);
+        parse_success!("ldr.encoding", Encoding);
+        parse_success!("ldr.length", Length);
+        parse_success!("ldr.status", Status);
+        parse_success!("ldr.type", Type);
 
         parse_success!("ldr.base_addr AS addr", BaseAddr, "addr");
         parse_success!("ldr.encoding AS enc", Encoding, "enc");
@@ -101,10 +148,12 @@ mod tests {
         parse_success!("ldr.status AS status", Status, "status");
         parse_success!("ldr.type AS type", Type, "type");
 
-        parse_success!("ldr.base_addr", BaseAddr);
-        parse_success!("ldr.encoding", Encoding);
-        parse_success!("ldr.length", Length);
-        parse_success!("ldr.status", Status);
-        parse_success!("ldr.type", Type);
+        parse_success!(
+            "'foo: ' ldr.type ' (bar)' AS `baz`",
+            Type,
+            "baz",
+            "foo: ",
+            " (bar)"
+        );
     }
 }
