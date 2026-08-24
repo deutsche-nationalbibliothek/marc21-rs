@@ -221,3 +221,21 @@ fn query_string_literal() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn query_prefix_suffix() -> TestResult {
+    let record = ByteRecord::from_bytes(&ADA_LOVELACE)?;
+    let options = QueryOptions::default();
+
+    // control field (prefix)
+    let query = Query::new("'https://d-nb-info/' 001")?;
+    let values = record.query(&query, &options);
+    assert_eq!(values, vec![vec!["https://d-nb-info/119232022"]]);
+
+    // control field (suffix)
+    let query = Query::new("005[0:8] ' (last update)'")?;
+    let values = record.query(&query, &options);
+    assert_eq!(values, vec![vec!["20250720 (last update)"]]);
+
+    Ok(())
+}

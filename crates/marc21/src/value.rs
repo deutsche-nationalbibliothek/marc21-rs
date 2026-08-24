@@ -44,6 +44,12 @@ impl From<String> for Value<'_> {
     }
 }
 
+impl From<Vec<u8>> for Value<'_> {
+    fn from(value: Vec<u8>) -> Self {
+        Self(Cow::Owned(value))
+    }
+}
+
 impl<'a> From<&'a [u8]> for Value<'a> {
     fn from(value: &'a [u8]) -> Self {
         Self(Cow::Borrowed(value))
