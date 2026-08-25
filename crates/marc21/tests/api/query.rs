@@ -257,5 +257,33 @@ fn query_prefix_suffix() -> TestResult {
     let values = record.query(&query, &options);
     assert_eq!(values, vec![vec!["date: 20250720 (last update)"]]);
 
+    // data field (prefix)
+    let query = Query::new("079{ 'code: ' u }")?;
+    let values = record.query(&query, &options);
+    assert_eq!(
+        values,
+        vec![vec!["code: w"], vec!["code: k"], vec!["code: v"],]
+    );
+
+    // data field (suffix)
+    let query = Query::new("079{ u ' (code)' }")?;
+    let values = record.query(&query, &options);
+    assert_eq!(
+        values,
+        vec![vec!["w (code)"], vec!["k (code)"], vec!["v (code)"],]
+    );
+
+    // data field (prefix+suffix)
+    let query = Query::new("079{ 'code: ' u ' (source 079)' }")?;
+    let values = record.query(&query, &options);
+    assert_eq!(
+        values,
+        vec![
+            vec!["code: w (source 079)"],
+            vec!["code: k (source 079)"],
+            vec!["code: v (source 079)"],
+        ]
+    );
+
     Ok(())
 }

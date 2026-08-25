@@ -11,8 +11,8 @@ use crate::{ByteRecord, QueryOptions, Value};
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) struct LeaderExpr {
     field: LeaderField,
-    pub(crate) prefix: Option<String>,
-    pub(crate) suffix: Option<String>,
+    prefix: Option<String>,
+    suffix: Option<String>,
     name: Option<String>,
 }
 
