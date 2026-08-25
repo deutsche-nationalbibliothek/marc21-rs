@@ -1,0 +1,6 @@
+scope = 'ldr.type == "w" && 084/0#.a == "rvk"'
+uri = { path = '153{ "http://rvk.uni-regensburg.de/nt/" a}' }
+# pretty = true
+
+[concepts.rvk]
+labels = [{ kind = 'preferred', path = '153.j' }]
