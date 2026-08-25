@@ -1,8 +1,12 @@
-use winnow::combinator::{opt, preceded, seq};
+use bstr::ByteVec;
+use winnow::ascii::multispace1;
+use winnow::combinator::{opt, preceded, seq, terminated};
 use winnow::prelude::*;
 
 use crate::matcher::TagMatcher;
-use crate::matcher::shared::{parse_identifier, parse_range, ws1};
+use crate::matcher::shared::{
+    parse_identifier, parse_range, parse_string, ws1,
+};
 use crate::matcher::tag::parse::parse_tag_matcher;
 use crate::query::EMPTY_BYTE_STRING;
 use crate::{
@@ -13,6 +17,8 @@ use crate::{
 pub(crate) struct ControlFieldExpr {
     pub(crate) tag_matcher: TagMatcher,
     pub(crate) range: Option<(Option<usize>, Option<usize>)>,
+    pub(crate) prefix: Option<String>,
+    pub(crate) suffix: Option<String>,
     pub(crate) name: Option<String>,
 }
 
@@ -63,7 +69,21 @@ impl ControlFieldExpr {
                 value
             };
 
-            rows.push(vec![value.into()]);
+            if self.prefix.is_some() || self.suffix.is_some() {
+                let mut value = Vec::from(value);
+
+                if let Some(ref bytes) = self.prefix {
+                    value.insert_str(0, bytes);
+                }
+
+                if let Some(ref bytes) = self.suffix {
+                    value.push_str(bytes);
+                }
+
+                rows.push(vec![value.into()]);
+            } else {
+                rows.push(vec![value.into()]);
+            }
         }
 
         if rows.is_empty() {
@@ -82,8 +102,10 @@ pub(crate) fn parse_control_field_expr(
     i: &mut &[u8],
 ) -> ModalResult<ControlFieldExpr> {
     seq! { ControlFieldExpr {
+        prefix: opt(terminated(parse_string, multispace1)),
         tag_matcher: parse_tag_matcher,
         range: opt(parse_range),
+        suffix: opt(preceded(multispace1, parse_string)),
         name: opt(preceded(ws1("AS"), parse_identifier)),
     }}
     .parse_next(i)

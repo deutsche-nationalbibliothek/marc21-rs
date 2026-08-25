@@ -1,3 +1,4 @@
+use bstr::ByteVec;
 use winnow::ascii::{multispace0, multispace1};
 use winnow::combinator::{
     alt, empty, opt, preceded, separated, seq, terminated,
@@ -25,6 +26,8 @@ pub(crate) struct DataFieldExpr {
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) struct Column {
     pub(crate) kind: ColumnKind,
+    pub(crate) prefix: Option<String>,
+    pub(crate) suffix: Option<String>,
     pub(crate) name: Option<String>,
 }
 
@@ -120,7 +123,30 @@ impl DataFieldExpr {
                             field.subfields.iter().filter_map(
                                 |subfield| {
                                     if codes.contains(subfield.code()) {
-                                        Some(subfield.value.into())
+                                        if column.prefix.is_none()
+                                            && column.suffix.is_none()
+                                        {
+                                            return Some(
+                                                subfield.value.into(),
+                                            );
+                                        }
+
+                                        let mut value =
+                                            subfield.value.to_vec();
+
+                                        if let Some(ref bytes) =
+                                            column.prefix
+                                        {
+                                            value.insert_str(0, bytes);
+                                        }
+
+                                        if let Some(ref bytes) =
+                                            column.suffix
+                                        {
+                                            value.push_str(bytes);
+                                        }
+
+                                        Some(value.into())
                                     } else {
                                         None
                                     }
@@ -224,8 +250,37 @@ fn parse_data_field_expr_long(
 }
 
 fn parse_column(i: &mut &[u8]) -> ModalResult<Column> {
+    alt((parse_codes_column, parse_empty_column, parse_literal_column))
+        .parse_next(i)
+}
+
+fn parse_codes_column(i: &mut &[u8]) -> ModalResult<Column> {
     seq! { Column {
-        kind: parse_column_kind,
+        prefix: opt(terminated(parse_string, multispace1)),
+        kind: parse_codes.map(ColumnKind::Codes),
+        suffix: opt(preceded(multispace1, parse_string)),
+        name: opt(preceded(ws1("AS"), parse_identifier)),
+
+    }}
+    .parse_next(i)
+}
+
+fn parse_empty_column(i: &mut &[u8]) -> ModalResult<Column> {
+    seq! { Column {
+        prefix: empty.value(None),
+        kind: b'_'.value(ColumnKind::Codes(vec![])),
+        suffix: empty.value(None),
+        name: opt(preceded(ws1("AS"), parse_identifier)),
+
+    }}
+    .parse_next(i)
+}
+
+fn parse_literal_column(i: &mut &[u8]) -> ModalResult<Column> {
+    seq! { Column {
+        prefix: empty.value(None),
+        kind: parse_string.map(ColumnKind::Literal),
+        suffix: empty.value(None),
         name: opt(preceded(ws1("AS"), parse_identifier)),
 
     }}
@@ -234,19 +289,12 @@ fn parse_column(i: &mut &[u8]) -> ModalResult<Column> {
 
 fn parse_column_short(i: &mut &[u8]) -> ModalResult<Column> {
     seq! { Column {
+        prefix: empty.value(None),
         kind: parse_codes.map(ColumnKind::Codes),
+        suffix: empty.value(None),
         name: opt(preceded(ws1("AS"), parse_identifier)),
 
     }}
-    .parse_next(i)
-}
-
-fn parse_column_kind(i: &mut &[u8]) -> ModalResult<ColumnKind> {
-    alt((
-        parse_codes.map(ColumnKind::Codes),
-        b'_'.value(ColumnKind::Codes(vec![])),
-        parse_string.map(ColumnKind::Literal),
-    ))
     .parse_next(i)
 }
 
@@ -262,6 +310,8 @@ mod tests {
                     parse_column.parse($i.as_bytes()).unwrap(),
                     Column {
                         kind: $kind,
+                        prefix: None,
+                        suffix: None,
                         name: None,
                     }
                 );
@@ -272,6 +322,8 @@ mod tests {
                     parse_column_short.parse($i.as_bytes()).unwrap(),
                     Column {
                         kind: $kind,
+                        prefix: None,
+                        suffix: None,
                         name: Some($name.into()),
                     }
                 );
@@ -297,6 +349,8 @@ mod tests {
                     Column {
                         kind: $kind,
                         name: None,
+                        prefix: None,
+                        suffix: None,
                     }
                 );
             };
@@ -306,6 +360,8 @@ mod tests {
                     parse_column_short.parse($i.as_bytes()).unwrap(),
                     Column {
                         kind: $kind,
+                        prefix: None,
+                        suffix: None,
                         name: Some($name.into()),
                     }
                 );
@@ -321,24 +377,137 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_column_kind() {
+    fn test_parse_codes_column() {
         macro_rules! parse_success {
-            ($i:expr, $o:expr) => {
+            ($i:expr, $codes:expr, $name:expr, $prefix:expr, $suffix:expr) => {
+                let name = if $name.is_empty() {
+                    None
+                } else {
+                    Some($name.into())
+                };
+
+                let prefix = if $prefix.is_empty() {
+                    None
+                } else {
+                    Some($prefix.into())
+                };
+
+                let suffix = if $suffix.is_empty() {
+                    None
+                } else {
+                    Some($suffix.into())
+                };
+
                 assert_eq!(
-                    parse_column_kind.parse($i.as_bytes()).unwrap(),
-                    $o
+                    parse_codes_column.parse($i.as_bytes()).unwrap(),
+                    Column {
+                        kind: ColumnKind::Codes($codes),
+                        prefix,
+                        suffix,
+                        name,
+                    }
                 );
             };
         }
 
-        parse_success!("a", ColumnKind::Codes(vec![b'a']));
-        parse_success!("[ab]", ColumnKind::Codes(vec![b'a', b'b']));
+        parse_success!("a", vec![b'a'], "", "", "");
+        parse_success!("[ab]", vec![b'a', b'b'], "", "", "");
+        parse_success!("[a-c]", vec![b'a', b'b', b'c'], "", "", "");
+        parse_success!("[ab] AS foo", vec![b'a', b'b'], "foo", "", "");
         parse_success!(
-            "[a-c]",
-            ColumnKind::Codes(vec![b'a', b'b', b'c'])
+            "[ab] AS `foo`",
+            vec![b'a', b'b'],
+            "foo",
+            "",
+            ""
         );
 
-        parse_success!("'foo'", ColumnKind::Literal("foo".into()));
-        parse_success!("_", ColumnKind::Codes(vec![]));
+        parse_success!("'foo' a", vec![b'a'], "", "foo", "");
+        parse_success!(
+            "'foo' a AS `baz`",
+            vec![b'a'],
+            "baz",
+            "foo",
+            ""
+        );
+        parse_success!("'foo' a AS baz", vec![b'a'], "baz", "foo", "");
+        parse_success!("a 'bar'", vec![b'a'], "", "", "bar");
+        parse_success!("a 'bar' AS baz", vec![b'a'], "baz", "", "bar");
+        parse_success!(
+            "a 'bar' AS `baz`",
+            vec![b'a'],
+            "baz",
+            "",
+            "bar"
+        );
+        parse_success!("'foo' a 'bar'", vec![b'a'], "", "foo", "bar");
+        parse_success!(
+            "'foo' a 'bar' AS baz",
+            vec![b'a'],
+            "baz",
+            "foo",
+            "bar"
+        );
+        parse_success!(
+            "'foo' a 'bar' AS `baz`",
+            vec![b'a'],
+            "baz",
+            "foo",
+            "bar"
+        );
+    }
+
+    #[test]
+    fn test_parse_literal_column() {
+        macro_rules! parse_success {
+            ($i:expr, $literal:expr, $name:expr) => {
+                let name = if $name.is_empty() {
+                    None
+                } else {
+                    Some($name.into())
+                };
+
+                assert_eq!(
+                    parse_literal_column.parse($i.as_bytes()).unwrap(),
+                    Column {
+                        kind: ColumnKind::Literal($literal.into()),
+                        prefix: None,
+                        suffix: None,
+                        name,
+                    }
+                );
+            };
+        }
+
+        parse_success!("'foo'", "foo", "");
+        parse_success!("'foo' AS bar", "foo", "bar");
+        parse_success!("'foo' AS `bar`", "foo", "bar");
+    }
+
+    #[test]
+    fn test_parse_empty_column() {
+        macro_rules! parse_success {
+            ($i:expr, $name:expr) => {
+                let name = if $name.is_empty() {
+                    None
+                } else {
+                    Some($name.into())
+                };
+
+                assert_eq!(
+                    parse_empty_column.parse($i.as_bytes()).unwrap(),
+                    Column {
+                        kind: ColumnKind::Codes(vec![]),
+                        prefix: None,
+                        suffix: None,
+                        name,
+                    }
+                );
+            };
+        }
+
+        parse_success!("_", "");
+        parse_success!("_ AS bar", "bar");
+        parse_success!("_ AS `bar`", "bar");
     }
 }

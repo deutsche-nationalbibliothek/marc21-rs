@@ -221,3 +221,69 @@ fn query_string_literal() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn query_prefix_suffix() -> TestResult {
+    let record = ByteRecord::from_bytes(&ADA_LOVELACE)?;
+    let options = QueryOptions::default();
+
+    // leader (prefix)
+    let query = Query::new("'encoding: ' ldr.encoding")?;
+    let values = record.query(&query, &options);
+    assert_eq!(values, vec![vec!["encoding: a"]]);
+
+    // leader (suffix)
+    let query = Query::new("ldr.encoding ' (encoding)'")?;
+    let values = record.query(&query, &options);
+    assert_eq!(values, vec![vec!["a (encoding)"]]);
+
+    // leader (prefix+suffix)
+    let query = Query::new("'encoding: ' ldr.encoding ' (code)'")?;
+    let values = record.query(&query, &options);
+    assert_eq!(values, vec![vec!["encoding: a (code)"]]);
+
+    // control field (prefix)
+    let query = Query::new("'https://d-nb-info/' 001")?;
+    let values = record.query(&query, &options);
+    assert_eq!(values, vec![vec!["https://d-nb-info/119232022"]]);
+
+    // control field (suffix)
+    let query = Query::new("005[0:8] ' (last update)'")?;
+    let values = record.query(&query, &options);
+    assert_eq!(values, vec![vec!["20250720 (last update)"]]);
+
+    // control field (prefix+suffix)
+    let query = Query::new("'date: ' 005[0:8] ' (last update)'")?;
+    let values = record.query(&query, &options);
+    assert_eq!(values, vec![vec!["date: 20250720 (last update)"]]);
+
+    // data field (prefix)
+    let query = Query::new("079{ 'code: ' u }")?;
+    let values = record.query(&query, &options);
+    assert_eq!(
+        values,
+        vec![vec!["code: w"], vec!["code: k"], vec!["code: v"],]
+    );
+
+    // data field (suffix)
+    let query = Query::new("079{ u ' (code)' }")?;
+    let values = record.query(&query, &options);
+    assert_eq!(
+        values,
+        vec![vec!["w (code)"], vec!["k (code)"], vec!["v (code)"],]
+    );
+
+    // data field (prefix+suffix)
+    let query = Query::new("079{ 'code: ' u ' (source 079)' }")?;
+    let values = record.query(&query, &options);
+    assert_eq!(
+        values,
+        vec![
+            vec!["code: w (source 079)"],
+            vec!["code: k (source 079)"],
+            vec!["code: v (source 079)"],
+        ]
+    );
+
+    Ok(())
+}
