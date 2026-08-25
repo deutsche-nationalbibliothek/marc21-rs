@@ -46,23 +46,21 @@ scope = 'ldr.type == "z" && 042.a == "gnd1" && 079.q == "s"'
 
 ### Concept URI
 
-There are two ways to specify the URI of a concept: Either by directly
-specifying it using a [path] expression (only the first value of the
-expression is used). In the following example, the URI from the field
-`024/7# $0` is used if the subfield `$2` in the same field contains the
-value `gnd`:
+The URI of a concept can be specified by using a [path] expression (only
+the first value of the expression is used). In the following example,
+the URI from the field `024/7# $0` is used if the subfield `$2` in the
+same field contains the value `gnd`:
 
 ```toml
 uri = { path = '024/7#{ 0 | 2 == "gnd" }' }
 ```
 
-Alternatively, the URI can be created by concatenating a base URI and
-a value determined by a [path] expression (only the first value is
-used). In the following example, the URI is formed from the base URI
-`https://d-nb.info` and the control number of the record (field [001]):
+A base URI or other constant components can be added to the subfield as
+a prefix or suffix:
+
 
 ```toml
-uri = { base-uri = 'https://d-nb.info/', path = '001' }
+uri = { path = '"https://d-nb.info/" 001' }
 ```
 
 ### Concept Groups
@@ -171,7 +169,7 @@ uri = {
   path = '001'
 }
 
-[group.entity-type-saf]
+[concept.entity-type-saf]
 labels = [
   { kind = 'preferred', path = '150.a' },
   { kind = 'alternative', path = '450.a' },

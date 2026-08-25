@@ -416,10 +416,7 @@ labels = [
 ]
 
 [collections.gnd-subject-category]
-uri = {
-    base-uri = 'http://d-nb.info/standards/vocab/gnd/gnd-sc#',
-    path = '065{ a | 2 == "sswd" }'
-}
+uri = { path = '065{ "http://d-nb.info/standards/vocab/gnd/gnd-sc#" a | 2 == "sswd" }' }
 "#;
 
     let temp_dir = TempDir::new()?;
@@ -467,7 +464,7 @@ labels = [
 ]
 
 [collections.gnd-subject-category]
-uri = { base-uri = 'http://d-nb.info/standards/vocab/gnd/gnd-sc#', path = '065{ a | 2 == "sswd" }' }
+uri = { path = '065{ "http://d-nb.info/standards/vocab/gnd/gnd-sc#" a | 2 == "sswd" }' }
 min = 2
 "#;
 
@@ -516,7 +513,7 @@ labels = [
 ]
 
 [collections.gnd-subject-category]
-uri = { base-uri = 'http://d-nb.info/standards/vocab/gnd/gnd-sc#', path = '065{ a | 2 == "sswd" }' }
+uri = { path = '065{ "http://d-nb.info/standards/vocab/gnd/gnd-sc#" a | 2 == "sswd" }' }
 min = 1
 max = 4
 "#;

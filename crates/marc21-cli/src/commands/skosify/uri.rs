@@ -7,14 +7,7 @@ use sophia::iri::{InvalidIri, IriRef};
 #[serde(deny_unknown_fields)]
 #[serde(untagged)]
 pub(crate) enum Uri {
-    Path {
-        path: Path,
-    },
-    #[serde(rename_all = "kebab-case")]
-    Base {
-        base_uri: String,
-        path: Path,
-    },
+    Path { path: Path },
 }
 
 impl Uri {
@@ -27,18 +20,13 @@ impl Uri {
             Self::Path { path } => {
                 let iri = record
                     .first(path, options)
-                    .map(|value| value.to_str_unchecked().to_string())
+                    .map(|value| {
+                        value.to_str_unchecked().to_string()
+                        // .replace(' ', "%20")
+                    })
                     .unwrap_or_default();
 
                 IriRef::new(iri)
-            }
-            Self::Base { base_uri, path } => {
-                let suffix = record
-                    .first(path, options)
-                    .map(|value| value.to_str_unchecked().to_string())
-                    .unwrap_or_default();
-
-                IriRef::new(format!("{base_uri}{suffix}"))
             }
         }
     }
@@ -55,14 +43,6 @@ impl Uri {
                 for value in record.path(path, options) {
                     let iri = value.to_str_unchecked().to_string();
                     result.push(IriRef::new(iri));
-                }
-            }
-            Self::Base { base_uri, path } => {
-                for value in record.path(path, options) {
-                    let suffix = value.to_str_unchecked();
-                    result.push(IriRef::new(format!(
-                        "{base_uri}{suffix}"
-                    )));
                 }
             }
         }
