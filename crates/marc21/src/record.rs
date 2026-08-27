@@ -126,7 +126,6 @@ impl<'a> ByteRecord<'a> {
     /// let query = Query::new("001, 065{ a, _ | 2 == 'sswd' }")?;
     /// let values = record.query(&query, &Default::default());
     ///
-    /// eprintln!("values = {values:?}");
     /// assert_eq!(values.len(), 2);
     /// assert_eq!(values[0], vec!["119232022", "28p"]);
     /// assert_eq!(values[1], vec!["119232022", "9.5p"]);

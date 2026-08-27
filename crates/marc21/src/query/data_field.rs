@@ -13,7 +13,9 @@ use crate::matcher::subfield::parse::parse_subfield_matcher_long;
 use crate::matcher::tag::parse::parse_tag_matcher;
 use crate::matcher::{IndicatorMatcher, SubfieldMatcher, TagMatcher};
 use crate::query::EMPTY_BYTE_STRING;
-use crate::{ByteRecord, DataType, Field, QueryOptions, Value};
+use crate::{
+    ByteRecord, DataField, DataType, Field, QueryOptions, Value,
+};
 
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) struct DataFieldExpr {
@@ -26,15 +28,60 @@ pub(crate) struct DataFieldExpr {
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) struct Column {
     pub(crate) kind: ColumnKind,
-    pub(crate) prefix: Option<String>,
-    pub(crate) suffix: Option<String>,
     pub(crate) name: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) enum ColumnKind {
-    Codes(Vec<u8>),
+    Singleton(SingletonColumn),
     Literal(String),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub(crate) struct SingletonColumn {
+    codes: Vec<u8>,
+    prefix: Option<String>,
+    suffix: Option<String>,
+}
+
+impl SingletonColumn {
+    #[inline]
+    pub(crate) fn codes(&self) -> &[u8] {
+        &self.codes
+    }
+
+    #[inline]
+    pub(crate) fn is_empty(&self) -> bool {
+        self.codes.is_empty()
+    }
+
+    pub(crate) fn project<'a>(
+        &self,
+        field: &DataField<'a>,
+        _options: &QueryOptions,
+    ) -> impl Iterator<Item = Value<'a>> {
+        field.subfields.iter().filter_map(|subfield| {
+            if self.codes.contains(subfield.code()) {
+                if self.prefix.is_none() && self.suffix.is_none() {
+                    return Some(subfield.value.into());
+                }
+
+                let mut value = subfield.value.to_vec();
+
+                if let Some(ref bytes) = self.prefix {
+                    value.insert_str(0, bytes);
+                }
+
+                if let Some(ref bytes) = self.suffix {
+                    value.push_str(bytes);
+                }
+
+                Some(value.into())
+            } else {
+                None
+            }
+        })
+    }
 }
 
 impl DataFieldExpr {
@@ -42,7 +89,11 @@ impl DataFieldExpr {
         self.columns
             .iter()
             .map(|column| match column.kind {
-                ColumnKind::Codes(ref codes) if codes.is_empty() => 0,
+                ColumnKind::Singleton(ref column)
+                    if column.is_empty() =>
+                {
+                    0
+                }
                 _ => 1,
             })
             .sum()
@@ -53,7 +104,9 @@ impl DataFieldExpr {
 
         for column in self.columns.iter() {
             match column.kind {
-                ColumnKind::Codes(ref codes) if codes.is_empty() => {
+                ColumnKind::Singleton(ref codes)
+                    if codes.is_empty() =>
+                {
                     continue;
                 }
                 _ => dtypes.push(DataType::String),
@@ -68,7 +121,9 @@ impl DataFieldExpr {
 
         for column in self.columns.iter() {
             match column.kind {
-                ColumnKind::Codes(ref codes) if codes.is_empty() => {
+                ColumnKind::Singleton(ref codes)
+                    if codes.is_empty() =>
+                {
                     continue;
                 }
                 _ => names.push(column.name.as_ref()),
@@ -111,48 +166,15 @@ impl DataFieldExpr {
                 let mut values: Vec<Value<'a>> = Vec::new();
 
                 match column.kind {
-                    ColumnKind::Literal(ref lit) => {
-                        values.push(lit.clone().into())
+                    ColumnKind::Literal(ref value) => {
+                        values.push(value.clone().into())
                     }
-                    ColumnKind::Codes(ref codes) => {
-                        if codes.is_empty() {
+                    ColumnKind::Singleton(ref column) => {
+                        if column.is_empty() {
                             continue;
                         }
 
-                        values.extend(
-                            field.subfields.iter().filter_map(
-                                |subfield| {
-                                    if codes.contains(subfield.code()) {
-                                        if column.prefix.is_none()
-                                            && column.suffix.is_none()
-                                        {
-                                            return Some(
-                                                subfield.value.into(),
-                                            );
-                                        }
-
-                                        let mut value =
-                                            subfield.value.to_vec();
-
-                                        if let Some(ref bytes) =
-                                            column.prefix
-                                        {
-                                            value.insert_str(0, bytes);
-                                        }
-
-                                        if let Some(ref bytes) =
-                                            column.suffix
-                                        {
-                                            value.push_str(bytes);
-                                        }
-
-                                        Some(value.into())
-                                    } else {
-                                        None
-                                    }
-                                },
-                            ),
-                        );
+                        values.extend(column.project(field, options));
 
                         // If the `squash` flag is set, a single string
                         // is generated from all the individual values
@@ -250,264 +272,309 @@ fn parse_data_field_expr_long(
 }
 
 fn parse_column(i: &mut &[u8]) -> ModalResult<Column> {
-    alt((parse_codes_column, parse_empty_column, parse_literal_column))
-        .parse_next(i)
-}
-
-fn parse_codes_column(i: &mut &[u8]) -> ModalResult<Column> {
-    seq! { Column {
-        prefix: opt(terminated(parse_string, multispace1)),
-        kind: parse_codes.map(ColumnKind::Codes),
-        suffix: opt(preceded(multispace1, parse_string)),
-        name: opt(preceded(ws1("AS"), parse_identifier)),
-
-    }}
-    .parse_next(i)
-}
-
-fn parse_empty_column(i: &mut &[u8]) -> ModalResult<Column> {
-    seq! { Column {
-        prefix: empty.value(None),
-        kind: b'_'.value(ColumnKind::Codes(vec![])),
-        suffix: empty.value(None),
-        name: opt(preceded(ws1("AS"), parse_identifier)),
-
-    }}
-    .parse_next(i)
-}
-
-fn parse_literal_column(i: &mut &[u8]) -> ModalResult<Column> {
-    seq! { Column {
-        prefix: empty.value(None),
-        kind: parse_string.map(ColumnKind::Literal),
-        suffix: empty.value(None),
-        name: opt(preceded(ws1("AS"), parse_identifier)),
-
-    }}
+    alt((
+        seq! { Column {
+            kind: parse_column_kind_literal,
+            name: preceded(ws1("AS"), parse_identifier).map(Some),
+        }},
+        seq! { Column {
+            kind: parse_column_kind,
+            name: opt(preceded(ws1("AS"), parse_identifier)),
+        }},
+    ))
     .parse_next(i)
 }
 
 fn parse_column_short(i: &mut &[u8]) -> ModalResult<Column> {
     seq! { Column {
-        prefix: empty.value(None),
-        kind: parse_codes.map(ColumnKind::Codes),
-        suffix: empty.value(None),
+        kind: parse_column_kind_singleton_short,
         name: opt(preceded(ws1("AS"), parse_identifier)),
-
     }}
     .parse_next(i)
+}
+
+fn parse_column_kind(i: &mut &[u8]) -> ModalResult<ColumnKind> {
+    alt((
+        parse_column_kind_singleton,
+        parse_column_kind_literal,
+        parse_column_kind_empty,
+    ))
+    .parse_next(i)
+}
+
+fn parse_column_kind_singleton(
+    i: &mut &[u8],
+) -> ModalResult<ColumnKind> {
+    seq! { SingletonColumn {
+        prefix: opt(terminated(parse_string, multispace1)),
+        codes: parse_codes,
+        suffix: opt(preceded(multispace1, parse_string)),
+    }}
+    .map(ColumnKind::Singleton)
+    .parse_next(i)
+}
+
+fn parse_column_kind_singleton_short(
+    i: &mut &[u8],
+) -> ModalResult<ColumnKind> {
+    seq! { SingletonColumn {
+        prefix: empty.value(None),
+        codes: parse_codes,
+        suffix: empty.value(None),
+    }}
+    .map(ColumnKind::Singleton)
+    .parse_next(i)
+}
+
+fn parse_column_kind_empty(i: &mut &[u8]) -> ModalResult<ColumnKind> {
+    seq! { SingletonColumn {
+        prefix: empty.value(None),
+        codes: b'_'.value(vec![]),
+        suffix: empty.value(None),
+    }}
+    .map(ColumnKind::Singleton)
+    .parse_next(i)
+}
+
+#[cfg_attr(feature = "perf-inline", inline(always))]
+fn parse_column_kind_literal(i: &mut &[u8]) -> ModalResult<ColumnKind> {
+    parse_string.map(ColumnKind::Literal).parse_next(i)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    #[test]
-    fn test_parse_column() {
-        macro_rules! parse_success {
-            ($i:expr, $kind:expr) => {
-                assert_eq!(
-                    parse_column.parse($i.as_bytes()).unwrap(),
-                    Column {
-                        kind: $kind,
-                        prefix: None,
-                        suffix: None,
-                        name: None,
-                    }
-                );
-            };
+    macro_rules! make_option {
+        ($s:expr) => {
+            if $s.is_empty() { None } else { Some($s.into()) }
+        };
+    }
 
-            ($i:expr, $kind:expr, $name:expr) => {
+    #[test]
+    fn test_parse_column_kind_literal() {
+        macro_rules! parse_success {
+            ($i:expr, $o:expr) => {
                 assert_eq!(
-                    parse_column_short.parse($i.as_bytes()).unwrap(),
-                    Column {
-                        kind: $kind,
-                        prefix: None,
-                        suffix: None,
-                        name: Some($name.into()),
-                    }
+                    parse_column_kind_literal
+                        .parse($i.as_bytes())
+                        .unwrap(),
+                    ColumnKind::Literal($o.to_string())
                 );
             };
         }
 
-        parse_success!("'foo'", ColumnKind::Literal("foo".into()));
-        parse_success!("_", ColumnKind::Codes(vec![]));
-        parse_success!("a", ColumnKind::Codes(vec![b'a']));
+        parse_success!("'foo'", "foo");
+        parse_success!("''", "");
+    }
+
+    #[test]
+    fn test_parse_column_kind_empty() {
+        macro_rules! parse_success {
+            ($i:expr) => {
+                assert_eq!(
+                    parse_column_kind_empty
+                        .parse($i.as_bytes())
+                        .unwrap(),
+                    ColumnKind::Singleton(SingletonColumn {
+                        codes: vec![],
+                        prefix: None,
+                        suffix: None,
+                    })
+                );
+            };
+        }
+
+        parse_success!("_");
+    }
+
+    #[test]
+    fn test_parse_column_kind_singleton_short() {
+        macro_rules! parse_success {
+            ($i:expr, $codes:expr) => {
+                assert_eq!(
+                    parse_column_kind_singleton_short
+                        .parse($i.as_bytes())
+                        .unwrap(),
+                    ColumnKind::Singleton(SingletonColumn {
+                        codes: $codes,
+                        prefix: None,
+                        suffix: None,
+                    })
+                );
+            };
+        }
+
+        parse_success!("a", vec![b'a']);
+        parse_success!("[ab]", vec![b'a', b'b']);
+    }
+
+    #[test]
+    fn test_parse_column_kind_singleton() {
+        macro_rules! parse_success {
+            ($i:expr, $codes:expr, $prefix:expr, $suffix:expr) => {
+                let prefix = make_option!($prefix);
+                let suffix = make_option!($suffix);
+
+                assert_eq!(
+                    parse_column_kind_singleton
+                        .parse($i.as_bytes())
+                        .unwrap(),
+                    ColumnKind::Singleton(SingletonColumn {
+                        codes: $codes,
+                        prefix,
+                        suffix,
+                    })
+                );
+            };
+        }
+
+        parse_success!("a", vec![b'a'], "", "");
+        parse_success!("[ab]", vec![b'a', b'b'], "", "");
+        parse_success!("'foo' a", vec![b'a'], "foo", "");
+        parse_success!("'foo' [ab]", vec![b'a', b'b'], "foo", "");
+        parse_success!("a 'bar'", vec![b'a'], "", "bar");
+        parse_success!("[ab] 'bar'", vec![b'a', b'b'], "", "bar");
+        parse_success!("'foo' a 'bar'", vec![b'a'], "foo", "bar");
         parse_success!(
-            "a AS foo",
-            ColumnKind::Codes(vec![b'a']),
-            "foo"
+            "'foo' [ab] 'bar'",
+            vec![b'a', b'b'],
+            "foo",
+            "bar"
+        );
+    }
+
+    #[test]
+    fn test_parse_column_kind() {
+        macro_rules! parse_success {
+            ($i:expr, $o:expr) => {
+                assert_eq!(
+                    parse_column_kind.parse($i.as_bytes()).unwrap(),
+                    $o
+                );
+            };
+        }
+
+        // literal
+        parse_success!("'foo'", ColumnKind::Literal("foo".into()));
+        parse_success!("''", ColumnKind::Literal("".into()));
+
+        // empty
+        parse_success!(
+            "_",
+            ColumnKind::Singleton(SingletonColumn {
+                codes: vec![],
+                prefix: None,
+                suffix: None
+            })
+        );
+
+        // singleton
+        parse_success!(
+            "a",
+            ColumnKind::Singleton(SingletonColumn {
+                codes: vec![b'a'],
+                prefix: None,
+                suffix: None
+            })
+        );
+
+        parse_success!(
+            "'foo' a 'bar'",
+            ColumnKind::Singleton(SingletonColumn {
+                codes: vec![b'a'],
+                prefix: Some("foo".into()),
+                suffix: Some("bar".into()),
+            })
         );
     }
 
     #[test]
     fn test_parse_column_short() {
         macro_rules! parse_success {
-            ($i:expr, $kind:expr) => {
-                assert_eq!(
-                    parse_column_short.parse($i.as_bytes()).unwrap(),
-                    Column {
-                        kind: $kind,
-                        name: None,
-                        prefix: None,
-                        suffix: None,
-                    }
-                );
-            };
+            ($i:expr, $codes:expr, $name:expr) => {
+                let name = make_option!($name);
 
-            ($i:expr, $kind:expr, $name:expr) => {
                 assert_eq!(
                     parse_column_short.parse($i.as_bytes()).unwrap(),
                     Column {
-                        kind: $kind,
-                        prefix: None,
-                        suffix: None,
-                        name: Some($name.into()),
+                        kind: ColumnKind::Singleton(SingletonColumn {
+                            codes: $codes,
+                            prefix: None,
+                            suffix: None,
+                        }),
+                        name,
                     }
                 );
             };
         }
 
-        parse_success!("a", ColumnKind::Codes(vec![b'a']));
+        parse_success!("a", vec![b'a'], "");
+        parse_success!("a AS `foo`", vec![b'a'], "foo");
+        parse_success!("[ab] AS `foo`", vec![b'a', b'b'], "foo");
+    }
+
+    #[test]
+    fn test_parse_column() {
+        macro_rules! parse_success {
+            ($i:expr, $kind:expr, $name:expr) => {
+                let name = make_option!($name);
+
+                assert_eq!(
+                    parse_column.parse($i.as_bytes()).unwrap(),
+                    Column { kind: $kind, name }
+                );
+            };
+        }
+
+        // singleton
         parse_success!(
-            "a AS foo",
-            ColumnKind::Codes(vec![b'a']),
+            "a",
+            ColumnKind::Singleton(SingletonColumn {
+                codes: vec![b'a'],
+                prefix: None,
+                suffix: None
+            }),
+            ""
+        );
+
+        parse_success!(
+            "a AS `foo`",
+            ColumnKind::Singleton(SingletonColumn {
+                codes: vec![b'a'],
+                prefix: None,
+                suffix: None
+            }),
             "foo"
         );
-    }
 
-    #[test]
-    fn test_parse_codes_column() {
-        macro_rules! parse_success {
-            ($i:expr, $codes:expr, $name:expr, $prefix:expr, $suffix:expr) => {
-                let name = if $name.is_empty() {
-                    None
-                } else {
-                    Some($name.into())
-                };
-
-                let prefix = if $prefix.is_empty() {
-                    None
-                } else {
-                    Some($prefix.into())
-                };
-
-                let suffix = if $suffix.is_empty() {
-                    None
-                } else {
-                    Some($suffix.into())
-                };
-
-                assert_eq!(
-                    parse_codes_column.parse($i.as_bytes()).unwrap(),
-                    Column {
-                        kind: ColumnKind::Codes($codes),
-                        prefix,
-                        suffix,
-                        name,
-                    }
-                );
-            };
-        }
-
-        parse_success!("a", vec![b'a'], "", "", "");
-        parse_success!("[ab]", vec![b'a', b'b'], "", "", "");
-        parse_success!("[a-c]", vec![b'a', b'b', b'c'], "", "", "");
-        parse_success!("[ab] AS foo", vec![b'a', b'b'], "foo", "", "");
+        // empty
         parse_success!(
-            "[ab] AS `foo`",
-            vec![b'a', b'b'],
-            "foo",
-            "",
+            "_",
+            ColumnKind::Singleton(SingletonColumn {
+                codes: vec![],
+                prefix: None,
+                suffix: None
+            }),
             ""
         );
 
-        parse_success!("'foo' a", vec![b'a'], "", "foo", "");
         parse_success!(
-            "'foo' a AS `baz`",
-            vec![b'a'],
-            "baz",
-            "foo",
-            ""
+            "_ AS `baz`",
+            ColumnKind::Singleton(SingletonColumn {
+                codes: vec![],
+                prefix: None,
+                suffix: None
+            }),
+            "baz"
         );
-        parse_success!("'foo' a AS baz", vec![b'a'], "baz", "foo", "");
-        parse_success!("a 'bar'", vec![b'a'], "", "", "bar");
-        parse_success!("a 'bar' AS baz", vec![b'a'], "baz", "", "bar");
+
+        // literal
+        parse_success!("'foo'", ColumnKind::Literal("foo".into()), "");
         parse_success!(
-            "a 'bar' AS `baz`",
-            vec![b'a'],
-            "baz",
-            "",
-            "bar"
+            "'foo' AS `baz`",
+            ColumnKind::Literal("foo".into()),
+            "baz"
         );
-        parse_success!("'foo' a 'bar'", vec![b'a'], "", "foo", "bar");
-        parse_success!(
-            "'foo' a 'bar' AS baz",
-            vec![b'a'],
-            "baz",
-            "foo",
-            "bar"
-        );
-        parse_success!(
-            "'foo' a 'bar' AS `baz`",
-            vec![b'a'],
-            "baz",
-            "foo",
-            "bar"
-        );
-    }
-
-    #[test]
-    fn test_parse_literal_column() {
-        macro_rules! parse_success {
-            ($i:expr, $literal:expr, $name:expr) => {
-                let name = if $name.is_empty() {
-                    None
-                } else {
-                    Some($name.into())
-                };
-
-                assert_eq!(
-                    parse_literal_column.parse($i.as_bytes()).unwrap(),
-                    Column {
-                        kind: ColumnKind::Literal($literal.into()),
-                        prefix: None,
-                        suffix: None,
-                        name,
-                    }
-                );
-            };
-        }
-
-        parse_success!("'foo'", "foo", "");
-        parse_success!("'foo' AS bar", "foo", "bar");
-        parse_success!("'foo' AS `bar`", "foo", "bar");
-    }
-
-    #[test]
-    fn test_parse_empty_column() {
-        macro_rules! parse_success {
-            ($i:expr, $name:expr) => {
-                let name = if $name.is_empty() {
-                    None
-                } else {
-                    Some($name.into())
-                };
-
-                assert_eq!(
-                    parse_empty_column.parse($i.as_bytes()).unwrap(),
-                    Column {
-                        kind: ColumnKind::Codes(vec![]),
-                        prefix: None,
-                        suffix: None,
-                        name,
-                    }
-                );
-            };
-        }
-
-        parse_success!("_", "");
-        parse_success!("_ AS bar", "bar");
-        parse_success!("_ AS `bar`", "bar");
     }
 }

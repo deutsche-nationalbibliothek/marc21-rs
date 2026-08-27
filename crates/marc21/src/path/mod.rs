@@ -214,8 +214,8 @@ impl Path {
 
                 for column in expr.columns.iter() {
                     match column.kind {
-                        ColumnKind::Codes(ref codes) => {
-                            result.extend(codes)
+                        ColumnKind::Singleton(ref column) => {
+                            result.extend(column.codes())
                         }
                         _ => continue,
                     }
