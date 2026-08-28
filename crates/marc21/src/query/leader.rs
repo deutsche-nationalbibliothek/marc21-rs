@@ -26,6 +26,7 @@ impl LeaderExpr {
             LeaderField::Length => vec![DataType::UInt32],
             LeaderField::Status => vec![DataType::Char],
             LeaderField::Type => vec![DataType::Char],
+            LeaderField::Level => vec![DataType::Char],
         }
     }
 
@@ -51,6 +52,7 @@ impl LeaderExpr {
             Length => leader.length().to_string(),
             Status => char::from(leader.status()).to_string(),
             Type => char::from(leader.r#type()).to_string(),
+            Level => char::from(leader.level()).to_string(),
         };
 
         if let Some(ref prefix) = self.prefix {
@@ -141,12 +143,14 @@ mod tests {
         parse_success!("ldr.length", Length);
         parse_success!("ldr.status", Status);
         parse_success!("ldr.type", Type);
+        parse_success!("ldr.level", Level);
 
         parse_success!("ldr.base_addr AS addr", BaseAddr, "addr");
         parse_success!("ldr.encoding AS enc", Encoding, "enc");
         parse_success!("ldr.length AS len", Length, "len");
         parse_success!("ldr.status AS status", Status, "status");
         parse_success!("ldr.type AS type", Type, "type");
+        parse_success!("ldr.level AS level", Level, "level");
 
         parse_success!(
             "'foo: ' ldr.type ' (bar)' AS `baz`",

@@ -35,6 +35,7 @@ pub(crate) fn parse_leader_field(
         "length".value(LeaderField::Length),
         "status".value(LeaderField::Status),
         "type".value(LeaderField::Type),
+        "level".value(LeaderField::Level),
     ))
     .parse_next(i)
 }

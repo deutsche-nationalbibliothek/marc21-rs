@@ -14,6 +14,7 @@ pub(crate) enum LeaderField {
     Length,
     Status,
     Type,
+    Level,
 }
 
 /// A matcher that can be applied on a [Leader].
@@ -24,7 +25,8 @@ pub(crate) enum LeaderField {
 /// - Base Address `ldr.base_addr`,
 /// - Encoding `ldr.encoding`,
 /// - Length `ldr.length`,
-/// - Status`ldr.status`,
+/// - Status `ldr.status`,
+/// - Level `ldr.level`,
 /// - and Type `ldr.type`.
 ///
 /// The data type of the comparison value must match the data type of
@@ -55,6 +57,9 @@ pub(crate) enum LeaderField {
 /// assert!(matcher.is_match(&leader, &options));
 ///
 /// let matcher = LeaderMatcher::new("ldr.type == 'z'")?;
+/// assert!(matcher.is_match(&leader, &options));
+///
+/// let matcher = LeaderMatcher::new("ldr.level == ' '")?;
 /// assert!(matcher.is_match(&leader, &options));
 ///
 /// # Ok::<(), Box<dyn std::error::Error>>(())
@@ -120,6 +125,7 @@ impl LeaderMatcher {
             LeaderField::Encoding => ldr.encoding().into(),
             LeaderField::Length => ldr.length().into(),
             LeaderField::Type => ldr.r#type().into(),
+            LeaderField::Level => ldr.level().into(),
         };
 
         match self.operator {

@@ -599,3 +599,22 @@ fn select_merge() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn select_leader_level() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "-s", "001, ldr.level"])
+        .arg(data_dir().join("kla.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(
+            "column_1,column_2\n1024049205,m\n",
+        ))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
