@@ -99,6 +99,23 @@ impl Leader {
         self.r#type
     }
 
+    /// Returns the level of record
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use marc21::Leader;
+    ///
+    /// let leader = Leader::new(b"00000nz  a2200000oc 4500")?;
+    /// assert_eq!(leader.level(), b' ');
+    ///
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
+    #[inline(always)]
+    pub fn level(&self) -> u8 {
+        self.idef1
+    }
+
     /// Returns true if and only if the underlying record is a
     /// bibliographic record.
     ///
