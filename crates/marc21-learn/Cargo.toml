@@ -1,0 +1,17 @@
+[package]
+name = "marc21-learn"
+version = "0.1.0"
+documentation.workspace = true
+repository.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lib]
+name = "_learn"
+crate-type = ["cdylib"]
+
+[dependencies]
+marc21 = { workspace = true }
+numpy = { workspace = true }
+pyo3 = { workspace = true, features = ["extension-module", "abi3-py39"] }
