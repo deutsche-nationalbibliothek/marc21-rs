@@ -1,5 +1,5 @@
 [package]
-name = "polars-marc21"
+name = "marc21-polars"
 version = "0.3.0"
 description = "Rust bindings for polars-marc21"
 documentation.workspace = true
