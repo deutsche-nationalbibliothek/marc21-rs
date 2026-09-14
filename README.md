@@ -5,7 +5,8 @@
 <div align="center" markdown="1">
 
 [![Rust](https://github.com/deutsche-nationalbibliothek/marc21-rs/actions/workflows/rust.yaml/badge.svg)](https://github.com/deutsche-nationalbibliothek/marc21-rs/actions/workflows/rust.yaml)
-[![Python](https://github.com/deutsche-nationalbibliothek/marc21-rs/actions/workflows/python.yaml/badge.svg)](https://github.com/deutsche-nationalbibliothek/marc21-rs/actions/workflows/python.yaml)
+[![marc21-polars](https://github.com/deutsche-nationalbibliothek/marc21-rs/actions/workflows/marc21-polars.yaml/badge.svg)](https://github.com/deutsche-nationalbibliothek/marc21-rs/actions/workflows/marc21-polars.yaml)
+[![marc21-learn](https://github.com/deutsche-nationalbibliothek/marc21-rs/actions/workflows/marc21-learn.yaml/badge.svg)](https://github.com/deutsche-nationalbibliothek/marc21-rs/actions/workflows/marc21-learn.yaml)
 [![docs.rs](https://img.shields.io/docsrs/marc21?label=Documentation)](https://docs.rs/marc21/latest/marc21/)
 [![Dependencies](https://deps.rs/repo/github/deutsche-nationalbibliothek/marc21-rs/status.svg)](https://deps.rs/repo/github/deutsche-nationalbibliothek/marc21-rs)
 [![crates.io](https://img.shields.io/crates/v/marc21)](https://crates.io/crates/marc21)

@@ -4,10 +4,8 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 authors = [{ name = "Nico Wagner", email = "n.wagner@dnb.de" }]
-requires-python = ">=3.14"
-dependencies = [
-    "numpy>=2.5.2",
-]
+requires-python = ">=3.12"
+dependencies = ["numpy>=2.5.2"]
 
 [project.scripts]
 marc21-learn = "marc21_learn:main"
@@ -31,7 +29,15 @@ build-backend = "maturin"
 
 [dependency-groups]
 dev = [
-    "ruff>=0.16.5",
-    "ruff-lsp>=0.0.62",
-    "ty>=0.0.75",
+  "mypy>=2.3.1",
+  "pytest>=9.1.1",
+  "pytest-cov>=7.1.0",
+  "ruff>=0.16.5",
+  "ruff-lsp>=0.0.62",
+  "ty>=0.0.75",
 ]
+
+[tool.pytest.ini_options]
+addopts = "-ra -s -v --cov=src/marc21_learn"
+testpaths = ["./tests"]
+strict = true
