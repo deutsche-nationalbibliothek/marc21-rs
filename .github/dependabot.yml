@@ -41,7 +41,8 @@ updates:
 
   # Python
   - package-ecosystem: "uv"
-    directory: "/python"
+    directories:
+      - "crates/marc21-polars"
     schedule:
       interval: "weekly"
     cooldown:
