@@ -13,7 +13,7 @@ marc21-learn = "marc21_learn:main"
 [tool.maturin]
 module-name = "marc21_learn._learn"
 python-packages = ["marc21_learn"]
-python-source = "src"
+python-source = "py-src"
 
 [tool.uv]
 cache-keys = [

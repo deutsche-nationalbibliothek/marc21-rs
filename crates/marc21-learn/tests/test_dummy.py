@@ -1,9 +1,8 @@
 from pathlib import Path
 
 import numpy as np
-from numpy.testing import assert_allclose
-
 from marc21_learn import scale_array
+from numpy.testing import assert_allclose
 
 
 def test_empty_query(data_dir: Path) -> None:
