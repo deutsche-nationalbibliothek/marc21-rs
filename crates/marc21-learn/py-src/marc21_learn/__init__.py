@@ -1,3 +1,5 @@
-from marc21_learn._learn import scale_array
+from typing import Final
 
-__all__ = ["scale_array"]
+from marc21_learn._rust import __VERSION
+
+__version__: Final[str] = __VERSION
