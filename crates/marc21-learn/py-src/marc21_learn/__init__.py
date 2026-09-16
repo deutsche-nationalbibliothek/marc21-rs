@@ -1,5 +1,7 @@
-from typing import Final
-
 from marc21_learn._rust import __version
 
-__version__: Final[str] = __version()
+from . import preprocessing
+
+__version__: str = __version()
+
+__all__ = ["preprocessing"]
