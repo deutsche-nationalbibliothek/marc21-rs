@@ -1,7 +1,15 @@
 use pyo3::prelude::*;
 
+const VERSION: &str = env!("CARGO_PKG_VERSION");
+
+#[pyfunction]
+fn __version() -> &'static str {
+    VERSION
+}
+
 #[pymodule]
-mod _rust {
-    #[pymodule_export]
-    pub const __VERSION: &str = env!("CARGO_PKG_VERSION");
+fn _rust(_py: Python, m: &Bound<PyModule>) -> PyResult<()> {
+    m.add_wrapped(wrap_pyfunction!(__version))?;
+
+    Ok(())
 }
