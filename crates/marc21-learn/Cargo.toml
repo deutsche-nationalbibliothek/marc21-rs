@@ -8,10 +8,10 @@ rust-version.workspace = true
 license.workspace = true
 
 [lib]
-name = "_learn"
+name = "_rust"
 crate-type = ["cdylib"]
 
 [dependencies]
 # marc21 = { workspace = true }
-numpy = { workspace = true }
+# numpy = { workspace = true }
 pyo3 = { workspace = true, features = ["extension-module", "abi3-py39"] }

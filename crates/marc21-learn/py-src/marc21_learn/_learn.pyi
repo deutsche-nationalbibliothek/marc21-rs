@@ -1,3 +1,0 @@
-from numpy.typing import ArrayLike
-
-def scale_array(a: float, X: ArrayLike) -> ArrayLike: ...

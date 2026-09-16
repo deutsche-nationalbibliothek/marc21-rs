@@ -11,7 +11,7 @@ dependencies = ["numpy>=2.5.2"]
 marc21-learn = "marc21_learn:main"
 
 [tool.maturin]
-module-name = "marc21_learn._learn"
+module-name = "marc21_learn._rust"
 python-packages = ["marc21_learn"]
 python-source = "py-src"
 
@@ -30,6 +30,7 @@ build-backend = "maturin"
 [dependency-groups]
 dev = [
   "mypy>=2.3.1",
+  "packaging>=26.3",
   "pytest>=9.1.1",
   "pytest-cov>=7.1.0",
   "ruff>=0.16.5",
@@ -38,6 +39,6 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "-ra -s -v --cov=src/marc21_learn"
+addopts = "-ra -s -v --cov=py-src/marc21_learn"
 testpaths = ["./tests"]
 strict = true
