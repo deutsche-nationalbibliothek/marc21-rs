@@ -1,11 +1,13 @@
-from pathlib import Path
+"""Tests of the top-level module."""
 
-import marc21_learn
 import pytest
 from packaging import version
 
+import marc21_learn
 
-def test_empty_query(data_dir: Path) -> None:
+
+def test_version() -> None:
+    """Ensure that the version string can be parsed."""
     try:
         version.parse(marc21_learn.__version__)
     except version.InvalidVersion:

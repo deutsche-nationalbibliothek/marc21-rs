@@ -1,3 +1,5 @@
+"""Learn."""
+
 from marc21_learn._rust import __version
 
 from . import preprocessing
