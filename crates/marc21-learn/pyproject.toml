@@ -5,7 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 authors = [{ name = "Nico Wagner", email = "n.wagner@dnb.de" }]
 requires-python = ">=3.12"
-dependencies = ["numpy>=2.5.2"]
+dependencies = ["numpy>=2.5.2", "polars>=1.44.2"]
 
 [project.scripts]
 marc21-learn = "marc21_learn:main"
@@ -13,7 +13,7 @@ marc21-learn = "marc21_learn:main"
 [tool.maturin]
 module-name = "marc21_learn._rust"
 python-packages = ["marc21_learn"]
-python-source = "py-src"
+python-source = "src"
 
 [tool.uv]
 cache-keys = [
@@ -36,6 +36,24 @@ dev = [
   "ruff>=0.16.5",
   "ruff-lsp>=0.0.62",
   "ty>=0.0.75",
+]
+doc = ["numpydoc>=1.11.0", "pydata-sphinx-theme>=0.21.0", "sphinx>=9.1.0"]
+
+[tool.ruff]
+line-length = 72
+lint.select = ["ALL"]
+lint.ignore = [
+  "CPY001", # missing-copyright-notice
+  "D203",   # incorrect-blank-line-before-class
+  "D212",   # multi-line-summary-first-line
+]
+
+[tool.ruff.lint.extend-per-file-ignores]
+"tests/**/*.py" = [
+  "INP001",  # implicit-namespace-package
+  "PLR0915", # too-many-statements
+  "PLR2004", # magic-value-comparison
+  "S101",    # assert
 ]
 
 [tool.pytest.ini_options]
