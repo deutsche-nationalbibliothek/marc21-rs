@@ -1,0 +1,13 @@
+[package]
+name = "marc21-python"
+version = "0.1.0"
+authors.workspace = true
+repository.workspace = true
+documentation.workspace = true
+license.workspace = true
+rust-version.workspace = true
+edition.workspace = true
+
+[dependencies]
+marc21 = { workspace = true }
+pyo3 = { workspace = true, features = ["extension-module", "abi3-py310"] }

@@ -1,0 +1,65 @@
+[project]
+name = "marc21-learn"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [{ name = "Nico Wagner", email = "n.wagner@dnb.de" }]
+requires-python = ">=3.14"
+dependencies = ["polars>=1.44.2"]
+
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[tool.maturin]
+module-name = "marc21_learn._runtime"
+python-packages = ["marc21_learn"]
+python-source = "src"
+
+[tool.uv]
+cache-keys = [
+  { file = "pyproject.toml" },
+  { file = "src/**/*.rs" },
+  { file = "Cargo.toml" },
+  { file = "Cargo.lock" },
+]
+
+[dependency-groups]
+dev = [
+  "mypy>=2.3.1",
+  "pytest>=9.1.1",
+  "pytest-cov>=7.1.0",
+  "ruff>=0.16.8",
+  "ty>=0.0.83",
+]
+
+doc = ["numpydoc>=1.11.0", "pydata-sphinx-theme>=0.21.0", "sphinx>=9.1.0"]
+
+[tool.ruff]
+line-length = 78
+lint.select = ["ALL"]
+lint.ignore = [
+  "CPY001", # missing-copyright-notice
+  "D203",   # incorrect-blank-line-before-class
+  "D212",   # multi-line-summary-first-line
+]
+
+[tool.ruff.lint.extend-per-file-ignores]
+"doc/**/*.py" = [
+  "D104", # undocumented-public-package
+]
+"tests/**/*.py" = [
+  "D104",    # undocumented-public-package
+  "INP001",  # implicit-namespace-package
+  "PLR0915", # too-many-statements
+  "PLR2004", # magic-value-comparison
+  "S101",    # assert
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.pytest.ini_options]
+addopts = "-ra -s -v --cov=src/marc21_learn"
+testpaths = ["./tests"]
+strict = true

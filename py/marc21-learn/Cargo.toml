@@ -1,0 +1,17 @@
+[package]
+name = "marc21-learn"
+version = "0.1.0"
+description = "Rust bindings for marc21-learn"
+documentation.workspace = true
+repository.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lib]
+name = "_runtime"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { workspace = true, features = ["extension-module", "abi3-py310"] }
+marc21-python = { workspace = true }
