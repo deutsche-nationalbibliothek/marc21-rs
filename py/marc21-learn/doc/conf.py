@@ -82,3 +82,7 @@ html_theme_options = {
     "show_prev_next": False,
     "collapse_navigation": False,
 }
+
+html_css_files = [
+    "custom.css",
+]
