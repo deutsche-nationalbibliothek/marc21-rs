@@ -662,14 +662,14 @@ dependencies = [
 name = "marc21-learn"
 version = "0.1.0"
 dependencies = [
+ "marc21-python",
  "pyo3",
 ]
 
 [[package]]
-name = "marc21-polars"
-version = "0.3.0"
+name = "marc21-python"
+version = "0.1.0"
 dependencies = [
- "bstr",
  "marc21",
  "pyo3",
 ]

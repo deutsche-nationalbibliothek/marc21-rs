@@ -13,7 +13,7 @@ mod tag;
 mod value;
 
 pub use directory::{Directory, Entry};
-pub use error::Error;
+pub use error::{Error, ParseRecordError};
 pub use field::{ControlField, DataField, Field};
 pub use leader::Leader;
 pub use path::{ParsePathError, Path};

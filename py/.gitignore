@@ -1,0 +1,7 @@
+__pycache__/
+*.py[codz]
+*$py.class
+*.so
+.coverage
+dist/
+
