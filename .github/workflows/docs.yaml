@@ -1,13 +1,9 @@
-name: book
+name: docs
 
 on:
   workflow_dispatch:
   push:
     branches: main
-    paths:
-      - 'docs/book/src/**'
-      - 'docs/book/custom.css'
-      - 'docs/book/book.toml'
 
 permissions:
   contents: read
@@ -27,6 +23,10 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Prepare
+        run:
+          mkdir -p _output
+
       - name: Install mdbook
         run: |
           mkdir mdbook
@@ -37,15 +37,28 @@ jobs:
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
         id: pages
 
-      - name: Build site
+      - name: Build site (marc21-cli)
         run: |
-          mdbook build docs/book -d target/docs/book
+          mdbook build docs/book -d _output/marc21-cli
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+            
+      - name: Setup project environment
+        run: |
+          cd py/marc21-learn
+          uv sync --locked --all-extras --dev --group doc
+
+      - name: Build site (marc21-learn)
+        run: |
+          make -C py/marc21-learn/doc html
+          mv py/marc21-learn/doc/_build/html _output/marc21-learn
 
       - name: Upload static files as artifact
         id: deployment
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
-          path: target/docs/book
+          path: _output
 
   deploy:
     permissions:
