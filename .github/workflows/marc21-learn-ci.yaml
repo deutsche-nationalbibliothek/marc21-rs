@@ -43,6 +43,10 @@ jobs:
       - name: Run pytest
         run: uv run pytest tests
 
+      - name: Run doctest
+        run: make -C ./doc doctest
+
+
   ruff:
     runs-on: ubuntu-latest
     defaults:
