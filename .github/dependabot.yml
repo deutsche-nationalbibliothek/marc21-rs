@@ -42,8 +42,7 @@ updates:
   # Python
   - package-ecosystem: "uv"
     directories:
-      - "crates/marc21-polars"
-      - "crates/marc21-learn"
+      - "py/marc21-learn"
     schedule:
       interval: "weekly"
     cooldown:
