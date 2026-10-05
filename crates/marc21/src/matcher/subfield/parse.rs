@@ -21,8 +21,8 @@ pub(crate) fn parse_subfield_matcher_long(
     i: &mut &[u8],
 ) -> ModalResult<SubfieldMatcher> {
     alt((
-        parse_group_matcher,
         parse_boolean_connective,
+        parse_group_matcher,
         parse_not_matcher,
         alt((
             parse_comparison_matcher_long,
