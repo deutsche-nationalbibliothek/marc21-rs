@@ -1,1 +1,10 @@
+__pycache__/
+*.py[codz]
+*$py.class
+*.so
+.coverage
+dist/
 .ipynb_checkpoints/
+
+
+

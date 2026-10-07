@@ -5,7 +5,6 @@
 <div align="center" markdown="1">
 
 [![Rust](https://github.com/deutsche-nationalbibliothek/marc21-rs/actions/workflows/rust.yaml/badge.svg)](https://github.com/deutsche-nationalbibliothek/marc21-rs/actions/workflows/rust.yaml)
-[![Python](https://github.com/deutsche-nationalbibliothek/marc21-rs/actions/workflows/marc21-learn-ci.yaml/badge.svg)](https://github.com/deutsche-nationalbibliothek/marc21-rs/actions/workflows/marc21-learn-ci.yaml)
 [![docs.rs](https://img.shields.io/docsrs/marc21?label=Documentation)](https://docs.rs/marc21/latest/marc21/)
 [![Dependencies](https://deps.rs/repo/github/deutsche-nationalbibliothek/marc21-rs/status.svg)](https://deps.rs/repo/github/deutsche-nationalbibliothek/marc21-rs)
 [![crates.io](https://img.shields.io/crates/v/marc21)](https://crates.io/crates/marc21)
@@ -21,7 +20,7 @@ to exchange bibliographic data between libraries. In particular, the
 command line tool `marc21` allows efficient filtering of records and
 extraction of data into a rectangular schema. Since the extracted data
 is in tabular form, it can be processed with popular frameworks such as
-[Polars] or [Tidyverse]. In addition, the Python package [polars-marc21]
+[Polars] or [Tidyverse]. In addition, the Python package [marc21-learn]
 provides a [Polars] extension that allows you to use the query syntax to
 create a [DataFrame], without using the command line.
 
@@ -52,44 +51,49 @@ The `marc21` tool provides the following commands:
 - [skosify] — Convert records to SKOS/RDF
 - [split] — Split the input into chunks of a given size
 
-Check out the [documentation] to learn more about installing and using
-the tool.
+Check out the [documentation](https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/)
+to learn more about installing and using the tool.
 
+## Python Integration
 
-## Polars Integration
-
-The [polars-marc21] package uses the query engine to transform MARC21
-records directly into a [DataFrame]:
+The Python package [marc21-learn] uses the query engine to transform MARC21
+records into a rectangular [DataFrame]:
 
 ```python
-from polars_marc21 import marc21_select
+from marc21_learn.io import read_marc21
 
-df = (
-    marc21_select("001 AS `cn`, 075{ b AS `gndgen` | 2 == 'gndgen' }")
-    .from_("DUMP.mrc.gz")
-    .where("ldr.type == 'z'")
-    .collect()
-)
+sources =  "authorities-gnd-*.mrc.gz"
+query = "001 AS `cn`, 075{ b AS `gndgen` | 2 == 'gndgen' }"
+predicate = "ldr.type == 'z'"
 
+df = read_marc21(sources, query, predicate=predicate)
 print(df)
 ```
 
 ```default
-shape: (7, 2)
-┌───────────┬────────┐
-│ cn        ┆ gndgen │
-│ ---       ┆ ---    │
-│ str       ┆ str    │
-╞═══════════╪════════╡
-│ 118540238 ┆ p      │
-│ 118572121 ┆ p      │
-│ 118607626 ┆ p      │
-│ 118632477 ┆ p      │
-│ 040992020 ┆ u      │
-│ 040992918 ┆ u      │
-│ 040993396 ┆ u      │
-└───────────┴────────┘
+shape: (10_317_327, 2)
+┌────────────┬────────┐
+│ cn         ┆ gndgen │
+│ ---        ┆ ---    │
+│ str        ┆ str    │
+╞════════════╪════════╡
+│ 040000028  ┆ s      │
+│ 040000230  ┆ s      │
+│ 040000303  ┆ s      │
+│ 040000443  ┆ s      │
+│ 040000540  ┆ s      │
+│ …          ┆ …      │
+│ 1403043981 ┆ u      │
+│ 1403044260 ┆ u      │
+│ 1403044309 ┆ u      │
+│ 1403044899 ┆ u      │
+│ 1403044961 ┆ u      │
+└────────────┴────────┘
 ```
+
+Check out the [documentation](https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-learn/)
+to learn more about installing and using the `marc21-learn` toolkit.
+
 
 ## Contributing
 
@@ -113,7 +117,7 @@ This project is licensed under the [European Union Public License 1.2].
 [German National Library]: https://dnb.de/
 [MARC 21]: https://www.loc.gov/marc
 [Polars]: https://pola.rs
-[polars-marc21]: https://pypi.org/project/polars-marc21/
+[marc21-learn]: https://pypi.org/project/marc21-learn/
 [Tidyverse]: https://tidyverse.org
 [ZSH]: https://www.zsh.org
 
