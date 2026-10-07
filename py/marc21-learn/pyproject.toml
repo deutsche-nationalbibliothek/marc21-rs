@@ -1,11 +1,39 @@
 [project]
 name = "marc21-learn"
 version = "0.1.0"
-description = "Add your description here"
+description = "A toolkit that bridges the gap between the MARC21 and scikit-learn"
 readme = "README.md"
+license = "EUPL-1.2"
+license-files = ["LICENSE"]
 authors = [{ name = "Nico Wagner", email = "n.wagner@dnb.de" }]
 requires-python = ">=3.14"
-dependencies = ["polars>=1.44.2"]
+
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
+  "Programming Language :: Rust",
+  "Topic :: File Formats",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Software Development :: Libraries",
+  "Typing :: Typed",
+]
+dependencies = [
+    "polars>=2.0.0",
+]
+
+
+[project.urls]
+Documentation = "https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-learn/"
+Repository = "https://github.com/deutsche-nationalbibliothek/marc21-rs"
+Issues = "https://github.com/deutsche-nationalbibliothek/marc21-rs/issues"
 
 [build-system]
 requires = ["maturin>=1.0,<2.0"]
@@ -15,14 +43,6 @@ build-backend = "maturin"
 module-name = "marc21_learn._runtime"
 python-packages = ["marc21_learn"]
 python-source = "src"
-
-[tool.uv]
-cache-keys = [
-  { file = "pyproject.toml" },
-  { file = "src/**/*.rs" },
-  { file = "Cargo.toml" },
-  { file = "Cargo.lock" },
-]
 
 [dependency-groups]
 dev = [
@@ -34,6 +54,14 @@ dev = [
 ]
 
 doc = ["numpydoc>=1.11.0", "pydata-sphinx-theme>=0.21.0", "sphinx>=9.1.0"]
+
+[tool.uv]
+cache-keys = [
+  { file = "pyproject.toml" },
+  { file = "src/**/*.rs" },
+  { file = "Cargo.toml" },
+  { file = "Cargo.lock" },
+]
 
 [tool.ruff]
 line-length = 78
