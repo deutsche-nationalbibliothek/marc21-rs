@@ -12,7 +12,7 @@ Module
 	io
 
 .. toctree::
-	:maxdepth: 1
-	:hidden:
-
-	io
+   :maxdepth: 2
+   :hidden:
+   
+   io

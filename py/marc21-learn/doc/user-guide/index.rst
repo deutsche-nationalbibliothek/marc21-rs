@@ -5,6 +5,7 @@ User Guide
 
 .. toctree::
    :maxdepth: 2
-   
-   io/index
+   :numbered:
+   :hidden:
+
    predicates/index
