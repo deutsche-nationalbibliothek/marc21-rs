@@ -8,11 +8,6 @@ on:
 permissions:
   contents: read
 
-defaults:
-  run:
-    working-directory: ./py/marc21-learn
-    shell: bash
-
 jobs:
   linux:
     runs-on: ${{ matrix.platform.runner }}
@@ -37,7 +32,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup uv
+      - name: Setup python (3.14)
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.14"
@@ -46,7 +41,7 @@ jobs:
         uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1.51.0
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist
+          args: --release --out dist --manifest-path py/marc21-learn/Cargo.toml
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
           manylinux: auto
           
@@ -54,7 +49,7 @@ jobs:
         uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1.51.0
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist -i python3.14t
+          args: --release --out dist --manifest-path py/marc21-learn/Cargo.toml -i python3.14t
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
           manylinux: auto
 
@@ -83,16 +78,16 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup python
+      - name: Setup python (3.14)
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          python-version: "3.11"
+          python-version: "3.14"
 
       - name: Build wheels
         uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1.51.0
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist
+          args: --release --out dist --manifest-path py/marc21-learn/Cargo.toml
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
           manylinux: musllinux_1_2
           
@@ -100,7 +95,7 @@ jobs:
         uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1.51.0
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist -i python3.14t
+          args: --release --out dist --manifest-path py/marc21-learn/Cargo.toml -i python3.14t
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
           manylinux: musllinux_1_2
 
@@ -130,17 +125,17 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup python
+      - name: Setup python (3.14)
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          python-version: "3.13"
+          python-version: "3.14"
           architecture: ${{ matrix.platform.python_arch }}
 
       - name: Build wheels
         uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1.51.0
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist
+          args: --release --out dist --manifest-path py/marc21-learn/Cargo.toml
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
           
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -152,7 +147,7 @@ jobs:
         uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1.51.0
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist -i python3.14t
+          args: --release --out dist --manifest-path py/marc21-learn/Cargo.toml -i python3.14t
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
 
       - name: Upload wheels
@@ -176,16 +171,16 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup python (3.11)
+      - name: Setup python (3.14)
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          python-version: "3.11"
+          python-version: "3.14"
 
       - name: Build wheels
         uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1.51.0
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist
+          args: --release --out dist --manifest-path py/marc21-learn/Cargo.toml
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
 
       - name: Setup python (3.14t)
@@ -197,7 +192,7 @@ jobs:
         uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1.51.0
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out dist -i python3.14t
+          args: --release --out dist --manifest-path py/marc21-learn/Cargo.toml -i python3.14t
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
 
       - name: Upload wheels
@@ -218,7 +213,7 @@ jobs:
         uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1.51.0
         with:
           command: sdist
-          args: --out dist
+          args: --out dist --manifest-path py/marc21-learn/Cargo.toml
 
       - name: Upload sdist
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -227,9 +222,8 @@ jobs:
           path: dist
 
   release:
-    name: Release
-    runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
     needs:
       - linux
       - musllinux
@@ -243,6 +237,11 @@ jobs:
     environment:
       name: pypi
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
       - name: Create GitHub release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

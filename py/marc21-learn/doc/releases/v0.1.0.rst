@@ -1,0 +1,109 @@
+==================
+marc21-learn 0.1.0
+==================
+
+.. currentmodule:: marc21_learn.io
+
+This is the first version of the ``marc21-learn`` toolkit, which aims
+to bridge the gap between the `MARC 21`_ data format and the machine
+learning library `scikit-learn`_. Version 0.1.0 provides functions in
+the :mod:`marc21_learn.io` module that transform MARC21 records into a
+rectangular `DataFrame`_ (Polars). These functions utilize both the filtering
+capabilities and the query engine of the `marc21`_ library.
+
+
+Demo
+----
+
+The following examples are based on the `GND authority records`_ (as of June 26,
+2026). The individual files were combined into a single file using the command
+line tool `marc21 <https://deutsche-nationalbibliothek.github.io/marc21-rs/
+marc21-cli/>`__ as follows:
+
+
+.. code-block::
+
+	$ marc21 concat -ps authorities-gnd-*.mrc.gz -o GND.mrc.gz
+	10,317,327 records, 0 invalid | 57,503 records/s, elapsed: 00:02:54
+
+Using the :func:`read_marc21` function, selected data from the records can be
+transformed into a DataFrame. In the following example, a table is created in
+which the first column contains the control number (field `001`_), the second
+column contains the entity type (field `075`_), and the third column contains
+the authentication code (field `042`_) of the record.
+
+.. code-block:: python
+
+	>>> from marc21_learn.io import read_marc21
+	>>>
+	>>> query = "001 AS `cn`, 075{ b AS `type` | 2 == 'gndspec' }, 042.a AS `code`"
+	>>> df = read_marc21("GND.mrc.gz", query)
+	>>> df
+	shape: (10_317_327, 3)
+	┌────────────┬──────┬──────┐
+	│ cn         ┆ type ┆ code │
+	│ ---        ┆ ---  ┆ ---  │
+	│ str        ┆ str  ┆ str  │
+	╞════════════╪══════╪══════╡
+	│ 000065609  ┆ g    ┆ gnd1 │
+	│ 000114987  ┆ g    ┆ gnd1 │
+	│ 000115541  ┆ g    ┆ gnd1 │
+	│ 00013242X  ┆ g    ┆ gnd1 │
+	│ 000141437  ┆ g    ┆ gnd1 │
+	│ …          ┆ …    ┆ …    │
+	│ 1403043981 ┆ u    ┆ gnd5 │
+	│ 1403044260 ┆ u    ┆ gnd3 │
+	│ 1403044309 ┆ u    ┆ gnd3 │
+	│ 1403044899 ┆ u    ┆ gnd3 │
+	│ 1403044961 ┆ u    ┆ gnd1 │
+	└────────────┴──────┴──────┘
+
+The number of records can be limited in advance by specifying
+a :ref:`predicate <ref-predicates>`. The following code generates a table that
+contains only authority records (``ldr.type == "z"``) with the authentication
+code ``gnd1`` and the entity type ``saf`` (provided that the source in
+subfield ``2`` is set to ``gndspec``).
+
+.. code-block:: python
+
+	>>> from marc21_learn.io import read_marc21
+	>>>
+	>>> query = "001 AS `ppn`, 024/7#.a AS `nid`, 150.a AS `label`"
+	>>>
+	>>> predicate = "ldr.type == 'z' \
+	...     && 042.a == 'gnd1' \
+	...     && 075{ b == 'saf' && 2 == 'gndspec' } \
+	... "
+	>>>
+	>>> df = read_marc21("GND.mrc.gz", query, predicate=predicate)
+	>>> df
+	shape: (211, 3)
+	┌────────────┬────────────┬───────────────────┐
+	│ ppn        ┆ nid        ┆ label             │
+	│ ---        ┆ ---        ┆ ---               │
+	│ str        ┆ str        ┆ str               │
+	╞════════════╪════════════╪═══════════════════╡
+	│ 040039420  ┆ 4003942-0  ┆ Autograf          │
+	│ 040052273  ┆ 4005227-8  ┆ Umfrage           │
+	│ 040065685  ┆ 4006568-6  ┆ Bild              │
+	│ 040066045  ┆ 4006604-6  ┆ Bilderbuch        │
+	│ 040071782  ┆ 4007178-9  ┆ Blockbuch         │
+	│ …          ┆ …          ┆ …                 │
+	│ 1350087084 ┆ 1350087084 ┆ Menükarte         │
+	│ 1369452020 ┆ 1369452020 ┆ Schaustellerblatt │
+	│ 1375959476 ┆ 1375959476 ┆ Kulturfilm        │
+	│ 1392628822 ┆ 1392628822 ┆ Edeldruck         │
+	│ 1402554532 ┆ 1402554532 ┆ Sprachkurs        │
+	└────────────┴────────────┴───────────────────┘
+
+.. _scikit-learn: https://scikit-learn.org
+.. _marc21: https://crates.io/crates/marc21
+.. _marc21-cli: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/
+.. _MARC 21: https://www.loc.gov/marc/
+.. _DataFrame: https://docs.pola.rs/api/python/stable/reference/dataframe/index.html
+.. _GND authority records: https://data.dnb.de/GND/
+
+.. _001: https://www.loc.gov/marc/authority/ad001.html 
+.. _042: https://www.loc.gov/marc/authority/ad042.html
+.. _075: https://www.loc.gov/marc/authority/ad075.html
+

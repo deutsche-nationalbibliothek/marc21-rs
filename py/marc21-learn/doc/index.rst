@@ -48,3 +48,4 @@ engineering) as part of automatic content indexing.
    install
    user-guide/index
    reference/index
+   Releases <releases/index>
