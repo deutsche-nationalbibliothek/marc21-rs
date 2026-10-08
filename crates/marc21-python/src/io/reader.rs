@@ -106,6 +106,11 @@ impl PyMarcReader {
                 }
 
                 let record = match StringRecord::try_from(record) {
+                    // Proceed with the next record if a Unicode error
+                    // occurred and the `skip_invalid` flag is
+                    // explicitly set.
+                    Err(_) if slf.skip_invalid => continue,
+
                     // If the record does not contain valid UTF-8
                     // values, a corresponding UnicodeDecodeError is
                     // returned.
@@ -114,6 +119,7 @@ impl PyMarcReader {
                             e.to_string(),
                         )));
                     }
+
                     Ok(record) => record,
                 };
 
