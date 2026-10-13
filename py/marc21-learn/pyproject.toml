@@ -25,9 +25,7 @@ classifiers = [
   "Topic :: Software Development :: Libraries",
   "Typing :: Typed",
 ]
-dependencies = [
-    "polars>=2.0.0",
-]
+dependencies = ["polars>=2.0.0"]
 
 
 [project.urls]
@@ -45,6 +43,7 @@ python-packages = ["marc21_learn"]
 python-source = "src"
 
 [dependency-groups]
+build = ["pyoxigraph>=0.5.11"]
 dev = [
   "mypy>=2.3.1",
   "pytest>=9.1.1",
