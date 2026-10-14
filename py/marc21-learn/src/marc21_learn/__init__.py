@@ -2,11 +2,12 @@
 
 from marc21_learn._runtime import __version
 
-from . import io
+from . import io, vocabularies
 
 __version__: str = __version()
 del __version
 
 __all__ = [
     "io",
+    "vocabularies",
 ]
