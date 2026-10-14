@@ -82,6 +82,12 @@ lint.ignore = [
   "PLR2004", # magic-value-comparison
   "S101",    # assert
 ]
+"scripts/**/*.py" = [
+  "C901", # complex-structure
+  "D100", # undocumented-public-module
+  "D101", # undocumented-public-class
+  "D103", # undocumented-public-function
+]
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"

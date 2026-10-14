@@ -1,5 +1,7 @@
 #!/usr/bin/env -S uv run -s --group build
 
+"""Script to update the dnb subject categories."""
+
 import sys
 import unicodedata
 from argparse import ArgumentParser

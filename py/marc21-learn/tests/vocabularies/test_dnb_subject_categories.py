@@ -1,12 +1,6 @@
 """Test DNB Vocabularies."""
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from pathlib import Path
-
 import polars as pl
-from polars.testing import assert_frame_equal
 
 from marc21_learn.vocabularies import dnb_subject_categories
 

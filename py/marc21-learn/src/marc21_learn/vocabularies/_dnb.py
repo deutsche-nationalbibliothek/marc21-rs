@@ -110,18 +110,22 @@ def dnb_subject_categories(
 
     >>> from marc21_learn.vocabularies import dnb_subject_categories
     >>>
-    >>> df = dnb_subject_categories(language="en", include_note=True)
-    >>> df.head(3)
-    shape: (3, 4)
-    ┌─────────────────────────────────┬──────────┬───────────────────────┬──────────────────────────────┐
-    │ uri                             ┆ notation ┆ label                 ┆ note                         │
-    │ ---                             ┆ ---      ┆ ---                   ┆ ---                          │
-    │ str                             ┆ enum     ┆ str                   ┆ str                          │
-    ╞═════════════════════════════════╪══════════╪═══════════════════════╪══════════════════════════════╡
-    │ https://d-nb.info/standards/cl… ┆ 000      ┆ Generalities, science ┆ Includes DDC classes 000-003 │
-    │ https://d-nb.info/standards/cl… ┆ 004      ┆ Computer science      ┆ Includes DDC classes 004-006 │
-    │ https://d-nb.info/standards/cl… ┆ 010      ┆ Bibliography          ┆ Includes DDC classes 010     │
-    └─────────────────────────────────┴──────────┴───────────────────────┴──────────────────────────────┘
+    >>> df = (
+    ...     dnb_subject_categories(language="en", include_note=True)
+    ...       .select("notation", "note")
+    ...       .head(3)
+    ... )
+    >>> df
+    shape: (3, 2)
+    ┌──────────┬──────────────────────────────┐
+    │ notation ┆ note                         │
+    │ ---      ┆ ---                          │
+    │ enum     ┆ str                          │
+    ╞══════════╪══════════════════════════════╡
+    │ 000      ┆ Includes DDC classes 000-003 │
+    │ 004      ┆ Includes DDC classes 004-006 │
+    │ 010      ┆ Includes DDC classes 010     │
+    └──────────┴──────────────────────────────┘
     """
     # The source file is located in the `data` folder under the `vocab`
     # module. The source file can be updated using the script

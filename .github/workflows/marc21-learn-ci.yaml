@@ -87,7 +87,7 @@ jobs:
         run: uv sync --locked --all-extras --dev
         
       - name: Run ty
-        run: uv run ty check --output-format=github .
+        run: uv run --all-groups ty check --output-format=github .
 
   audit:
     runs-on: ubuntu-latest
