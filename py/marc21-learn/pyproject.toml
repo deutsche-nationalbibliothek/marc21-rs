@@ -86,6 +86,10 @@ lint.ignore = [
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
 
+[tool.ruff.lint.pycodestyle]
+max-doc-length = 120
+max-line-length = 120
+
 [tool.pytest.ini_options]
 addopts = "-ra -s -v --cov=src/marc21_learn"
 testpaths = ["./tests"]
