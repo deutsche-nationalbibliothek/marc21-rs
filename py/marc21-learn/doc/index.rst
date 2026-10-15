@@ -18,14 +18,20 @@ Start
 
 :raw-html:`<br />`
 
-.. image:: https://img.shields.io/pypi/v/marc21-learn
+.. image:: https://img.shields.io/pypi/v/marc21-learn?
+   :target: https://pypi.org/project/marc21-learn
    :alt: PyPI Version
+   
 
-.. image:: https://img.shields.io/pypi/status/marc21-learn
+.. image:: https://img.shields.io/pypi/status/marc21-learn?
+   :target: https://pypi.org/project/marc21-learn
    :alt: PyPI Status
+   
 
-.. image:: https://img.shields.io/pypi/l/marc21-learn
+.. image:: https://img.shields.io/pypi/l/marc21-learn?color=%236D8196
+   :target: https://pypi.org/project/marc21-learn
    :alt: PyPI License
+
 
 :raw-html:`<hr />`
 

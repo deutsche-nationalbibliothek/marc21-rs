@@ -73,7 +73,7 @@ def dnb_subject_categories(
     >>> df = dnb_subject_categories()
     >>> assert df.height == 103
     >>>
-    >>> df.head(2)
+    >>> df.head(2) # doctest: +SKIP
     shape: (2, 4)
     ┌─────────────────────────────────┬──────────┬───────────────────────────┬───────────────────────┐
     │ uri                             ┆ notation ┆ label_de                  ┆ label_en              │

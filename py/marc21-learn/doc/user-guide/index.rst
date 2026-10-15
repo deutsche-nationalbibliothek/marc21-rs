@@ -8,4 +8,6 @@ User Guide
    :numbered:
    :hidden:
 
-   predicates/index
+   projection
+   selection/index
+   datasets
