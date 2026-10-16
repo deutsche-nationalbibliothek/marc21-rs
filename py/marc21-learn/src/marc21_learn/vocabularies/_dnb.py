@@ -168,3 +168,128 @@ def dnb_subject_categories(
             raise ValueError(msg)
 
     return df
+
+
+def gnd_subject_categories(
+    *,
+    language: Literal["de", "en"] | None = None,
+    normalize: UnicodeForm | None = None,
+) -> pl.DataFrame:
+    """
+    Subject categories of the Integrated Authority File (GND).
+
+    This function returns the subject categories of the `Integrated Authority
+    File`_ (GND). The subject categories are taken from the DNB's `Linked Data
+    Service`_ and are returned in NFC normal form by default.
+
+    .. versionadded:: 0.2.0
+
+    .. _`Integrated Authority File`: https://www.dnb.de/EN/gnd
+    .. _`Linked Data Service`: https://d-nb.info/standards/classification/ddc-sc
+
+    Notes
+    -----
+    Since the metadata typically links to the notation rather than the
+    URI, the `notation` column has been converted to an enum type to
+    achieve the best possible performance compared to using strings. This
+    may result in conversions (cast) in other datasets. The enum data type
+    can then be easily taken from the `notation` column.
+
+    Parameters
+    ----------
+    language : {'de', 'en'}
+        Reduces the vocabulary to the columns relevant to the selected
+        language.
+
+    normalize : {'NFC', 'NFKC', 'NFD', 'NFKD'}
+        Transliterates all strings in the vocabulary into the specified
+        Unicode normal form.
+
+    Returns
+    -------
+    DataFrame
+        The subject categories as a Polars DataFrame
+
+    Raises
+    ------
+    ValueError
+        If an unknown language code or Unicode normal form is given.
+
+    Examples
+    --------
+    By default, the labels for the concepts are returned in German (de) and
+    English (en):
+
+    >>> from marc21_learn.vocabularies import gnd_subject_categories
+    >>>
+    >>> df = gnd_subject_categories()
+    >>> assert df.height == 412
+    >>> assert df.width == 4
+    >>>
+    >>> df.head(3) # doctest: +SKIP
+    shape: (3, 4)
+    ┌─────────────────────────────────┬──────────┬─────────────────────────────────┬─────────────────────────────────┐
+    │ uri                             ┆ notation ┆ label_de                        ┆ label_en                        │
+    │ ---                             ┆ ---      ┆ ---                             ┆ ---                             │
+    │ str                             ┆ enum     ┆ str                             ┆ str                             │
+    ╞═════════════════════════════════╪══════════╪═════════════════════════════════╪═════════════════════════════════╡
+    │ https://d-nb.info/standards/vo… ┆ 00       ┆ Unspezifische Allgemeinwörter   ┆ Non-specific headings           │
+    │ https://d-nb.info/standards/vo… ┆ 00m      ┆ Maschinell eingespielte Datens… ┆ Machine-generated records (pla… │
+    │ https://d-nb.info/standards/vo… ┆ 00p      ┆ Sachlich nicht klassifizierbar… ┆ Persons not classifiable by su… │
+    └─────────────────────────────────┴──────────┴─────────────────────────────────┴─────────────────────────────────┘
+
+    To restrict the columns to one of the languages, you can use the
+    ``language`` parameter. Note that the column name changes from
+    ``label_{de, en}`` to ``label``.
+
+    >>> from marc21_learn.vocabularies import gnd_subject_categories
+    >>>
+    >>> df = gnd_subject_categories(language="de")
+    >>> df.head(3)
+    shape: (3, 3)
+    ┌─────────────────────────────────┬──────────┬─────────────────────────────────┐
+    │ uri                             ┆ notation ┆ label                           │
+    │ ---                             ┆ ---      ┆ ---                             │
+    │ str                             ┆ enum     ┆ str                             │
+    ╞═════════════════════════════════╪══════════╪═════════════════════════════════╡
+    │ https://d-nb.info/standards/vo… ┆ 00       ┆ Unspezifische Allgemeinwörter   │
+    │ https://d-nb.info/standards/vo… ┆ 00m      ┆ Maschinell eingespielte Datens… │
+    │ https://d-nb.info/standards/vo… ┆ 00p      ┆ Sachlich nicht klassifizierbar… │
+    └─────────────────────────────────┴──────────┴─────────────────────────────────┘
+    """
+    # The source file is located in the `data` folder under the `vocab`
+    # module. The source file can be updated using the script
+    # `scripts/update-dnb-ddc-sc.py`.
+    source = open_binary(
+        "marc21_learn",
+        "vocabularies/data/dnb-gnd-sc.csv.gz",
+    )
+
+    df = pl.read_csv(source, schema_overrides={"notation": pl.String})
+
+    # The notations are treated as categorical data to ensure that subsequent
+    # queries run as efficiently as possible. Since the list of all notations
+    # is known in advance, the data type of the series is set to `Enum`.
+    df = df.with_columns(pl.col("notation").cast(pl.Enum(df["notation"])))
+
+    if language:
+        if language in ["de", "en"]:
+            df = df.drop(
+                cs.starts_with("label") & ~cs.ends_with(language),
+            ).select(pl.all().name.replace(r"_.*$", "$1"))
+        else:
+            msg = "The vocabulary supports only German (de) and English (en)."
+            raise ValueError(msg)
+
+    if normalize:
+        if normalize in ["NFC", "NFKC", "NFD", "NFKD"]:
+            df = df.with_columns(cs.string().str.normalize(normalize))
+        else:
+            msg = (
+                f"Invalid Unicode form '{normalize}': "
+                "expected 'NFC', 'NFKC', 'NFD', or 'NFKD'."
+            )
+
+            raise ValueError(msg)
+
+    return df
