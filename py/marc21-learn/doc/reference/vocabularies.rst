@@ -15,4 +15,5 @@ German National Library (DNB)
 	:toctree: api/
 
 	dnb_subject_categories
+	dnb_subject_categories_re
 	gnd_subject_categories
