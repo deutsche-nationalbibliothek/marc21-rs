@@ -1,5 +1,6 @@
 """Vocabularies used at the German National Library (DNB)."""
 
+import re
 from importlib.resources import open_binary
 from typing import TYPE_CHECKING, Literal
 
@@ -168,6 +169,60 @@ def dnb_subject_categories(
             raise ValueError(msg)
 
     return df
+
+
+def dnb_subject_categories_re(
+    *,
+    flags: re.RegexFlag = re.NOFLAG,
+) -> re.Pattern:
+    """
+    Return a regular expression to match DNB subject categories.
+
+    .. versionadded:: 0.2.0
+
+    Parameters
+    ----------
+    flags : re.RegexFlag
+        Additional regex matching flags.
+
+    Returns
+    -------
+    pattern : re.Pattern
+        Returns the compiled regular expression.
+
+    Examples
+    --------
+    >>> from marc21_learn.vocabularies import dnb_subject_categories_re
+    >>>
+    >>> dnb_sc_re = dnb_subject_categories_re()
+    >>>
+    >>> assert dnb_sc_re.fullmatch("000")
+    >>> assert dnb_sc_re.fullmatch("333.7")
+    >>> assert dnb_sc_re.fullmatch("B")
+
+    Notes
+    -----
+    The underlying regular expression does not use the anchors ``^`` or ``$``
+    in order to take advantage of Python's regex API.
+    """
+    return re.compile(
+        r"""
+        (
+            [5789][0-9]0
+            |0(0[04]|[1235-9]0)
+            |1[035]0
+            |2[0239]0
+            |3([0123-9]0|33\.7|55)
+            |4([02-9]0|39|91\.8)
+            |6([0-79]0|21\.3|24)
+            |7(41\.5|9[1236])
+            |8(39|91\.8)
+            |9(14\.3|43)
+            |[BKS]
+        )
+        """,
+        flags | re.VERBOSE,
+    )
 
 
 def gnd_subject_categories(

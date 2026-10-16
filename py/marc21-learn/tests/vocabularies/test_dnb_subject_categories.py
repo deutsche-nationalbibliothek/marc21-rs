@@ -1,8 +1,13 @@
 """Test DNB Vocabularies."""
 
+import sys
+
 import polars as pl
 
-from marc21_learn.vocabularies import dnb_subject_categories
+from marc21_learn.vocabularies import (
+    dnb_subject_categories,
+    dnb_subject_categories_re,
+)
 
 DNB_SUBJECT_CATEGORIES: list[str] = [
     "000",
@@ -206,3 +211,13 @@ def test_normalize() -> None:
         .height
         == 1
     )
+
+
+def test_regex() -> None:
+    """Test the dnb subject categories regex."""
+    re = dnb_subject_categories_re()
+
+    for notation in DNB_SUBJECT_CATEGORIES:
+        if sys.version_info >= (3, 15, 0):
+            assert re.prefixmatch(notation)
+        assert re.fullmatch(notation)
