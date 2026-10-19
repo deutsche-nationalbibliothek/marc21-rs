@@ -6,7 +6,7 @@
 
 ## SYNOPSIS
 
-`marc21 count` [_OPTIONS_] [_INPUT_]...
+`marc21 dedup` [_OPTIONS_] [_INPUT_]...
 
 ## DESCRIPTION
 
@@ -38,9 +38,9 @@ record.
 
 ## EXAMPLES
 
-In the following example, all duplicate records found in the input
-files `s1.mrc` and `s2.mrc` are removed and written to the output file
-`out.mrc`:
+In the following example, all duplicate records found in the input files
+`s1.mrc` and `s2.mrc` are removed and the unique output is written to
+the file `out.mrc`:
 
 ```console
 $ marc21 dedup s1.mrc s2.mrc -o out.mrc
