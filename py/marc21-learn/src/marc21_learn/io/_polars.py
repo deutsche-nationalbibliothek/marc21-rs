@@ -1,5 +1,6 @@
 """Polars I/O Plugin."""
 
+from collections.abc import Iterable
 from glob import glob
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -13,22 +14,47 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
 
-def normalize_filepath(path: str | Path) -> list[Path]:
-    if isinstance(path, str):
-        path = str(Path(path).expanduser())
-        return [Path(p) for p in glob(path)]  # noqa: PTH207
-    return [Path(path).expanduser().absolute()]
-
-
-def prepare_sources(
-    sources: str | Path | list[str] | list[Path],
+def _normalize_source(
+    sources: str | Path,
+    *,
+    use_glob: bool,
 ) -> list[Path]:
+    paths: list[Path] = []
+
+    if isinstance(sources, str):
+        if use_glob:
+            paths = [Path(p) for p in glob(sources) if Path(p).is_file()]  # noqa: PTH207
+            if not paths:
+                msg = "Empty glob pattern"
+                raise FileNotFoundError(msg)
+        elif (path := Path(sources)).is_file():
+            paths.append(path)
+        else:
+            msg = f"No such file: {sources}"
+            raise FileNotFoundError(msg)
+    elif isinstance(sources, Path):
+        if sources.is_file():
+            paths.append(sources)
+        else:
+            msg = f"No such file: {sources}"
+            raise FileNotFoundError(msg)
+
+    return paths
+
+
+def _prepare_sources(
+    sources: str | Path | Iterable[Path | str],
+    *,
+    use_glob: bool,
+) -> list[Path]:
+    paths: list[Path] = []
+
     if isinstance(sources, (str, Path)):
-        paths = normalize_filepath(sources)
-    else:
-        paths: list[Path] = []
+        sources = [sources]
+
+    if isinstance(sources, Iterable):
         for source in sources:
-            paths.extend(normalize_filepath(source))
+            paths += _normalize_source(source, use_glob=use_glob)
 
     return paths
 
@@ -62,12 +88,13 @@ def parse_schema(header: list[str], dtypes: list[str]) -> pl.Schema:
 
 
 def scan_marc21(
-    sources: str | Path | list[str] | list[Path],
+    sources: str | Path | Iterable[Path | str],
     query: str,
     *,
     header: str | list[str] | None = None,
     predicate: str | None = None,
     skip_invalid: bool = True,
+    glob: bool = False,
 ) -> pl.LazyFrame:
     """
     Read and project MARC21 files into a LazyFrame.
@@ -105,7 +132,7 @@ def scan_marc21(
     └───────────┘
     """
     reader = MarcReader(
-        prepare_sources(sources),
+        _prepare_sources(sources, use_glob=glob),
         query,
         skip_invalid=skip_invalid,
         predicate=predicate,
