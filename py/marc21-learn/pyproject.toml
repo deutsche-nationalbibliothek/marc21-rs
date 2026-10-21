@@ -89,6 +89,9 @@ lint.ignore = [
   "D103", # undocumented-public-function
 ]
 
+[tool.ruff.lint.pylint]
+max-args = 10
+
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
 
