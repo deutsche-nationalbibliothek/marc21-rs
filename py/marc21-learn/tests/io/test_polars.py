@@ -78,6 +78,95 @@ def test_scan_marc21_sources(data_dir: Path) -> None:
     assert df.is_empty()
 
 
+def test_scan_marc21_header(data_dir: Path) -> None:
+    """Tests the `sources` argument of the `scan_marc21` function."""
+    source = data_dir.joinpath("ada.mrc")
+
+    lhs = scan_marc21(source, "001, ldr.length").collect()
+    rhs = pl.from_repr("""
+    shape: (1, 2)
+    ┌───────────┬──────────┐
+    │ column_1  ┆ column_2 │
+    │ ---       ┆ ---      │
+    │ str       ┆ u32      │
+    ╞═══════════╪══════════╡
+    │ 119232022 ┆ 3612     │
+    └───────────┴──────────┘
+    """)
+
+    assert isinstance(lhs, pl.DataFrame)
+    assert isinstance(rhs, pl.DataFrame)
+    assert_frame_equal(lhs, rhs)
+
+    lhs = scan_marc21(source, "001 AS `cn`, ldr.length AS `len`").collect()
+    rhs = pl.from_repr("""
+    shape: (1, 2)
+    ┌───────────┬──────┐
+    │ cn        ┆ len  │
+    │ ---       ┆ ---  │
+    │ str       ┆ u32  │
+    ╞═══════════╪══════╡
+    │ 119232022 ┆ 3612 │
+    └───────────┴──────┘
+    """)
+
+    assert isinstance(lhs, pl.DataFrame)
+    assert isinstance(rhs, pl.DataFrame)
+    assert_frame_equal(lhs, rhs)
+
+    lhs = scan_marc21(
+        source,
+        "001, ldr.length",
+        header=["cn", "length"],
+    ).collect()
+    rhs = pl.from_repr("""
+    shape: (1, 2)
+    ┌───────────┬────────┐
+    │ cn        ┆ length │
+    │ ---       ┆ ---    │
+    │ str       ┆ u32    │
+    ╞═══════════╪════════╡
+    │ 119232022 ┆ 3612   │
+    └───────────┴────────┘
+    """)
+
+    assert isinstance(lhs, pl.DataFrame)
+    assert isinstance(rhs, pl.DataFrame)
+    assert_frame_equal(lhs, rhs)
+
+    lhs = scan_marc21(
+        source,
+        "001 AS `foo`, ldr.length AS `bar`",
+        header=["cn", "length"],
+    ).collect()
+    rhs = pl.from_repr("""
+    shape: (1, 2)
+    ┌───────────┬────────┐
+    │ cn        ┆ length │
+    │ ---       ┆ ---    │
+    │ str       ┆ u32    │
+    ╞═══════════╪════════╡
+    │ 119232022 ┆ 3612   │
+    └───────────┴────────┘
+    """)
+
+    assert isinstance(lhs, pl.DataFrame)
+    assert isinstance(rhs, pl.DataFrame)
+    assert_frame_equal(lhs, rhs)
+
+    with pytest.raises(
+        ValueError,
+        match=r"Column names must always be unique",
+    ):
+        scan_marc21(source, "001 AS `cn`, 001 AS `cn`")
+
+    with pytest.raises(
+        ValueError,
+        match=r"Column names must always be unique",
+    ):
+        scan_marc21(source, "001, ldr.length", header=["foo", "foo"])
+
+
 def test_read_marc21(data_dir: Path) -> None:
     """Test read_marc21 function."""
     lhs = read_marc21(
