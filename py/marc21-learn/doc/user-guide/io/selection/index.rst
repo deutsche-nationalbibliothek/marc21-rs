@@ -1,14 +1,14 @@
 :html_theme.sidebar_secondary.remove:
 
-.. _ref-predicates:
+.. _ref-selection:
 
-================
-Record Selection
-================
+=========
+Selection
+=========
 
 .. currentmodule:: marc21_learn.io
  
-*Record selection* is used within ``marc21-learn`` to *filter* records (and
+*Selection* is used within ``marc21-learn`` to *filter* records (and
 fields) according to specific criteria. Filtering out records that are not
 needed early on prevents unnecessary computations; in particular, it avoids
 unnecessary memory allocations. In the context of the Polars integration, the

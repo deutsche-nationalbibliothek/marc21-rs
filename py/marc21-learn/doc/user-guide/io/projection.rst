@@ -1,8 +1,8 @@
 .. _ref-projection:
 
-=================
-Record Projection
-=================
+==========
+Projection
+==========
 
 In order to perform meaningful statistical data analytics or to
 create :ref:`datasets <ref-datasets>` for machine learning, the nested data

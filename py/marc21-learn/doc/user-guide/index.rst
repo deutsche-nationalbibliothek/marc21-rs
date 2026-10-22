@@ -8,6 +8,5 @@ User Guide
    :numbered:
    :hidden:
 
-   projection
-   selection/index
+   io/index
    datasets
