@@ -20,16 +20,16 @@ In its simplest form, all fields that match the specified tag matcher* and, if
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="#035 > 5")
+	>>> df = read_marc21(filename, "001", where="#035 > 5")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="#500/1# == 3")
+	>>> df = read_marc21(filename, "001", where="#500/1# == 3")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="#400/* < 20")
+	>>> df = read_marc21(filename, "001", where="#400/* < 20")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="#099 == 0")
+	>>> df = read_marc21(filename, "001", where="#099 == 0")
 	>>> assert df.height == 1
 
 In the following example, the number of fields ``400`` is counted using the
@@ -42,6 +42,6 @@ number is equal to ``2``.
 	>>> filename = "../tests/data/ada.mrc"
 	>>> predicate = "#400/1#{ a? && 4 == 'nafr' } == 2"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate=predicate)
+	>>> df = read_marc21(filename, "001", where=predicate)
 	>>> assert df.height == 1
 

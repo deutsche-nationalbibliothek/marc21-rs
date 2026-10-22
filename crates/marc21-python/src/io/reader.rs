@@ -25,11 +25,11 @@ impl PyMarcReader {
     fn py_new(
         sources: Vec<PathBuf>,
         query: String,
-        predicate: Option<String>,
+        r#where: Option<String>,
         skip_invalid: Option<bool>,
     ) -> PyResult<Self> {
         let query = Query::new(&query).map_err(value_err)?;
-        let predicate = predicate
+        let predicate = r#where
             .map(RecordMatcher::new)
             .transpose()
             .map_err(value_err)?;

@@ -38,17 +38,17 @@ Examples:
 	>>>
 	>>> filename = "../tests/data/ada.mrc.gz"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="ldr.base_addr == 589")
+	>>> df = read_marc21(filename, "001", where="ldr.base_addr == 589")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="ldr.length >= 3600")
+	>>> df = read_marc21(filename, "001", where="ldr.length >= 3600")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="ldr.status == 'n'")
+	>>> df = read_marc21(filename, "001", where="ldr.status == 'n'")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="ldr.type == 'z'")
+	>>> df = read_marc21(filename, "001", where="ldr.type == 'z'")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="ldr.encoding != ' '")
+	>>> df = read_marc21(filename, "001", where="ldr.encoding != ' '")
 	>>> assert df.height == 1

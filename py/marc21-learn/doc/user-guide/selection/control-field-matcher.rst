@@ -20,10 +20,10 @@ specifying a comparison value.
 	>>>
 	>>> filename = "../tests/data/DUMP.mrc.gz"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="001 == '118540238'")
+	>>> df = read_marc21(filename, "001", where="001 == '118540238'")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="003 != 'DE-101'")
+	>>> df = read_marc21(filename, "001", where="003 != 'DE-101'")
 	>>> assert df.height == 0
 
 Some control fields contain fixed-length data elements. To access individual
@@ -39,7 +39,7 @@ last transaction (field ``005``, first 8 characters) is earlier than January
 	>>>
 	>>> filename = "../tests/data/DUMP.mrc.gz"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="005[0:8] <= '20250101'")
+	>>> df = read_marc21(filename, "001", where="005[0:8] <= '20250101'")
 	>>> assert df.height == 1
 
 .. note::
@@ -55,9 +55,9 @@ comes from a reference list, or not (``not in``):
 	>>>
 	>>> filename = "../tests/data/DUMP.mrc.gz"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="003 in ['DE-101', 'DE-1979']")
+	>>> df = read_marc21(filename, "001", where="003 in ['DE-101', 'DE-1979']")
 	>>> assert df.height == 7
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="005[:4] not in ['2025', '2026']")
+	>>> df = read_marc21(filename, "001", where="005[:4] not in ['2025', '2026']")
 	>>> assert df.height == 1
 

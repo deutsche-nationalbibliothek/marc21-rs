@@ -14,7 +14,7 @@ A match with a tag only exists if these digits exactly match:
 	>>> from marc21_learn.io import read_marc21
 	>>>
 	>>> filename = "../tests/data/ada.mrc.gz"
-	>>> df = read_marc21(filename, "001", predicate="001?")
+	>>> df = read_marc21(filename, "001", where="001?")
 	>>> assert df.height == 1
 
 In order to identify more than one field, a pattern-based comparison must
@@ -29,7 +29,7 @@ The middle position can contain any digit.
 	>>> from marc21_learn.io import read_marc21
 	>>>
 	>>> filename = "../tests/data/ada.mrc.gz"
-	>>> df = read_marc21(filename, "001", predicate="0.8?")
+	>>> df = read_marc21(filename, "001", where="0.8?")
 	>>> assert df.height == 1
 
 Next, a digit can also be represented by specifying a class of possible
@@ -40,7 +40,7 @@ with a ``5`` are accepted.
 	>>> from marc21_learn.io import read_marc21
 	>>>
 	>>> filename = "../tests/data/ada.mrc.gz"
-	>>> df = read_marc21(filename, "001", predicate="0[235]5?")
+	>>> df = read_marc21(filename, "001", where="0[235]5?")
 	>>> assert df.height == 1
 
 Similar to the character classes of a regular expression, several consecutive
@@ -51,7 +51,7 @@ class can consist of more than one range expression.
 	>>> from marc21_learn.io import read_marc21
 	>>>
 	>>> filename = "../tests/data/ada.mrc.gz"
-	>>> df = read_marc21(filename, "001", predicate="0[2-5]5?")
+	>>> df = read_marc21(filename, "001", where="0[2-5]5?")
 	>>> assert df.height == 1
 
 A class can also be specified in *negated form* (``^``). In this case, the
@@ -61,7 +61,7 @@ not originate from the class digits:
 	>>> from marc21_learn.io import read_marc21
 	>>>
 	>>> filename = "../tests/data/ada.mrc.gz"
-	>>> df = read_marc21(filename, "001", predicate="04[^0-3]?")
+	>>> df = read_marc21(filename, "001", where="04[^0-3]?")
 	>>> assert df.height == 0
 
 After all, every options can be used in all positions of a tag matcher. In
@@ -74,5 +74,5 @@ account.
 	>>> from marc21_learn.io import read_marc21
 	>>>
 	>>> filename = "../tests/data/ada.mrc.gz"
-	>>> df = read_marc21(filename, "001", predicate=".[^0][1-356]?")
+	>>> df = read_marc21(filename, "001", where=".[^0][1-356]?")
 	>>> assert df.height == 1

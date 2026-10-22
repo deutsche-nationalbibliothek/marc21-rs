@@ -111,7 +111,7 @@ def scan_marc21(
     query: str,
     *,
     header: str | list[str] | None = None,
-    predicate: str | None = None,
+    where: str | None = None,
     skip_invalid: bool = True,
     glob: bool = False,
 ) -> pl.LazyFrame:
@@ -165,7 +165,7 @@ def scan_marc21(
         _prepare_sources(sources, use_glob=glob),
         query,
         skip_invalid=skip_invalid,
-        predicate=predicate,
+        where=where,
     )
 
     header = _prepare_header(header, reader)
@@ -216,7 +216,7 @@ def read_marc21(
     query: str,
     *,
     header: str | list[str] | None = None,
-    predicate: str | None = None,
+    where: str | None = None,
 ) -> pl.DataFrame:
     """
     Read and project MARC21 files into a DataFrame.
@@ -244,5 +244,5 @@ def read_marc21(
         sources,
         query,
         header=header,
-        predicate=predicate,
+        where=where,
     ).collect()

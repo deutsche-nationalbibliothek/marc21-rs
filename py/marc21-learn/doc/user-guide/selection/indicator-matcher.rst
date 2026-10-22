@@ -29,10 +29,10 @@ replaced with ``#``.
 	>>> from marc21_learn.io import read_marc21
 	>>>
 	>>> filename = "../tests/data/ada.mrc.gz"
-	>>> df = read_marc21(filename, "001", predicate="400/1#?")
+	>>> df = read_marc21(filename, "001", where="400/1#?")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="400/11?")
+	>>> df = read_marc21(filename, "001", where="400/11?")
 	>>> assert df.height == 0
 
 If you need to specify more than one specific value for an indicator, the
@@ -50,25 +50,25 @@ Examples:
 	>>>
 	>>> filename = "../tests/data/minna.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="083/0.?")
+	>>> df = read_marc21(filename, "001", where="083/0.?")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="083/0[34]?")
+	>>> df = read_marc21(filename, "001", where="083/0[34]?")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="083/0[3-5]?")
+	>>> df = read_marc21(filename, "001", where="083/0[3-5]?")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="083/0[^5-9#]?")
+	>>> df = read_marc21(filename, "001", where="083/0[^5-9#]?")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="083/[30][34]?")
+	>>> df = read_marc21(filename, "001", where="083/[30][34]?")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="100/[0-9#][0-9#]?")
+	>>> df = read_marc21(filename, "001", where="100/[0-9#][0-9#]?")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="100/..?")
+	>>> df = read_marc21(filename, "001", where="100/..?")
 	>>> assert df.height == 1
 
 If you want to accept all possible indicators associated with a data field,
@@ -78,5 +78,5 @@ you could use the wildcard expression ``/*``:
 	>>>
 	>>> filename = "../tests/data/minna.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="100/*?")
+	>>> df = read_marc21(filename, "001", where="100/*?")
 	>>> assert df.height == 1

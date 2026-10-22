@@ -16,19 +16,19 @@ def test_control_field(data_dir: Path) -> None:
     """Ensures that exists predicate works correctly on control fields."""
     path = data_dir.joinpath("ada.mrc")
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="001?")
+    lhs = read_marc21(path, "001 AS `cn`", where="001?")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="003?")
+    lhs = read_marc21(path, "001 AS `cn`", where="003?")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="00[1-9]?")
+    lhs = read_marc21(path, "001 AS `cn`", where="00[1-9]?")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    df = read_marc21(path, "001 AS `cn`", predicate="006?")
+    df = read_marc21(path, "001 AS `cn`", where="006?")
     assert df.is_empty()
 
 
@@ -36,20 +36,20 @@ def test_data_field(data_dir: Path) -> None:
     """Ensures that exists predicate works correctly on data fields."""
     path = data_dir.joinpath("ada.mrc")
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="035?")
+    lhs = read_marc21(path, "001 AS `cn`", where="035?")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="400/1#?")
+    lhs = read_marc21(path, "001 AS `cn`", where="400/1#?")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="06[45]?")
+    lhs = read_marc21(path, "001 AS `cn`", where="06[45]?")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    df = read_marc21(path, "001 AS `cn`", predicate="036?")
+    df = read_marc21(path, "001 AS `cn`", where="036?")
     assert df.is_empty()
 
     with pytest.raises(ValueError, match=r"position \d:\d"):
-        read_marc21(path, "001", predicate="400/1# ?")
+        read_marc21(path, "001", where="400/1# ?")
