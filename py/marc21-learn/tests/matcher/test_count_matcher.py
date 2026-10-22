@@ -16,232 +16,232 @@ def test_eq_operator(data_dir: Path) -> None:
     """Ensures that the equal operator works correctly."""
     path = data_dir.joinpath("ada.mrc")
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#001 == 1")
+    lhs = read_marc21(path, "001 AS `cn`", where="#001 == 1")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#002 == 0")
+    lhs = read_marc21(path, "001 AS `cn`", where="#002 == 0")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#035 == 6")
+    lhs = read_marc21(path, "001 AS `cn`", where="#035 == 6")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#035{ 9? } == 3")
+    lhs = read_marc21(path, "001 AS `cn`", where="#035{ 9? } == 3")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#100/1# == 1")
+    lhs = read_marc21(path, "001 AS `cn`", where="#100/1# == 1")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#100/* == 1")
+    lhs = read_marc21(path, "001 AS `cn`", where="#100/* == 1")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#099 == 0")
+    lhs = read_marc21(path, "001 AS `cn`", where="#099 == 0")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    df = read_marc21(path, "001 AS `cn`", predicate="#001 == 2")
+    df = read_marc21(path, "001 AS `cn`", where="#001 == 2")
     assert df.is_empty()
 
     with pytest.raises(ValueError, match=r"position \d:\d"):
-        read_marc21(path, "001", predicate="#001==1")
+        read_marc21(path, "001", where="#001==1")
 
 
 def test_ne_operator(data_dir: Path) -> None:
     """Ensures that the not equal operator works correctly."""
     path = data_dir.joinpath("ada.mrc")
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#001 != 2")
+    lhs = read_marc21(path, "001 AS `cn`", where="#001 != 2")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#002 != 1")
+    lhs = read_marc21(path, "001 AS `cn`", where="#002 != 1")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#035 != 5")
+    lhs = read_marc21(path, "001 AS `cn`", where="#035 != 5")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#035{ 9? } != 0")
+    lhs = read_marc21(path, "001 AS `cn`", where="#035{ 9? } != 0")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#100/1# != 2")
+    lhs = read_marc21(path, "001 AS `cn`", where="#100/1# != 2")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#100/* != 2")
+    lhs = read_marc21(path, "001 AS `cn`", where="#100/* != 2")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#099 != 1")
+    lhs = read_marc21(path, "001 AS `cn`", where="#099 != 1")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    df = read_marc21(path, "001 AS `cn`", predicate="#001 != 1")
+    df = read_marc21(path, "001 AS `cn`", where="#001 != 1")
     assert df.is_empty()
 
     with pytest.raises(ValueError, match=r"position \d:\d"):
-        read_marc21(path, "001", predicate="#001!=1")
+        read_marc21(path, "001", where="#001!=1")
 
 
 def test_ge_operator(data_dir: Path) -> None:
     """Ensures that the greater than or equal operator works correctly."""
     path = data_dir.joinpath("ada.mrc")
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#001 >= 0")
+    lhs = read_marc21(path, "001 AS `cn`", where="#001 >= 0")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#001 >= 1")
+    lhs = read_marc21(path, "001 AS `cn`", where="#001 >= 1")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#002 >= 0")
+    lhs = read_marc21(path, "001 AS `cn`", where="#002 >= 0")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#035 >= 5")
+    lhs = read_marc21(path, "001 AS `cn`", where="#035 >= 5")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#035{ 9? } >= 2")
+    lhs = read_marc21(path, "001 AS `cn`", where="#035{ 9? } >= 2")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#100/1# >= 1")
+    lhs = read_marc21(path, "001 AS `cn`", where="#100/1# >= 1")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#100/* >= 0")
+    lhs = read_marc21(path, "001 AS `cn`", where="#100/* >= 0")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#099 >= 0")
+    lhs = read_marc21(path, "001 AS `cn`", where="#099 >= 0")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    df = read_marc21(path, "001 AS `cn`", predicate="#001 >= 2")
+    df = read_marc21(path, "001 AS `cn`", where="#001 >= 2")
     assert df.is_empty()
 
     with pytest.raises(ValueError, match=r"position \d:\d"):
-        read_marc21(path, "001", predicate="#001>=1")
+        read_marc21(path, "001", where="#001>=1")
 
 
 def test_gt_operator(data_dir: Path) -> None:
     """Ensures that the greater than operator works correctly."""
     path = data_dir.joinpath("ada.mrc")
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#001 > 0")
+    lhs = read_marc21(path, "001 AS `cn`", where="#001 > 0")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#035 > 5")
+    lhs = read_marc21(path, "001 AS `cn`", where="#035 > 5")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#035{ 9? } > 2")
+    lhs = read_marc21(path, "001 AS `cn`", where="#035{ 9? } > 2")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#100/1# > 0")
+    lhs = read_marc21(path, "001 AS `cn`", where="#100/1# > 0")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#100/* > 0")
+    lhs = read_marc21(path, "001 AS `cn`", where="#100/* > 0")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    df = read_marc21(path, "001 AS `cn`", predicate="#001 > 1")
+    df = read_marc21(path, "001 AS `cn`", where="#001 > 1")
     assert df.is_empty()
 
-    df = read_marc21(path, "001 AS `cn`", predicate="#099 > 0")
+    df = read_marc21(path, "001 AS `cn`", where="#099 > 0")
     assert df.is_empty()
 
     with pytest.raises(ValueError, match=r"position \d:\d"):
-        read_marc21(path, "001", predicate="#001>0")
+        read_marc21(path, "001", where="#001>0")
 
 
 def test_le_operator(data_dir: Path) -> None:
     """Ensures that the less than or equal operator works correctly."""
     path = data_dir.joinpath("ada.mrc")
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#001 <= 1")
+    lhs = read_marc21(path, "001 AS `cn`", where="#001 <= 1")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#001 <= 2")
+    lhs = read_marc21(path, "001 AS `cn`", where="#001 <= 2")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#002 <= 1")
+    lhs = read_marc21(path, "001 AS `cn`", where="#002 <= 1")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#035 <= 7")
+    lhs = read_marc21(path, "001 AS `cn`", where="#035 <= 7")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#035{ 9? } <= 3")
+    lhs = read_marc21(path, "001 AS `cn`", where="#035{ 9? } <= 3")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#100/1# <= 1")
+    lhs = read_marc21(path, "001 AS `cn`", where="#100/1# <= 1")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#100/* <= 3")
+    lhs = read_marc21(path, "001 AS `cn`", where="#100/* <= 3")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#099 <= 0")
+    lhs = read_marc21(path, "001 AS `cn`", where="#099 <= 0")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    df = read_marc21(path, "001 AS `cn`", predicate="#001 <= 0")
+    df = read_marc21(path, "001 AS `cn`", where="#001 <= 0")
     assert df.is_empty()
 
     with pytest.raises(ValueError, match=r"position \d:\d"):
-        read_marc21(path, "001", predicate="#001<=1")
+        read_marc21(path, "001", where="#001<=1")
 
 
 def test_lt_operator(data_dir: Path) -> None:
     """Ensures that the less than operator works correctly."""
     path = data_dir.joinpath("ada.mrc")
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#001 < 2")
+    lhs = read_marc21(path, "001 AS `cn`", where="#001 < 2")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#035 < 7")
+    lhs = read_marc21(path, "001 AS `cn`", where="#035 < 7")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#035{ 9? } < 4")
+    lhs = read_marc21(path, "001 AS `cn`", where="#035{ 9? } < 4")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#100/1# < 2")
+    lhs = read_marc21(path, "001 AS `cn`", where="#100/1# < 2")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    lhs = read_marc21(path, "001 AS `cn`", predicate="#100/* < 3")
+    lhs = read_marc21(path, "001 AS `cn`", where="#100/* < 3")
     rhs = pl.DataFrame({"cn": ["119232022"]})
     assert_frame_equal(lhs, rhs)
 
-    df = read_marc21(path, "001 AS `cn`", predicate="#001 < 1")
+    df = read_marc21(path, "001 AS `cn`", where="#001 < 1")
     assert df.is_empty()
 
-    df = read_marc21(path, "001 AS `cn`", predicate="#035 < 6")
+    df = read_marc21(path, "001 AS `cn`", where="#035 < 6")
     assert df.is_empty()
 
-    df = read_marc21(path, "001 AS `cn`", predicate="#099 > 0")
+    df = read_marc21(path, "001 AS `cn`", where="#099 > 0")
     assert df.is_empty()
 
     with pytest.raises(ValueError, match=r"position \d:\d"):
-        read_marc21(path, "001", predicate="#001<2")
+        read_marc21(path, "001", where="#001<2")

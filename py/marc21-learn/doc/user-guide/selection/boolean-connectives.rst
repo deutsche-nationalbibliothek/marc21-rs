@@ -23,5 +23,5 @@ has higher precedence than the ``||`` operator, which may require parentheses
 	...     && 079.q == 's' \
 	... "
 	>>>
-	>>> df = read_marc21(filename, "001", predicate=predicate)
+	>>> df = read_marc21(filename, "001", where=predicate)
 	>>> assert df.height == 1

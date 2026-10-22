@@ -53,7 +53,7 @@ subfield named ``u`` exists:
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="079.a?")
+	>>> df = read_marc21(filename, "001", where="079.a?")
 	>>> assert df.height == 1
 
 By *negating* the expression, you can check whether a field does *not* contain
@@ -63,10 +63,10 @@ a specific subfield:
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="079{ !u? }")
+	>>> df = read_marc21(filename, "001", where="079{ !u? }")
 	>>> assert df.height == 0
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="!079.x?")
+	>>> df = read_marc21(filename, "001", where="!079.x?")
 	>>> assert df.height == 1
 
 By specifying a *code class*, you can check whether one of the specified
@@ -77,10 +77,10 @@ contains either the subfield ``p`` or ``q``:
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="079{ [pq]? }")
+	>>> df = read_marc21(filename, "001", where="079{ [pq]? }")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="079.[pq]?")
+	>>> df = read_marc21(filename, "001", where="079.[pq]?")
 	>>> assert df.height == 1
 
 
@@ -103,10 +103,10 @@ Example:
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="079{ #u > 2 }")
+	>>> df = read_marc21(filename, "001", where="079{ #u > 2 }")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="079{ #[aq-w] >= 7 }")
+	>>> df = read_marc21(filename, "001", where="079{ #[aq-w] >= 7 }")
 	>>> assert df.height == 1
 
 
@@ -123,10 +123,10 @@ value. The available comparison operators are ``==``, ``!=``, ``=``, ``>``,
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="075{ b == 'piz' }")
+	>>> df = read_marc21(filename, "001", where="075{ b == 'piz' }")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="075.b != 'piz' ")
+	>>> df = read_marc21(filename, "001", where="075.b != 'piz' ")
 	>>> assert df.height == 1
 
 Optionally, the statement can be quantified using the universal quantifier
@@ -145,10 +145,10 @@ Examples:
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="079{ ALL u >= 'k' }")
+	>>> df = read_marc21(filename, "001", where="079{ ALL u >= 'k' }")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="079{ ANY u != 'k' }")
+	>>> df = read_marc21(filename, "001", where="079{ ANY u != 'k' }")
 	>>> assert df.height == 1
 
 
@@ -167,10 +167,10 @@ contained in the specified subfield value. Internally, the matcher uses the
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="400/1#{ a =? 'Augusta' }")
+	>>> df = read_marc21(filename, "001", where="400/1#{ a =? 'Augusta' }")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="400/1#.a =? 'Augusta'")
+	>>> df = read_marc21(filename, "001", where="400/1#.a =? 'Augusta'")
 	>>> assert df.height == 1
 
 
@@ -182,7 +182,7 @@ one of the specified phrases appears in the specified subfield.
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="400/1#.a =? ['Hate', 'Love']")
+	>>> df = read_marc21(filename, "001", where="400/1#.a =? ['Hate', 'Love']")
 	>>> assert df.height == 1
 
 To check whether a substring (or a list of substrings) is *not* contained, use
@@ -192,7 +192,7 @@ the ``!?`` operator:
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="400/1#.a !? 'Curie'")
+	>>> df = read_marc21(filename, "001", where="400/1#.a !? 'Curie'")
 	>>> assert df.height == 1
 
 Finally, the statements can be quantified using the universal quantifier
@@ -207,7 +207,7 @@ Example:
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="035{ ALL [az] =? 'DE-' }")
+	>>> df = read_marc21(filename, "001", where="035{ ALL [az] =? 'DE-' }")
 	>>> assert df.height == 1
 
 
@@ -226,13 +226,13 @@ instead of ``in``.
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="075{ b in ['p', 's', 'u'] }")
+	>>> df = read_marc21(filename, "001", where="075{ b in ['p', 's', 'u'] }")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="075.b in ['p', 's', 'u']")
+	>>> df = read_marc21(filename, "001", where="075.b in ['p', 's', 'u']")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="075.b not in ['b', 'f', 'g']")
+	>>> df = read_marc21(filename, "001", where="075.b not in ['b', 'f', 'g']")
 	>>> assert df.height == 1
 
 The statements can be quantified using the universal quantifier ``ALL`` or the
@@ -243,7 +243,7 @@ of a data field matcher.
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="079{ ALL u in ['w', 'k', 'v'] }")
+	>>> df = read_marc21(filename, "001", where="079{ ALL u in ['w', 'k', 'v'] }")
 	>>> assert df.height == 1
 
 
@@ -261,16 +261,16 @@ does *not* begin with a prefix, the ``!^`` operator is used.
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="400/1#{ a =^ 'Love' }")
+	>>> df = read_marc21(filename, "001", where="400/1#{ a =^ 'Love' }")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="400/1#.a =^ 'Lovelace'")
+	>>> df = read_marc21(filename, "001", where="400/1#.a =^ 'Lovelace'")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="400/1#.a =^ ['Love', 'Hate']")
+	>>> df = read_marc21(filename, "001", where="400/1#.a =^ ['Love', 'Hate']")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="400/1#.a !^ 'Hate'")
+	>>> df = read_marc21(filename, "001", where="400/1#.a !^ 'Hate'")
 	>>> assert df.height == 1
 
 The statements can be quantified using the universal quantifier ``ALL`` or the
@@ -285,7 +285,7 @@ Example:
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="400/1#{ ALL d =^ '1815' }")
+	>>> df = read_marc21(filename, "001", where="400/1#{ ALL d =^ '1815' }")
 	>>> assert df.height == 1
 
 
@@ -303,16 +303,16 @@ end with a suffix, the ``!$`` operator is used.
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="400/1#{ a =$ 'Ada' }")
+	>>> df = read_marc21(filename, "001", where="400/1#{ a =$ 'Ada' }")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="400/1#.a =$ 'Ada'")
+	>>> df = read_marc21(filename, "001", where="400/1#.a =$ 'Ada'")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="400/1#.a =$ ['Ada', 'Bob']")
+	>>> df = read_marc21(filename, "001", where="400/1#.a =$ ['Ada', 'Bob']")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="400/1#.a !$ 'Ada'")
+	>>> df = read_marc21(filename, "001", where="400/1#.a !$ 'Ada'")
 	>>> assert df.height == 1
 
 
@@ -328,7 +328,7 @@ Example:
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="400/1#{ ALL d =$ '1852' }")
+	>>> df = read_marc21(filename, "001", where="400/1#{ ALL d =$ '1852' }")
 	>>> assert df.height == 1
 
 
@@ -357,16 +357,16 @@ Examples:
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="400/1#{ a =* 'Kong, Ada' }")
+	>>> df = read_marc21(filename, "001", where="400/1#{ a =* 'Kong, Ada' }")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="400/1#.a =* 'Kong, Ada'")
+	>>> df = read_marc21(filename, "001", where="400/1#.a =* 'Kong, Ada'")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="400/1#{ a =* 'Hateless, Ada' }")
+	>>> df = read_marc21(filename, "001", where="400/1#{ a =* 'Hateless, Ada' }")
 	>>> assert df.height == 0
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="400/1#{ a !* 'Hateless, Ada' }")
+	>>> df = read_marc21(filename, "001", where="400/1#{ a !* 'Hateless, Ada' }")
 	>>> assert df.height == 1
 
 The statements can be quantified using the universal quantifier ``ALL`` or the
@@ -408,19 +408,19 @@ Examples:
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate=r"400/1#{ d =~ '^\\d{4}-\\d{4}$' }")
+	>>> df = read_marc21(filename, "001", where=r"400/1#{ d =~ '^\\d{4}-\\d{4}$' }")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate=r"400/1#.d =~ '^\\d{4}-\\d{4}'")
+	>>> df = read_marc21(filename, "001", where=r"400/1#.d =~ '^\\d{4}-\\d{4}'")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate=r"075.b =~ ['^[bfg]$', '^piz$']")
+	>>> df = read_marc21(filename, "001", where=r"075.b =~ ['^[bfg]$', '^piz$']")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate=r"ALL 075.2 =~ '^gnd(gen|spec)$'")
+	>>> df = read_marc21(filename, "001", where=r"ALL 075.2 =~ '^gnd(gen|spec)$'")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate=r"075.b !~ '^[bfg]$'")
+	>>> df = read_marc21(filename, "001", where=r"075.b !~ '^[bfg]$'")
 	>>> assert df.height == 1
 
 The statements can be quantified using the universal quantifier  ``ALL`` or
@@ -435,7 +435,7 @@ Example:
 	>>>
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate=r"079{ ALL u =~ '^[a-z]$' }")
+	>>> df = read_marc21(filename, "001", where=r"079{ ALL u =~ '^[a-z]$' }")
 	>>> assert df.height == 1
 
 
@@ -459,15 +459,15 @@ the following is true: There exists a subfield ``b`` with the value ``p``
 	>>> filename = "../tests/data/ada.mrc"
 	>>>
 	>>> predicate = "075{ b == 'p' && 2 == 'gndgen' }"
-	>>> df = read_marc21(filename, "001", predicate=predicate)
+	>>> df = read_marc21(filename, "001", where=predicate)
 	>>> assert df.height == 1
 	>>>
 	>>> predicate = "079{ q == 'f' || q == 's' }"
-	>>> df = read_marc21(filename, "001", predicate=predicate)
+	>>> df = read_marc21(filename, "001", where=predicate)
 	>>> assert df.height == 1
 	>>>
 	>>> predicate = "075{ b == 'p' && 2 == 'gndspec' }"
-	>>> df = read_marc21(filename, "001", predicate=predicate)
+	>>> df = read_marc21(filename, "001", where=predicate)
 	>>> assert df.height == 0
 
 
@@ -484,5 +484,5 @@ that parentheses may be necessary:
 	...     || (b == 'p' && 2 == 'gndgen') \
 	... }"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate=predicate)
+	>>> df = read_marc21(filename, "001", where=predicate)
 	>>> assert df.height == 1

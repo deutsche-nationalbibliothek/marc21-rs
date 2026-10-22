@@ -7,7 +7,7 @@ class MarcReader:
         sources: str | list[str] | Path | list[Path],
         query: str,
         *,
-        predicate: str | None = None,
+        where: str | None = None,
         skip_invalid: bool = True,
     ) -> None: ...
     def names(self) -> list[str]: ...

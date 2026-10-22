@@ -17,7 +17,7 @@ def test_length(data_dir: Path) -> None:
     predicate = "ldr.length == 3612"
     query = "001 AS `cn`"
 
-    lhs = read_marc21(path, query, predicate=predicate)
+    lhs = read_marc21(path, query, where=predicate)
     rhs = pl.DataFrame({"cn": ["119232022"]})
 
     assert_frame_equal(lhs, rhs)
@@ -29,7 +29,7 @@ def test_status(data_dir: Path) -> None:
     predicate = "ldr.status == 'n'"
     query = "001 AS `cn`"
 
-    lhs = read_marc21(path, query, predicate=predicate)
+    lhs = read_marc21(path, query, where=predicate)
     rhs = pl.DataFrame({"cn": ["119232022"]})
 
     assert_frame_equal(lhs, rhs)
@@ -41,7 +41,7 @@ def test_type(data_dir: Path) -> None:
     predicate = "ldr.type == 'z'"
     query = "001 AS `cn`"
 
-    lhs = read_marc21(path, query, predicate=predicate)
+    lhs = read_marc21(path, query, where=predicate)
     rhs = pl.DataFrame({"cn": ["119232022"]})
 
     assert_frame_equal(lhs, rhs)
@@ -53,7 +53,7 @@ def test_encoding(data_dir: Path) -> None:
     predicate = "ldr.encoding == 'a'"
     query = "001 AS `cn`"
 
-    lhs = read_marc21(path, query, predicate=predicate)
+    lhs = read_marc21(path, query, where=predicate)
     rhs = pl.DataFrame({"cn": ["119232022"]})
 
     assert_frame_equal(lhs, rhs)
@@ -65,7 +65,7 @@ def test_base_addr(data_dir: Path) -> None:
     predicate = "ldr.base_addr == 589"
     query = "001 AS `cn`"
 
-    lhs = read_marc21(path, query, predicate=predicate)
+    lhs = read_marc21(path, query, where=predicate)
     rhs = pl.DataFrame({"cn": ["119232022"]})
 
     assert_frame_equal(lhs, rhs)
@@ -76,16 +76,16 @@ def test_eq_operator(data_dir: Path) -> None:
     path = data_dir.joinpath("ada.mrc")
     query = "001 AS `cn`"
 
-    lhs = read_marc21(path, query, predicate="ldr.encoding == 'a'")
+    lhs = read_marc21(path, query, where="ldr.encoding == 'a'")
     assert_frame_equal(lhs, pl.DataFrame({"cn": ["119232022"]}))
 
-    lhs = read_marc21(path, query, predicate="ldr.encoding == 'b'")
+    lhs = read_marc21(path, query, where="ldr.encoding == 'b'")
     assert lhs.is_empty()
 
-    lhs = read_marc21(path, query, predicate="ldr.base_addr == 589")
+    lhs = read_marc21(path, query, where="ldr.base_addr == 589")
     assert_frame_equal(lhs, pl.DataFrame({"cn": ["119232022"]}))
 
-    lhs = read_marc21(path, query, predicate="ldr.base_addr == 123")
+    lhs = read_marc21(path, query, where="ldr.base_addr == 123")
     assert lhs.is_empty()
 
 
@@ -94,16 +94,16 @@ def test_ne_operator(data_dir: Path) -> None:
     path = data_dir.joinpath("ada.mrc")
     query = "001 AS `cn`"
 
-    lhs = read_marc21(path, query, predicate="ldr.encoding != 'b'")
+    lhs = read_marc21(path, query, where="ldr.encoding != 'b'")
     assert_frame_equal(lhs, pl.DataFrame({"cn": ["119232022"]}))
 
-    lhs = read_marc21(path, query, predicate="ldr.encoding != 'a'")
+    lhs = read_marc21(path, query, where="ldr.encoding != 'a'")
     assert lhs.is_empty()
 
-    lhs = read_marc21(path, query, predicate="ldr.base_addr != 123")
+    lhs = read_marc21(path, query, where="ldr.base_addr != 123")
     assert_frame_equal(lhs, pl.DataFrame({"cn": ["119232022"]}))
 
-    lhs = read_marc21(path, query, predicate="ldr.base_addr != 589")
+    lhs = read_marc21(path, query, where="ldr.base_addr != 589")
     assert lhs.is_empty()
 
 
@@ -112,16 +112,16 @@ def test_lt_operator(data_dir: Path) -> None:
     path = data_dir.joinpath("ada.mrc")
     query = "001 AS `cn`"
 
-    lhs = read_marc21(path, query, predicate="ldr.encoding < 'b'")
+    lhs = read_marc21(path, query, where="ldr.encoding < 'b'")
     assert_frame_equal(lhs, pl.DataFrame({"cn": ["119232022"]}))
 
-    lhs = read_marc21(path, query, predicate="ldr.encoding < 'a'")
+    lhs = read_marc21(path, query, where="ldr.encoding < 'a'")
     assert lhs.is_empty()
 
-    lhs = read_marc21(path, query, predicate="ldr.base_addr < 590")
+    lhs = read_marc21(path, query, where="ldr.base_addr < 590")
     assert_frame_equal(lhs, pl.DataFrame({"cn": ["119232022"]}))
 
-    lhs = read_marc21(path, query, predicate="ldr.base_addr < 589")
+    lhs = read_marc21(path, query, where="ldr.base_addr < 589")
     assert lhs.is_empty()
 
 
@@ -130,22 +130,22 @@ def test_le_operator(data_dir: Path) -> None:
     path = data_dir.joinpath("ada.mrc")
     query = "001 AS `cn`"
 
-    lhs = read_marc21(path, query, predicate="ldr.status <= 'n'")
+    lhs = read_marc21(path, query, where="ldr.status <= 'n'")
     assert_frame_equal(lhs, pl.DataFrame({"cn": ["119232022"]}))
 
-    lhs = read_marc21(path, query, predicate="ldr.status <= 'o'")
+    lhs = read_marc21(path, query, where="ldr.status <= 'o'")
     assert_frame_equal(lhs, pl.DataFrame({"cn": ["119232022"]}))
 
-    lhs = read_marc21(path, query, predicate="ldr.status <= 'm'")
+    lhs = read_marc21(path, query, where="ldr.status <= 'm'")
     assert lhs.is_empty()
 
-    lhs = read_marc21(path, query, predicate="ldr.base_addr <= 590")
+    lhs = read_marc21(path, query, where="ldr.base_addr <= 590")
     assert_frame_equal(lhs, pl.DataFrame({"cn": ["119232022"]}))
 
-    lhs = read_marc21(path, query, predicate="ldr.base_addr <= 589")
+    lhs = read_marc21(path, query, where="ldr.base_addr <= 589")
     assert_frame_equal(lhs, pl.DataFrame({"cn": ["119232022"]}))
 
-    lhs = read_marc21(path, query, predicate="ldr.base_addr <= 588")
+    lhs = read_marc21(path, query, where="ldr.base_addr <= 588")
     assert lhs.is_empty()
 
 
@@ -154,16 +154,16 @@ def test_gt_operator(data_dir: Path) -> None:
     path = data_dir.joinpath("ada.mrc")
     query = "001 AS `cn`"
 
-    lhs = read_marc21(path, query, predicate="ldr.status > 'm'")
+    lhs = read_marc21(path, query, where="ldr.status > 'm'")
     assert_frame_equal(lhs, pl.DataFrame({"cn": ["119232022"]}))
 
-    lhs = read_marc21(path, query, predicate="ldr.status > 'n'")
+    lhs = read_marc21(path, query, where="ldr.status > 'n'")
     assert lhs.is_empty()
 
-    lhs = read_marc21(path, query, predicate="ldr.length > 3611")
+    lhs = read_marc21(path, query, where="ldr.length > 3611")
     assert_frame_equal(lhs, pl.DataFrame({"cn": ["119232022"]}))
 
-    lhs = read_marc21(path, query, predicate="ldr.length > 3612")
+    lhs = read_marc21(path, query, where="ldr.length > 3612")
     assert lhs.is_empty()
 
 
@@ -172,20 +172,20 @@ def test_ge_operator(data_dir: Path) -> None:
     path = data_dir.joinpath("ada.mrc")
     query = "001 AS `cn`"
 
-    lhs = read_marc21(path, query, predicate="ldr.status >= 'm'")
+    lhs = read_marc21(path, query, where="ldr.status >= 'm'")
     assert_frame_equal(lhs, pl.DataFrame({"cn": ["119232022"]}))
 
-    lhs = read_marc21(path, query, predicate="ldr.status >= 'n'")
+    lhs = read_marc21(path, query, where="ldr.status >= 'n'")
     assert_frame_equal(lhs, pl.DataFrame({"cn": ["119232022"]}))
 
-    lhs = read_marc21(path, query, predicate="ldr.status >= 'o'")
+    lhs = read_marc21(path, query, where="ldr.status >= 'o'")
     assert lhs.is_empty()
 
-    lhs = read_marc21(path, query, predicate="ldr.base_addr >= 588")
+    lhs = read_marc21(path, query, where="ldr.base_addr >= 588")
     assert_frame_equal(lhs, pl.DataFrame({"cn": ["119232022"]}))
 
-    lhs = read_marc21(path, query, predicate="ldr.base_addr >= 589")
+    lhs = read_marc21(path, query, where="ldr.base_addr >= 589")
     assert_frame_equal(lhs, pl.DataFrame({"cn": ["119232022"]}))
 
-    lhs = read_marc21(path, query, predicate="ldr.base_addr >= 590")
+    lhs = read_marc21(path, query, where="ldr.base_addr >= 590")
     assert lhs.is_empty()

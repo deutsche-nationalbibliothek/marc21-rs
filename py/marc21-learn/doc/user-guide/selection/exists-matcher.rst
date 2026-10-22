@@ -21,8 +21,8 @@ Examples:
 	>>>
 	>>> filename = "../tests/data/ada.mrc.gz"
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="024/7#?")
+	>>> df = read_marc21(filename, "001", where="024/7#?")
 	>>> assert df.height == 1
 	>>>
-	>>> df = read_marc21(filename, "001", predicate="0[45]5/*?")
+	>>> df = read_marc21(filename, "001", where="0[45]5/*?")
 	>>> assert df.height == 0
