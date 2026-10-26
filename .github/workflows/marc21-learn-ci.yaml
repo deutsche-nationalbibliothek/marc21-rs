@@ -68,7 +68,7 @@ jobs:
       - name: Run ruff
         run: uv run ruff check --output-format=github .
 
-  ty:
+  check:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -86,8 +86,8 @@ jobs:
       - name: Setup project environment
         run: uv sync --locked --all-extras --dev
         
-      - name: Run ty
-        run: uv run --all-groups ty check --output-format=github .
+      - name: Run check
+        run: uv --preview-features check-command check --all-groups --all-packages
 
   audit:
     runs-on: ubuntu-latest
@@ -116,10 +116,10 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     needs:
-      - test
-      - ruff
       - audit
-      - ty
+      - check
+      - ruff
+      - test
     steps:
       - name: Check for cancelled jobs
         if: ${{ contains(needs.*.result, 'cancelled') }}
