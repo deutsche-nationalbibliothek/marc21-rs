@@ -278,3 +278,65 @@ fn count_filter_normalization_nfkd() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn count_allow_list() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .args(["-A", data_dir().join("ALLOW1.txt").to_str().unwrap()])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("2\n"))
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .args(["-A", data_dir().join("ALLOW0.txt").to_str().unwrap()])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("0\n"))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
+
+#[test]
+fn count_deny_list() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .args(["-D", data_dir().join("ALLOW1.txt").to_str().unwrap()])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("5\n"))
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .args(["-D", data_dir().join("ALLOW0.txt").to_str().unwrap()])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("7\n"))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}

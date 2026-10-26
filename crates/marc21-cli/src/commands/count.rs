@@ -1,6 +1,7 @@
 use std::io::Write;
 use std::path::PathBuf;
 
+use crate::filter_list::FilterList;
 use crate::prelude::*;
 
 /// Prints the number of records in the input data.
@@ -26,6 +27,7 @@ impl Count {
         let mut progress = Progress::new(self.common.progress);
         let options = MatchOptions::from(&self.filter_opts);
         let filter = self.filter_opts.filter()?;
+        let filter_list = FilterList::try_from(&self.filter_opts)?;
         let mut count = 0;
         let mut line = 0;
 
@@ -52,6 +54,10 @@ impl Count {
                     }
                     Ok(ref record) => {
                         progress.update(false);
+
+                        if !filter_list.check(record) {
+                            continue;
+                        }
 
                         if let Some(ref m) = filter
                             && !m.is_match(record, &options)

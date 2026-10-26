@@ -6,6 +6,7 @@ use bstr::ByteSlice;
 use marc21::{QueryOptions, Value};
 
 use crate::commands::select::QuoteStyle;
+use crate::filter_list::FilterList;
 use crate::prelude::*;
 
 /// Compute a frequency table of values
@@ -100,6 +101,7 @@ pub(crate) struct Frequency {
 impl Frequency {
     pub(crate) fn execute(self) -> CliResult {
         let mut progress = Progress::new(self.common.progress);
+        let filter_list = FilterList::try_from(&self.filter_opts)?;
         let filter = self.filter_opts.filter()?;
         let mut count = 0;
         let mut line = 0;
@@ -161,6 +163,10 @@ impl Frequency {
                     }
                     Ok(ref record) => {
                         progress.update(false);
+
+                        if !filter_list.check(record) {
+                            continue;
+                        }
 
                         if let Some(ref m) = filter
                             && !m.is_match(record, match_options)

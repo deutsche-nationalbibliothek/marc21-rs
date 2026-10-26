@@ -4,6 +4,7 @@ use clap::value_parser;
 use marc21::matcher::RecordMatcher;
 use unicode_normalization::UnicodeNormalization;
 
+use crate::filter_list::FilterListBuilder;
 use crate::prelude::*;
 use crate::unicode::NormalizationForm;
 
@@ -33,6 +34,63 @@ pub(crate) struct Filter {
     )]
     strsim_threshold: u8,
 
+    /// Ignores all records that are *not* explicitly listed in one of
+    /// the allow lists.
+    ///
+    /// Allow lists in CSV format (*.csv, *.csv.gz) and plain text
+    /// format (*.txt, *.txt.gz) are supported. Unless otherwise
+    /// specified (`--filter-list-source`), the values from the allow
+    /// lists are compared against the control number from control
+    /// field 001. When processing CSV files, the column labeled `cn`
+    /// is selected by default for reading the values. A different
+    /// column name can be specified using the `--filter-list-column`
+    /// option. Note that, if the allow list is empty, all records are
+    /// blocked. With more than one allow list, the filter list is made
+    /// up of all partial lists.
+    #[arg(long = "allow-list", short = 'A', value_name = "filename")]
+    allow: Vec<PathBuf>,
+
+    /// Ignores all records that are listed in one of the deny lists.
+    ///
+    /// Deny lists in CSV format (*.csv, *.csv.gz) and plain text
+    /// format (*.txt, *.txt.gz) are supported. Unless otherwise
+    /// specified (`--filter-list-source`), the values from the allow
+    /// lists are compared against the control number from control
+    /// field 001. When processing CSV files, the column labeled `cn`
+    /// is selected by default for reading the values. A different
+    /// column name can be specified using the `--filter-list-column`
+    /// option. Note that, if the deny list is empty, no records are
+    /// discarded. With more than one deny list, the filter list is
+    /// made up of all partial lists.
+    #[arg(long = "deny-list", short = 'D', value_name = "filename")]
+    deny: Vec<PathBuf>,
+
+    /// Specify a path expression to determine the values to be
+    /// compared against Allow/Deny lists. By default the control
+    /// number of a record (field 001) is used.
+    #[arg(
+        long,
+        value_name = "path",
+        default_value = "001",
+        hide_default_value = true
+    )]
+    filter_list_source: String,
+
+    /// Specify the column name from which the values for an Allow/Deny
+    /// list are sourced in CSV format. By default, the column name
+    /// `cn` is used.
+    #[arg(long, default_value = "cn", hide_default_value = true)]
+    filter_list_column: Option<String>,
+
+    /// Transliterate all query/path expression into the specified
+    /// Unicode normal form.
+    #[arg(
+        long,
+        env = "MARC21_QUERY_NORMALIZATION",
+        value_name = "form"
+    )]
+    query_normalization: Option<NormalizationForm>,
+
     /// Transliterate the given filter expression into the specified
     /// Unicode normal form.
     #[arg(
@@ -50,7 +108,7 @@ pub(crate) struct Filter {
     path: Vec<PathBuf>,
 
     /// Write output to FILENAME instead of stdout.
-    #[arg(short, long, value_name = "FILENAME")]
+    #[arg(short, long, value_name = "filename")]
     output: Option<PathBuf>,
 
     #[command(flatten, next_help_heading = "Common options")]
@@ -65,6 +123,14 @@ impl Filter {
         let mut output = WriterBuilder::default()
             .with_compression(self.common.compression)
             .try_from_path_or_stdout(self.output)?;
+
+        let filter_list = FilterListBuilder::new()
+            .with_normalization(&self.query_normalization)
+            .with_source(self.filter_list_source)
+            .with_column(self.filter_list_column)
+            .with_allow(self.allow)
+            .with_deny(self.deny)
+            .build()?;
 
         let options = MatchOptions::default()
             .strsim_threshold(self.strsim_threshold as f64 / 100f64);
@@ -99,6 +165,10 @@ impl Filter {
                     Ok(ref record) => {
                         progress.update(false);
                         line += 1;
+
+                        if !filter_list.check(record) {
+                            continue;
+                        }
 
                         let mut result =
                             matcher.is_match(record, &options);

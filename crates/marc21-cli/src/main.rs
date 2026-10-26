@@ -10,6 +10,7 @@ use crate::cli::{Args, Command};
 mod cli;
 mod commands;
 mod error;
+mod filter_list;
 pub(crate) mod prelude;
 mod progress;
 mod unicode;

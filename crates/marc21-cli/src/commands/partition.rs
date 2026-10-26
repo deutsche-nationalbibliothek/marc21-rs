@@ -5,6 +5,7 @@ use std::path::PathBuf;
 
 use marc21::QueryOptions;
 
+use crate::filter_list::FilterList;
 use crate::prelude::*;
 use crate::utils::Writer;
 
@@ -58,6 +59,7 @@ impl Partition {
         let mut progress = Progress::new(self.common.progress);
         let options = QueryOptions::from(&self.filter_opts);
         let match_options = options.match_options();
+        let filter_list = FilterList::try_from(&self.filter_opts)?;
         let filter = self.filter_opts.filter()?;
         let mut count = 0;
         let mut line = 0;
@@ -96,6 +98,10 @@ impl Partition {
                     }
                     Ok(ref record) => {
                         progress.update(false);
+
+                        if !filter_list.check(record) {
+                            continue;
+                        }
 
                         if let Some(ref m) = filter
                             && !m.is_match(record, match_options)

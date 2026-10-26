@@ -3,6 +3,7 @@ use std::path::PathBuf;
 
 use clap::ValueEnum;
 
+use crate::filter_list::FilterList;
 use crate::prelude::*;
 use crate::utils::sha256;
 
@@ -59,6 +60,7 @@ impl Dedup {
     pub(crate) fn execute(self) -> CliResult {
         let mut progress = Progress::new(self.common.progress);
         let options = MatchOptions::from(&self.filter_opts);
+        let filter_list = FilterList::try_from(&self.filter_opts)?;
         let filter = self.filter_opts.filter()?;
         let mut seen = HashSet::new();
         let mut count = 0;
@@ -87,6 +89,10 @@ impl Dedup {
                     }
                     Ok(ref record) => {
                         progress.update(false);
+
+                        if !filter_list.check(record) {
+                            continue;
+                        }
 
                         if let Some(ref m) = filter
                             && !m.is_match(record, &options)

@@ -1,6 +1,7 @@
 use std::error::Error;
 use std::fmt::{self, Display};
 
+use marc21::ParsePathError;
 use marc21::io::ReadMarcError;
 use marc21::matcher::ParseMatcherError;
 
@@ -66,6 +67,12 @@ impl From<csv::Error> for CliError {
 impl From<ParseMatcherError> for CliError {
     fn from(e: ParseMatcherError) -> Self {
         Self::Parse(format!("invalid matcher {e}"))
+    }
+}
+
+impl From<ParsePathError> for CliError {
+    fn from(e: ParsePathError) -> Self {
+        Self::Parse(format!("invalid path: {e}"))
     }
 }
 

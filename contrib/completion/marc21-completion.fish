@@ -50,26 +50,42 @@ complete -c marc21 -n "__fish_marc21_needs_command" -f -a "build-completion" -d 
 complete -c marc21 -n "__fish_marc21_needs_command" -f -a "build-man"
 complete -c marc21 -n "__fish_marc21_using_subcommand check" -s R -l rule-set -d 'A set of rules to be checked' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand check" -s o -l output -d 'Write output to <filename> instead of stdout' -r -F
-complete -c marc21 -n "__fish_marc21_using_subcommand check" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand check" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand check" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand check" -l query-normalization -d 'Transliterate all query/path expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand check" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
 nfkd\t''
 nfc\t''
 nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand check" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand check" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand check" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand check" -s A -l allow-list -d 'Ignores all records that are *not* explicitly listed in one of the allow lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand check" -s D -l deny-list -d 'Ignores all records that are listed in one of the deny lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand check" -l filter-list-source -d 'Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand check" -l filter-list-column -d 'Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name `cn` is used' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand check" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand check" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand check" -s p -l progress -d 'If set, show a progress bar'
-complete -c marc21 -n "__fish_marc21_using_subcommand check" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand check" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -l tee -d 'Write to another output file at the same time' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s o -l output -d 'Write output to <filename> instead of stdout' -r -F
-complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand concat" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand concat" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand concat" -l query-normalization -d 'Transliterate all query/path expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
 nfkd\t''
 nfc\t''
 nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand concat" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand concat" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s A -l allow-list -d 'Ignores all records that are *not* explicitly listed in one of the allow lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s D -l deny-list -d 'Ignores all records that are listed in one of the deny lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand concat" -l filter-list-source -d 'Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand concat" -l filter-list-column -d 'Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name `cn` is used' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s a -l append -d 'Append to the given file, do not overwrite'
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
@@ -77,71 +93,119 @@ complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s p -l progress -
 complete -c marc21 -n "__fish_marc21_using_subcommand concat" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand cat" -l tee -d 'Write to another output file at the same time' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand cat" -s o -l output -d 'Write output to <filename> instead of stdout' -r -F
-complete -c marc21 -n "__fish_marc21_using_subcommand cat" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand cat" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand cat" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand cat" -l query-normalization -d 'Transliterate all query/path expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand cat" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
 nfkd\t''
 nfc\t''
 nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand cat" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand cat" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand cat" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand cat" -s A -l allow-list -d 'Ignores all records that are *not* explicitly listed in one of the allow lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand cat" -s D -l deny-list -d 'Ignores all records that are listed in one of the deny lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand cat" -l filter-list-source -d 'Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand cat" -l filter-list-column -d 'Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name `cn` is used' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand cat" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand cat" -s a -l append -d 'Append to the given file, do not overwrite'
 complete -c marc21 -n "__fish_marc21_using_subcommand cat" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand cat" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand cat" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand count" -s o -l output -d 'Write output to FILENAME instead of stdout' -r -F
-complete -c marc21 -n "__fish_marc21_using_subcommand count" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand count" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand count" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand count" -l query-normalization -d 'Transliterate all query/path expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand count" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
 nfkd\t''
 nfc\t''
 nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand count" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand count" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand count" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand count" -s A -l allow-list -d 'Ignores all records that are *not* explicitly listed in one of the allow lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand count" -s D -l deny-list -d 'Ignores all records that are listed in one of the deny lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand count" -l filter-list-source -d 'Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand count" -l filter-list-column -d 'Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name `cn` is used' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand count" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand count" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand count" -s p -l progress -d 'If set, show a progress bar'
-complete -c marc21 -n "__fish_marc21_using_subcommand count" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand count" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -s o -l output -d 'Write output to FILENAME instead of stdout' -r -F
-complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -l query-normalization -d 'Transliterate all query/path expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
 nfkd\t''
 nfc\t''
 nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -s A -l allow-list -d 'Ignores all records that are *not* explicitly listed in one of the allow lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -s D -l deny-list -d 'Ignores all records that are listed in one of the deny lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -l filter-list-source -d 'Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -l filter-list-column -d 'Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name `cn` is used' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -s p -l progress -d 'If set, show a progress bar'
-complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand cnt" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -l strategy -d 'Use the given strategy to determine duplicate records' -r -f -a "cn\t''
 hash\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -s o -l output -d 'Write output to FILENAME instead of stdout' -r -F
-complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -l query-normalization -d 'Transliterate all query/path expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
 nfkd\t''
 nfc\t''
 nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -s A -l allow-list -d 'Ignores all records that are *not* explicitly listed in one of the allow lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -s D -l deny-list -d 'Ignores all records that are listed in one of the deny lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -l filter-list-source -d 'Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -l filter-list-column -d 'Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name `cn` is used' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand dedup" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand describe" -s o -l output -d 'Write output to <path> instead of stdout' -r -F
-complete -c marc21 -n "__fish_marc21_using_subcommand describe" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand describe" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand describe" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand describe" -l query-normalization -d 'Transliterate all query/path expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand describe" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
 nfkd\t''
 nfc\t''
 nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand describe" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand describe" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand describe" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand describe" -s A -l allow-list -d 'Ignores all records that are *not* explicitly listed in one of the allow lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand describe" -s D -l deny-list -d 'Ignores all records that are listed in one of the deny lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand describe" -l filter-list-source -d 'Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand describe" -l filter-list-column -d 'Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name `cn` is used' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand describe" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand describe" -l tsv -d 'Write output tab-separated (TSV)'
 complete -c marc21 -n "__fish_marc21_using_subcommand describe" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand describe" -s p -l progress -d 'If set, show a progress bar'
-complete -c marc21 -n "__fish_marc21_using_subcommand describe" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand describe" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -l strsim-threshold -d 'The minimum score for string similarity comparisons (0 <= score <= 100)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s A -l allow-list -d 'Ignores all records that are *not* explicitly listed in one of the allow lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s D -l deny-list -d 'Ignores all records that are listed in one of the deny lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand filter" -l filter-list-source -d 'Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand filter" -l filter-list-column -d 'Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name `cn` is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand filter" -l query-normalization -d 'Transliterate all query/path expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -l filter-normalization -d 'Transliterate the given filter expression into the specified Unicode normal form' -r -f -a "nfd\t''
 nfkd\t''
 nfc\t''
@@ -151,7 +215,7 @@ complete -c marc21 -n "__fish_marc21_using_subcommand filter" -l compression -d 
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s v -l invert-match -d 'Inverts the specified filter criterion, which means that only records that do not match the criterion are returned'
 complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s p -l progress -d 'If set, show a progress bar'
-complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand filter" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s t -l threshold -d 'Ignore rows with a frequency less than <n>' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s n -l num -d 'Limit result to the <n> most frequent subfield values' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l separator -d 'Sets the separator used for squashing of repeated subfield values into a single value. Note that it\'s possible to use the empty string as a separator' -r
@@ -161,13 +225,21 @@ non-numeric\t''
 never\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s H -l header -d 'Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s o -l output -d 'Write output to <path> instead of stdout' -r -F
-complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l query-normalization -d 'Transliterate all query/path expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
 nfkd\t''
 nfc\t''
 nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s A -l allow-list -d 'Ignores all records that are *not* explicitly listed in one of the allow lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s D -l deny-list -d 'Ignores all records that are listed in one of the deny lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l filter-list-source -d 'Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l filter-list-column -d 'Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name `cn` is used' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s u -l unique -d 'This flag ensures that all values generated for a record are counted only once in the frequency table'
 complete -c marc21 -n "__fish_marc21_using_subcommand frequency" -s r -l reverse -d 'Sort results in reverse order'
@@ -186,13 +258,21 @@ non-numeric\t''
 never\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s H -l header -d 'Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s o -l output -d 'Write output to <path> instead of stdout' -r -F
-complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l query-normalization -d 'Transliterate all query/path expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
 nfkd\t''
 nfc\t''
 nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s A -l allow-list -d 'Ignores all records that are *not* explicitly listed in one of the allow lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s D -l deny-list -d 'Ignores all records that are listed in one of the deny lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l filter-list-source -d 'Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l filter-list-column -d 'Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name `cn` is used' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s u -l unique -d 'This flag ensures that all values generated for a record are counted only once in the frequency table'
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s r -l reverse -d 'Sort results in reverse order'
@@ -204,26 +284,42 @@ complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s p -l progress -d 
 complete -c marc21 -n "__fish_marc21_using_subcommand freq" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -s n -l max-values -d 'Maximum number of values to show per subfield' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -s o -l output -d 'Write output to FILENAME instead of stdout' -r -F
-complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -l query-normalization -d 'Transliterate all query/path expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
 nfkd\t''
 nfc\t''
 nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -s A -l allow-list -d 'Ignores all records that are *not* explicitly listed in one of the allow lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -s D -l deny-list -d 'Ignores all records that are listed in one of the deny lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -l filter-list-source -d 'Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -l filter-list-column -d 'Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name `cn` is used' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -s p -l progress -d 'If set, show a progress bar'
-complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand glimpse" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand grep" -l or -d 'Search for multiple, possibly overlapping, regexes in a single search. The regular expression consists of the main pattern and all other pattern passed by this option. The regex matches if a subfield is found that matches against at least one pattern' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand grep" -s o -l output -d 'Write output to <filename> instead of stdout' -r -F
-complete -c marc21 -n "__fish_marc21_using_subcommand grep" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand grep" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand grep" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -l query-normalization -d 'Transliterate all query/path expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand grep" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
 nfkd\t''
 nfc\t''
 nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -s A -l allow-list -d 'Ignores all records that are *not* explicitly listed in one of the allow lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -s D -l deny-list -d 'Ignores all records that are listed in one of the deny lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -l filter-list-source -d 'Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand grep" -l filter-list-column -d 'Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name `cn` is used' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand grep" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand grep" -s i -l ignore-case -d 'If this flag is set, matching will be performed case insensitive'
 complete -c marc21 -n "__fish_marc21_using_subcommand grep" -s v -l invert-match -d 'Inverts the specified regular expression, which means that only records that do not match the criterion are returned'
@@ -231,31 +327,47 @@ complete -c marc21 -n "__fish_marc21_using_subcommand grep" -s s -l skip-invalid
 complete -c marc21 -n "__fish_marc21_using_subcommand grep" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand grep" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand hash" -s o -l output -d 'Write output to FILENAME instead of stdout' -r -F
-complete -c marc21 -n "__fish_marc21_using_subcommand hash" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand hash" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand hash" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand hash" -l query-normalization -d 'Transliterate all query/path expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand hash" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
 nfkd\t''
 nfc\t''
 nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand hash" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand hash" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand hash" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand hash" -s A -l allow-list -d 'Ignores all records that are *not* explicitly listed in one of the allow lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand hash" -s D -l deny-list -d 'Ignores all records that are listed in one of the deny lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand hash" -l filter-list-source -d 'Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand hash" -l filter-list-column -d 'Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name `cn` is used' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand hash" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand hash" -l tsv -d 'Write output tab-separated (TSV)'
 complete -c marc21 -n "__fish_marc21_using_subcommand hash" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand hash" -s p -l progress -d 'If set, show a progress bar'
-complete -c marc21 -n "__fish_marc21_using_subcommand hash" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand hash" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand invalid" -s o -l output -d 'Write output to FILENAME instead of stdout' -r -F
 complete -c marc21 -n "__fish_marc21_using_subcommand invalid" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand invalid" -s p -l progress -d 'If set, show a progress bar'
 complete -c marc21 -n "__fish_marc21_using_subcommand invalid" -s h -l help -d 'Print help'
 complete -c marc21 -n "__fish_marc21_using_subcommand partition" -s t -l template -d 'A template for naming the individual partitions. The placeholder `{}` is replaced by the value of the path expression. If the template ends with the suffix `.gz`, the partitions are compressed in Gzip format' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand partition" -s o -l output -d 'Write output to <path>; by default all partitions are written to the current working directory' -r -F
-complete -c marc21 -n "__fish_marc21_using_subcommand partition" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand partition" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand partition" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand partition" -l query-normalization -d 'Transliterate all query/path expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand partition" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
 nfkd\t''
 nfc\t''
 nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand partition" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand partition" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand partition" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand partition" -s A -l allow-list -d 'Ignores all records that are *not* explicitly listed in one of the allow lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand partition" -s D -l deny-list -d 'Ignores all records that are listed in one of the deny lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand partition" -l filter-list-source -d 'Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand partition" -l filter-list-column -d 'Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name `cn` is used' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand partition" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand partition" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand partition" -s p -l progress -d 'If set, show a progress bar'
@@ -267,30 +379,46 @@ nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand print" -l format -d 'Choose between the standard output format (`default`) and the Mnemonic MARC Text File Format (`mnemonic`). If no explicit selection is made, the `mnemonic` format is used for file extensions `.mrk` and `.mrk.gz`; otherwise, the output is in the standard format' -r -f -a "mnemonic\t''
 default\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand print" -s o -l output -d 'Write output to <path> instead of stdout' -r -F
-complete -c marc21 -n "__fish_marc21_using_subcommand print" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand print" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand print" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand print" -l query-normalization -d 'Transliterate all query/path expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand print" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
 nfkd\t''
 nfc\t''
 nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand print" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand print" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand print" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand print" -s A -l allow-list -d 'Ignores all records that are *not* explicitly listed in one of the allow lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand print" -s D -l deny-list -d 'Ignores all records that are listed in one of the deny lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand print" -l filter-list-source -d 'Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand print" -l filter-list-column -d 'Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name `cn` is used' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand print" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand print" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand print" -s p -l progress -d 'If set, show a progress bar'
-complete -c marc21 -n "__fish_marc21_using_subcommand print" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand print" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand sample" -l seed -d 'Initialize the RNG with a seed value to get deterministic random record' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s o -l output -d 'Write output to FILENAME instead of stdout' -r -F
-complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand sample" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand sample" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand sample" -l query-normalization -d 'Transliterate all query/path expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand sample" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
 nfkd\t''
 nfc\t''
 nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand sample" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand sample" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s A -l allow-list -d 'Ignores all records that are *not* explicitly listed in one of the allow lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s D -l deny-list -d 'Ignores all records that are listed in one of the deny lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand sample" -l filter-list-source -d 'Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand sample" -l filter-list-column -d 'Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name `cn` is used' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand sample" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s p -l progress -d 'If set, show a progress bar'
-complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand sample" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -l separator -d 'Sets the separator used for squashing of repeated subfield values into a single value. Note that it\'s possible to use the empty string as a separator' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -l quote-style -d 'The quoting style to use when writing CSV/TSV' -r -f -a "always\t''
 necessary\t''
@@ -298,13 +426,21 @@ non-numeric\t''
 never\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -s H -l header -d 'Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed. Note that This option takes precedence over column names specified using an `AS` clause' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -s o -l output -d 'Write output to <path> instead of stdout' -r -F
-complete -c marc21 -n "__fish_marc21_using_subcommand select" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand select" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand select" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -l query-normalization -d 'Transliterate all query/path expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
 nfkd\t''
 nfc\t''
 nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -s A -l allow-list -d 'Ignores all records that are *not* explicitly listed in one of the allow lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -s D -l deny-list -d 'Ignores all records that are listed in one of the deny lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -l filter-list-source -d 'Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand select" -l filter-list-column -d 'Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name `cn` is used' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -l squash -d 'Whether to squash all values of a repeated subfield into a single value or not. The separator can be specified by the `--separator` option'
 complete -c marc21 -n "__fish_marc21_using_subcommand select" -l merge -d 'If set, all values of a column are merged into a single value. The separator can be specified by the `--separator`'
@@ -317,26 +453,42 @@ complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -s c -l config -r
 complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -l format -r -f -a "turtle\t''
 nt\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -s o -l output -d 'Write output to <filename> instead of stdout' -r -F
-complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -l query-normalization -d 'Transliterate all query/path expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
 nfkd\t''
 nfc\t''
 nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -s A -l allow-list -d 'Ignores all records that are *not* explicitly listed in one of the allow lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -s D -l deny-list -d 'Ignores all records that are listed in one of the deny lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -l filter-list-source -d 'Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -l filter-list-column -d 'Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name `cn` is used' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -s p -l progress -d 'If set, show a progress bar'
-complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -s h -l help -d 'Print help'
+complete -c marc21 -n "__fish_marc21_using_subcommand skosify" -s h -l help -d 'Print help (see more with \'--help\')'
 complete -c marc21 -n "__fish_marc21_using_subcommand split" -l filename -d 'Filename template ("{}" is replaced by the chunk number)' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand split" -s o -l outdir -d 'Write partitions into <path>' -r -F
-complete -c marc21 -n "__fish_marc21_using_subcommand split" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand split" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
-complete -c marc21 -n "__fish_marc21_using_subcommand split" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand split" -l query-normalization -d 'Transliterate all query/path expression into the specified Unicode normal form' -r -f -a "nfd\t''
+nfkd\t''
+nfc\t''
+nfkc\t''"
 complete -c marc21 -n "__fish_marc21_using_subcommand split" -l filter-normalization -d 'Transliterate the given filter or query expression into the specified Unicode normal form' -r -f -a "nfd\t''
 nfkd\t''
 nfc\t''
 nfkc\t''"
+complete -c marc21 -n "__fish_marc21_using_subcommand split" -s l -l limit -d 'Limit the result to first <n> records (a limit value `0` means no limit)' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand split" -l strsim-threshold -d 'The minimum score for string similarity comparisons. The value must be between 0 and 100' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand split" -l where -d 'An expression for filtering records' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand split" -s A -l allow-list -d 'Ignores all records that are *not* explicitly listed in one of the allow lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand split" -s D -l deny-list -d 'Ignores all records that are listed in one of the deny lists' -r -F
+complete -c marc21 -n "__fish_marc21_using_subcommand split" -l filter-list-source -d 'Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used' -r
+complete -c marc21 -n "__fish_marc21_using_subcommand split" -l filter-list-column -d 'Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name `cn` is used' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand split" -l compression -d 'Specify compression level' -r
 complete -c marc21 -n "__fish_marc21_using_subcommand split" -s s -l skip-invalid -d 'Skip invalid records that can\'t be decoded'
 complete -c marc21 -n "__fish_marc21_using_subcommand split" -s p -l progress -d 'If set, show a progress bar'
