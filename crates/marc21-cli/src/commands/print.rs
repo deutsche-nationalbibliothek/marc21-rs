@@ -7,6 +7,7 @@ use clap::ValueEnum;
 use marc21::Field;
 use unicode_normalization::UnicodeNormalization;
 
+use crate::filter_list::FilterList;
 use crate::prelude::*;
 use crate::unicode::NormalizationForm;
 use crate::unicode::NormalizationForm::*;
@@ -136,6 +137,7 @@ impl Print {
         let mut progress = Progress::new(self.common.progress);
         let format = self.format.unwrap_or(Format::from(&self.output));
         let options = MatchOptions::from(&self.filter_opts);
+        let filter_list = FilterList::try_from(&self.filter_opts)?;
         let filter = self.filter_opts.filter()?;
         let mut count = 0;
         let mut line = 0;
@@ -164,6 +166,10 @@ impl Print {
                     Ok(record) => {
                         progress.update(false);
                         let record = StringRecord::try_from(record)?;
+
+                        if !filter_list.check(&record) {
+                            continue;
+                        }
 
                         if let Some(ref m) = filter
                             && !m.is_match(&record, &options)

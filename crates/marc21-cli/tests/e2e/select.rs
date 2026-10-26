@@ -618,3 +618,58 @@ fn select_leader_level() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn select_allow_list() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "-s", "001,075{ b | 2 == 'gndgen' }"])
+        .args([
+            "-A",
+            data_dir().join("ALLOW1.csv.gz").to_str().unwrap(),
+        ])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    let expected = r#"column_1,column_2
+118540238,p
+118607626,p
+"#;
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(expected))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}
+
+#[test]
+fn select_deny_list() -> TestResult {
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["select", "-s", "001,075{ b | 2 == 'gndgen' }"])
+        .args([
+            "-D",
+            data_dir().join("ALLOW1.csv.gz").to_str().unwrap(),
+        ])
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .assert();
+
+    let expected = r#"column_1,column_2
+118572121,p
+118632477,p
+040992020,u
+040992918,u
+040993396,u
+"#;
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq(expected))
+        .stderr(predicates::str::is_empty());
+
+    Ok(())
+}

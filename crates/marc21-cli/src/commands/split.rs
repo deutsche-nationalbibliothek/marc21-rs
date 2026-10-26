@@ -4,6 +4,7 @@ use std::path::PathBuf;
 
 use clap::value_parser;
 
+use crate::filter_list::FilterList;
 use crate::prelude::*;
 use crate::utils::Writer;
 
@@ -55,6 +56,7 @@ impl Split {
     pub(crate) fn execute(self) -> CliResult {
         let mut progress = Progress::new(self.common.progress);
         let options = MatchOptions::from(&self.filter_opts);
+        let filter_list = FilterList::try_from(&self.filter_opts)?;
         let filter = self.filter_opts.filter()?;
         let mut chunk: u32 = 0;
         let mut count: u32 = 0;
@@ -85,6 +87,10 @@ impl Split {
                     }
                     Ok(ref record) => {
                         progress.update(false);
+
+                        if !filter_list.check(record) {
+                            continue;
+                        }
 
                         if let Some(ref m) = filter
                             && !m.is_match(record, &options)

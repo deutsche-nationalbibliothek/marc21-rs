@@ -384,3 +384,715 @@ fn filter_invert_match() -> TestResult {
 
     Ok(())
 }
+
+#[test]
+fn filter_allow_list_txt() -> TestResult {
+    let temp_dir = TempDir::new()?;
+    let output = temp_dir.child("out.mrc");
+
+    // ALLOW1 contains Goethe and Schiller
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s"])
+        .args(["-A", data_dir().join("ALLOW1.txt").to_str().unwrap()])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("2\n"))
+        .stderr(predicates::str::is_empty());
+
+    // Gzip
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s"])
+        .args([
+            "-A",
+            data_dir().join("ALLOW1.txt.gz").to_str().unwrap(),
+        ])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("2\n"))
+        .stderr(predicates::str::is_empty());
+
+    // --filter-list-source
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s", "--filter-list-source", "001"])
+        .args(["-A", data_dir().join("ALLOW1.txt").to_str().unwrap()])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("2\n"))
+        .stderr(predicates::str::is_empty());
+
+    // ALLOW0 is empty
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s"])
+        .args(["-A", data_dir().join("ALLOW0.txt").to_str().unwrap()])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("0\n"))
+        .stderr(predicates::str::is_empty());
+
+    // ALLOW0 / Gzip
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s"])
+        .args([
+            "-A",
+            data_dir().join("ALLOW0.txt.gz").to_str().unwrap(),
+        ])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("0\n"))
+        .stderr(predicates::str::is_empty());
+
+    temp_dir.close()?;
+    Ok(())
+}
+
+#[test]
+fn filter_deny_list_txt() -> TestResult {
+    let temp_dir = TempDir::new()?;
+    let output = temp_dir.child("out.mrc");
+
+    // ALLOW1 contains Goethe and Schiller
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s"])
+        .args(["-D", data_dir().join("ALLOW1.txt").to_str().unwrap()])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("5\n"))
+        .stderr(predicates::str::is_empty());
+
+    // Gzip
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s"])
+        .args([
+            "-D",
+            data_dir().join("ALLOW1.txt.gz").to_str().unwrap(),
+        ])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("5\n"))
+        .stderr(predicates::str::is_empty());
+
+    // --filter-list-source
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s", "--filter-list-source", "001"])
+        .args(["-D", data_dir().join("ALLOW1.txt").to_str().unwrap()])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("5\n"))
+        .stderr(predicates::str::is_empty());
+
+    // ALLOW0 is empty
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s"])
+        .args(["-D", data_dir().join("ALLOW0.txt").to_str().unwrap()])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("7\n"))
+        .stderr(predicates::str::is_empty());
+
+    // ALLOW0 / Gzip
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s"])
+        .args([
+            "-D",
+            data_dir().join("ALLOW0.txt.gz").to_str().unwrap(),
+        ])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("7\n"))
+        .stderr(predicates::str::is_empty());
+
+    temp_dir.close()?;
+    Ok(())
+}
+
+#[test]
+fn filter_allow_list_csv() -> TestResult {
+    let temp_dir = TempDir::new()?;
+    let output = temp_dir.child("out.mrc");
+
+    // ALLOW1 contains Goethe and Schiller
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s"])
+        .args(["-A", data_dir().join("ALLOW1.csv").to_str().unwrap()])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("2\n"))
+        .stderr(predicates::str::is_empty());
+
+    // Gzip
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s"])
+        .args([
+            "-A",
+            data_dir().join("ALLOW1.csv.gz").to_str().unwrap(),
+        ])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("2\n"))
+        .stderr(predicates::str::is_empty());
+
+    // --filter-list-source
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s", "--filter-list-source", "001"])
+        .args(["-A", data_dir().join("ALLOW1.csv").to_str().unwrap()])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("2\n"))
+        .stderr(predicates::str::is_empty());
+
+    // --filter-list-column
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s", "--filter-list-column", "cn2"])
+        .args(["-A", data_dir().join("ALLOW2.csv").to_str().unwrap()])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("2\n"))
+        .stderr(predicates::str::is_empty());
+
+    // invalid filter-list-column
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s", "--filter-list-column", "cn3"])
+        .args(["-A", data_dir().join("ALLOW2.csv").to_str().unwrap()])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .failure()
+        .code(1)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::starts_with(
+            "error: could not find column with name 'cn3'",
+        ));
+
+    // ALLOW0 is empty
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s"])
+        .args(["-A", data_dir().join("ALLOW0.csv").to_str().unwrap()])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("0\n"))
+        .stderr(predicates::str::is_empty());
+
+    // ALLOW0 / Gzip
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s"])
+        .args([
+            "-A",
+            data_dir().join("ALLOW0.csv.gz").to_str().unwrap(),
+        ])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("0\n"))
+        .stderr(predicates::str::is_empty());
+
+    temp_dir.close()?;
+    Ok(())
+}
+
+#[test]
+fn filter_deny_list_csv() -> TestResult {
+    let temp_dir = TempDir::new()?;
+    let output = temp_dir.child("out.mrc");
+
+    // ALLOW1 contains Goethe and Schiller
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s"])
+        .args(["-D", data_dir().join("ALLOW1.csv").to_str().unwrap()])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("5\n"))
+        .stderr(predicates::str::is_empty());
+
+    // Gzip
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s"])
+        .args([
+            "-D",
+            data_dir().join("ALLOW1.csv.gz").to_str().unwrap(),
+        ])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("5\n"))
+        .stderr(predicates::str::is_empty());
+
+    // --filter-list-source
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s", "--filter-list-source", "001"])
+        .args(["-D", data_dir().join("ALLOW1.csv").to_str().unwrap()])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("5\n"))
+        .stderr(predicates::str::is_empty());
+
+    // --filter-list-column
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s", "--filter-list-column", "cn2"])
+        .args(["-D", data_dir().join("ALLOW2.csv").to_str().unwrap()])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("5\n"))
+        .stderr(predicates::str::is_empty());
+
+    // invalid filter-list-column
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s", "--filter-list-column", "cn3"])
+        .args(["-D", data_dir().join("ALLOW2.csv").to_str().unwrap()])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .failure()
+        .code(1)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::starts_with(
+            "error: could not find column with name 'cn3'",
+        ));
+
+    // ALLOW0 is empty
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s"])
+        .args(["-D", data_dir().join("ALLOW0.csv").to_str().unwrap()])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("7\n"))
+        .stderr(predicates::str::is_empty());
+
+    // ALLOW0 / Gzip
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["filter", "-s"])
+        .args([
+            "-D",
+            data_dir().join("ALLOW0.csv.gz").to_str().unwrap(),
+        ])
+        .arg("001?")
+        .arg(data_dir().join("DUMP.mrc.gz"))
+        .args(["-o", output.to_str().unwrap()])
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::str::is_empty())
+        .stderr(predicates::str::is_empty());
+
+    let mut cmd = marc21_cmd();
+    let assert = cmd
+        .args(["count", "-s"])
+        .arg(output.to_str().unwrap())
+        .assert();
+
+    assert
+        .success()
+        .code(0)
+        .stdout(predicates::ord::eq("7\n"))
+        .stderr(predicates::str::is_empty());
+
+    temp_dir.close()?;
+    Ok(())
+}

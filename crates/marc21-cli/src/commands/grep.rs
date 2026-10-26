@@ -3,6 +3,7 @@ use std::path::PathBuf;
 use marc21::Field;
 use regex::bytes::RegexSetBuilder;
 
+use crate::filter_list::FilterList;
 use crate::prelude::*;
 
 /// Search for records whose values match a pattern
@@ -55,6 +56,7 @@ impl Grep {
     pub(crate) fn execute(self) -> CliResult {
         let mut progress = Progress::new(self.common.progress);
         let options = MatchOptions::from(&self.filter_opts);
+        let filter_list = FilterList::try_from(&self.filter_opts)?;
         let filter = self.filter_opts.filter()?;
         let mut count = 0;
         let mut line = 0;
@@ -90,6 +92,10 @@ impl Grep {
                     }
                     Ok(ref record) => {
                         progress.update(false);
+
+                        if !filter_list.check(record) {
+                            continue;
+                        }
 
                         if let Some(ref m) = filter
                             && !m.is_match(record, &options)

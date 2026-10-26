@@ -2,6 +2,7 @@ use std::path::PathBuf;
 
 use crate::commands::check::rule::RuleSet;
 use crate::commands::check::writer::Writer;
+use crate::filter_list::FilterList;
 use crate::prelude::*;
 
 mod level;
@@ -36,6 +37,7 @@ pub(crate) struct Check {
 
 impl Check {
     pub(crate) fn execute(self) -> CliResult {
+        let filter_list = FilterList::try_from(&self.filter_opts)?;
         let nf = self.filter_opts.filter_normalization.as_ref();
         let mut rulesets = self
             .rules
@@ -78,6 +80,10 @@ impl Check {
                     }
                     Ok(ref record) => {
                         progress.update(false);
+
+                        if !filter_list.check(record) {
+                            continue;
+                        }
 
                         if let Some(ref m) = filter
                             && !m.is_match(record, &options)

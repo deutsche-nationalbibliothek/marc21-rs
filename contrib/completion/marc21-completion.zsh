@@ -34,18 +34,25 @@ _arguments "${_arguments_options[@]}" : \
 '*--rule-set=[A set of rules to be checked]:rule-set:_files' \
 '-o+[Write output to <filename> instead of stdout]:filename:_files' \
 '--output=[Write output to <filename> instead of stdout]:filename:_files' \
+'--query-normalization=[Transliterate all query/path expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
-'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'*-A+[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*--allow-list=[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*-D+[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'*--deny-list=[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'--filter-list-source=[Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used]:path:_default' \
+'--filter-list-column=[Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name \`cn\` is used]:FILTER_LIST_COLUMN:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
 '-p[If set, show a progress bar]' \
 '--progress[If set, show a progress bar]' \
-'-h[Print help]' \
-'--help[Print help]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
 '*::input -- MARC21 files to be processed as input. If no file is specified, or if the filename is `-`, the data is read from standard input (`stdin`) by default:_files' \
 && ret=0
 ;;
@@ -54,11 +61,18 @@ _arguments "${_arguments_options[@]}" : \
 '--tee=[Write to another output file at the same time]:path:_files' \
 '-o+[Write output to <filename> instead of stdout]:filename:_files' \
 '--output=[Write output to <filename> instead of stdout]:filename:_files' \
+'--query-normalization=[Transliterate all query/path expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
-'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'*-A+[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*--allow-list=[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*-D+[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'*--deny-list=[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'--filter-list-source=[Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used]:path:_default' \
+'--filter-list-column=[Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name \`cn\` is used]:FILTER_LIST_COLUMN:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-a[Append to the given file, do not overwrite]' \
 '--append[Append to the given file, do not overwrite]' \
@@ -76,11 +90,18 @@ _arguments "${_arguments_options[@]}" : \
 '--tee=[Write to another output file at the same time]:path:_files' \
 '-o+[Write output to <filename> instead of stdout]:filename:_files' \
 '--output=[Write output to <filename> instead of stdout]:filename:_files' \
+'--query-normalization=[Transliterate all query/path expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
-'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'*-A+[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*--allow-list=[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*-D+[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'*--deny-list=[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'--filter-list-source=[Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used]:path:_default' \
+'--filter-list-column=[Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name \`cn\` is used]:FILTER_LIST_COLUMN:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-a[Append to the given file, do not overwrite]' \
 '--append[Append to the given file, do not overwrite]' \
@@ -97,18 +118,25 @@ _arguments "${_arguments_options[@]}" : \
 _arguments "${_arguments_options[@]}" : \
 '-o+[Write output to FILENAME instead of stdout]:FILENAME:_files' \
 '--output=[Write output to FILENAME instead of stdout]:FILENAME:_files' \
+'--query-normalization=[Transliterate all query/path expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
-'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'*-A+[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*--allow-list=[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*-D+[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'*--deny-list=[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'--filter-list-source=[Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used]:path:_default' \
+'--filter-list-column=[Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name \`cn\` is used]:FILTER_LIST_COLUMN:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
 '-p[If set, show a progress bar]' \
 '--progress[If set, show a progress bar]' \
-'-h[Print help]' \
-'--help[Print help]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
 '*::path:_files' \
 && ret=0
 ;;
@@ -116,18 +144,25 @@ _arguments "${_arguments_options[@]}" : \
 _arguments "${_arguments_options[@]}" : \
 '-o+[Write output to FILENAME instead of stdout]:FILENAME:_files' \
 '--output=[Write output to FILENAME instead of stdout]:FILENAME:_files' \
+'--query-normalization=[Transliterate all query/path expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
-'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'*-A+[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*--allow-list=[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*-D+[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'*--deny-list=[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'--filter-list-source=[Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used]:path:_default' \
+'--filter-list-column=[Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name \`cn\` is used]:FILTER_LIST_COLUMN:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
 '-p[If set, show a progress bar]' \
 '--progress[If set, show a progress bar]' \
-'-h[Print help]' \
-'--help[Print help]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
 '*::path:_files' \
 && ret=0
 ;;
@@ -136,11 +171,18 @@ _arguments "${_arguments_options[@]}" : \
 '--strategy=[Use the given strategy to determine duplicate records]:strategy:(cn hash)' \
 '-o+[Write output to FILENAME instead of stdout]:path:_files' \
 '--output=[Write output to FILENAME instead of stdout]:path:_files' \
+'--query-normalization=[Transliterate all query/path expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
-'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'*-A+[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*--allow-list=[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*-D+[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'*--deny-list=[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'--filter-list-source=[Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used]:path:_default' \
+'--filter-list-column=[Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name \`cn\` is used]:FILTER_LIST_COLUMN:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
@@ -155,19 +197,26 @@ _arguments "${_arguments_options[@]}" : \
 _arguments "${_arguments_options[@]}" : \
 '-o+[Write output to <path> instead of stdout]:path:_files' \
 '--output=[Write output to <path> instead of stdout]:path:_files' \
+'--query-normalization=[Transliterate all query/path expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
-'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'*-A+[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*--allow-list=[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*-D+[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'*--deny-list=[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'--filter-list-source=[Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used]:path:_default' \
+'--filter-list-column=[Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name \`cn\` is used]:FILTER_LIST_COLUMN:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '--tsv[Write output tab-separated (TSV)]' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
 '-p[If set, show a progress bar]' \
 '--progress[If set, show a progress bar]' \
-'-h[Print help]' \
-'--help[Print help]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
 '*::path:_files' \
 && ret=0
 ;;
@@ -176,9 +225,16 @@ _arguments "${_arguments_options[@]}" : \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons (0 <= score <= 100)]:n:_default' \
+'*-A+[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*--allow-list=[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*-D+[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'*--deny-list=[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'--filter-list-source=[Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used]:path:_default' \
+'--filter-list-column=[Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name \`cn\` is used]:FILTER_LIST_COLUMN:_default' \
+'--query-normalization=[Transliterate all query/path expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '--filter-normalization=[Transliterate the given filter expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
-'-o+[Write output to FILENAME instead of stdout]:FILENAME:_files' \
-'--output=[Write output to FILENAME instead of stdout]:FILENAME:_files' \
+'-o+[Write output to FILENAME instead of stdout]:filename:_files' \
+'--output=[Write output to FILENAME instead of stdout]:filename:_files' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
@@ -186,8 +242,8 @@ _arguments "${_arguments_options[@]}" : \
 '--invert-match[Inverts the specified filter criterion, which means that only records that do not match the criterion are returned]' \
 '-p[If set, show a progress bar]' \
 '--progress[If set, show a progress bar]' \
-'-h[Print help]' \
-'--help[Print help]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
 ':filter -- An expression for filtering records:_default' \
 '*::path:_files' \
 && ret=0
@@ -204,11 +260,18 @@ _arguments "${_arguments_options[@]}" : \
 '--header=[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
 '-o+[Write output to <path> instead of stdout]:path:_files' \
 '--output=[Write output to <path> instead of stdout]:path:_files' \
+'--query-normalization=[Transliterate all query/path expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
-'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'*-A+[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*--allow-list=[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*-D+[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'*--deny-list=[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'--filter-list-source=[Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used]:path:_default' \
+'--filter-list-column=[Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name \`cn\` is used]:FILTER_LIST_COLUMN:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-u[This flag ensures that all values generated for a record are counted only once in the frequency table]' \
 '--unique[This flag ensures that all values generated for a record are counted only once in the frequency table]' \
@@ -239,11 +302,18 @@ _arguments "${_arguments_options[@]}" : \
 '--header=[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed]:header:_default' \
 '-o+[Write output to <path> instead of stdout]:path:_files' \
 '--output=[Write output to <path> instead of stdout]:path:_files' \
+'--query-normalization=[Transliterate all query/path expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
-'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'*-A+[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*--allow-list=[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*-D+[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'*--deny-list=[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'--filter-list-source=[Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used]:path:_default' \
+'--filter-list-column=[Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name \`cn\` is used]:FILTER_LIST_COLUMN:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-u[This flag ensures that all values generated for a record are counted only once in the frequency table]' \
 '--unique[This flag ensures that all values generated for a record are counted only once in the frequency table]' \
@@ -268,18 +338,25 @@ _arguments "${_arguments_options[@]}" : \
 '--max-values=[Maximum number of values to show per subfield]:n:_default' \
 '-o+[Write output to FILENAME instead of stdout]:FILENAME:_files' \
 '--output=[Write output to FILENAME instead of stdout]:FILENAME:_files' \
+'--query-normalization=[Transliterate all query/path expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
-'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'*-A+[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*--allow-list=[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*-D+[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'*--deny-list=[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'--filter-list-source=[Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used]:path:_default' \
+'--filter-list-column=[Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name \`cn\` is used]:FILTER_LIST_COLUMN:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
 '-p[If set, show a progress bar]' \
 '--progress[If set, show a progress bar]' \
-'-h[Print help]' \
-'--help[Print help]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
 ':path -- A path expression:_default' \
 '*::input:_files' \
 && ret=0
@@ -289,11 +366,18 @@ _arguments "${_arguments_options[@]}" : \
 '*--or=[Search for multiple, possibly overlapping, regexes in a single search. The regular expression consists of the main pattern and all other pattern passed by this option. The regex matches if a subfield is found that matches against at least one pattern]:pattern:_default' \
 '-o+[Write output to <filename> instead of stdout]:filename:_files' \
 '--output=[Write output to <filename> instead of stdout]:filename:_files' \
+'--query-normalization=[Transliterate all query/path expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
-'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'*-A+[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*--allow-list=[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*-D+[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'*--deny-list=[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'--filter-list-source=[Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used]:path:_default' \
+'--filter-list-column=[Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name \`cn\` is used]:FILTER_LIST_COLUMN:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-i[If this flag is set, matching will be performed case insensitive]' \
 '--ignore-case[If this flag is set, matching will be performed case insensitive]' \
@@ -313,19 +397,26 @@ _arguments "${_arguments_options[@]}" : \
 _arguments "${_arguments_options[@]}" : \
 '-o+[Write output to FILENAME instead of stdout]:FILENAME:_files' \
 '--output=[Write output to FILENAME instead of stdout]:FILENAME:_files' \
+'--query-normalization=[Transliterate all query/path expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
-'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'*-A+[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*--allow-list=[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*-D+[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'*--deny-list=[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'--filter-list-source=[Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used]:path:_default' \
+'--filter-list-column=[Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name \`cn\` is used]:FILTER_LIST_COLUMN:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '--tsv[Write output tab-separated (TSV)]' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
 '-p[If set, show a progress bar]' \
 '--progress[If set, show a progress bar]' \
-'-h[Print help]' \
-'--help[Print help]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
 '*::path:_files' \
 && ret=0
 ;;
@@ -347,11 +438,18 @@ _arguments "${_arguments_options[@]}" : \
 '--template=[A template for naming the individual partitions. The placeholder \`{}\` is replaced by the value of the path expression. If the template ends with the suffix \`.gz\`, the partitions are compressed in Gzip format]:template:_default' \
 '-o+[Write output to <path>; by default all partitions are written to the current working directory]:path:_files' \
 '--output=[Write output to <path>; by default all partitions are written to the current working directory]:path:_files' \
+'--query-normalization=[Transliterate all query/path expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
-'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'*-A+[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*--allow-list=[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*-D+[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'*--deny-list=[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'--filter-list-source=[Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used]:path:_default' \
+'--filter-list-column=[Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name \`cn\` is used]:FILTER_LIST_COLUMN:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
@@ -369,18 +467,25 @@ _arguments "${_arguments_options[@]}" : \
 '--format=[Choose between the standard output format (\`default\`) and the Mnemonic MARC Text File Format (\`mnemonic\`). If no explicit selection is made, the \`mnemonic\` format is used for file extensions \`.mrk\` and \`.mrk.gz\`; otherwise, the output is in the standard format]:format:(mnemonic default)' \
 '-o+[Write output to <path> instead of stdout]:path:_files' \
 '--output=[Write output to <path> instead of stdout]:path:_files' \
+'--query-normalization=[Transliterate all query/path expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
-'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'*-A+[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*--allow-list=[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*-D+[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'*--deny-list=[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'--filter-list-source=[Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used]:path:_default' \
+'--filter-list-column=[Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name \`cn\` is used]:FILTER_LIST_COLUMN:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
 '-p[If set, show a progress bar]' \
 '--progress[If set, show a progress bar]' \
-'-h[Print help]' \
-'--help[Print help]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
 '*::input -- MARC21 files to be processed as input. If no file is specified, or if the filename is `-`, the data is read from standard input (`stdin`) by default:_files' \
 && ret=0
 ;;
@@ -389,18 +494,25 @@ _arguments "${_arguments_options[@]}" : \
 '--seed=[Initialize the RNG with a seed value to get deterministic random record]:number:_default' \
 '-o+[Write output to FILENAME instead of stdout]:filename:_files' \
 '--output=[Write output to FILENAME instead of stdout]:filename:_files' \
+'--query-normalization=[Transliterate all query/path expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
-'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'*-A+[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*--allow-list=[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*-D+[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'*--deny-list=[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'--filter-list-source=[Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used]:path:_default' \
+'--filter-list-column=[Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name \`cn\` is used]:FILTER_LIST_COLUMN:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
 '-p[If set, show a progress bar]' \
 '--progress[If set, show a progress bar]' \
-'-h[Print help]' \
-'--help[Print help]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
 ':sample_size -- Sample size:_default' \
 '*::path:_files' \
 && ret=0
@@ -413,11 +525,18 @@ _arguments "${_arguments_options[@]}" : \
 '--header=[Insert a header row before the data. The header should be entered as a comma-separated list. Leading and trailing spaces in each column are automatically removed. Note that This option takes precedence over column names specified using an \`AS\` clause]:header:_default' \
 '-o+[Write output to <path> instead of stdout]:path:_files' \
 '--output=[Write output to <path> instead of stdout]:path:_files' \
+'--query-normalization=[Transliterate all query/path expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
-'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'*-A+[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*--allow-list=[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*-D+[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'*--deny-list=[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'--filter-list-source=[Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used]:path:_default' \
+'--filter-list-column=[Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name \`cn\` is used]:FILTER_LIST_COLUMN:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '(--merge)--squash[Whether to squash all values of a repeated subfield into a single value or not. The separator can be specified by the \`--separator\` option]' \
 '(--squash)--merge[If set, all values of a column are merged into a single value. The separator can be specified by the \`--separator\`]' \
@@ -440,18 +559,25 @@ _arguments "${_arguments_options[@]}" : \
 '--format=[]:FORMAT:(turtle nt)' \
 '-o+[Write output to <filename> instead of stdout]:filename:_files' \
 '--output=[Write output to <filename> instead of stdout]:filename:_files' \
+'--query-normalization=[Transliterate all query/path expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
-'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'*-A+[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*--allow-list=[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*-D+[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'*--deny-list=[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'--filter-list-source=[Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used]:path:_default' \
+'--filter-list-column=[Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name \`cn\` is used]:FILTER_LIST_COLUMN:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \
 '-p[If set, show a progress bar]' \
 '--progress[If set, show a progress bar]' \
-'-h[Print help]' \
-'--help[Print help]' \
+'-h[Print help (see more with '\''--help'\'')]' \
+'--help[Print help (see more with '\''--help'\'')]' \
 '*::input -- MARC21 files to be processed as input. If no file is specified, or if the filename is `-`, the data is read from standard input (`stdin`) by default:_files' \
 && ret=0
 ;;
@@ -460,11 +586,18 @@ _arguments "${_arguments_options[@]}" : \
 '--filename=[Filename template ("{}" is replaced by the chunk number)]:template:_default' \
 '-o+[Write partitions into <path>]:path:_files' \
 '--outdir=[Write partitions into <path>]:path:_files' \
+'--query-normalization=[Transliterate all query/path expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
 '-l+[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--limit=[Limit the result to first <n> records (a limit value \`0\` means no limit)]:n:_default' \
 '--strsim-threshold=[The minimum score for string similarity comparisons. The value must be between 0 and 100]:value:_default' \
 '--where=[An expression for filtering records]:predicate:_default' \
-'--filter-normalization=[Transliterate the given filter or query expression into the specified Unicode normal form]:form:(nfd nfkd nfc nfkc)' \
+'*-A+[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*--allow-list=[Ignores all records that are *not* explicitly listed in one of the allow lists]:filename:_files' \
+'*-D+[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'*--deny-list=[Ignores all records that are listed in one of the deny lists]:filename:_files' \
+'--filter-list-source=[Specify a path expression to determine the values to be compared against Allow/Deny lists. By default the control number of a record (field 001) is used]:path:_default' \
+'--filter-list-column=[Specify the column name from which the values for an Allow/Deny list are sourced in CSV format. By default, the column name \`cn\` is used]:FILTER_LIST_COLUMN:_default' \
 '--compression=[Specify compression level]:n:_default' \
 '-s[Skip invalid records that can'\''t be decoded]' \
 '--skip-invalid[Skip invalid records that can'\''t be decoded]' \

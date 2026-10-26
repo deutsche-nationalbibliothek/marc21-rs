@@ -147,7 +147,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__check)
-            opts="-R -o -s -l -p -h --rule-set --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-R -o -s -l -A -D -p -h --rule-set --output --query-normalization --filter-normalization --skip-invalid --limit --strsim-threshold --where --allow-list --deny-list --filter-list-source --filter-list-column --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -169,6 +169,14 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
+                --query-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
+                --filter-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
                 --limit)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
@@ -185,8 +193,28 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --filter-normalization)
-                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                --allow-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -A)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --deny-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -D)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-source)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-column)
+                    COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
                 --compression)
@@ -201,7 +229,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__concat)
-            opts="-a -o -s -l -p -h --append --tee --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-a -o -s -l -A -D -p -h --append --tee --output --query-normalization --filter-normalization --skip-invalid --limit --strsim-threshold --where --allow-list --deny-list --filter-list-source --filter-list-column --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -219,6 +247,14 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
+                --query-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
+                --filter-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
                 --limit)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
@@ -235,8 +271,28 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --filter-normalization)
-                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                --allow-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -A)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --deny-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -D)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-source)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-column)
+                    COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
                 --compression)
@@ -251,7 +307,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__count)
-            opts="-o -s -l -p -h --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-o -s -l -A -D -p -h --output --query-normalization --filter-normalization --skip-invalid --limit --strsim-threshold --where --allow-list --deny-list --filter-list-source --filter-list-column --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -263,6 +319,14 @@ _marc21() {
                     ;;
                 -o)
                     COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --query-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
+                --filter-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
                     return 0
                     ;;
                 --limit)
@@ -281,8 +345,28 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --filter-normalization)
-                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                --allow-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -A)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --deny-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -D)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-source)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-column)
+                    COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
                 --compression)
@@ -297,7 +381,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__dedup)
-            opts="-o -s -l -p -h --strategy --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-o -s -l -A -D -p -h --strategy --output --query-normalization --filter-normalization --skip-invalid --limit --strsim-threshold --where --allow-list --deny-list --filter-list-source --filter-list-column --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -315,6 +399,14 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
+                --query-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
+                --filter-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
                 --limit)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
@@ -331,8 +423,28 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --filter-normalization)
-                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                --allow-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -A)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --deny-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -D)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-source)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-column)
+                    COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
                 --compression)
@@ -347,7 +459,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__describe)
-            opts="-o -s -l -p -h --tsv --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-o -s -l -A -D -p -h --tsv --output --query-normalization --filter-normalization --skip-invalid --limit --strsim-threshold --where --allow-list --deny-list --filter-list-source --filter-list-column --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -359,6 +471,14 @@ _marc21() {
                     ;;
                 -o)
                     COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --query-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
+                --filter-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
                     return 0
                     ;;
                 --limit)
@@ -377,8 +497,28 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --filter-normalization)
-                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                --allow-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -A)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --deny-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -D)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-source)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-column)
+                    COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
                 --compression)
@@ -393,7 +533,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__filter)
-            opts="-s -v -l -o -p -h --skip-invalid --invert-match --limit --strsim-threshold --filter-normalization --output --progress --compression --help"
+            opts="-s -v -l -A -D -o -p -h --skip-invalid --invert-match --limit --strsim-threshold --allow-list --deny-list --filter-list-source --filter-list-column --query-normalization --filter-normalization --output --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -409,6 +549,34 @@ _marc21() {
                     ;;
                 --strsim-threshold)
                     COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --allow-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -A)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --deny-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -D)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-source)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-column)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --query-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
                     return 0
                     ;;
                 --filter-normalization)
@@ -435,7 +603,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__frequency)
-            opts="-u -r -t -n -H -o -s -l -p -h --unique --reverse --threshold --num --squash --merge --separator --tsv --quote-style --header --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-u -r -t -n -H -o -s -l -A -D -p -h --unique --reverse --threshold --num --squash --merge --separator --tsv --quote-style --header --output --query-normalization --filter-normalization --skip-invalid --limit --strsim-threshold --where --allow-list --deny-list --filter-list-source --filter-list-column --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -481,6 +649,14 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
+                --query-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
+                --filter-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
                 --limit)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
@@ -497,8 +673,28 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --filter-normalization)
-                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                --allow-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -A)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --deny-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -D)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-source)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-column)
+                    COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
                 --compression)
@@ -513,7 +709,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__glimpse)
-            opts="-n -o -s -l -p -h --max-values --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-n -o -s -l -A -D -p -h --max-values --output --query-normalization --filter-normalization --skip-invalid --limit --strsim-threshold --where --allow-list --deny-list --filter-list-source --filter-list-column --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -535,6 +731,14 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
+                --query-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
+                --filter-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
                 --limit)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
@@ -551,8 +755,28 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --filter-normalization)
-                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                --allow-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -A)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --deny-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -D)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-source)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-column)
+                    COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
                 --compression)
@@ -567,7 +791,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__grep)
-            opts="-i -v -o -s -l -p -h --or --ignore-case --invert-match --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-i -v -o -s -l -A -D -p -h --or --ignore-case --invert-match --output --query-normalization --filter-normalization --skip-invalid --limit --strsim-threshold --where --allow-list --deny-list --filter-list-source --filter-list-column --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -585,6 +809,14 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
+                --query-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
+                --filter-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
                 --limit)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
@@ -601,8 +833,28 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --filter-normalization)
-                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                --allow-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -A)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --deny-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -D)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-source)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-column)
+                    COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
                 --compression)
@@ -617,7 +869,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__hash)
-            opts="-o -s -l -p -h --tsv --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-o -s -l -A -D -p -h --tsv --output --query-normalization --filter-normalization --skip-invalid --limit --strsim-threshold --where --allow-list --deny-list --filter-list-source --filter-list-column --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -629,6 +881,14 @@ _marc21() {
                     ;;
                 -o)
                     COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --query-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
+                --filter-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
                     return 0
                     ;;
                 --limit)
@@ -647,8 +907,28 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --filter-normalization)
-                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                --allow-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -A)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --deny-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -D)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-source)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-column)
+                    COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
                 --compression)
@@ -689,7 +969,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__partition)
-            opts="-t -o -s -l -p -h --template --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-t -o -s -l -A -D -p -h --template --output --query-normalization --filter-normalization --skip-invalid --limit --strsim-threshold --where --allow-list --deny-list --filter-list-source --filter-list-column --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -711,6 +991,14 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
+                --query-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
+                --filter-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
                 --limit)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
@@ -727,8 +1015,28 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --filter-normalization)
-                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                --allow-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -A)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --deny-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -D)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-source)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-column)
+                    COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
                 --compression)
@@ -743,7 +1051,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__print)
-            opts="-o -s -l -p -h --translit --format --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-o -s -l -A -D -p -h --translit --format --output --query-normalization --filter-normalization --skip-invalid --limit --strsim-threshold --where --allow-list --deny-list --filter-list-source --filter-list-column --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -765,6 +1073,14 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
+                --query-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
+                --filter-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
                 --limit)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
@@ -781,8 +1097,28 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --filter-normalization)
-                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                --allow-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -A)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --deny-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -D)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-source)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-column)
+                    COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
                 --compression)
@@ -797,7 +1133,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__sample)
-            opts="-o -s -l -p -h --seed --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-o -s -l -A -D -p -h --seed --output --query-normalization --filter-normalization --skip-invalid --limit --strsim-threshold --where --allow-list --deny-list --filter-list-source --filter-list-column --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -815,6 +1151,14 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
+                --query-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
+                --filter-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
                 --limit)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
@@ -831,8 +1175,28 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --filter-normalization)
-                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                --allow-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -A)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --deny-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -D)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-source)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-column)
+                    COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
                 --compression)
@@ -847,7 +1211,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__select)
-            opts="-H -o -s -l -p -h --squash --merge --separator --tsv --quote-style --header --no-header --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-H -o -s -l -A -D -p -h --squash --merge --separator --tsv --quote-style --header --no-header --output --query-normalization --filter-normalization --skip-invalid --limit --strsim-threshold --where --allow-list --deny-list --filter-list-source --filter-list-column --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -877,6 +1241,14 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
+                --query-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
+                --filter-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
                 --limit)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
@@ -893,8 +1265,28 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --filter-normalization)
-                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                --allow-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -A)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --deny-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -D)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-source)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-column)
+                    COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
                 --compression)
@@ -909,7 +1301,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__skosify)
-            opts="-c -o -s -l -p -h --config --format --output --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-c -o -s -l -A -D -p -h --config --format --output --query-normalization --filter-normalization --skip-invalid --limit --strsim-threshold --where --allow-list --deny-list --filter-list-source --filter-list-column --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -935,6 +1327,14 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
+                --query-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
+                --filter-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
                 --limit)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
@@ -951,8 +1351,28 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --filter-normalization)
-                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                --allow-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -A)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --deny-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -D)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-source)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-column)
+                    COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
                 --compression)
@@ -967,7 +1387,7 @@ _marc21() {
             return 0
             ;;
         marc21__subcmd__split)
-            opts="-o -s -l -p -h --filename --outdir --skip-invalid --limit --strsim-threshold --where --filter-normalization --progress --compression --help"
+            opts="-o -s -l -A -D -p -h --filename --outdir --query-normalization --filter-normalization --skip-invalid --limit --strsim-threshold --where --allow-list --deny-list --filter-list-source --filter-list-column --progress --compression --help"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 2 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0
@@ -985,6 +1405,14 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
+                --query-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
+                --filter-normalization)
+                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                    return 0
+                    ;;
                 --limit)
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
@@ -1001,8 +1429,28 @@ _marc21() {
                     COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
-                --filter-normalization)
-                    COMPREPLY=($(compgen -W "nfd nfkd nfc nfkc" -- "${cur}"))
+                --allow-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -A)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --deny-list)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                -D)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-source)
+                    COMPREPLY=($(compgen -f "${cur}"))
+                    return 0
+                    ;;
+                --filter-list-column)
+                    COMPREPLY=($(compgen -f "${cur}"))
                     return 0
                     ;;
                 --compression)
