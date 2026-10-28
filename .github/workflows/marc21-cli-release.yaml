@@ -1,47 +1,41 @@
-name: release
+name: marc21-cli-release
 
 on:
   push:
     tags:
-      - 'v*'
+      - "marc21-cli-[0-9]+.[0-9]+.[0-9]+"
 
 permissions: {}
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  prepare:
+  gh-release:
     permissions:
       contents: write
     runs-on: ubuntu-latest
     outputs:
       version: ${{ env.VERSION }}
-      tag: ${{ env.TAG}}
     steps:
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
 
-      - name: Get release version from Git tag
+      - name: Get release metadata
         env:
           TAG: ${{ github.ref_name }}
         run: |
-          tag="${TAG}"
-          version=${tag#v}
-          echo "VERSION=$version" >> $GITHUB_ENV
-          echo "TAG=$tag" >> $GITHUB_ENV
+          echo "VERSION=${TAG#marc21-cli-}" >> $GITHUB_ENV
+          echo "TAG=${TAG}" >> $GITHUB_ENV
 
       - name: Create GitHub release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "$TAG" --verify-tag --draft --generate-notes --title "marc21-cli $TAG"
+          gh release create "$TAG" --verify-tag --draft --generate-notes --title "marc21-cli $VERSION"
 
   releases:
-    needs: prepare
+    needs: gh-release
+    runs-on: ${{ matrix.target.os }}
     permissions:
       contents: write
       attestations: write
@@ -54,7 +48,6 @@ jobs:
           - { os: ubuntu-latest, toolchain: stable, triple: x86_64-unknown-linux-musl }
           - { os: windows-latest, toolchain: stable, triple: x86_64-pc-windows-msvc }
           - { os: macos-latest, toolchain: stable, triple: x86_64-apple-darwin }
-    runs-on: ${{ matrix.target.os }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -86,20 +79,21 @@ jobs:
           cargo build -p marc21-cli --target=x86_64-unknown-linux-musl --release
           echo "BINARY=target/x86_64-unknown-linux-musl/release/marc21" >> $GITHUB_ENV
 
-      - name: Test workspace packages
+      - name: Test package
         run: |
-          cargo test -p marc21-cli --release
-          cargo test -p marc21 --release
+          cargo test --release -p marc21-cli
+          cargo test --release -p marc21
 
       - name: Strip release binary
         shell: bash
         if: matrix.target.os == 'macos-latest'
-        run: strip "$BINARY"
+        run: |
+          strip "$BINARY"
 
       - name: Prepare archive
         shell: bash
         env:
-          VERSION: ${{ needs.prepare.outputs.version }}
+          VERSION: ${{ needs.gh-release.outputs.version }}
           TRIPLE: ${{ matrix.target.triple }}
         run: |
           version="${VERSION}"
@@ -133,7 +127,31 @@ jobs:
       - name: Upload assets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ needs.prepare.outputs.tag }}
+          TAG: ${{ github.ref_name }}
         shell: bash
         run: |
           gh release upload "${TAG}" "${ASSET}"
+
+  publish:
+    needs:
+      - gh-release
+      - releases
+    runs-on: ubuntu-latest
+    environment: crates.io
+    permissions:
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Get crates.io access token
+        uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9 # v1
+        id: auth
+
+      - name: Publish package
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
+        run: |
+          cargo publish -p marc21-cli

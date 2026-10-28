@@ -1,4 +1,4 @@
-name: rust-release
+name: marc21-release
 
 on:
   push:
