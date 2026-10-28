@@ -1,0 +1,73 @@
+name: rust-release
+
+on:
+  push:
+    tags:
+      - "marc21-[0-9]+.[0-9]+.[0-9]+"
+
+permissions: {}
+
+jobs:
+  releases:
+    needs: prepare
+    runs-on: ${{ matrix.target.os }}
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        target:
+          - { os: ubuntu-latest, toolchain: stable, triple: x86_64-unknown-linux-gnu }
+          - { os: ubuntu-latest, toolchain: stable, triple: x86_64-unknown-linux-musl }
+          - { os: windows-latest, toolchain: stable, triple: x86_64-pc-windows-msvc }
+          - { os: macos-latest, toolchain: stable, triple: x86_64-apple-darwin }
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # master
+        with:
+          toolchain: ${{ matrix.target.toolchain }}
+          targets: ${{ matrix.target.triple }}
+    
+      - name: Build release binary
+        if: ${{ matrix.target.triple != 'x86_64-unknown-linux-musl' }}
+        shell: bash
+        run: |
+          cargo build --release --all-features -p marc21
+
+      - name: Build release binary (musl)
+        if: ${{ matrix.target.triple == 'x86_64-unknown-linux-musl' }}
+        shell: bash
+        run: |
+          sudo apt-get install -y musl-tools
+          cargo build --release --target=x86_64-unknown-linux-musl -p marc21
+
+      - name: Test package
+        run: |
+          cargo test --release -p marc21 --doc
+          cargo test --release -p marc21
+
+  publish:
+    needs: releases
+    runs-on: ubuntu-latest
+    environment: crates.io
+    permissions:
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Get crates.io access token
+        uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9 # v1
+        id: auth
+
+      - name: Publish package
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
+        run: |
+          cargo publish -p marc21
