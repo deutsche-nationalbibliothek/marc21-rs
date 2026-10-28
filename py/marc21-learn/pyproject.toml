@@ -29,7 +29,7 @@ dependencies = ["polars>=2.0.0"]
 
 
 [project.urls]
-Documentation = "https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-learn/"
+# Documentation = "https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-learn/"
 Repository = "https://github.com/deutsche-nationalbibliothek/marc21-rs"
 Issues = "https://github.com/deutsche-nationalbibliothek/marc21-rs/issues"
 
