@@ -3,7 +3,7 @@ name: marc21-learn-release
 on:
   push:
     tags:
-      - 'marc21-learn-*'
+      - "marc21-learn-[0-9]+.[0-9]+.[0-9]+"
 
 permissions:
   contents: read
@@ -14,18 +14,12 @@ jobs:
     strategy:
       matrix:
         platform:
-          - runner: ubuntu-22.04
-            target: x86_64
-          - runner: ubuntu-22.04
-            target: x86
-          - runner: ubuntu-22.04
-            target: aarch64
-          - runner: ubuntu-22.04
-            target: armv7
-          - runner: ubuntu-22.04
-            target: s390x
-          - runner: ubuntu-22.04
-            target: ppc64le
+          - { runner: ubuntu-latest, target: x86_64 }
+          - { runner: ubuntu-latest, target: x86 }
+          - { runner: ubuntu-latest, target: aarch64 }
+          - { runner: ubuntu-latest, target: armv7 }
+          - { runner: ubuntu-latest, target: s390x }
+          - { runner: ubuntu-latest, target: ppc64le }
     steps:
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -64,14 +58,10 @@ jobs:
     strategy:
       matrix:
         platform:
-          - runner: ubuntu-22.04
-            target: x86_64
-          - runner: ubuntu-22.04
-            target: x86
-          - runner: ubuntu-22.04
-            target: aarch64
-          - runner: ubuntu-22.04
-            target: armv7
+          - { runner: ubuntu-latest, target: x86_64 }
+          - { runner: ubuntu-latest, target: x86 }
+          - { runner: ubuntu-latest, target: aarch64 }
+          - { runner: ubuntu-latest, target: armv7 }
     steps:
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -110,15 +100,9 @@ jobs:
     strategy:
       matrix:
         platform:
-          - runner: windows-latest
-            target: x64
-            python_arch: x64
-          - runner: windows-latest
-            target: x86
-            python_arch: x86
-          - runner: windows-11-arm
-            target: aarch64
-            python_arch: arm64
+          - { runner: windows-latest, target: x64, python_arch: x64 }
+          - { runner: windows-latest, target: x86, python_arch: x86 }
+          - { runner: windows-11-arm, target: aarch64, python_arch: arm64 }
     steps:
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -161,10 +145,8 @@ jobs:
     strategy:
       matrix:
         platform:
-          - runner: macos-15-intel
-            target: x86_64
-          - runner: macos-latest
-            target: aarch64
+          - { runner: macos-15-intel, target: x86_64 }
+          - { runner: macos-latest, target: aarch64 }
     steps:
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -267,12 +249,10 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
-        if: ${{ startsWith(github.ref, 'refs/tags/') }}
         with:
           enable-cache: ${{ !startsWith(github.ref, 'refs/tags/') }}
 
       - name: Publish to PyPI
-        if: ${{ startsWith(github.ref, 'refs/tags/') }}
         run: uv publish 'wheels-*/*'
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
