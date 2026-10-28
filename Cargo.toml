@@ -50,7 +50,7 @@ unicode-normalization = { version = "0.1.26" }
 winnow = { version = "1.0.4" }
 
 marc21 = { path = "crates/marc21", version = "0.7.0" }
-marc21-python = { path = "crates/marc21-python", version = "0.1.0" }
+marc21-python = { path = "crates/marc21-python", version = "0.2.0" }
 
 [profile.release]
 strip = true

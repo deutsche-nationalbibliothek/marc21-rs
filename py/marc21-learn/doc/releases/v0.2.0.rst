@@ -1,0 +1,10 @@
+==================
+marc21-learn 0.2.0
+==================
+
+*Release date: October 28, 2026.*
+
+In version 0.2.0, the Polars integration was completely revised and the
+API was slightly updated. In addition, the new module :py:mod:`marc21_learn.vocabularies`
+provides vocabularies (and related utilities) frequently used at the
+German National Library (DNB) and makes them available as a Polars DataFrame.

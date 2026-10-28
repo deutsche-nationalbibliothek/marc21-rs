@@ -1,6 +1,6 @@
 [project]
 name = "marc21-learn"
-version = "0.1.0"
+version = "0.2.0"
 description = "A toolkit that bridges the gap between the MARC21 and scikit-learn"
 readme = "README.md"
 license = "EUPL-1.2"

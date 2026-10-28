@@ -2,6 +2,8 @@
 marc21-learn 0.1.0
 ==================
 
+*Release date: October 8, 2026.*
+
 .. currentmodule:: marc21_learn.io
 
 This is the first version of the ``marc21-learn`` toolkit, which aims
