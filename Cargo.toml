@@ -17,37 +17,39 @@ members = [
 ]
 
 [workspace.dependencies]
-aho-corasick = { version = "1.1" }
-anyhow = { version = "1.0.103" }
-assert_cmd = { version = "2.2" }
-assert_fs = { version = "1.1" }
-bstr = { version = "1.12", features = [
+aho-corasick = { version = "1.1.5" }
+anyhow = { version = "1.0.104" }
+assert_cmd = { version = "2.2.2" }
+assert_fs = { version = "1.1.4" }
+bstr = { version = "1.13.1", features = [
   "std",
   "alloc",
 ], default-features = false }
-clap_complete = { version = "4.6" }
-clap_mangen = { version = "0.3" }
-clap = { version = "4.6", features = ["derive", "env", "wrap_help"] }
-csv = { version = "1.4" }
+clap_complete = { version = "4.6.11" }
+clap_mangen = { version = "0.3.3" }
+clap = { version = "4.6.7", features = ["derive", "env", "wrap_help"] }
+csv = { version = "1.4.0" }
 dvrf = { version = "0.1.0" }
-flate2 = { version = "1.1", features = ["zlib-rs"], default-features = false }
-indicatif = { version = "0.18" }
-predicates = { version = "3.1" }
-pyo3 = { version = "0.30", features = ["extension-module", "abi3-py39"] }
-rand = { version = "0.10.2" }
-regex = { version = "1.12" }
-serde_test = { version = "1.0" }
-serde = { version = "1.0" }
-sha2 = { version = "0.11" }
-smallvec = { version = "1.15" }
-sophia = { version = "0.10" }
-strsim = { version = "0.11" }
-toml = { version = "1.1", features = ["preserve_order"] }
-trycmd = { version = "1.2" }
-unicode-normalization = { version = "0.1" }
-winnow = { version = "1.0" }
+flate2 = { version = "1.1.10", features = [
+  "zlib-rs",
+], default-features = false }
+indicatif = { version = "0.18.6" }
+predicates = { version = "3.1.4" }
+pyo3 = { version = "0.30.1", features = ["extension-module", "abi3-py39"] }
+rand = { version = "0.10.3" }
+regex = { version = "1.13.1" }
+serde_test = { version = "1.0.177" }
+serde = { version = "1.0.229" }
+sha2 = { version = "0.11.1" }
+smallvec = { version = "1.16.4" }
+sophia = { version = "0.10.0" }
+strsim = { version = "0.11.1" }
+toml = { version = "1.1.8", features = ["preserve_order"] }
+trycmd = { version = "1.2.1" }
+unicode-normalization = { version = "0.1.26" }
+winnow = { version = "1.0.4" }
 
-marc21 = { path = "crates/marc21", version = "0.6.0" }
+marc21 = { path = "crates/marc21", version = "0.7.0" }
 marc21-python = { path = "crates/marc21-python", version = "0.1.0" }
 
 [profile.release]
