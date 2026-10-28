@@ -36,7 +36,7 @@ sources =  "authorities-gnd-*.mrc.gz"
 query = "001 AS `cn`, 075{ b AS `gndgen` | 2 == 'gndgen' }"
 predicate = "ldr.type == 'z'"
 
-df = read_marc21(sources, query, predicate=predicate)
+df = read_marc21(sources, query, where=predicate)
 print(df)
 ```
 
