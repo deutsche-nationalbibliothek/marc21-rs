@@ -7,4 +7,5 @@ versions of the ``marc21-learn`` toolkit.
 .. toctree::
    :maxdepth: 1
 
+   Version 0.2.0 <v0.2.0>
    Version 0.1.0 <v0.1.0>

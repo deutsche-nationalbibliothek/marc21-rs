@@ -1,6 +1,6 @@
 [package]
 name = "marc21-learn"
-version = "0.1.0"
+version = "0.2.0"
 description = "Rust bindings for marc21-learn"
 documentation.workspace = true
 repository.workspace = true
