@@ -457,7 +457,7 @@ follows:
 	>>> predicate = "ldr.type == 'z' && 042.a in ['gnd1', 'gndz'] \
 	...     && 075{ b == 'saf' && 2 == 'gndspec' }"
 	>>>
-	>>> df = read_marc21(filename, query, predicate=predicate) # doctest: +SKIP
+	>>> df = read_marc21(filename, query, where=predicate) # doctest: +SKIP
 	>>> df.sort("label") # doctest: +SKIP
 	shape: (238, 3)
 	┌───────────┬───────────┬──────────────────────┐
