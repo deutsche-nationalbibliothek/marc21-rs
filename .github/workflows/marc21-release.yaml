@@ -9,7 +9,6 @@ permissions: {}
 
 jobs:
   releases:
-    needs: prepare
     runs-on: ${{ matrix.target.os }}
     permissions:
       contents: read
