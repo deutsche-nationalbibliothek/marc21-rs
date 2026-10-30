@@ -16,12 +16,12 @@ jobs:
     strategy:
       matrix:
         platform:
-          - { runner: ubuntu-latest, target: x86_64 }
-          - { runner: ubuntu-latest, target: x86 }
-          - { runner: ubuntu-latest, target: aarch64 }
-          - { runner: ubuntu-latest, target: armv7 }
-          - { runner: ubuntu-latest, target: s390x }
-          - { runner: ubuntu-latest, target: ppc64le }
+          - { runner: ubuntu-24.04, target: x86_64 }
+          - { runner: ubuntu-24.04, target: x86 }
+          - { runner: ubuntu-24.04, target: aarch64 }
+          - { runner: ubuntu-24.04, target: armv7 }
+          - { runner: ubuntu-24.04, target: s390x }
+          - { runner: ubuntu-24.04, target: ppc64le }
     steps:
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -60,10 +60,10 @@ jobs:
     strategy:
       matrix:
         platform:
-          - { runner: ubuntu-latest, target: x86_64 }
-          - { runner: ubuntu-latest, target: x86 }
-          - { runner: ubuntu-latest, target: aarch64 }
-          - { runner: ubuntu-latest, target: armv7 }
+          - { runner: ubuntu-24.04, target: x86_64 }
+          - { runner: ubuntu-24.04, target: x86 }
+          - { runner: ubuntu-24.04, target: aarch64 }
+          - { runner: ubuntu-24.04, target: armv7 }
     steps:
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -186,7 +186,7 @@ jobs:
           path: dist
 
   sdist:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
