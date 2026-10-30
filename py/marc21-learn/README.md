@@ -7,7 +7,8 @@
 [![Python](https://github.com/deutsche-nationalbibliothek/marc21-rs/actions/workflows/marc21-learn-ci.yaml/badge.svg)](https://github.com/deutsche-nationalbibliothek/marc21-rs/actions/workflows/marc21-learn-ci.yaml)
 [![PyPI Version](https://img.shields.io/pypi/v/marc21-learn)](https://pypi.org/project/marc21-learn/#history)
 [![PyPI Status](https://img.shields.io/pypi/status/marc21-learn)](https://pypi.org/project/marc21-learn/)
-[![PyPI License](https://img.shields.io/pypi/l/marc21-learn)](https://pypi.org/project/marc21-learn)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/marc21-learn.svg)](https://pypi.org/project/marc21-learn/)
+[![PyPI License](https://img.shields.io/pypi/l/marc21-learn)](https://pypi.org/project/marc21-learn/)
 
 </div>
 
