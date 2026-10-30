@@ -2,7 +2,7 @@
 marc21-learn 0.2.0
 ==================
 
-*Release date: October 28, 2026.*
+*Release date: October 30, 2026.*
 
 In version 0.2.0, the Polars integration was completely revised and the
 API was slightly updated. In addition, the new module :py:mod:`marc21_learn.vocabularies`
