@@ -20,8 +20,8 @@ This project is developed by the Metadata Department of the [German National
 Library] (DNB). It is used for data analysis and for automating metadata
 workflows (data engineering) as part of automatic content indexing.
 
-<!-- Check out the [documentation](https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-learn/) -->
-<!-- to learn more about installing and using the `marc21-learn` toolkit. -->
+Check out the [documentation](https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-learn/)
+to learn more about installing and using the `marc21-learn` toolkit.
 
 ## Example
 
