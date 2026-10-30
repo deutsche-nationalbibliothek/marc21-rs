@@ -33,26 +33,26 @@ indexing.
 
 The `marc21` tool provides the following commands:
 
-- `check` — Validate records against rule sets
-- `concat` — Concatenate records from multiple inputs (alias `cat`)
-- `count` — Print the number of records in the input data (alias `cnt`)
-- `dedup` — Remove duplicate records from the input
-- `describe` —  Creates a frequency table of all subfield codes
-- `filter` — Filter records that fulfill a specified condition
-- `frequency` — Compute a frequency table of values (alias `freq`)
-- `glimpse` — Print a dense preview of a data field
-- `grep` — Search for records whose values match a pattern
-- `hash` — Compute SHA-256 checksum of records
-- `invalid` — Output invalid records that cannot be decoded
-- `partition` — Partition records by values
-- `print` — Print records in human readable format
-- `sample` — Select a random permutation of records
-- `select` — Transforms records into CSV or TSV format
-- `skosify` — Convert records to SKOS/RDF
-- `split` — Split the input into chunks of a given size
+- [check] — Validate records against rule sets
+- [concat] — Concatenate records from multiple inputs (alias `cat`)
+- [count] — Print the number of records in the input data (alias `cnt`)
+- [dedup] — Remove duplicate records from the input
+- [describe] —  Creates a frequency table of all subfield codes
+- [filter] — Filter records that fulfill a specified condition
+- [frequency] — Compute a frequency table of values (alias `freq`)
+- [glimpse] — Print a dense preview of a data field
+- [grep] — Search for records whose values match a pattern
+- [hash] — Compute SHA-256 checksum of records
+- [invalid] — Output invalid records that cannot be decoded
+- [partition] — Partition records by values
+- [print] — Print records in human readable format
+- [sample] — Select a random permutation of records
+- [select] — Transforms records into CSV or TSV format
+- [skosify] — Convert records to SKOS/RDF
+- [split] — Split the input into chunks of a given size
 
-<!-- Check out the [documentation](https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/) -->
-<!-- to learn more about installing and using the tool. -->
+Check out the [documentation](https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/)
+to learn more about installing and using the tool.
 
 ## Python Integration
 
@@ -91,8 +91,8 @@ shape: (10_317_327, 2)
 └────────────┴────────┘
 ```
 
-<!-- Check out the [documentation](https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-learn/) -->
-<!-- to learn more about installing and using the `marc21-learn` toolkit. -->
+Check out the [documentation](https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-learn/)
+to learn more about installing and using the `marc21-learn` toolkit.
 
 
 ## Contributing
@@ -121,20 +121,20 @@ This project is licensed under the [European Union Public License 1.2].
 [Tidyverse]: https://tidyverse.org
 [ZSH]: https://www.zsh.org
 
-<!-- [check]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-check.html -->
-<!-- [concat]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-concat.html -->
-<!-- [count]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-count.html -->
-<!-- [dedup]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-dedup.html -->
-<!-- [describe]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-describe.html -->
-<!-- [filter]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-filter.html -->
-<!-- [frequency]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-frequency.html -->
-<!-- [glimpse]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-glimpse.html -->
-<!-- [grep]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-grep.html -->
-<!-- [hash]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-hash.html -->
-<!-- [invalid]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-invalid.html -->
-<!-- [partition]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-partition.html -->
-<!-- [print]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-print.html -->
-<!-- [sample]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-sample.html -->
-<!-- [select]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-select.html -->
-<!-- [skosify]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-skosify.html -->
-<!-- [split]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-split.html -->
+[check]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-check.html
+[concat]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-concat.html
+[count]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-count.html
+[dedup]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-dedup.html
+[describe]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-describe.html
+[filter]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-filter.html
+[frequency]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-frequency.html
+[glimpse]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-glimpse.html
+[grep]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-grep.html
+[hash]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-hash.html
+[invalid]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-invalid.html
+[partition]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-partition.html
+[print]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-print.html
+[sample]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-sample.html
+[select]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-select.html
+[skosify]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-skosify.html
+[split]: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/reference/commands/marc21-split.html
