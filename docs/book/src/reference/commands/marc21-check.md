@@ -92,6 +92,32 @@ The validator supports the following options/flags:
   : If this flag is set, the result is inverted: A record fails
     validation if the filter expression is `false`.
 
+
+### ISBN
+
+The *isbn* validator checks whether the content of a field contains a
+valid ISBN. The `format` option can be used to specify whether to check
+only for valid ISBN-13s or for ISBN-10s.
+
+```toml
+[rule.ISBN]
+validator = 'isbn'
+path = '020.a'
+```
+
+The validator supports the following options/flags:
+
+`format = isbn13 | isbn10`
+  : Whether to check only for ISBN-13 or ISBN-10. If this option is not
+    specified, both ISBN-13 and ISBN-10 are allowed.
+
+`scope = <record-matcher>`
+  : Only records that meet the specified [record matcher] are checked.
+
+`invert-matcher = true | false`
+  : If this flag is set, the result is inverted: A record fails
+    validation if the filter expression is `false`.
+
 ## OPTIONS
 
 ### FILTER OPTIONS
