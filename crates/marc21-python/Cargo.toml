@@ -9,5 +9,7 @@ rust-version.workspace = true
 edition.workspace = true
 
 [dependencies]
+isbn = { workspace = true }
 marc21 = { workspace = true }
 pyo3 = { workspace = true, features = ["extension-module", "abi3-py310"] }
+regex = { workspace = true }

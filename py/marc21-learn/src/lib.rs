@@ -1,4 +1,5 @@
 use marc21_python::io::PyMarcReader;
+use marc21_python::pid;
 use pyo3::intern;
 use pyo3::prelude::*;
 
@@ -29,6 +30,13 @@ fn  _runtime(py: Python<'_>, parent: &Bound<'_, PyModule>) -> PyResult<()> {
     parent.add_submodule(&m)?;
 
     set_name!(py, m, "marc21_learn._runtime.io");
+
+    // PID
+    let m = PyModule::new(parent.py(), "pid")?;
+    m.add_wrapped(wrap_pyfunction!(pid::isbn_validate))?;
+    parent.add_submodule(&m)?;
+
+    set_name!(py, m, "marc21_learn._runtime.pid");
     
     Ok(())
 }

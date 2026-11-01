@@ -697,8 +697,10 @@ dependencies = [
 name = "marc21-python"
 version = "0.2.0"
 dependencies = [
+ "isbn",
  "marc21",
  "pyo3",
+ "regex",
 ]
 
 [[package]]

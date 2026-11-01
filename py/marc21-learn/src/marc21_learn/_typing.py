@@ -5,4 +5,9 @@ if TYPE_CHECKING:
 
 type UnicodeForm = Literal["NFC", "NFKC", "NFD", "NFKD"]
 
-__all__ = ["UnicodeForm"]
+type IsbnVersion = Literal["ISBN-13", "ISBN-10"]
+
+__all__ = [
+    "IsbnVersion",
+    "UnicodeForm",
+]

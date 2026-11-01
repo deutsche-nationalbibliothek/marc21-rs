@@ -9,6 +9,7 @@ Module
 .. currentmodule:: marc21_learn
 .. autosummary::
 	io
+	pid
 	vocabularies
 
 .. toctree::
@@ -16,4 +17,5 @@ Module
 	:hidden:
    
 	io
+	pid
 	vocabularies
