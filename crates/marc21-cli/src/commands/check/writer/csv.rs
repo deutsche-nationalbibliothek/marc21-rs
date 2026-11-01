@@ -15,7 +15,7 @@ impl CsvWriter {
         wtr: utils::Writer,
     ) -> Result<Self, CliError> {
         let mut wtr = WriterBuilder::default().from_writer(wtr);
-        wtr.write_record(["cn", "rule", "message"])?;
+        wtr.write_record(["cn", "rule", "level", "message"])?;
 
         Ok(Self { wtr })
     }
@@ -27,6 +27,7 @@ impl CsvWriter {
     ) -> Result<(), CliError> {
         self.wtr.write_record(&[
             record.cn,
+            record.rule,
             record.level.to_string(),
             record.message,
         ])?;

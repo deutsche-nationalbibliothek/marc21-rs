@@ -106,11 +106,27 @@ impl Rule {
     ) -> Result<(), CliError> {
         let result = match self.validator {
             Validator::Filter(ref v) => v.is_valid(record),
+            Validator::Isbn(ref v) => v.is_valid(record),
         };
 
-        if !result {
+        if let Some(outcome) = result
+            && outcome.error
+        {
+            let message = if !outcome.values.is_empty() {
+                let values = outcome.values.join(", ");
+                let prefix = &self.message;
+
+                if !prefix.is_empty() {
+                    format!("{prefix}: {values}")
+                } else {
+                    values
+                }
+            } else {
+                self.message.clone()
+            };
+
             writer.write_record(Record {
-                message: self.message.clone(),
+                message,
                 level: self.level.clone(),
                 rule: self.id.clone(),
                 cn: record
