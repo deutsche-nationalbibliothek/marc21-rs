@@ -94,7 +94,7 @@ impl SkosGraph {
                 // triple is already present.
                 return Err(CliError::AdHoc(format!(
                     "the skos graph already contains a concept with iri {:?}.",
-                    s.to_string()
+                    s
                 )));
             }
             _ => (),
