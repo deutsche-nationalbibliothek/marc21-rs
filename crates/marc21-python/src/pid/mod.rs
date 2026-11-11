@@ -1,3 +1,3 @@
 mod isbn;
 
-pub use isbn::isbn_validate;
+pub use isbn::{isbn_canonicalize, isbn_validate};

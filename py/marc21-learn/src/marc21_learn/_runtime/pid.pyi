@@ -5,3 +5,9 @@ def isbn_validate(
     *,
     version: IsbnVersion | None = None,
 ) -> bool: ...
+def isbn_canonicalize(
+    value: str,
+    *,
+    hyphenate: bool = True,
+    strict: bool = False,
+) -> str | None: ...

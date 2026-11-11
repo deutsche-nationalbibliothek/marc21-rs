@@ -84,6 +84,73 @@ pub fn isbn_validate(value: &str, version: Option<Version>) -> bool {
     }
 }
 
+/// Converts a ISBN into a unique, uniform format.
+///
+/// The provided ISBN is first validated and, if necessary, converted to
+/// an ISBN-13. The individual components are separated by hyphens.
+///
+/// .. versionadded:: 0.3.0
+///
+/// Parameters
+/// ----------
+/// value : String
+///     The value to be checked.
+///
+/// hyphenate : bool, default=True
+///     Whether hyphens should be used to separate the components or
+///     not.
+///
+/// strict : bool, default=False
+///     If set, a ``ValueError`` is raised if an invalid ISBN is passed,
+///     otherwise ``None`` is returned.
+///
+/// Returns
+/// -------
+/// String
+///     The canonical form of the given ISBN.
+///
+/// Raises
+/// ------
+/// ValueError
+///     If the given ISBN is invalid.
+///
+/// Examples
+/// --------
+/// >>> from marc21_learn.pid import isbn_canonicalize
+/// >>>
+/// >>> isbn_canonicalize("9783100318152")
+/// '978-3-10-031815-2'
+/// >>> isbn_canonicalize("3100318153")
+/// '978-3-10-031815-2'
+/// >>> isbn_canonicalize("9783100318152", hyphenate=False)
+/// '9783100318152'
+#[pyfunction]
+#[pyo3(signature = (value, *, hyphenate = true, strict = false))]
+pub fn isbn_canonicalize(
+    value: &str,
+    hyphenate: bool,
+    strict: bool,
+) -> PyResult<Option<String>> {
+    let isbn = match Isbn::from_str(value) {
+        Ok(Isbn::_10(value)) => Isbn13::from(value),
+        Ok(Isbn::_13(value)) => value,
+        Err(_) if !strict => return Ok(None),
+        Err(_) => {
+            return Err(PyValueError::new_err(format!(
+                "The value '{value}' is not a valid ISBN."
+            )));
+        }
+    };
+
+    let result = if hyphenate {
+        isbn.hyphenate().unwrap().to_string()
+    } else {
+        isbn.to_string()
+    };
+
+    Ok(Some(result))
+}
+
 #[cfg(test)]
 mod tests {
     use Version::*;
