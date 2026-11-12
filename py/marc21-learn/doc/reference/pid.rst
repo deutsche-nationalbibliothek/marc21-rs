@@ -13,4 +13,5 @@ International Standard Book Number (ISBN)
 .. autosummary::
 	:toctree: api/
 
+	isbn_canonicalize
 	isbn_validate

@@ -33,6 +33,7 @@ fn  _runtime(py: Python<'_>, parent: &Bound<'_, PyModule>) -> PyResult<()> {
 
     // PID
     let m = PyModule::new(parent.py(), "pid")?;
+    m.add_wrapped(wrap_pyfunction!(pid::isbn_canonicalize))?;
     m.add_wrapped(wrap_pyfunction!(pid::isbn_validate))?;
     parent.add_submodule(&m)?;
 
