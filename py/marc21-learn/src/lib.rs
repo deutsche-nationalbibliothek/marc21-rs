@@ -1,5 +1,5 @@
 use marc21_python::io::PyMarcReader;
-use marc21_python::pid;
+use marc21_python::{PyMatch, pid};
 use pyo3::intern;
 use pyo3::prelude::*;
 
@@ -19,10 +19,13 @@ const fn __version() -> &'static str {
 }
 
 #[pymodule]
-#[rustfmt::skip]
-fn  _runtime(py: Python<'_>, parent: &Bound<'_, PyModule>) -> PyResult<()> {
+fn _runtime(
+    py: Python<'_>,
+    parent: &Bound<'_, PyModule>,
+) -> PyResult<()> {
     // Top-Level Module
     parent.add_wrapped(wrap_pyfunction!(__version))?;
+    parent.add_class::<PyMatch>()?;
 
     // Input/Output
     let m = PyModule::new(parent.py(), "io")?;
@@ -34,10 +37,11 @@ fn  _runtime(py: Python<'_>, parent: &Bound<'_, PyModule>) -> PyResult<()> {
     // PID
     let m = PyModule::new(parent.py(), "pid")?;
     m.add_wrapped(wrap_pyfunction!(pid::isbn_canonicalize))?;
+    m.add_wrapped(wrap_pyfunction!(pid::isbn_find))?;
     m.add_wrapped(wrap_pyfunction!(pid::isbn_validate))?;
     parent.add_submodule(&m)?;
 
     set_name!(py, m, "marc21_learn._runtime.pid");
-    
+
     Ok(())
 }

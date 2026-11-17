@@ -70,6 +70,7 @@ feature-depth = 1
 # A list of advisory IDs to ignore. Note that ignored advisories will still
 # output a note when they are encountered.
 ignore = [
+  { id = "RUSTSEC-2026-0542", reason = "This dependency is used only during testing and anf for now it's not critical." },
   #"RUSTSEC-0000-0000",
   #{ id = "RUSTSEC-0000-0000", reason = "you can specify a reason the advisory is ignored" },
   #"a-crate-that-is-yanked@0.1.1", # you can also ignore yanked crate versions if you wish
@@ -91,7 +92,6 @@ ignore = [
 allow = [
   "Apache-2.0",
   "Apache-2.0 WITH LLVM-exception",
-  "BSD-2-Clause",
   "CECILL-B",
   "EUPL-1.2",
   "MIT",

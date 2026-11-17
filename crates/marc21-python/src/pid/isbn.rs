@@ -1,9 +1,13 @@
 use std::str::FromStr;
+use std::sync::OnceLock;
 
 use isbn::{Isbn, Isbn10, Isbn13};
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::pybacked::PyBackedStr;
+use regex::Regex;
+
+use crate::PyMatch;
 
 #[derive(Debug, PartialEq)]
 pub enum Version {
@@ -41,7 +45,7 @@ impl<'a, 'py> FromPyObject<'a, 'py> for Version {
 ///
 /// Parameters
 /// ----------
-/// value : String
+/// value : str
 ///     The value to be checked.
 ///
 /// version : {'ISBN-13', 'ISBN-10'}
@@ -93,7 +97,7 @@ pub fn isbn_validate(value: &str, version: Option<Version>) -> bool {
 ///
 /// Parameters
 /// ----------
-/// value : String
+/// value : str
 ///     The value to be checked.
 ///
 /// hyphenate : bool, default=True
@@ -106,7 +110,7 @@ pub fn isbn_validate(value: &str, version: Option<Version>) -> bool {
 ///
 /// Returns
 /// -------
-/// String
+/// str
 ///     The canonical form of the given ISBN.
 ///
 /// Raises
@@ -149,6 +153,90 @@ pub fn isbn_canonicalize(
     };
 
     Ok(Some(result))
+}
+
+fn isbn_re() -> &'static Regex {
+    static ISBN_RE: OnceLock<Regex> = OnceLock::new();
+
+    ISBN_RE.get_or_init(|| {
+        Regex::new(
+            r"(?ix)
+                ((?:97[89][-\ ]?)?\d{1,5}[-\ ]?(?:\d+[-\ ]?){2}(?:\d|X))",
+        )
+        .unwrap()
+    })
+}
+
+/// Find the first ISBN in the given haystack.
+///
+/// This function searches for the first ISBN in the given haystack. By
+/// default, all ISBNs are validated (check digit verification); if
+/// invalid ISBNs are to be included as well, the ``validate`` flag must
+/// be set to ``False``.
+///
+/// The underlying regular expression is based on the approach described
+/// in the book *Regular Expressions Cookbook* by Jan Goyvaerts and
+/// Steven Levithan [1]_. It finds ISBNs in both the ISBN-10 and ISBN-13
+/// formats. The individual components of an ISBN can be separated
+/// either by a space (``SPACE U+0020``) or a hyphen (``HYPHEN-MINUS
+/// U+002D``).
+///
+/// .. [1] Jan Goyvaerts and Steven Levithan. O'Reilly, Beijing u.a.,
+///      2nd ed., ISBN 978-1-4493-1943-4, 2012, p. 292.
+///
+/// .. versionadded:: 0.3.0
+///
+/// .. warning::
+///     This functionality is considered unstable. It may be changed at
+///     any point without it being considered a breaking change.
+///
+/// Parameters
+/// ----------
+/// haystack : str
+///     The string to be searched.
+///
+/// validate : bool, default=True
+///     If set, the value found is verified to ensure that it is a
+///     formally valid ISBN.
+///
+/// Returns
+/// -------
+/// Match | None
+///     The first match, if any.
+///
+/// Examples
+/// --------
+/// >>> from marc21_learn.pid import isbn_find
+/// >>>
+/// >>> isbn_find("ISBN 978-3-10-031815-2")
+/// Match(value: '978-3-10-031815-2', start: 5, end: 22)
+///
+/// The result can be converted to a string by using the ``__str__``
+/// interface:
+///
+/// >>> if (isbn := isbn_find("ISBN 978-0-571-08989-5")):
+/// ...     print(isbn)
+/// ...
+/// 978-0-571-08989-5
+#[pyfunction]
+#[pyo3(signature = (haystack, *, validate = true))]
+pub fn isbn_find(
+    haystack: String,
+    validate: bool,
+) -> PyResult<Option<PyMatch>> {
+    if let Some(m) = isbn_re().find(&haystack) {
+        let r#match = PyMatch::from(m);
+
+        if validate {
+            if let Ok(_isbn) = Isbn::from_str(m.as_str()) {
+                return Ok(Some(r#match));
+            }
+        } else {
+            return Ok(Some(r#match));
+        }
+    }
+
+    Ok(None)
 }
 
 #[cfg(test)]
