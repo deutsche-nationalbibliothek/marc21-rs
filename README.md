@@ -6,8 +6,9 @@
 
 [![Rust](https://github.com/deutsche-nationalbibliothek/marc21-rs/actions/workflows/rust.yaml/badge.svg)](https://github.com/deutsche-nationalbibliothek/marc21-rs/actions/workflows/rust.yaml)
 [![docs.rs](https://img.shields.io/docsrs/marc21?label=Documentation)](https://docs.rs/marc21/latest/marc21/)
-[![Dependencies](https://deps.rs/repo/github/deutsche-nationalbibliothek/marc21-rs/status.svg)](https://deps.rs/repo/github/deutsche-nationalbibliothek/marc21-rs)
 [![crates.io](https://img.shields.io/crates/v/marc21)](https://crates.io/crates/marc21)
+[![PyPI Version](https://img.shields.io/pypi/v/marc21-learn)](https://pypi.org/project/marc21-learn/#history)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/marc21-learn.svg)](https://pypi.org/project/marc21-learn/)
 [![License](https://img.shields.io/github/license/deutsche-nationalbibliothek/marc21-rs?color=blue)](./LICENSE)
 
 </div>
