@@ -8,11 +8,11 @@ pub mod pid;
 #[pyclass(name = "Match")]
 pub struct PyMatch {
     #[pyo3(get)]
-    value: String,
+    pub(crate) value: String,
     #[pyo3(get)]
-    start: usize,
+    pub(crate) start: usize,
     #[pyo3(get)]
-    end: usize,
+    pub(crate) end: usize,
 }
 
 #[pymethods]
@@ -26,15 +26,5 @@ impl PyMatch {
 
     fn __str__(&self) -> String {
         self.value.clone()
-    }
-}
-
-impl From<regex::Match<'_>> for PyMatch {
-    fn from(m: regex::Match) -> Self {
-        Self {
-            value: m.as_str().to_string(),
-            start: m.start(),
-            end: m.end(),
-        }
     }
 }

@@ -3,11 +3,13 @@
 from marc21_learn._runtime.pid import (
     isbn_canonicalize,
     isbn_find,
+    isbn_findall,
     isbn_validate,
 )
 
 __all__ = [
     "isbn_canonicalize",
     "isbn_find",
+    "isbn_findall",
     "isbn_validate",
 ]

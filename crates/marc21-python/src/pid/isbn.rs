@@ -160,8 +160,7 @@ fn isbn_re() -> &'static Regex {
 
     ISBN_RE.get_or_init(|| {
         Regex::new(
-            r"(?ix)
-                ((?:97[89][-\ ]?)?\d{1,5}[-\ ]?(?:\d+[-\ ]?){2}(?:\d|X))",
+            r"(?:(?:ISBN(?:-1[03])?(?::\s)?\s*)?((?:97[89][-\ ]?)?\d{1,5}[-\ ]?(?:\d+[-\ ]?){2}(?:\d|X)))",
         )
         .unwrap()
     })
@@ -204,17 +203,23 @@ fn isbn_re() -> &'static Regex {
 /// Match | None
 ///     The first match, if any.
 ///
+/// See Also
+/// --------
+/// isbn_findall : Find all non-overlapping ISBNs in the given haystack.
+///
 /// Examples
 /// --------
 /// >>> from marc21_learn.pid import isbn_find
 /// >>>
 /// >>> isbn_find("ISBN 978-3-10-031815-2")
 /// Match(value: '978-3-10-031815-2', start: 5, end: 22)
+/// >>> isbn_find("ISBN-13: 9783100318152")
+/// Match(value: '9783100318152', start: 9, end: 22)
 ///
 /// The result can be converted to a string by using the ``__str__``
 /// interface:
 ///
-/// >>> if (isbn := isbn_find("ISBN 978-0-571-08989-5")):
+/// >>> if (isbn := isbn_find("978-0-571-08989-5")):
 /// ...     print(isbn)
 /// ...
 /// 978-0-571-08989-5
@@ -224,11 +229,18 @@ pub fn isbn_find(
     haystack: String,
     validate: bool,
 ) -> PyResult<Option<PyMatch>> {
-    if let Some(m) = isbn_re().find(&haystack) {
-        let r#match = PyMatch::from(m);
+    if let Some(caps) = isbn_re().captures(&haystack) {
+        debug_assert_eq!(caps.len(), 2);
+
+        let group1 = caps.get(1).unwrap();
+        let r#match = PyMatch {
+            value: group1.as_str().into(),
+            start: group1.start(),
+            end: group1.end(),
+        };
 
         if validate {
-            if let Ok(_isbn) = Isbn::from_str(m.as_str()) {
+            if let Ok(_isbn) = Isbn::from_str(&r#match.value) {
                 return Ok(Some(r#match));
             }
         } else {
@@ -237,6 +249,88 @@ pub fn isbn_find(
     }
 
     Ok(None)
+}
+
+/// Find all non-overlapping ISBNs in the given haystack.
+///
+/// This function searches for all non-averlapping ISBNs in the given
+/// haystack. By default, all ISBNs are validated (check digit
+/// verification); if invalid ISBNs are to be included as well, the
+/// ``validate`` flag must be set to ``False``.
+///
+/// The underlying regular expression is based on the approach described
+/// in the book *Regular Expressions Cookbook* by Jan Goyvaerts and
+/// Steven Levithan [1]_. It finds ISBNs in both the ISBN-10 and ISBN-13
+/// formats. The individual components of an ISBN can be separated
+/// either by a space (``SPACE U+0020``) or a hyphen (``HYPHEN-MINUS
+/// U+002D``).
+///
+/// .. [1] Jan Goyvaerts and Steven Levithan. O'Reilly, Beijing u.a.,
+///      2nd ed., ISBN 978-1-4493-1943-4, 2012, p. 292.
+///
+/// .. versionadded:: 0.3.0
+///
+/// .. warning::
+///     This functionality is considered unstable. It may be changed at
+///     any point without it being considered a breaking change.
+///
+/// Parameters
+/// ----------
+/// haystack : str
+///     The string to be searched.
+///
+/// validate : bool, default=True
+///     If set, the value found is verified to ensure that it is a
+///     formally valid ISBN.
+///
+/// Returns
+/// -------
+/// list[Match]
+///     The list of all matches.
+///
+/// See Also
+/// --------
+/// isbn_find : Find the first ISBN in the given haystack.
+///
+/// Examples
+/// --------
+/// >>> from marc21_learn.pid import isbn_findall
+/// >>>
+/// >>> haystack = "ISBN-13: 978-1-098-17130-8 ISBN-10: 1098171306"
+/// >>> result = isbn_findall(haystack)
+/// >>> assert len(result) == 2
+/// >>> result[0]
+/// Match(value: '978-1-098-17130-8', start: 9, end: 26)
+/// >>> result[1]
+/// Match(value: '1098171306', start: 36, end: 46)
+#[pyfunction]
+#[pyo3(signature = (haystack, *, validate = true))]
+pub fn isbn_findall(
+    haystack: String,
+    validate: bool,
+) -> PyResult<Vec<PyMatch>> {
+    let mut result = vec![];
+
+    for caps in isbn_re().captures_iter(&haystack) {
+        debug_assert_eq!(caps.len(), 2);
+
+        let group1 = caps.get(1).unwrap();
+        let r#match = PyMatch {
+            value: group1.as_str().into(),
+            start: group1.start(),
+            end: group1.end(),
+        };
+
+        if validate {
+            if let Ok(_isbn) = Isbn::from_str(&r#match.value) {
+                result.push(r#match);
+            }
+        } else {
+            result.push(r#match);
+        }
+    }
+
+    Ok(result)
 }
 
 #[cfg(test)]

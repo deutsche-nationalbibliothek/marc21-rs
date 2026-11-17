@@ -2,7 +2,12 @@
 
 import pytest
 
-from marc21_learn.pid import isbn_canonicalize, isbn_find, isbn_validate
+from marc21_learn.pid import (
+    isbn_canonicalize,
+    isbn_find,
+    isbn_findall,
+    isbn_validate,
+)
 
 
 def test_isbn_validate() -> None:
@@ -87,5 +92,52 @@ def test_isbn_find() -> None:
     assert match.start == 0
     assert match.end == 10
 
+    match = isbn_find("978-1-4493-1943-4", validate=True)
+    assert match.value == "978-1-4493-1943-4"
+    assert match.start == 0
+    assert match.end == 17
+
+    match = isbn_find("978-1-4493-1943-4", validate=False)
+    assert match.value == "978-1-4493-1943-4"
+    assert match.start == 0
+    assert match.end == 17
+
+    assert not isbn_find("978-1-4493-1943-5", validate=True)
+    match = isbn_find("978-1-4493-1943-5", validate=False)
+    assert match.value == "978-1-4493-1943-5"
+    assert match.start == 0
+    assert match.end == 17
+
     assert not isbn_find("978-1-4493-1943-5")
     assert not isbn_find("foobar")
+
+
+def test_isbn_findall() -> None:
+    """Tests the `isbn_findall` function."""
+    matches = isbn_findall("978-1-4493-1943-4")
+    assert len(matches) == 1
+    assert matches[0].value == "978-1-4493-1943-4"
+    assert matches[0].start == 0
+    assert matches[0].end == 17
+
+    matches = isbn_findall("ISBN-13: 978-1-4493-1943-4")
+    assert len(matches) == 1
+    assert matches[0].value == "978-1-4493-1943-4"
+    assert matches[0].start == 9
+    assert matches[0].end == 26
+
+    matches = isbn_findall("ISBN-13: 978-1-0981-7130-8 ISBN-10: 1098171306")
+    assert len(matches) == 2
+    assert matches[0].value == "978-1-0981-7130-8"
+    assert matches[0].start == 9
+    assert matches[0].end == 26
+    assert matches[1].value == "1098171306"
+    assert matches[1].start == 36
+    assert matches[1].end == 46
+
+    assert not isbn_findall("978-1-4493-1943-5", validate=True)
+    matches = isbn_findall("978-1-4493-1943-5", validate=False)
+    assert len(matches) == 1
+    assert matches[0].value == "978-1-4493-1943-5"
+    assert matches[0].start == 0
+    assert matches[0].end == 17

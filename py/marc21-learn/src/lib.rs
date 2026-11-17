@@ -38,6 +38,7 @@ fn _runtime(
     let m = PyModule::new(parent.py(), "pid")?;
     m.add_wrapped(wrap_pyfunction!(pid::isbn_canonicalize))?;
     m.add_wrapped(wrap_pyfunction!(pid::isbn_find))?;
+    m.add_wrapped(wrap_pyfunction!(pid::isbn_findall))?;
     m.add_wrapped(wrap_pyfunction!(pid::isbn_validate))?;
     parent.add_submodule(&m)?;
 
