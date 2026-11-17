@@ -2,7 +2,7 @@
 
 import pytest
 
-from marc21_learn.pid import isbn_canonicalize, isbn_validate
+from marc21_learn.pid import isbn_canonicalize, isbn_find, isbn_validate
 
 
 def test_isbn_validate() -> None:
@@ -53,3 +53,39 @@ def test_isbn_canonicalize() -> None:
         match=r"The value '978-3-10-031820-7' is not a valid ISBN.",
     ):
         isbn_canonicalize("978-3-10-031820-7", strict=True)
+
+
+def test_isbn_find() -> None:
+    """Tests the `isbn_find` function."""
+    match = isbn_find("978-1-4493-1943-4")
+    assert match.value == "978-1-4493-1943-4"
+    assert match.start == 0
+    assert match.end == 17
+
+    match = isbn_find("9781449319434")
+    assert match.value == "9781449319434"
+    assert match.start == 0
+    assert match.end == 13
+
+    match = isbn_find("978 1 4493 1943 4")
+    assert match.value == "978 1 4493 1943 4"
+    assert match.start == 0
+    assert match.end == 17
+
+    match = isbn_find("1-4493-1943-2")
+    assert match.value == "1-4493-1943-2"
+    assert match.start == 0
+    assert match.end == 13
+
+    match = isbn_find("1 4493 1943 2")
+    assert match.value == "1 4493 1943 2"
+    assert match.start == 0
+    assert match.end == 13
+
+    match = isbn_find("1449319432")
+    assert match.value == "1449319432"
+    assert match.start == 0
+    assert match.end == 10
+
+    assert not isbn_find("978-1-4493-1943-5")
+    assert not isbn_find("foobar")
