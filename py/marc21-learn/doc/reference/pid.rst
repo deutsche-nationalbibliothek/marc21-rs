@@ -6,6 +6,15 @@ marc21\_learn.pid
 
 .. automodule:: marc21_learn.pid
 
+Digital Object Identifier (DOI)
+-------------------------------
+
+.. currentmodule:: marc21_learn.pid
+.. autosummary::
+	:toctree: api/
+
+	doi_from_isbn
+
 International Standard Book Number (ISBN)
 -----------------------------------------
 
@@ -16,5 +25,6 @@ International Standard Book Number (ISBN)
 	isbn_canonicalize
 	isbn_find
 	isbn_findall
+	isbn_from_doi
 	isbn_truncate
 	isbn_validate

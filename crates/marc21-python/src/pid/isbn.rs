@@ -456,6 +456,99 @@ pub fn isbn_truncate(
     Ok(Some(result))
 }
 
+/// Parses an ISBN from a DOI (ISBN-A).
+///
+/// The syntax of an ISBN-A is specified in `DOI® System and the ISBN
+/// System`_. The parsed value is additionally validated (check-digit
+/// verification).
+///
+/// .. _DOI® System and the ISBN System: https://www.doi.org/the-identifier/resources/factsheets/doi-system-and-the-isbn-system
+///
+/// .. versionadded:: 0.3.0
+///
+/// .. warning::
+///     This functionality is considered unstable. It may be changed at
+///     any point without it being considered a breaking change.
+///
+/// Parameters
+/// ----------
+/// value : str
+///     The value to be parsed.
+///
+/// hyphenate : bool, default=True
+///     Whether hyphens should be used to separate the elements or not.
+///
+/// strict : bool, default=False
+///     If set, a ``ValueError`` is raised if an invalid ISBN is passed,
+///     otherwise ``None`` is returned.
+///
+/// Returns
+/// -------
+/// str
+///     The parsed ISBN.
+///
+/// Examples
+/// --------
+/// >>> from marc21_learn.pid import isbn_from_doi
+/// >>>
+/// >>> isbn_from_doi("10.978.310/0318152")
+/// '978-3-10-031815-2'
+#[pyfunction]
+#[pyo3(signature = (value, *, hyphenate = true, strict = false))]
+pub fn isbn_from_doi(
+    value: &str,
+    hyphenate: bool,
+    strict: bool,
+) -> PyResult<Option<String>> {
+    let Some(value) = value.strip_prefix("10.") else {
+        if strict {
+            return Err(PyValueError::new_err("missing '10.' prefix"));
+        } else {
+            return Ok(None);
+        }
+    };
+
+    let Some((prefix, value)) = value.split_once(".") else {
+        if strict {
+            return Err(PyValueError::new_err(
+                "could not find registration group and publisher prefix",
+            ));
+        } else {
+            return Ok(None);
+        }
+    };
+
+    let Some((lhs, rhs)) = value.split_once("/") else {
+        if strict {
+            return Err(PyValueError::new_err(
+                "missing suffix divider '/'",
+            ));
+        } else {
+            return Ok(None);
+        }
+    };
+
+    let isbn_str = format!("{prefix}{lhs}{rhs}");
+    let isbn = match Isbn::from_str(&format!("{prefix}{lhs}{rhs}")) {
+        Ok(Isbn::_10(value)) => Isbn13::from(value),
+        Ok(Isbn::_13(value)) => value,
+        Err(_) if !strict => return Ok(None),
+        Err(_) => {
+            return Err(PyValueError::new_err(format!(
+                "The extracted value '{isbn_str}' is not a valid ISBN."
+            )));
+        }
+    };
+
+    let result = if hyphenate {
+        isbn.hyphenate().unwrap().to_string()
+    } else {
+        isbn.to_string()
+    };
+
+    Ok(Some(result))
+}
+
 #[cfg(test)]
 mod tests {
     use Version::*;

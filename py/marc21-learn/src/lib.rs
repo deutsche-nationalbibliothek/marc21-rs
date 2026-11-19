@@ -39,6 +39,8 @@ fn _runtime(
     m.add_wrapped(wrap_pyfunction!(pid::isbn_canonicalize))?;
     m.add_wrapped(wrap_pyfunction!(pid::isbn_find))?;
     m.add_wrapped(wrap_pyfunction!(pid::isbn_findall))?;
+    m.add_wrapped(wrap_pyfunction!(pid::isbn_from_doi))?;
+    m.add_wrapped(wrap_pyfunction!(pid::doi_from_isbn))?;
     m.add_wrapped(wrap_pyfunction!(pid::isbn_truncate))?;
     m.add_wrapped(wrap_pyfunction!(pid::isbn_validate))?;
     parent.add_submodule(&m)?;

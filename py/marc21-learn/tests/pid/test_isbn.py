@@ -1,4 +1,4 @@
-"""Test Polars Integration."""
+"""Test International Standard Book Number (ISBN) functions."""
 
 import pytest
 
@@ -6,6 +6,7 @@ from marc21_learn.pid import (
     isbn_canonicalize,
     isbn_find,
     isbn_findall,
+    isbn_from_doi,
     isbn_truncate,
     isbn_validate,
 )
@@ -207,3 +208,23 @@ def test_isbn_truncate() -> None:
         match=r"The value '978-3-10-031820-7' is not a valid ISBN.",
     ):
         isbn_truncate("978-3-10-031820-7", strict=True)
+
+
+def test_isbn_from_doi() -> None:
+    """Tests the `isbn_from_doi` function."""
+    value = "10.978.10/98156084"
+
+    assert isbn_from_doi(value) == "978-1-0981-5608-4"
+    assert isbn_from_doi(value, hyphenate=True) == "978-1-0981-5608-4"
+    assert isbn_from_doi(value, hyphenate=False) == "9781098156084"
+    assert isbn_from_doi(value, strict=True) == "978-1-0981-5608-4"
+    assert isbn_from_doi(value, strict=False) == "978-1-0981-5608-4"
+
+    # strict
+    assert not isbn_from_doi("10.978.12345/99990", strict=False)
+
+    with pytest.raises(
+        ValueError,
+        match=r"The extracted value '9781234599990' is not a valid ISBN.",
+    ):
+        isbn_from_doi("10.978.12345/99990", strict=True)
