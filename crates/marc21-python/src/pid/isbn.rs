@@ -35,6 +35,51 @@ impl<'a, 'py> FromPyObject<'a, 'py> for Version {
     }
 }
 
+#[derive(Debug, PartialEq)]
+pub enum Element {
+    Prefix,
+    Group,
+    Registrant,
+    Publication,
+    CheckDigit,
+}
+
+impl<'a, 'py> FromPyObject<'a, 'py> for Element {
+    type Error = PyErr;
+
+    fn extract(
+        o: Borrowed<'a, 'py, PyAny>,
+    ) -> Result<Self, Self::Error> {
+        let element = match &*o.extract::<PyBackedStr>()? {
+            "prefix" => Self::Prefix,
+            "group" => Self::Group,
+            "registrant" => Self::Registrant,
+            "publication" => Self::Publication,
+            "check-digit" => Self::CheckDigit,
+            value => {
+                return Err(PyValueError::new_err(format!(
+                    "`element` must be one of {{'prefix', 'group', 'registrant', \
+                     'publication', 'check-digit'}}, got {value}"
+                )));
+            }
+        };
+
+        Ok(element)
+    }
+}
+
+impl From<Element> for usize {
+    fn from(value: Element) -> Self {
+        match value {
+            Element::Prefix => 1,
+            Element::Group => 2,
+            Element::Registrant => 3,
+            Element::Publication => 4,
+            Element::CheckDigit => 5,
+        }
+    }
+}
+
 /// Checks whether the value is a valid ISBN.
 ///
 /// This function checks whether the specified value is a formally valid
@@ -226,10 +271,10 @@ fn isbn_re() -> &'static Regex {
 #[pyfunction]
 #[pyo3(signature = (haystack, *, validate = true))]
 pub fn isbn_find(
-    haystack: String,
+    haystack: &str,
     validate: bool,
 ) -> PyResult<Option<PyMatch>> {
-    if let Some(caps) = isbn_re().captures(&haystack) {
+    if let Some(caps) = isbn_re().captures(haystack) {
         debug_assert_eq!(caps.len(), 2);
 
         let group1 = caps.get(1).unwrap();
@@ -306,12 +351,12 @@ pub fn isbn_find(
 #[pyfunction]
 #[pyo3(signature = (haystack, *, validate = true))]
 pub fn isbn_findall(
-    haystack: String,
+    haystack: &str,
     validate: bool,
 ) -> PyResult<Vec<PyMatch>> {
     let mut result = vec![];
 
-    for caps in isbn_re().captures_iter(&haystack) {
+    for caps in isbn_re().captures_iter(haystack) {
         debug_assert_eq!(caps.len(), 2);
 
         let group1 = caps.get(1).unwrap();
@@ -331,6 +376,84 @@ pub fn isbn_findall(
     }
 
     Ok(result)
+}
+
+/// Truncates the ISBN after the specified element.
+///
+/// This function truncates the ISBN to the specified element. If an
+/// ISBN-10 is passed, it is converted to an ISBN-13 beforehand.
+///
+/// .. versionadded:: 0.3.0
+///
+/// .. warning::
+///     This functionality is considered unstable. It may be changed at
+///     any point without it being considered a breaking change.
+///
+/// Parameters
+/// ----------
+/// value : str
+///     The value to be truncated.
+///
+/// element : IsbnElement, default = 'registrant'
+///     The element (``prefix``, ``group``, ``registrant``,
+///     ``publication``, or ``check-digit``) up to which the cut should
+///     be made.
+///
+/// hyphenate : bool, default=True
+///     Whether hyphens should be used to separate the elements or not.
+///
+/// strict : bool, default=False
+///     If set, a ``ValueError`` is raised if an invalid ISBN is passed,
+///     otherwise ``None`` is returned.
+///
+/// Returns
+/// -------
+/// str
+///     The truncated ISBN.
+///
+/// Examples
+/// --------
+/// >>> from marc21_learn.pid import isbn_truncate
+/// >>>
+/// >>> isbn_truncate("978-3-10-031815-2", element="prefix")
+/// '978'
+/// >>> isbn_truncate("978-3-10-031815-2", element="group")
+/// '978-3'
+/// >>> isbn_truncate("978-3-10-031815-2", element="registrant")
+/// '978-3-10'
+/// >>> isbn_truncate("978-3-10-031815-2", element="publication")
+/// '978-3-10-031815'
+/// >>> isbn_truncate("978-3-10-031815-2", element="check-digit")
+/// '978-3-10-031815-2'
+#[pyfunction]
+#[pyo3(signature = (value, *, element = Element::Registrant, hyphenate = true, strict = false))]
+pub fn isbn_truncate(
+    value: &str,
+    element: Element,
+    hyphenate: bool,
+    strict: bool,
+) -> PyResult<Option<String>> {
+    let isbn = match Isbn::from_str(value) {
+        Ok(Isbn::_10(value)) => Isbn13::from(value),
+        Ok(Isbn::_13(value)) => value,
+        Err(_) if !strict => return Ok(None),
+        Err(_) => {
+            return Err(PyValueError::new_err(format!(
+                "The value '{value}' is not a valid ISBN."
+            )));
+        }
+    };
+
+    let isbn_str = isbn.hyphenate().unwrap().to_string();
+    let separator = if hyphenate { "-" } else { "" };
+
+    let result = isbn_str
+        .split("-")
+        .take(element.into())
+        .collect::<Vec<_>>()
+        .join(separator);
+
+    Ok(Some(result))
 }
 
 #[cfg(test)]

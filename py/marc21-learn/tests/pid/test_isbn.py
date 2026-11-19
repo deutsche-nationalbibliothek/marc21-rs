@@ -6,6 +6,7 @@ from marc21_learn.pid import (
     isbn_canonicalize,
     isbn_find,
     isbn_findall,
+    isbn_truncate,
     isbn_validate,
 )
 
@@ -141,3 +142,68 @@ def test_isbn_findall() -> None:
     assert matches[0].value == "978-1-4493-1943-5"
     assert matches[0].start == 0
     assert matches[0].end == 17
+
+
+def test_isbn_truncate() -> None:
+    """Tests the `isbn_truncate` function."""
+    # ISBN-13 / hyphenate=True (default)
+    isbn = "978-1098156084"
+    assert isbn_truncate(isbn) == "978-1-0981"
+    assert isbn_truncate(isbn, element="prefix") == "978"
+    assert isbn_truncate(isbn, element="group") == "978-1"
+    assert isbn_truncate(isbn, element="registrant") == "978-1-0981"
+    assert isbn_truncate(isbn, element="publication") == "978-1-0981-5608"
+    assert isbn_truncate(isbn, element="check-digit") == "978-1-0981-5608-4"
+
+    # ISBN-10 / hyphenate=True (default)
+    isbn = "1098156080"
+    assert isbn_truncate(isbn) == "978-1-0981"
+    assert isbn_truncate(isbn, element="prefix") == "978"
+    assert isbn_truncate(isbn, element="group") == "978-1"
+    assert isbn_truncate(isbn, element="registrant") == "978-1-0981"
+    assert isbn_truncate(isbn, element="publication") == "978-1-0981-5608"
+    assert isbn_truncate(isbn, element="check-digit") == "978-1-0981-5608-4"
+
+    # ISBN-13 / hyphenate=False
+    isbn = "978-1098156084"
+    assert isbn_truncate(isbn, hyphenate=False) == "97810981"
+    assert isbn_truncate(isbn, element="prefix", hyphenate=False) == "978"
+    assert isbn_truncate(isbn, element="group", hyphenate=False) == "9781"
+    assert (
+        isbn_truncate(isbn, element="registrant", hyphenate=False)
+        == "97810981"
+    )
+    assert (
+        isbn_truncate(isbn, element="publication", hyphenate=False)
+        == "978109815608"
+    )
+    assert (
+        isbn_truncate(isbn, element="check-digit", hyphenate=False)
+        == "9781098156084"
+    )
+
+    # ISBN-10 / hyphenate=False
+    isbn = "1098156080"
+    assert isbn_truncate(isbn, hyphenate=False) == "97810981"
+    assert isbn_truncate(isbn, element="prefix", hyphenate=False) == "978"
+    assert isbn_truncate(isbn, element="group", hyphenate=False) == "9781"
+    assert (
+        isbn_truncate(isbn, element="registrant", hyphenate=False)
+        == "97810981"
+    )
+    assert (
+        isbn_truncate(isbn, element="publication", hyphenate=False)
+        == "978109815608"
+    )
+    assert (
+        isbn_truncate(isbn, element="check-digit", hyphenate=False)
+        == "9781098156084"
+    )
+
+    # strict
+    assert not isbn_truncate("978-3-10-031820-7", strict=False)
+    with pytest.raises(
+        ValueError,
+        match=r"The value '978-3-10-031820-7' is not a valid ISBN.",
+    ):
+        isbn_truncate("978-3-10-031820-7", strict=True)
