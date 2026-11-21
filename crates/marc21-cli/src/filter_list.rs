@@ -67,10 +67,13 @@ impl FilterListBuilder {
             None => self.source,
         })?;
 
+        let allow = read_filter_list(&self.allow, &self.column)?;
+        let deny = read_filter_list(&self.deny, &self.column)?;
+
         Ok(FilterList {
             source,
-            allow: read_filter_list(&self.allow, &self.column)?,
-            deny: read_filter_list(&self.deny, &self.column)?,
+            allow,
+            deny,
         })
     }
 }
@@ -165,6 +168,10 @@ pub(crate) struct FilterList {
 
 impl FilterList {
     pub(crate) fn check(&self, record: &ByteRecord) -> bool {
+        if self.allow.is_none() && self.deny.is_none() {
+            return true;
+        }
+
         let values: Vec<_> =
             record.path(&self.source, &Default::default());
 

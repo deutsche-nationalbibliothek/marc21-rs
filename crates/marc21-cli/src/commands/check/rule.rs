@@ -105,6 +105,7 @@ impl Rule {
         writer: &mut Writer,
     ) -> Result<(), CliError> {
         let result = match self.validator {
+            Validator::Duplicates(ref v) => v.is_valid(record),
             Validator::Filter(ref v) => v.is_valid(record),
             Validator::Isbn(ref v) => v.is_valid(record),
         };

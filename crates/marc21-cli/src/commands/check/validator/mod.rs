@@ -1,6 +1,7 @@
 use marc21::matcher::RecordMatcher;
 use serde::Deserialize;
 
+mod duplicates;
 mod filter;
 mod isbn;
 
@@ -8,6 +9,7 @@ mod isbn;
 #[serde(rename_all = "kebab-case")]
 #[serde(tag = "validator")]
 pub(crate) enum Validator {
+    Duplicates(Box<duplicates::Duplicates>),
     Filter(Box<filter::Filter>),
     Isbn(Box<isbn::Isbn>),
 }
