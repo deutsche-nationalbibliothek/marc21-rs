@@ -1,8 +1,11 @@
+[registry]
+global-min-publish-age = "3 days"
+
 # On Windows MSVC, statically link to the platform's standard C runtime
 # ("CRT").
 # [target.x86_64-pc-windows-msvc]
 # rustflags = ["-C", "target-feature=+crt-static"]
- 
+
 # On Linux MUSL target, Statically link to the platform's standard C
 # runtime ("CRT") and produce a fully statically linked executable.
 # [target.x86_64-unknown-linux-musl]
@@ -10,4 +13,3 @@
 #   "-C", "target-feature=+crt-static",
 #   "-C", "link-self-contained=yes",
 # ]
-
