@@ -1,0 +1,11 @@
+==================
+marc21-learn 0.3.0
+==================
+
+*Release date: November 24, 2026.*
+
+Version ``0.3.0`` introduces the :py:mod:`marc21_learn.pid` module, which
+contains various utility functions for working with persistent identifiers
+(PIDs). In this initial release of the module, a set of functions for working
+with ISBNs is provided.
+
