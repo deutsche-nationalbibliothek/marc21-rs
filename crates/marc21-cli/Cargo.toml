@@ -32,6 +32,7 @@ dvrf = { workspace = true }
 flate2 = { workspace = true }
 indicatif = { workspace = true }
 isbn = { workspace = true }
+jiff = { workspace = true }
 marc21 = { workspace = true, features = ["serde"] }
 rand = { workspace = true }
 regex = { workspace = true }

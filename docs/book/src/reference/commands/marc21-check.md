@@ -63,6 +63,46 @@ $ marc21 check -s -R gnd.toml -R dnb.toml DUMP.mrc.gz -o result.json
 
 ## VALIDATORS
 
+### Datetime
+
+The *datetime validator* checks whether a field contains a valid date or
+time. The values to be validated are specified using the `path` option,
+which expects a [path] expression. The date format can be specified using the
+`format` option; by default, the `%Y-%m-%d` format is used. 
+
+```toml
+[rule.DATETIME-001]
+validator = 'datetime'
+format = "%Y%m%d"
+path = '005[0:8]'
+
+[rule.DATETIME-002]
+validator = 'datetime'
+format = "%y%m%d"
+path = '008[0:6]'
+
+[rule.DATETIME-003]
+validator = 'datetime'
+format = "%Y%m%d"
+path = '883/*.[dx]'
+```
+
+The validator supports the following options/flags:
+
+`path = <path>`
+  : A [path] expression which specifies the values to be checked.
+  
+`format = <format>`
+  : A "printf"-style format, which specifies the format of the date or
+    datetime (default `%Y-%m-%d`).
+
+`scope = <record-matcher>`
+  : Only records that meet the specified [record matcher] are checked.
+
+`invert-matcher = true | false`
+  : If this flag is set, the result is inverted: A record fails
+    validation if the filter expression is `false`.
+
 ### Duplicates
 
 The *duplicates validator* can be used to verify whether a value — or a
@@ -171,5 +211,6 @@ The validator supports the following options/flags:
 [DVRF]: https://gbv.github.io/data-validation-report-format/
 [TOML]: https://toml.io/en/
 [query]: ../../concepts/query-and-path.md#query
+[path]: ../../concepts/query-and-path.md#path
 [record matcher]: ../../concepts/record-matcher.md
 [validator]: #validators
