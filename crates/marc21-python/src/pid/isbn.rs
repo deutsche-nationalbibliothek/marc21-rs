@@ -549,6 +549,125 @@ pub fn isbn_from_doi(
     Ok(Some(result))
 }
 
+/// Parses an ISBN from a URN.
+///
+/// This function is used to derive an ISBN from a Uniform Resource Name
+/// (URN) when the namespace `isbn` is used.
+///
+/// .. versionadded:: 0.4.0
+///
+/// .. warning::
+///     This functionality is considered unstable. It may be changed at
+///     any point without it being considered a breaking change.
+///
+/// Parameters
+/// ----------
+/// value : str
+///     The value to be parsed.
+///
+/// hyphenate : bool, default=True
+///     Whether hyphens should be used to separate the elements or not.
+///
+/// version : {'ISBN-13', 'ISBN-10'}
+///     Selects a specific ISBN version to which the extracted ISBN will
+///     be converted. If no version is specified, no conversion will
+///     take place.
+///
+/// strict : bool, default=False
+///     If set, a ``ValueError`` is raised if an invalid ISBN is passed,
+///     otherwise ``None`` is returned.
+///
+/// Returns
+/// -------
+/// str | None
+///     The ISBN extracted from the given URN.
+///
+/// Raises
+/// ------
+/// ValueError
+///     If any of the following conditions are met:
+///
+///     * the given ISBN version is invalid
+///     * the URN does not start with `urn:isbn:` (case-insensitive)
+///     * a ISBN-13 could not be converted into a ISBN-10
+///     * the extracted value is not a valid ISBN
+///
+/// Examples
+/// --------
+/// >>> from marc21_learn.pid import isbn_from_urn
+/// >>>
+/// >>> isbn_from_urn("urn:isbn:9783100318152")
+/// '978-3-10-031815-2'
+/// >>> isbn_from_urn("URN:ISBN:9783100318152")
+/// '978-3-10-031815-2'
+#[pyfunction]
+#[pyo3(signature = (value, *, hyphenate = true, version = None, strict = false))]
+pub fn isbn_from_urn(
+    value: &str,
+    hyphenate: bool,
+    version: Option<Version>,
+    strict: bool,
+) -> PyResult<Option<String>> {
+    let value_org = value.to_lowercase();
+
+    let Some(value) = value_org.strip_prefix("urn:") else {
+        if strict {
+            return Err(PyValueError::new_err(format!(
+                "The value '{value_org}' is not a URN (missing 'urn:' prefix)."
+            )));
+        } else {
+            return Ok(None);
+        }
+    };
+
+    let Some(value) = value.strip_prefix("isbn:") else {
+        if strict {
+            return Err(PyValueError::new_err(format!(
+                "The urn '{value_org}' is not associated with the 'isbn' namespace."
+            )));
+        } else {
+            return Ok(None);
+        }
+    };
+
+    let isbn = match Isbn::from_str(value) {
+        Err(_) if !strict => return Ok(None),
+        Err(_) => {
+            return Err(PyValueError::new_err(format!(
+                "The extracted value '{value}' is not a valid ISBN."
+            )));
+        }
+        Ok(isbn) => match isbn {
+            Isbn::_10(isbn)
+                if matches!(version, Some(Version::Isbn13)) =>
+            {
+                Isbn13::from(isbn).into()
+            }
+            Isbn::_13(isbn)
+                if matches!(version, Some(Version::Isbn10)) =>
+            {
+                Isbn10::try_from(isbn)
+                    .map_err(|_| {
+                        PyValueError::new_err(format!(
+                            "The value '{value}' could not be converted into \
+                             an ISBN-10.",
+                        ))
+                    })?
+                    .into()
+            }
+            value => value,
+        },
+    };
+
+    let result = if hyphenate {
+        isbn.hyphenate().unwrap().to_string()
+    } else {
+        isbn.to_string()
+    };
+
+    Ok(Some(result))
+}
+
 #[cfg(test)]
 mod tests {
     use Version::*;

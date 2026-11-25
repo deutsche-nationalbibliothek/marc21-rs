@@ -11,6 +11,13 @@ def isbn_from_doi(
     hyphenate: bool = True,
     strict: bool = False,
 ) -> str | None: ...
+def isbn_from_urn(
+    value: str,
+    *,
+    version: IsbnVersion | None = None,
+    hyphenate: bool = True,
+    strict: bool = False,
+) -> str | None: ...
 def isbn_validate(
     value: str,
     *,

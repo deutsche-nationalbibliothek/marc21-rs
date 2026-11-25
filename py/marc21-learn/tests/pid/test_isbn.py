@@ -7,6 +7,7 @@ from marc21_learn.pid import (
     isbn_find,
     isbn_findall,
     isbn_from_doi,
+    isbn_from_urn,
     isbn_truncate,
     isbn_validate,
 )
@@ -228,3 +229,52 @@ def test_isbn_from_doi() -> None:
         match=r"The extracted value '9781234599990' is not a valid ISBN.",
     ):
         isbn_from_doi("10.978.12345/99990", strict=True)
+
+
+def test_isbn_from_urn() -> None:
+    """Tests the `isbn_from_urn` function."""
+    assert isbn_from_urn("urn:isbn:9781098156084") == "978-1-0981-5608-4"
+
+    # prefix and namespace is case-insensitive
+    assert isbn_from_urn("URN:ISBN:9781098156084") == "978-1-0981-5608-4"
+
+    # strict
+    assert isbn_from_urn("urn:isbn:978109815608X") is None
+    assert isbn_from_urn("urn:isbn:978109815608X", strict=False) is None
+
+    with pytest.raises(
+        ValueError,
+        match=r"The extracted value '978109815608x' is not a valid ISBN.",
+    ):
+        isbn_from_urn("urn:isbn:978109815608X", strict=True)
+
+    # hyphenate
+    value = "urn:isbn:9781098156084"
+    assert isbn_from_urn(value) == "978-1-0981-5608-4"
+    assert isbn_from_urn(value, hyphenate=True) == "978-1-0981-5608-4"
+    assert isbn_from_urn(value, hyphenate=False) == "9781098156084"
+
+    # version
+    value = "urn:isbn:9781098156084"
+    assert isbn_from_urn(value) == "978-1-0981-5608-4"
+    assert isbn_from_urn(value, version="ISBN-13") == "978-1-0981-5608-4"
+    assert isbn_from_urn(value, version="ISBN-10") == "1-0981-5608-0"
+    assert isbn_from_urn(value, version=None) == "978-1-0981-5608-4"
+
+    value = "urn:isbn:1098156080"
+    assert isbn_from_urn(value) == "1-0981-5608-0"
+    assert isbn_from_urn(value, version="ISBN-13") == "978-1-0981-5608-4"
+    assert isbn_from_urn(value, version="ISBN-10") == "1-0981-5608-0"
+    assert isbn_from_urn(value, version=None) == "1-0981-5608-0"
+
+    with pytest.raises(
+        ValueError,
+        match=r"The urn 'urn:foo:9781234599990' is not associated with the 'isbn' namespace.",
+    ):
+        isbn_from_urn("urn:foo:9781234599990", strict=True)
+
+    with pytest.raises(
+        ValueError,
+        match=r"The value 'foo:isbn:9781234599990' is not a URN \(missing 'urn:' prefix\).",
+    ):
+        isbn_from_urn("foo:isbn:9781234599990", strict=True)
