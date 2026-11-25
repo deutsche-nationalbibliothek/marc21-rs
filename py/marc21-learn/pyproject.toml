@@ -43,6 +43,13 @@ python-packages = ["marc21_learn"]
 python-source = "src"
 
 [dependency-groups]
+bench = [
+  "is-isbn>=0.1.0",
+  "isbn-pure>=0.1.0",
+  "isbnlib>=3.10.14",
+  "pydantic-extra-types>=2.11.1",
+  "pyisbn>=1.4.3",
+]
 build = ["pyoxigraph>=0.5.11"]
 dev = [
   "mypy>=2.3.1",
@@ -87,6 +94,10 @@ lint.ignore = [
   "D100", # undocumented-public-module
   "D101", # undocumented-public-class
   "D103", # undocumented-public-function
+]
+"benches/**/*.py" = [
+  "D103", # undocumented-public-function
+  "T201", # print
 ]
 
 [tool.ruff.lint.pylint]
