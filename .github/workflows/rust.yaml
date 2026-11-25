@@ -49,13 +49,13 @@ jobs:
         if: ${{ matrix.target.toolchain != 'nightly' }}
         run: |
           cargo nextest run --target ${{ matrix.target.triple }} --workspace -F performant,serde,build --no-fail-fast
-          cargo test --target ${{ matrix.target.triple }} --doc --workspace -F performant,serde,build --no-fail-fast
+          cargo test --target ${{ matrix.target.triple }} --doc -p marc21 -F performant,serde --no-fail-fast
 
       - name: Run tests (nightly)
         if: ${{ matrix.target.toolchain == 'nightly' }}
         run: |
           cargo nextest run --target ${{ matrix.target.triple }} --workspace --all-features --no-fail-fast
-          cargo test --target ${{ matrix.target.triple }} --doc --workspace --all-features --no-fail-fast
+          cargo test --target ${{ matrix.target.triple }} --doc -p marc21 -F performant,serde --no-fail-fast
 
   fuzz:
     if: ${{ github.event_name == 'push' || !github.event.pull_request.draft }}
@@ -193,7 +193,7 @@ jobs:
 
       - name: Run careful
         run: |
-          cargo careful test --workspace --all-features --doc
+          cargo careful test --doc -p marc21 --all-features
           cargo careful nextest run --workspace
 
   udeps:

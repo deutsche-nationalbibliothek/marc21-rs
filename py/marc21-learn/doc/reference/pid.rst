@@ -26,5 +26,6 @@ International Standard Book Number (ISBN)
 	isbn_find
 	isbn_findall
 	isbn_from_doi
+	isbn_from_urn
 	isbn_truncate
 	isbn_validate
