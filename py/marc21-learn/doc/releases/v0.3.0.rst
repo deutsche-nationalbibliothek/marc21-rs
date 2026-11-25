@@ -9,3 +9,72 @@ contains various utility functions for working with persistent identifiers
 (PIDs). In this initial release of the module, a set of functions for working
 with ISBNs is provided.
 
+Benchmarks
+----------
+
+The following benchmark compares the validation of ISBNs across different
+Python libraries. Since the API and validation behavior differ among the
+individual libraries, a test set was compiled consisting of 8,614,431 ISBNs,
+all of which begin with the prefix “978” and are exactly 13 characters long.
+If a library provided a specialized function for validating an ISBN-13, that
+function was used preferentially. All test scripts have in common that they
+read the test set using Python’s `csv.DictReader` and process it sequentially.
+Parallelization across multiple threads was not used. When applied to the test
+set, each library returned the same result of 35 invalid ISBNs.
+
+
+The test set was compiled as follows based on the current data export from the
+German National Library and the command-line tool `marc21`_:
+
+.. code-block:: console
+
+	$ marc21 select -s '020.a' DNB.mrc.gz \
+		| rg '^978' \
+		| awk 'length($0) == 13' \
+		| sed '1s/^/isbn\n/' \
+		> isbn13.csv
+
+The metrics were measured using `hyperfine`_:
+
+.. code-block:: console
+
+	hyperfine -S --warmup 2 --min-runs 10 --metrics time \
+		--export-json results.json --export-markdown results.md \
+		--prepare 'sync; echo 3 | sudo tee /proc/sys/vm/drop_caches' \
+		-n 'marc21-learn' './marc21-learn-validate.py ~/tmp/isbn13.csv' \
+		-n 'isbnlib' './isbnlib-validate.py ~/tmp/isbn13.csv' \
+		-n 'isbn-pure' './isbn-pure-validate.py ~/tmp/isbn13.csv' \
+		-n 'is-isbn' './is-isbn-validate.py ~/tmp/isbn13.csv' \
+		-n 'pydantic' './pydantic-isbn-validate.py ~/tmp/isbn13.csv' \
+		-n 'pyisbn' './pyisbn-validate.py ~/tmp/isbn13.csv'
+
+
+The results are summarized in the following table:
+
+.. table:: Benchmark Results 
+
+	+-----------------+---------+--------------------+---------+---------------+
+	| Library         | Version | Mean Wall Time [s] | Change  | Factor        |
+	+-----------------+---------+--------------------+---------+---------------+
+	| `marc21-learn`_ |    0.3.0|     12.412 ± 0.344 |         |               |
+	+-----------------+---------+--------------------+---------+---------------+
+	| `isbn-pure`_    |    0.1.0|     28.007 ± 0.402 | +125.6% | (2.3x slower) |
+	+-----------------+---------+--------------------+---------+---------------+
+	| `pydantic`_     |   2.11.1|     29.961 ± 0.196 | +141.4% | (2.4x slower) |
+	+-----------------+---------+--------------------+---------+---------------+
+	| `is-isbn`_      |    0.1.0|     37.498 ± 0.132 | +202.1% | (3.0x slower) |
+	+-----------------+---------+--------------------+---------+---------------+
+	| `isbnlib`_      |  3.10.14|     41.309 ± 0.196 | +232.8% | (3.3x slower) |
+	+-----------------+---------+--------------------+---------+---------------+
+	| `pyisbn`_       |    1.4.3|     49.895 ± 0.237 | +302.0% | (4.0x slower) |
+	+-----------------+---------+--------------------+---------+---------------+
+
+
+.. _marc21-learn: https://pypi.org/project/marc21-learn
+.. _isbnlib: https://pypi.org/project/isbnlib/
+.. _isbn-pure: https://pypi.org/project/isbn-pure/
+.. _is-isbn: https://pypi.org/project/is-isbn/
+.. _pydantic: https://pypi.org/project/pydantic-extra-types/
+.. _pyisbn: https://pypi.org/project/pyisbn/
+.. _marc21: https://deutsche-nationalbibliothek.github.io/marc21-rs/marc21-cli/
+.. _hyperfine: https://github.com/sharkdp/hyperfine
