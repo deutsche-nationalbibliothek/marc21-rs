@@ -5,6 +5,7 @@ mod datetime;
 mod duplicates;
 mod filter;
 mod isbn;
+mod issn;
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "kebab-case")]
@@ -14,6 +15,7 @@ pub(crate) enum Validator {
     Duplicates(Box<duplicates::Duplicates>),
     Filter(Box<filter::Filter>),
     Isbn(Box<isbn::Isbn>),
+    Issn(Box<issn::Issn>),
 }
 
 #[derive(Debug, Default)]

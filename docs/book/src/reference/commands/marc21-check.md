@@ -182,10 +182,36 @@ path = '020.a'
 
 The validator supports the following options/flags:
 
+`path = <path>`
+  : A [path] expression which specifies the values to be checked.
+
 `format = isbn13 | isbn10`
   : Whether to check only for ISBN-13 or ISBN-10. If this option is not
     specified, both ISBN-13 and ISBN-10 are allowed.
 
+`scope = <record-matcher>`
+  : Only records that meet the specified [record matcher] are checked.
+
+`invert-matcher = true | false`
+  : If this flag is set, the result is inverted: A record fails
+    validation if the filter expression is `false`.
+
+### ISSN
+
+The *issn* validator checks whether the content of a field contains a valid
+[International Standard Serial Number] (ISSN).
+
+```toml
+[rule.ISSN]
+validator = 'issn'
+path = '02[23]/*.a'
+```
+
+The validator supports the following options/flags:
+
+`path = <path>`
+  : A [path] expression which specifies the values to be checked.
+  
 `scope = <record-matcher>`
   : Only records that meet the specified [record matcher] are checked.
 
@@ -209,8 +235,9 @@ The validator supports the following options/flags:
 
 
 [DVRF]: https://gbv.github.io/data-validation-report-format/
-[TOML]: https://toml.io/en/
-[query]: ../../concepts/query-and-path.md#query
+[International Standard Serial Number]: https://en.wikipedia.org/wiki/ISSN
 [path]: ../../concepts/query-and-path.md#path
+[query]: ../../concepts/query-and-path.md#query
 [record matcher]: ../../concepts/record-matcher.md
+[TOML]: https://toml.io/en/
 [validator]: #validators
