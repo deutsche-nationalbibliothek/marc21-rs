@@ -36,14 +36,15 @@ fn _runtime(
 
     // PID
     let m = PyModule::new(parent.py(), "pid")?;
+    m.add_wrapped(wrap_pyfunction!(pid::doi_from_isbn))?;
     m.add_wrapped(wrap_pyfunction!(pid::isbn_canonicalize))?;
     m.add_wrapped(wrap_pyfunction!(pid::isbn_find))?;
     m.add_wrapped(wrap_pyfunction!(pid::isbn_findall))?;
     m.add_wrapped(wrap_pyfunction!(pid::isbn_from_doi))?;
     m.add_wrapped(wrap_pyfunction!(pid::isbn_from_urn))?;
-    m.add_wrapped(wrap_pyfunction!(pid::doi_from_isbn))?;
     m.add_wrapped(wrap_pyfunction!(pid::isbn_truncate))?;
     m.add_wrapped(wrap_pyfunction!(pid::isbn_validate))?;
+    m.add_wrapped(wrap_pyfunction!(pid::issn_validate))?;
     parent.add_submodule(&m)?;
 
     set_name!(py, m, "marc21_learn._runtime.pid");

@@ -9,6 +9,7 @@ from marc21_learn._runtime.pid import (
     isbn_from_urn,
     isbn_truncate,
     isbn_validate,
+    issn_validate,
 )
 
 __all__ = [
@@ -20,4 +21,5 @@ __all__ = [
     "isbn_from_urn",
     "isbn_truncate",
     "isbn_validate",
+    "issn_validate",
 ]

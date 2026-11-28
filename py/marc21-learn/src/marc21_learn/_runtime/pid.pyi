@@ -1,10 +1,13 @@
 from marc21_learn import Match
 from marc21_learn._typing import IsbnElement, IsbnVersion
 
+# DOI
 def doi_from_isbn(
     value: str,
     strict: bool = False,
 ) -> str | None: ...
+
+# ISBN
 def isbn_from_doi(
     value: str,
     *,
@@ -38,3 +41,6 @@ def isbn_truncate(
     hyphenate: bool = True,
     strict: bool = False,
 ) -> str | None: ...
+
+# ISSN
+def issn_validate(value: str) -> bool: ...
