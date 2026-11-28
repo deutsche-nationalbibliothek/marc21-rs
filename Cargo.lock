@@ -761,6 +761,7 @@ name = "marc21-python"
 version = "0.3.0"
 dependencies = [
  "isbn",
+ "issn",
  "marc21",
  "pyo3",
  "regex",

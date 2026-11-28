@@ -29,3 +29,13 @@ International Standard Book Number (ISBN)
 	isbn_from_urn
 	isbn_truncate
 	isbn_validate
+
+International Standard Serial Number (ISSN)
+-------------------------------------------
+ 
+.. currentmodule:: marc21_learn.pid
+.. autosummary::
+	:toctree: api/
+
+	issn_validate
+
